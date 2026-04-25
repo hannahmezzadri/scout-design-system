@@ -914,6 +914,10 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   min-height: 32px;
   color: var(--connex-icon-display-primary);
 }
+.icon-stage svg {
+  display: block;
+  flex-shrink: 0;
+}
 .icon-name {
   font-size: var(--connex-font-size-12);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;

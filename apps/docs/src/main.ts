@@ -390,8 +390,18 @@ app.append(
     ]),
   ).sort();
 
-  // Render an SVG by parsing the raw string and stripping the data-slot/class attrs.
-  function renderIcon(raw: string, sizePx?: number): SVGElement | null {
+  // Native pixel size per style (Hero Icons ship at fixed sizes; don't scale).
+  const nativeSize: Record<IconStyle, number> = {
+    outline: 24,
+    solid: 24,
+    mini: 20,
+    micro: 16,
+  };
+
+  // Render an SVG by parsing the raw string. Always sets explicit width/height
+  // (heroicons SVGs only have viewBox, which collapses to 0×0 inside flex
+  // children in some browsers without explicit dimensions).
+  function renderIcon(raw: string, sizePx: number): SVGElement | null {
     const tmp = document.createElement('div');
     tmp.innerHTML = raw;
     const svg = tmp.querySelector('svg');
@@ -399,18 +409,17 @@ app.append(
     svg.removeAttribute('class');
     svg.removeAttribute('data-slot');
     svg.setAttribute('aria-hidden', 'true');
-    if (sizePx) {
-      svg.setAttribute('width', String(sizePx));
-      svg.setAttribute('height', String(sizePx));
-    }
+    svg.setAttribute('width', String(sizePx));
+    svg.setAttribute('height', String(sizePx));
     return svg;
   }
 
   function iconCell(name: string, style: IconStyle, sizePx?: number, label?: string): HTMLElement {
     const raw = byStyle[style][name];
+    const dim = sizePx ?? nativeSize[style];
     const stage = el('div', { class: 'icon-stage' });
     if (raw) {
-      const svg = renderIcon(raw, sizePx);
+      const svg = renderIcon(raw, dim);
       if (svg) stage.append(svg);
     } else {
       stage.append(document.createTextNode('—'));
