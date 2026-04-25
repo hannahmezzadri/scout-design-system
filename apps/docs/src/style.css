@@ -882,6 +882,44 @@ body.nav-open .sidebar-scrim { opacity: 1; }
 }
 .do-heading::before { content: "✓"; }
 .dont-heading::before { content: "✗"; }
+
+/* ========================================================================
+   Iconography
+   ======================================================================== */
+.icon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: var(--connex-space-12);
+  background: var(--connex-background-surface);
+  border: var(--connex-border-width-1) solid var(--connex-border-color-secondary);
+  border-radius: var(--connex-radius-8);
+  padding: var(--connex-space-16);
+}
+.icon-grid--sizing {
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  align-items: end;
+}
+.icon-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--connex-space-8);
+  padding: var(--connex-space-12);
+  border-radius: var(--connex-radius-4);
+}
+.icon-stage {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  color: var(--connex-icon-display-primary);
+}
+.icon-name {
+  font-size: var(--connex-font-size-12);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--connex-text-display-secondary);
+  text-align: center;
+}
 .guideline-list {
   margin: 0;
   padding-left: var(--connex-space-24);
