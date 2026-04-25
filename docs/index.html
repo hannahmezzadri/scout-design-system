@@ -10,11 +10,21 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&family=Literata:ital,wght@0,400..700;1,400..700&display=swap"
       rel="stylesheet"
     />
-    <script type="module" crossorigin src="/Connex-design-system/assets/index-L89_NYlS.js"></script>
-    <link rel="stylesheet" crossorigin href="/Connex-design-system/assets/index-D9_soQm1.css">
+    <script type="module" crossorigin src="/Connex-design-system/assets/index-CCikSG7X.js"></script>
+    <link rel="stylesheet" crossorigin href="/Connex-design-system/assets/index-Cy-b21WQ.css">
   </head>
   <body>
     <header class="topbar">
+      <button
+        type="button"
+        class="nav-toggle"
+        id="nav-toggle"
+        aria-label="Toggle navigation"
+        aria-expanded="false"
+        aria-controls="sidebar"
+      >
+        <span></span><span></span><span></span>
+      </button>
       <div class="brand">
         <span class="logo">⬡</span>
         <span class="title">Connex</span>
@@ -47,6 +57,7 @@
     </header>
 
     <div class="layout">
+      <div class="sidebar-scrim" id="sidebar-scrim" aria-hidden="true"></div>
       <aside class="sidebar" id="sidebar">
         <details class="nav-group" open>
           <summary>Foundation</summary>

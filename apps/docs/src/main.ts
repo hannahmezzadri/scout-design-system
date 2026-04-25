@@ -589,3 +589,38 @@ for (const id of anchorIds) {
   const node = document.getElementById(id);
   if (node) observer.observe(node);
 }
+
+// --- Mobile nav (hamburger) toggle
+const navToggle = document.getElementById('nav-toggle');
+const scrim = document.getElementById('sidebar-scrim');
+const sidebar = document.getElementById('sidebar');
+const mq = window.matchMedia('(max-width: 960px)');
+
+function setNavOpen(open: boolean) {
+  document.body.classList.toggle('nav-open', open);
+  navToggle?.setAttribute('aria-expanded', String(open));
+}
+function closeNav() {
+  setNavOpen(false);
+}
+
+navToggle?.addEventListener('click', () => {
+  setNavOpen(!document.body.classList.contains('nav-open'));
+});
+scrim?.addEventListener('click', closeNav);
+
+// Close drawer when a sidebar link is tapped (mobile UX)
+sidebar?.addEventListener('click', (e) => {
+  const target = e.target as HTMLElement;
+  if (target.closest('a[href^="#"]') && mq.matches) closeNav();
+});
+
+// Reset state when crossing the breakpoint back to desktop
+mq.addEventListener('change', (e) => {
+  if (!e.matches) closeNav();
+});
+
+// Esc closes the drawer
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && document.body.classList.contains('nav-open')) closeNav();
+});
