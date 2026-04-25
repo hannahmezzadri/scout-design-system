@@ -342,109 +342,83 @@ app.append(
 
 // iconography
 {
-  // Hero Icons — curated set of 6 icons in all four styles.
-  // Outline = 24×24 stroked; Solid = 24×24 filled; Mini = 20×20 filled; Micro = 16×16 filled.
+  // Hero Icons — full catalog (~316 per style) loaded from the heroicons package.
   type IconStyle = 'outline' | 'solid' | 'mini' | 'micro';
-  type IconPath = string | string[];
 
-  const heroIcons: Record<string, Record<IconStyle, IconPath>> = {
-    plus: {
-      outline: 'M12 4.5v15m7.5-7.5h-15',
-      solid:
-        'M12 3.75a.75.75 0 0 1 .75.75v6.75h6.75a.75.75 0 0 1 0 1.5h-6.75v6.75a.75.75 0 0 1-1.5 0v-6.75H4.5a.75.75 0 0 1 0-1.5h6.75V4.5a.75.75 0 0 1 .75-.75Z',
-      mini:
-        'M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z',
-      micro:
-        'M8.75 3.75a.75.75 0 0 0-1.5 0v3.5h-3.5a.75.75 0 0 0 0 1.5h3.5v3.5a.75.75 0 0 0 1.5 0v-3.5h3.5a.75.75 0 0 0 0-1.5h-3.5v-3.5Z',
-    },
-    check: {
-      outline: 'm4.5 12.75 6 6 9-13.5',
-      solid:
-        'M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z',
-      mini:
-        'M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z',
-      micro:
-        'M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0Z',
-    },
-    'x-mark': {
-      outline: ['M6 18 18 6', 'M6 6l12 12'],
-      solid:
-        'M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z',
-      mini:
-        'M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z',
-      micro:
-        'M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z',
-    },
-    'magnifying-glass': {
-      outline: 'm21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z',
-      solid:
-        'M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z',
-      mini:
-        'M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z',
-      micro:
-        'M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z',
-    },
-    home: {
-      outline:
-        'm2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25',
-      solid:
-        'M11.47 3.841a.75.75 0 0 1 1.06 0l8.69 8.69a.75.75 0 1 0 1.06-1.061l-8.689-8.69a2.25 2.25 0 0 0-3.182 0l-8.69 8.69a.75.75 0 1 0 1.061 1.06l8.69-8.689Z M12 5.432l8.159 8.159c.03.03.06.058.091.085v6.198c0 1.035-.84 1.876-1.875 1.876H15a.75.75 0 0 1-.75-.75v-4.5a.75.75 0 0 0-.75-.75h-3a.75.75 0 0 0-.75.75V21a.75.75 0 0 1-.75.75H5.625a1.875 1.875 0 0 1-1.875-1.875v-6.198c.03-.027.061-.054.091-.085L12 5.432Z',
-      mini:
-        'M9.293 2.293a1 1 0 0 1 1.414 0l7 7A1 1 0 0 1 17 11h-1v6a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-6H3a1 1 0 0 1-.707-1.707l7-7Z',
-      micro:
-        'M7.293 1.5a1 1 0 0 1 1.414 0L11 3.793V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v3.293l1.354 1.353a.5.5 0 0 1-.708.708L13.5 7.207V13.5a.5.5 0 0 1-.5.5H10a.5.5 0 0 1-.5-.5v-3a.5.5 0 0 0-.5-.5H7a.5.5 0 0 0-.5.5v3a.5.5 0 0 1-.5.5H3a.5.5 0 0 1-.5-.5V7.207l-.146.147a.5.5 0 1 1-.708-.708l5.647-5.146Z',
-    },
-    bell: {
-      outline:
-        'M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0',
-      solid:
-        'M5.85 3.5a.75.75 0 0 0-1.117-1 9.719 9.719 0 0 0-2.348 4.876.75.75 0 0 0 1.479.248A8.219 8.219 0 0 1 5.85 3.5ZM19.267 2.5a.75.75 0 1 0-1.118 1 8.22 8.22 0 0 1 1.987 4.124.75.75 0 0 0 1.48-.248A9.72 9.72 0 0 0 19.266 2.5Z M12 2.25A6.75 6.75 0 0 0 5.25 9v.75a8.217 8.217 0 0 1-2.122 5.52.75.75 0 0 0 .328 1.215c1.287.43 2.621.75 3.994.95.078 1.795 1.578 3.226 3.39 3.226h2.32c1.812 0 3.312-1.43 3.39-3.226 1.373-.2 2.707-.52 3.994-.95a.75.75 0 0 0 .328-1.214 8.219 8.219 0 0 1-2.121-5.521V9c0-3.728-3.022-6.75-6.751-6.75Z',
-      mini:
-        'M10 2a6 6 0 0 0-6 6c0 1.887-.454 3.665-1.257 5.234a.75.75 0 0 0 .515 1.076 32.94 32.94 0 0 0 3.256.508 3.5 3.5 0 0 0 6.972 0 32.933 32.933 0 0 0 3.256-.508.75.75 0 0 0 .515-1.076A11.448 11.448 0 0 1 16 8a6 6 0 0 0-6-6Zm0 14.5a2 2 0 0 1-1.95-1.557 33.54 33.54 0 0 0 3.9 0A2 2 0 0 1 10 16.5Z',
-      micro:
-        'M3.05 3.05a7 7 0 0 1 9.9 0 .75.75 0 0 0 1.06-1.06c-3.36-3.36-8.81-3.36-12.16 0a.75.75 0 0 0 1.05 1.07ZM4.11 4.11A5.5 5.5 0 1 1 11.89 11.89 5.5 5.5 0 0 1 4.11 4.11ZM8 5.5A.75.75 0 0 0 7.25 6.25v3.25H6a.75.75 0 0 0 0 1.5h2a.75.75 0 0 0 .75-.75V6.25A.75.75 0 0 0 8 5.5Z',
-    },
+  const sources: Record<IconStyle, Record<string, string>> = {
+    outline: import.meta.glob('../node_modules/heroicons/24/outline/*.svg', {
+      query: '?raw',
+      import: 'default',
+      eager: true,
+    }) as Record<string, string>,
+    solid: import.meta.glob('../node_modules/heroicons/24/solid/*.svg', {
+      query: '?raw',
+      import: 'default',
+      eager: true,
+    }) as Record<string, string>,
+    mini: import.meta.glob('../node_modules/heroicons/20/solid/*.svg', {
+      query: '?raw',
+      import: 'default',
+      eager: true,
+    }) as Record<string, string>,
+    micro: import.meta.glob('../node_modules/heroicons/16/solid/*.svg', {
+      query: '?raw',
+      import: 'default',
+      eager: true,
+    }) as Record<string, string>,
   };
 
-  const sizeFor = (style: IconStyle) =>
-    style === 'micro' ? 16 : style === 'mini' ? 20 : 24;
-  const viewBoxFor = (style: IconStyle) =>
-    `0 0 ${sizeFor(style)} ${sizeFor(style)}`;
-
-  function makeIcon(name: string, style: IconStyle, sizePx?: number): SVGElement {
-    const ns = 'http://www.w3.org/2000/svg';
-    const svg = document.createElementNS(ns, 'svg');
-    const dim = sizePx ?? sizeFor(style);
-    svg.setAttribute('width', String(dim));
-    svg.setAttribute('height', String(dim));
-    svg.setAttribute('viewBox', viewBoxFor(style));
-    svg.setAttribute('aria-hidden', 'true');
-    if (style === 'outline') {
-      svg.setAttribute('fill', 'none');
-      svg.setAttribute('stroke', 'currentColor');
-      svg.setAttribute('stroke-width', '1.5');
-    } else {
-      svg.setAttribute('fill', 'currentColor');
+  // Build a {name -> svgString} map per style and a sorted list of names.
+  const byStyle: Record<IconStyle, Record<string, string>> = {
+    outline: {},
+    solid: {},
+    mini: {},
+    micro: {},
+  };
+  for (const style of Object.keys(sources) as IconStyle[]) {
+    for (const [path, raw] of Object.entries(sources[style])) {
+      const name = path.split('/').pop()!.replace('.svg', '');
+      byStyle[style][name] = raw;
     }
-    const def = heroIcons[name]?.[style];
-    const paths = Array.isArray(def) ? def : def ? [def] : [];
-    for (const d of paths) {
-      const p = document.createElementNS(ns, 'path');
-      p.setAttribute('d', d);
-      if (style === 'outline') {
-        p.setAttribute('stroke-linecap', 'round');
-        p.setAttribute('stroke-linejoin', 'round');
-      }
-      svg.appendChild(p);
+  }
+  const allNames = Array.from(
+    new Set([
+      ...Object.keys(byStyle.outline),
+      ...Object.keys(byStyle.solid),
+      ...Object.keys(byStyle.mini),
+      ...Object.keys(byStyle.micro),
+    ]),
+  ).sort();
+
+  // Render an SVG by parsing the raw string and stripping the data-slot/class attrs.
+  function renderIcon(raw: string, sizePx?: number): SVGElement | null {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = raw;
+    const svg = tmp.querySelector('svg');
+    if (!svg) return null;
+    svg.removeAttribute('class');
+    svg.removeAttribute('data-slot');
+    svg.setAttribute('aria-hidden', 'true');
+    if (sizePx) {
+      svg.setAttribute('width', String(sizePx));
+      svg.setAttribute('height', String(sizePx));
     }
     return svg;
   }
 
   function iconCell(name: string, style: IconStyle, sizePx?: number, label?: string): HTMLElement {
+    const raw = byStyle[style][name];
+    const stage = el('div', { class: 'icon-stage' });
+    if (raw) {
+      const svg = renderIcon(raw, sizePx);
+      if (svg) stage.append(svg);
+    } else {
+      stage.append(document.createTextNode('—'));
+    }
     return el(
       'div',
-      { class: 'icon-cell' },
-      el('div', { class: 'icon-stage' }, makeIcon(name, style, sizePx)),
+      { class: 'icon-cell', title: name },
+      stage,
       el('span', { class: 'icon-name' }, label ?? name),
     );
   }
@@ -457,26 +431,108 @@ app.append(
     ),
   );
 
-  // Styles
-  const styles: Array<[IconStyle, string, string]> = [
-    ['outline', 'Outline', '24 × 24, 1.5px stroke. Default for most UI surfaces — buttons, list rows, tabs.'],
-    ['solid', 'Solid', '24 × 24, filled. Use for emphasis (active nav items, selected states) and brand surfaces.'],
-    ['mini', 'Mini', '20 × 20, filled. Use inline next to body-size text and within compact controls.'],
-    ['micro', 'Micro', '16 × 16, filled. Use only when space is severely constrained (table densities, badges).'],
+  // Catalog (filterable, switchable style)
+  const styleMeta: Array<[IconStyle, string]> = [
+    ['outline', 'Outline · 24'],
+    ['solid', 'Solid · 24'],
+    ['mini', 'Mini · 20'],
+    ['micro', 'Micro · 16'],
   ];
-  const iconNames = Object.keys(heroIcons);
 
-  for (const [style, name, lede] of styles) {
+  const search = el('input', {
+    type: 'search',
+    class: 'icon-search',
+    placeholder: 'Search icons (e.g. "arrow", "user", "chart")',
+    'aria-label': 'Search icons',
+  }) as HTMLInputElement;
+
+  const styleSel = el('div', { class: 'icon-style-toggle', role: 'radiogroup', 'aria-label': 'Icon style' }) as HTMLElement;
+  const styleButtons: HTMLButtonElement[] = [];
+  for (const [s, label] of styleMeta) {
+    const btn = el(
+      'button',
+      {
+        type: 'button',
+        class: 'icon-style-btn',
+        role: 'radio',
+        'aria-checked': s === 'outline' ? 'true' : 'false',
+        'data-style': s,
+      },
+      label,
+    ) as HTMLButtonElement;
+    if (s === 'outline') btn.classList.add('active');
+    styleButtons.push(btn);
+    styleSel.append(btn);
+  }
+
+  const count = el('span', { class: 'icon-count' });
+  const grid = el('div', { class: 'icon-grid icon-grid--catalog' });
+
+  let activeStyle: IconStyle = 'outline';
+
+  function rerender() {
+    const q = search.value.trim().toLowerCase();
+    const matches = q ? allNames.filter((n) => n.includes(q)) : allNames;
+    count.textContent = `${matches.length} of ${allNames.length} icons`;
+    grid.replaceChildren(...matches.map((n) => iconCell(n, activeStyle)));
+    if (matches.length === 0) {
+      grid.replaceChildren(el('div', { class: 'icon-empty' }, 'No icons match that search.'));
+    }
+  }
+
+  search.addEventListener('input', rerender);
+  for (const b of styleButtons) {
+    b.addEventListener('click', () => {
+      activeStyle = b.dataset.style as IconStyle;
+      for (const bb of styleButtons) {
+        const isActive = bb === b;
+        bb.classList.toggle('active', isActive);
+        bb.setAttribute('aria-checked', String(isActive));
+      }
+      rerender();
+    });
+  }
+
+  wrap.append(
+    el(
+      'div',
+      { class: 'preview-block' },
+      el('h3', { class: 'preview-block__title' }, 'Catalog'),
+      el(
+        'p',
+        { class: 'preview-block__lede' },
+        'The full Hero Icons set, loaded from the heroicons package. Switch styles to compare the same icon across Outline, Solid, Mini, and Micro. Search by name to filter.',
+      ),
+      el('div', { class: 'icon-toolbar' }, search, styleSel, count),
+      grid,
+    ),
+  );
+
+  rerender();
+
+  // Style comparison — same set of representative icons across all 4 styles
+  const featured = ['plus', 'check', 'x-mark', 'magnifying-glass', 'home', 'bell'];
+  for (const [style, label] of styleMeta) {
     wrap.append(
       el(
         'div',
         { class: 'preview-block' },
-        el('h3', { class: 'preview-block__title' }, name),
-        el('p', { class: 'preview-block__lede' }, lede),
+        el('h3', { class: 'preview-block__title' }, `${label} — featured`),
+        el(
+          'p',
+          { class: 'preview-block__lede' },
+          style === 'outline'
+            ? 'Default for most UI surfaces — buttons, list rows, tabs.'
+            : style === 'solid'
+              ? 'Use for emphasis (active nav items, selected states) and brand surfaces.'
+              : style === 'mini'
+                ? 'Use inline next to body-size text and within compact controls.'
+                : 'Use only when space is severely constrained (table densities, badges).',
+        ),
         el(
           'div',
           { class: 'icon-grid' },
-          ...iconNames.map((n) => iconCell(n, style)),
+          ...featured.map((n) => iconCell(n, style)),
         ),
       ),
     );
@@ -491,7 +547,7 @@ app.append(
       el(
         'p',
         { class: 'preview-block__lede' },
-        'Hero Icons ship at three native pixel sizes. Don\'t scale them — use the size designed for the context to keep stroke weight and detail crisp.',
+        "Hero Icons ship at three native pixel sizes. Don't scale them — use the size designed for the context to keep stroke weight and detail crisp.",
       ),
       el(
         'div',
@@ -546,10 +602,10 @@ app.append(
         'ul',
         { class: 'guideline-list' },
         el('li', {}, 'Pair icons with text labels whenever possible. Icon-only controls require an aria-label.'),
-        el('li', {}, 'Decorative icons sit alongside text and are marked aria-hidden="true" so they\'re not announced.'),
+        el('li', {}, "Decorative icons sit alongside text and are marked aria-hidden=\"true\" so they're not announced."),
         el('li', {}, 'Use Outline as the default style. Reserve Solid for emphasis (active state, brand moments).'),
         el('li', {}, 'Match icon size to surrounding text size: 16 with body-small, 20 with body, 24 with body-large or as standalone affordance.'),
-        el('li', {}, 'Don\'t recolor an icon to imply a different status — use the matching icon-display-* semantic token.'),
+        el('li', {}, "Don't recolor an icon to imply a different status — use the matching icon-display-* semantic token."),
         el('li', {}, 'Source icons from heroicons.com only. Custom icons need design-system review and live in @connex/icons.'),
       ),
     ),
