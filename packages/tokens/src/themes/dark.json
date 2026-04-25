@@ -1,0 +1,62 @@
+{
+  "$description": "Dark theme overrides. Same token paths as semantic/*.json — values flip for dark surfaces.",
+  "text": {
+    "display": {
+      "primary":   { "$value": "{color.gray.100}", "$type": "color" },
+      "secondary": { "$value": "{color.gray.400}", "$type": "color" },
+      "info":      { "$value": "{color.blue.300}", "$type": "color" },
+      "warning":   { "$value": "{color.orange.300}","$type": "color" },
+      "error":     { "$value": "{color.red.300}",  "$type": "color" },
+      "success":   { "$value": "{color.green.300}","$type": "color" },
+      "increase":  { "$value": "{color.green.300}","$type": "color" },
+      "decrease":  { "$value": "{color.red.300}",  "$type": "color" }
+    },
+    "interactive": {
+      "primary":   { "$value": "{color.blue.400}", "$type": "color" },
+      "secondary": { "$value": "{color.gray.300}", "$type": "color" },
+      "info":      { "$value": "{color.blue.300}", "$type": "color" },
+      "warning":   { "$value": "{color.orange.300}","$type": "color" },
+      "error":     { "$value": "{color.red.300}",  "$type": "color" },
+      "success":   { "$value": "{color.green.300}","$type": "color" },
+      "increase":  { "$value": "{color.green.300}","$type": "color" },
+      "decrease":  { "$value": "{color.red.300}",  "$type": "color" }
+    }
+  },
+  "icon": {
+    "display": {
+      "primary":   { "$value": "{color.gray.300}", "$type": "color" },
+      "secondary": { "$value": "{color.gray.500}", "$type": "color" },
+      "info":      { "$value": "{color.blue.400}", "$type": "color" },
+      "warning":   { "$value": "{color.orange.400}","$type": "color" },
+      "error":     { "$value": "{color.red.400}",  "$type": "color" },
+      "success":   { "$value": "{color.green.400}","$type": "color" },
+      "increase":  { "$value": "{color.green.400}","$type": "color" },
+      "decrease":  { "$value": "{color.red.400}",  "$type": "color" }
+    },
+    "interactive": {
+      "primary":   { "$value": "{color.blue.400}", "$type": "color" },
+      "secondary": { "$value": "{color.gray.300}", "$type": "color" },
+      "info":      { "$value": "{color.blue.300}", "$type": "color" },
+      "warning":   { "$value": "{color.orange.300}","$type": "color" },
+      "error":     { "$value": "{color.red.300}",  "$type": "color" },
+      "success":   { "$value": "{color.green.300}","$type": "color" },
+      "increase":  { "$value": "{color.green.300}","$type": "color" },
+      "decrease":  { "$value": "{color.red.300}",  "$type": "color" }
+    }
+  },
+  "border-color": {
+    "none":      { "$value": "transparent",       "$type": "color" },
+    "primary":   { "$value": "{color.gray.700}",  "$type": "color" },
+    "secondary": { "$value": "{color.gray.800}",  "$type": "color" },
+    "knockout":  { "$value": "{color.gray.100}",  "$type": "color" },
+    "info":      { "$value": "{color.blue.400}",  "$type": "color" },
+    "warning":   { "$value": "{color.orange.400}","$type": "color" },
+    "error":     { "$value": "{color.red.400}",   "$type": "color" },
+    "success":   { "$value": "{color.green.400}", "$type": "color" }
+  },
+  "background": {
+    "page":    { "$value": "#1a1a1a", "$type": "color" },
+    "surface": { "$value": "{color.gray.800}", "$type": "color" },
+    "scrim":   { "$value": "{color.alpha.700}", "$type": "color" }
+  }
+}

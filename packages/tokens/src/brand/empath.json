@@ -1,0 +1,9 @@
+{
+  "brand": {
+    "empath": {
+      "$description": "Empath (agent desktop) brand colors. Primary = A1CC3C (green), Accent = 019ED5 (blue).",
+      "primary": { "$value": "#A1CC3C", "$type": "color" },
+      "accent":  { "$value": "#019ED5", "$type": "color" }
+    }
+  }
+}

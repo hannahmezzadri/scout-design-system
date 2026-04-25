@@ -1,0 +1,40 @@
+{
+  "name": "@connex/tokens",
+  "version": "0.1.0",
+  "description": "Design tokens for the Connex design system",
+  "type": "module",
+  "main": "./dist/ts/tokens.js",
+  "types": "./dist/ts/tokens.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/ts/tokens.d.ts",
+      "import": "./dist/ts/tokens.js"
+    },
+    "./css": "./dist/css/tokens.css",
+    "./css/light": "./dist/css/light.css",
+    "./css/dark": "./dist/css/dark.css",
+    "./css/density-default": "./dist/css/density-default.css",
+    "./css/density-condensed": "./dist/css/density-condensed.css",
+    "./css/brand/connex": "./dist/css/brand-connex.css",
+    "./css/brand/empath": "./dist/css/brand-empath.css",
+    "./css/brand/sage": "./dist/css/brand-sage.css",
+    "./json": "./dist/json/tokens.json",
+    "./tailwind": {
+      "types": "./dist/tailwind/preset.d.ts",
+      "import": "./dist/tailwind/preset.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "node build.mjs",
+    "clean": "rm -rf dist .turbo"
+  },
+  "devDependencies": {
+    "style-dictionary": "^4.3.0"
+  },
+  "publishConfig": {
+    "access": "restricted"
+  }
+}

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en" data-theme="light" data-density="default" data-brand="connex">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Connex — Design System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&family=Literata:ital,wght@0,400..700;1,400..700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./src/style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <span class="logo">⬡</span>
+        <span class="title">Connex</span>
+        <span class="subtitle">v0.1.0</span>
+      </div>
+      <div class="controls">
+        <label>
+          <span>Theme</span>
+          <select id="theme">
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+        </label>
+        <label>
+          <span>Density</span>
+          <select id="density">
+            <option value="default">Default</option>
+            <option value="condensed">Condensed</option>
+          </select>
+        </label>
+        <label>
+          <span>Brand</span>
+          <select id="brand">
+            <option value="connex">Connex</option>
+            <option value="empath">Empath</option>
+            <option value="sage">Sage</option>
+          </select>
+        </label>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar" id="sidebar">
+        <details class="nav-group" open>
+          <summary>Foundation</summary>
+          <ul>
+            <li><a href="#foundation-overview">Overview</a></li>
+            <li><a href="#foundation-theming">Theming</a></li>
+            <li><a href="#foundation-density">Density</a></li>
+            <li><a href="#foundation-accessibility">Accessibility</a></li>
+            <li><a href="#foundation-motion-principles">Motion principles</a></li>
+          </ul>
+        </details>
+
+        <details class="nav-group" open>
+          <summary>Tokens</summary>
+          <ul>
+            <li><a href="#tokens-overview">Overview</a></li>
+            <li><a href="#colors">Colors</a></li>
+            <li><a href="#brand">Brand</a></li>
+            <li><a href="#typography">Typography</a></li>
+            <li><a href="#spacing">Spacing</a></li>
+            <li><a href="#radius">Corner radius</a></li>
+            <li><a href="#border">Border width</a></li>
+            <li><a href="#elevation">Elevation</a></li>
+            <li><a href="#motion">Motion</a></li>
+            <li><a href="#z-index">Z-index</a></li>
+            <li><a href="#semantic">Semantic</a></li>
+          </ul>
+        </details>
+
+        <details class="nav-group">
+          <summary>Components</summary>
+          <ul>
+            <li><a href="#components-overview">Overview</a></li>
+            <li class="muted">Button <span class="tag">soon</span></li>
+            <li class="muted">Input <span class="tag">soon</span></li>
+            <li class="muted">Modal <span class="tag">soon</span></li>
+            <li class="muted">Table <span class="tag">soon</span></li>
+            <li class="muted">Tabs <span class="tag">soon</span></li>
+            <li class="muted">Toast <span class="tag">soon</span></li>
+          </ul>
+        </details>
+
+        <details class="nav-group">
+          <summary>Patterns</summary>
+          <ul>
+            <li><a href="#patterns-overview">Overview</a></li>
+            <li class="muted">Empty state <span class="tag">soon</span></li>
+            <li class="muted">Form <span class="tag">soon</span></li>
+            <li class="muted">Workflow stepper <span class="tag">soon</span></li>
+            <li class="muted">Data table <span class="tag">soon</span></li>
+          </ul>
+        </details>
+
+        <details class="nav-group">
+          <summary>Templates</summary>
+          <ul>
+            <li><a href="#templates-overview">Overview</a></li>
+            <li class="muted">Settings page <span class="tag">soon</span></li>
+            <li class="muted">Dashboard <span class="tag">soon</span></li>
+            <li class="muted">Detail view <span class="tag">soon</span></li>
+            <li class="muted">List + filter <span class="tag">soon</span></li>
+          </ul>
+        </details>
+      </aside>
+
+      <main id="app"></main>
+    </div>
+
+    <script type="module" src="./src/main.ts"></script>
+  </body>
+</html>

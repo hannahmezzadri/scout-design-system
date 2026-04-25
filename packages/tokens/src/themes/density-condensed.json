@@ -1,0 +1,125 @@
+{
+  "$description": "Condensed density overrides. Tightens typography line-heights and component padding for dense UIs (data tables, agent desktops).",
+  "typography": {
+    "caption": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{font.family.inter}",
+        "fontWeight": "{font.weight.regular}",
+        "fontSize":   "{font.size.12}",
+        "lineHeight": "{font.line-height.15}",
+        "letterSpacing": "{font.letter-spacing.0}"
+      }
+    },
+    "label": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{font.family.inter}",
+        "fontWeight": "{font.weight.medium}",
+        "fontSize":   "{font.size.14}",
+        "lineHeight": "{font.line-height.18}",
+        "letterSpacing": "{font.letter-spacing.0}"
+      }
+    },
+    "body-small": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{font.family.inter}",
+        "fontWeight": "{font.weight.regular}",
+        "fontSize":   "{font.size.14}",
+        "lineHeight": "{font.line-height.18}",
+        "letterSpacing": "{font.letter-spacing.0}"
+      }
+    },
+    "body": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{font.family.inter}",
+        "fontWeight": "{font.weight.regular}",
+        "fontSize":   "{font.size.16}",
+        "lineHeight": "{font.line-height.21}",
+        "letterSpacing": "{font.letter-spacing.0}"
+      }
+    },
+    "body-large": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{font.family.inter}",
+        "fontWeight": "{font.weight.regular}",
+        "fontSize":   "{font.size.20}",
+        "lineHeight": "{font.line-height.24}",
+        "letterSpacing": "{font.letter-spacing.0}"
+      }
+    },
+    "heading-5": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{font.family.literata}",
+        "fontWeight": "{font.weight.semibold}",
+        "fontSize":   "{font.size.14}",
+        "lineHeight": "{font.line-height.18}",
+        "letterSpacing": "{font.letter-spacing.0}"
+      }
+    },
+    "heading-4": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{font.family.literata}",
+        "fontWeight": "{font.weight.semibold}",
+        "fontSize":   "{font.size.16}",
+        "lineHeight": "{font.line-height.21}",
+        "letterSpacing": "{font.letter-spacing.0}"
+      }
+    },
+    "heading-3": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{font.family.literata}",
+        "fontWeight": "{font.weight.semibold}",
+        "fontSize":   "{font.size.20}",
+        "lineHeight": "{font.line-height.24}",
+        "letterSpacing": "{font.letter-spacing.0}"
+      }
+    },
+    "heading-2": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{font.family.literata}",
+        "fontWeight": "{font.weight.semibold}",
+        "fontSize":   "{font.size.24}",
+        "lineHeight": "{font.line-height.30}",
+        "letterSpacing": "{font.letter-spacing.0}"
+      }
+    },
+    "heading-1": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{font.family.literata}",
+        "fontWeight": "{font.weight.semibold}",
+        "fontSize":   "{font.size.32}",
+        "lineHeight": "{font.line-height.36}",
+        "letterSpacing": "{font.letter-spacing.0}"
+      }
+    },
+    "display-small": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{font.family.literata}",
+        "fontWeight": "{font.weight.bold}",
+        "fontSize":   "{font.size.48}",
+        "lineHeight": "{font.line-height.40}",
+        "letterSpacing": "{font.letter-spacing.0}"
+      }
+    },
+    "display-large": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{font.family.literata}",
+        "fontWeight": "{font.weight.bold}",
+        "fontSize":   "{font.size.64}",
+        "lineHeight": "{font.line-height.64}",
+        "letterSpacing": "{font.letter-spacing.0}"
+      }
+    }
+  }
+}

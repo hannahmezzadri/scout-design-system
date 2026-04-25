@@ -1,0 +1,14 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "@connex/docs (Vite token gallery)",
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": [
+        "-c",
+        "export PATH=\"/opt/homebrew/bin:/usr/local/bin:$PATH\"; cd \"$(git rev-parse --show-toplevel 2>/dev/null || pwd)\" && exec pnpm --filter @connex/docs dev"
+      ],
+      "port": 5173
+    }
+  ]
+}

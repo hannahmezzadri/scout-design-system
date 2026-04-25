@@ -1,0 +1,18 @@
+{
+  "motion": {
+    "duration": {
+      "instant":    { "$value": "0ms",   "$type": "duration", "$description": "Reduced-motion fallback." },
+      "fast":       { "$value": "150ms", "$type": "duration", "$description": "Hover, focus, small-scale transitions." },
+      "base":       { "$value": "250ms", "$type": "duration", "$description": "Default — toasts, tooltips, most enter/exit." },
+      "slow":       { "$value": "400ms", "$type": "duration", "$description": "Modal, drawer, emphasis." },
+      "deliberate": { "$value": "600ms", "$type": "duration", "$description": "Page-level transitions." }
+    },
+    "easing": {
+      "linear":   { "$value": "linear",                       "$type": "cubicBezier" },
+      "standard": { "$value": "cubic-bezier(0.2, 0, 0, 1)",   "$type": "cubicBezier", "$description": "Default UI motion." },
+      "enter":    { "$value": "cubic-bezier(0, 0, 0, 1)",     "$type": "cubicBezier", "$description": "Decelerate-in." },
+      "exit":     { "$value": "cubic-bezier(0.4, 0, 1, 1)",   "$type": "cubicBezier", "$description": "Accelerate-out." },
+      "emphasis": { "$value": "cubic-bezier(0.2, 0, 0, 1.4)", "$type": "cubicBezier", "$description": "Slight overshoot." }
+    }
+  }
+}

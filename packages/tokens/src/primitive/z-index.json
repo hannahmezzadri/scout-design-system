@@ -1,0 +1,12 @@
+{
+  "z-index": {
+    "$description": "Stacking layers. `contextual` is a base for floating UI (tooltips, popovers); `dynamic` is for user-promoted layers (drag, focused-on-top).",
+    "base":       { "$value": 0,    "$type": "number" },
+    "raised":     { "$value": 10,   "$type": "number" },
+    "sticky":     { "$value": 100,  "$type": "number" },
+    "overlay":    { "$value": 1000, "$type": "number" },
+    "modal":      { "$value": 2000, "$type": "number" },
+    "contextual": { "$value": 5000, "$type": "number" },
+    "dynamic":    { "$value": 9000, "$type": "number" }
+  }
+}

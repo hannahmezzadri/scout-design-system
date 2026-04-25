@@ -1,0 +1,10 @@
+{
+  "brand": {
+    "connex": {
+      "$description": "Connex brand colors. Light = 97D4EB, Primary = 029DD4, Dark = 336D92.",
+      "light":   { "$value": "#97D4EB", "$type": "color" },
+      "primary": { "$value": "#029DD4", "$type": "color" },
+      "dark":    { "$value": "#336D92", "$type": "color" }
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "font": {
+    "family": {
+      "$description": "Literata = heading + display only. Inter = everything else.",
+      "literata": { "$value": "Literata, Georgia, 'Times New Roman', serif", "$type": "fontFamily" },
+      "inter":    { "$value": "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif", "$type": "fontFamily" }
+    },
+    "weight": {
+      "extra-light": { "$value": 200, "$type": "fontWeight" },
+      "light":       { "$value": 300, "$type": "fontWeight" },
+      "regular":     { "$value": 400, "$type": "fontWeight" },
+      "medium":      { "$value": 500, "$type": "fontWeight" },
+      "semibold":    { "$value": 600, "$type": "fontWeight" },
+      "bold":        { "$value": 700, "$type": "fontWeight" }
+    },
+    "size": {
+      "10": { "$value": "10px", "$type": "dimension" },
+      "12": { "$value": "12px", "$type": "dimension" },
+      "14": { "$value": "14px", "$type": "dimension" },
+      "16": { "$value": "16px", "$type": "dimension" },
+      "20": { "$value": "20px", "$type": "dimension" },
+      "24": { "$value": "24px", "$type": "dimension" },
+      "32": { "$value": "32px", "$type": "dimension" },
+      "48": { "$value": "48px", "$type": "dimension" },
+      "64": { "$value": "64px", "$type": "dimension" }
+    },
+    "line-height": {
+      "15": { "$value": "15px", "$type": "dimension" },
+      "18": { "$value": "18px", "$type": "dimension" },
+      "21": { "$value": "21px", "$type": "dimension" },
+      "24": { "$value": "24px", "$type": "dimension" },
+      "30": { "$value": "30px", "$type": "dimension" },
+      "36": { "$value": "36px", "$type": "dimension" },
+      "40": { "$value": "40px", "$type": "dimension" },
+      "64": { "$value": "64px", "$type": "dimension" },
+      "76": { "$value": "76px", "$type": "dimension" }
+    },
+    "letter-spacing": {
+      "$description": "Default 0 across the board for v1. Semantic tracking tokens (tight/normal/wide/caps) deferred to v1.1.",
+      "0": { "$value": "0", "$type": "dimension" }
+    }
+  }
+}

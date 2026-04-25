@@ -1,0 +1,25 @@
+{
+  "text": {
+    "$description": "Semantic text colors. `display` = information only. `interactive` = links/buttons/actionable.",
+    "display": {
+      "primary":   { "$value": "{color.gray.700}",  "$type": "color" },
+      "secondary": { "$value": "{color.gray.500}",  "$type": "color" },
+      "info":      { "$value": "{color.blue.700}",  "$type": "color" },
+      "warning":   { "$value": "{color.orange.700}","$type": "color" },
+      "error":     { "$value": "{color.red.700}",   "$type": "color" },
+      "success":   { "$value": "{color.green.700}", "$type": "color" },
+      "increase":  { "$value": "{color.green.700}", "$type": "color" },
+      "decrease":  { "$value": "{color.red.700}",   "$type": "color" }
+    },
+    "interactive": {
+      "primary":   { "$value": "{color.blue.600}",  "$type": "color" },
+      "secondary": { "$value": "{color.gray.600}",  "$type": "color" },
+      "info":      { "$value": "{color.blue.700}",  "$type": "color" },
+      "warning":   { "$value": "{color.orange.700}","$type": "color" },
+      "error":     { "$value": "{color.red.700}",   "$type": "color" },
+      "success":   { "$value": "{color.green.700}", "$type": "color" },
+      "increase":  { "$value": "{color.green.700}", "$type": "color" },
+      "decrease":  { "$value": "{color.red.700}",   "$type": "color" }
+    }
+  }
+}

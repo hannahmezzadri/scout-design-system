@@ -1,0 +1,13 @@
+{
+  "border-color": {
+    "$description": "Semantic border colors. Border *width* tokens live in primitive/border.json.",
+    "none":      { "$value": "transparent",       "$type": "color" },
+    "primary":   { "$value": "{color.gray.300}",  "$type": "color" },
+    "secondary": { "$value": "{color.gray.200}",  "$type": "color" },
+    "knockout":  { "$value": "{color.white}",     "$type": "color", "$description": "Borders on dark surfaces." },
+    "info":      { "$value": "{color.blue.500}",  "$type": "color" },
+    "warning":   { "$value": "{color.orange.500}","$type": "color" },
+    "error":     { "$value": "{color.red.500}",   "$type": "color" },
+    "success":   { "$value": "{color.green.500}", "$type": "color" }
+  }
+}

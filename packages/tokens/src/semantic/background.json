@@ -1,0 +1,8 @@
+{
+  "background": {
+    "$description": "Semantic surface backgrounds. v1 ships only the page background; raised/sunken/status surfaces are TBD.",
+    "page":    { "$value": "#F4F4F4", "$type": "color" },
+    "surface": { "$value": "{color.white}", "$type": "color", "$description": "Default raised surface (cards, modals)." },
+    "scrim":   { "$value": "{color.alpha.500}", "$type": "color", "$description": "Modal/drawer backdrop." }
+  }
+}

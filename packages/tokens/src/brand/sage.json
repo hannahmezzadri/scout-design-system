@@ -1,0 +1,9 @@
+{
+  "brand": {
+    "sage": {
+      "$description": "Sage brand colors. Primary = A8B383 (sage green), Cream = F5F5F1.",
+      "primary": { "$value": "#A8B383", "$type": "color" },
+      "cream":   { "$value": "#F5F5F1", "$type": "color" }
+    }
+  }
+}
