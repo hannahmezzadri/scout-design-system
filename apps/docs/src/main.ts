@@ -1,4 +1,5 @@
-// Connex token gallery — visualizes everything in @connex/tokens.
+// Connex docs — page-based router. Sidebar clicks switch which page is visible.
+// No anchor scrolling. Each sidebar link corresponds to one .page element.
 
 const PREFIX = '--connex';
 const html = document.documentElement;
@@ -28,16 +29,16 @@ function el(tag: string, attrs: Record<string, string> = {}, ...children: (Node 
   return node;
 }
 
-function section(id: string, title: string, lede: string): HTMLElement {
-  return el('section', { id }, el('h2', {}, title), el('p', { class: 'lede' }, lede));
+function page(id: string, ...children: (Node | string)[]): HTMLElement {
+  return el('section', { id, class: 'page', 'data-page': id }, ...children);
 }
 
-function categoryBanner(id: string, title: string, lede: string): HTMLElement {
-  return el(
-    'section',
-    { id, class: 'category' },
-    el('div', { class: 'category-banner' }, el('h1', {}, title), el('p', {}, lede)),
-  );
+function header(title: string, lede: string): HTMLElement {
+  return el('div', { class: 'page-header' }, el('h2', {}, title), el('p', { class: 'lede' }, lede));
+}
+
+function categoryBanner(title: string, lede: string): HTMLElement {
+  return el('div', { class: 'category-banner' }, el('h1', {}, title), el('p', {}, lede));
 }
 
 function emptyPanel(title: string, body: string): HTMLElement {
@@ -74,15 +75,9 @@ const app = document.getElementById('app')!;
 // =================================================================
 // FOUNDATION
 // =================================================================
-{
-  app.append(
-    categoryBanner(
-      'foundation-overview',
-      'Foundation',
-      'The principles, theming model, and accessibility baseline that every Connex token, component, and pattern is built on.',
-    ),
-  );
 
+// foundation-overview
+{
   const cards = el('div', { class: 'foundation-grid' });
   cards.append(
     el(
@@ -116,29 +111,27 @@ const app = document.getElementById('app')!;
       ),
     ),
   );
+
   app.append(
-    el(
-      'section',
-      { id: 'foundation-arch' },
-      el('h2', {}, 'Architecture'),
-      el(
-        'p',
-        { class: 'lede' },
+    page(
+      'foundation-overview',
+      categoryBanner(
+        'Foundation',
+        'The principles, theming model, and accessibility baseline that every Connex token, component, and pattern is built on.',
+      ),
+      header(
+        'Architecture',
         'Connex is structured as a private monorepo. Each package versions independently and ships to a private npm registry.',
       ),
       cards,
     ),
   );
+}
 
-  app.append(
-    section(
-      'foundation-theming',
-      'Theming',
-      'Themes are scoped via data attributes on any element (typically <html>). Switching theme/density/brand is a single attribute change — no rebundle, no FOUC.',
-    ),
-  );
-  const themingGrid = el('div', { class: 'foundation-grid' });
-  themingGrid.append(
+// foundation-theming
+{
+  const grid = el('div', { class: 'foundation-grid' });
+  grid.append(
     el(
       'div',
       { class: 'foundation-card' },
@@ -162,91 +155,116 @@ const app = document.getElementById('app')!;
       ),
     ),
   );
-  app.append(themingGrid);
 
   app.append(
-    section(
-      'foundation-density',
-      'Density',
-      'Default vs. condensed. Condensed tightens typography line-heights so data-dense interfaces (agent desktops, tables) read more compactly without losing legibility.',
-    ),
-  );
-
-  app.append(
-    section(
-      'foundation-accessibility',
-      'Accessibility',
-      'WCAG 2.1 AA is the baseline for color contrast, focus indicators, keyboard navigation, and screen-reader semantics. Components honor `prefers-reduced-motion`. Logical CSS properties (margin-inline, padding-block) are used throughout for future RTL support.',
-    ),
-  );
-
-  app.append(
-    section(
-      'foundation-motion-principles',
-      'Motion principles',
-      'Motion is purposeful: enter motion decelerates (eases the user in), exit motion accelerates (gets out of the way), hover/focus is fast (≤150ms). Every animated component honors `prefers-reduced-motion: reduce` by collapsing durations to 0.',
+    page(
+      'foundation-theming',
+      header(
+        'Theming',
+        'Themes are scoped via data attributes on any element (typically <html>). Switching theme/density/brand is a single attribute change — no rebundle, no FOUC.',
+      ),
+      grid,
     ),
   );
 }
+
+// foundation-density
+app.append(
+  page(
+    'foundation-density',
+    header(
+      'Density',
+      'Default vs. condensed. Condensed tightens typography line-heights so data-dense interfaces (agent desktops, tables) read more compactly without losing legibility.',
+    ),
+  ),
+);
+
+// foundation-accessibility
+app.append(
+  page(
+    'foundation-accessibility',
+    header(
+      'Accessibility',
+      'WCAG 2.1 AA is the baseline for color contrast, focus indicators, keyboard navigation, and screen-reader semantics. Components honor `prefers-reduced-motion`. Logical CSS properties (margin-inline, padding-block) are used throughout for future RTL support.',
+    ),
+  ),
+);
+
+// foundation-motion-principles
+app.append(
+  page(
+    'foundation-motion-principles',
+    header(
+      'Motion principles',
+      'Motion is purposeful: enter motion decelerates (eases the user in), exit motion accelerates (gets out of the way), hover/focus is fast (≤150ms). Every animated component honors `prefers-reduced-motion: reduce` by collapsing durations to 0.',
+    ),
+  ),
+);
 
 // =================================================================
 // TOKENS
 // =================================================================
-{
-  app.append(
+
+// tokens-overview
+app.append(
+  page(
+    'tokens-overview',
     categoryBanner(
-      'tokens-overview',
       'Tokens',
       'The atomic visual values of Connex. Three layers: primitives (raw values), semantic (purposeful aliases), composite (component-level token bundles).',
     ),
-  );
-}
+  ),
+);
 
-// --- Colors (primitives)
+// colors
 {
-  const sec = section(
+  const wrap = page(
     'colors',
-    'Colors',
-    'Primitive color scales (100 lightest → 800 darkest), alpha overlays for scrims, plus white and black anchors.',
+    header(
+      'Colors',
+      'Primitive color scales (100 lightest → 800 darkest), alpha overlays for scrims, plus white and black anchors.',
+    ),
   );
   const hues = ['red', 'orange', 'yellow', 'green', 'blue', 'purple', 'gray'];
   for (const hue of hues) {
-    sec.append(subhead(hue.charAt(0).toUpperCase() + hue.slice(1)));
+    wrap.append(subhead(hue.charAt(0).toUpperCase() + hue.slice(1)));
     const grid = el('div', { class: 'grid dense' });
     for (const stop of ['100', '200', '300', '400', '500', '600', '700', '800']) {
       grid.append(colorSwatch(`color-${hue}-${stop}`, `${hue}.${stop}`));
     }
-    sec.append(grid);
+    wrap.append(grid);
   }
-  sec.append(subhead('Alpha (black-based scrims)'));
+  wrap.append(subhead('Alpha (black-based scrims)'));
   const alphaGrid = el('div', { class: 'grid dense' });
   for (const stop of ['100', '200', '300', '400', '500', '600', '700', '800']) {
     alphaGrid.append(colorSwatch(`color-alpha-${stop}`, `alpha.${stop}`));
   }
-  sec.append(alphaGrid);
+  wrap.append(alphaGrid);
 
-  sec.append(subhead('Alpha-white (for dark surfaces)'));
+  wrap.append(subhead('Alpha-white (for dark surfaces)'));
   const aWhite = el('div', { class: 'grid dense' });
   for (const stop of ['100', '200', '300', '400', '500', '600', '700', '800']) {
     aWhite.append(colorSwatch(`color-alpha-white-${stop}`, `alpha-white.${stop}`));
   }
-  sec.append(aWhite);
+  wrap.append(aWhite);
 
-  sec.append(subhead('Anchors'));
+  wrap.append(subhead('Anchors'));
   const anchors = el('div', { class: 'grid dense' });
   anchors.append(colorSwatch('color-white', 'white'));
   anchors.append(colorSwatch('color-black', 'black'));
-  sec.append(anchors);
+  wrap.append(anchors);
 
-  app.append(sec);
+  app.append(wrap);
 }
 
-// --- Brand
+// brand
 {
-  const sec = section(
+  const wrap = page(
     'brand',
-    'Brand',
-    'Per-product brand colors, scoped via [data-brand]. Switch the Brand control above to see the active set update.',
+    header(
+      'Brand',
+      'Per-product brand colors, scoped via [data-brand]. Switch the Brand control above to see the active set update.',
+    ),
   );
   const brands: Array<[string, string[]]> = [
     ['connex', ['light', 'primary', 'dark']],
@@ -254,7 +272,7 @@ const app = document.getElementById('app')!;
     ['sage', ['primary', 'cream']],
   ];
   for (const [b, keys] of brands) {
-    sec.append(subhead(b.charAt(0).toUpperCase() + b.slice(1)));
+    wrap.append(subhead(b.charAt(0).toUpperCase() + b.slice(1)));
     const grid = el('div', { class: 'grid' });
     for (const k of keys) {
       const tmp = document.createElement('div');
@@ -276,17 +294,19 @@ const app = document.getElementById('app')!;
         ),
       );
     }
-    sec.append(grid);
+    wrap.append(grid);
   }
-  app.append(sec);
+  app.append(wrap);
 }
 
-// --- Typography
+// typography
 {
-  const sec = section(
+  const wrap = page(
     'typography',
-    'Typography',
-    'Composite typography tokens. Literata for heading + display, Inter for everything else. Toggle Density to compare default vs. condensed.',
+    header(
+      'Typography',
+      'Composite typography tokens. Literata for heading + display, Inter for everything else. Toggle Density to compare default vs. condensed.',
+    ),
   );
   const styles: Array<[string, string, string]> = [
     ['display-large', 't-display-large', 'The agent desktop loads.'],
@@ -303,7 +323,7 @@ const app = document.getElementById('app')!;
     ['caption', 't-caption', 'Caption for footnotes, helper text, and metadata.'],
   ];
   for (const [name, cls, sample] of styles) {
-    sec.append(
+    wrap.append(
       el(
         'div',
         { class: 'specimen' },
@@ -317,15 +337,14 @@ const app = document.getElementById('app')!;
       ),
     );
   }
-  app.append(sec);
+  app.append(wrap);
 }
 
-// --- Spacing
+// spacing
 {
-  const sec = section('spacing', 'Spacing', '4-based scale. Use these for padding, margin, gap.');
-  const stops = ['0', '4', '8', '12', '16', '24', '32', '48', '64', '96'];
-  for (const s of stops) {
-    sec.append(
+  const wrap = page('spacing', header('Spacing', '4-based scale. Use these for padding, margin, gap.'));
+  for (const s of ['0', '4', '8', '12', '16', '24', '32', '48', '64', '96']) {
+    wrap.append(
       el(
         'div',
         { class: 'space-row' },
@@ -335,12 +354,15 @@ const app = document.getElementById('app')!;
       ),
     );
   }
-  app.append(sec);
+  app.append(wrap);
 }
 
-// --- Radius
+// radius
 {
-  const sec = section('radius', 'Corner radius', 'Border-radius scale. 999 = fully rounded (pill / circle).');
+  const wrap = page(
+    'radius',
+    header('Corner radius', 'Border-radius scale. 999 = fully rounded (pill / circle).'),
+  );
   const grid = el('div', { class: 'grid' });
   for (const r of ['0', '2', '4', '8', '12', '999']) {
     grid.append(
@@ -353,13 +375,13 @@ const app = document.getElementById('app')!;
       ),
     );
   }
-  sec.append(grid);
-  app.append(sec);
+  wrap.append(grid);
+  app.append(wrap);
 }
 
-// --- Border width
+// border
 {
-  const sec = section('border', 'Border width', 'Border thickness scale.');
+  const wrap = page('border', header('Border width', 'Border thickness scale.'));
   const grid = el('div', { class: 'grid' });
   for (const w of ['0', '1', '2']) {
     grid.append(
@@ -372,13 +394,13 @@ const app = document.getElementById('app')!;
       ),
     );
   }
-  sec.append(grid);
-  app.append(sec);
+  wrap.append(grid);
+  app.append(wrap);
 }
 
-// --- Elevation
+// elevation
 {
-  const sec = section('elevation', 'Elevation', 'Box-shadow tokens. Levels 1–4 increase in depth.');
+  const wrap = page('elevation', header('Elevation', 'Box-shadow tokens. Levels 1–4 increase in depth.'));
   const grid = el('div', { class: 'grid' });
   for (const lvl of ['1', '2', '3', '4']) {
     grid.append(
@@ -390,16 +412,18 @@ const app = document.getElementById('app')!;
       ),
     );
   }
-  sec.append(grid);
-  app.append(sec);
+  wrap.append(grid);
+  app.append(wrap);
 }
 
-// --- Motion
+// motion
 {
-  const sec = section(
+  const wrap = page(
     'motion',
-    'Motion',
-    'Hover any card to play the duration × easing combo. Reduced-motion preferences are honored at the component level when shipped.',
+    header(
+      'Motion',
+      'Hover any card to play the duration × easing combo. Reduced-motion preferences are honored at the component level when shipped.',
+    ),
   );
   const durations = ['fast', 'base', 'slow', 'deliberate'];
   const easings = ['standard', 'enter', 'exit', 'emphasis'];
@@ -420,13 +444,16 @@ const app = document.getElementById('app')!;
       );
     }
   }
-  sec.append(grid);
-  app.append(sec);
+  wrap.append(grid);
+  app.append(wrap);
 }
 
-// --- Z-index
+// z-index
 {
-  const sec = section('z-index', 'Z-index', 'Stacking layers. Higher tokens always render above lower tokens.');
+  const wrap = page(
+    'z-index',
+    header('Z-index', 'Stacking layers. Higher tokens always render above lower tokens.'),
+  );
   const stack = el('div', { class: 'z-stack' });
   const layers: Array<[string, number, number]> = [
     ['base (0)', 16, 16],
@@ -442,158 +469,737 @@ const app = document.getElementById('app')!;
       el('div', { class: 'layer', style: `top: ${top}px; left: ${left}px; z-index: ${i}` }, name),
     );
   });
-  sec.append(stack);
-  app.append(sec);
+  wrap.append(stack);
+  app.append(wrap);
 }
 
-// --- Semantic
+// semantic
 {
-  const sec = section(
+  const wrap = page(
     'semantic',
-    'Semantic',
-    'Aliases that components consume. Switch theme/density above to watch them shift.',
+    header(
+      'Semantic',
+      'Aliases that components consume. Switch theme/density above to watch them shift.',
+    ),
   );
 
-  sec.append(subhead('Text — display'));
+  wrap.append(subhead('Text — display'));
   const tDisplay = el('div', { class: 'grid' });
   for (const k of ['primary', 'secondary', 'info', 'warning', 'error', 'success', 'increase', 'decrease']) {
     tDisplay.append(colorSwatch(`text-display-${k}`, `text.display.${k}`));
   }
-  sec.append(tDisplay);
+  wrap.append(tDisplay);
 
-  sec.append(subhead('Text — interactive'));
+  wrap.append(subhead('Text — interactive'));
   const tInter = el('div', { class: 'grid' });
   for (const k of ['primary', 'secondary', 'info', 'warning', 'error', 'success', 'increase', 'decrease']) {
     tInter.append(colorSwatch(`text-interactive-${k}`, `text.interactive.${k}`));
   }
-  sec.append(tInter);
+  wrap.append(tInter);
 
-  sec.append(subhead('Icon — display'));
+  wrap.append(subhead('Icon — display'));
   const iDisplay = el('div', { class: 'grid' });
   for (const k of ['primary', 'secondary', 'info', 'warning', 'error', 'success', 'increase', 'decrease']) {
     iDisplay.append(colorSwatch(`icon-display-${k}`, `icon.display.${k}`));
   }
-  sec.append(iDisplay);
+  wrap.append(iDisplay);
 
-  sec.append(subhead('Border'));
-  const bg = el('div', { class: 'grid' });
+  wrap.append(subhead('Border'));
+  const borders = el('div', { class: 'grid' });
   for (const k of ['primary', 'secondary', 'knockout', 'info', 'warning', 'error', 'success']) {
-    bg.append(colorSwatch(`border-color-${k}`, `border-color.${k}`));
+    borders.append(colorSwatch(`border-color-${k}`, `border-color.${k}`));
   }
-  sec.append(bg);
+  wrap.append(borders);
 
-  sec.append(subhead('Background'));
+  wrap.append(subhead('Background'));
   const bgs = el('div', { class: 'grid' });
   for (const k of ['page', 'surface', 'scrim']) {
     bgs.append(colorSwatch(`background-${k}`, `background.${k}`));
   }
-  sec.append(bgs);
+  wrap.append(bgs);
 
-  app.append(sec);
+  app.append(wrap);
 }
 
 // =================================================================
-// COMPONENTS (placeholder)
+// COMPONENTS
 // =================================================================
+
+// --- Component page template (flexible tabs)
+type ComponentTab = { id: string; label: string; content: HTMLElement };
+
+function componentPage(id: string, name: string, description: string, tabs: ComponentTab[]): HTMLElement {
+  const tabList = el('div', { class: 'component-tabs', role: 'tablist', 'aria-label': `${name} sections` });
+  const panels = el('div', { class: 'component-panels' });
+
+  tabs.forEach((t, i) => {
+    const isFirst = i === 0;
+    const btn = el(
+      'button',
+      {
+        type: 'button',
+        class: `component-tab${isFirst ? ' active' : ''}`,
+        role: 'tab',
+        id: `tab-${id}-${t.id}`,
+        'aria-controls': `panel-${id}-${t.id}`,
+        'aria-selected': isFirst ? 'true' : 'false',
+        tabindex: isFirst ? '0' : '-1',
+      },
+      t.label,
+    );
+    tabList.append(btn);
+
+    const panel = el(
+      'div',
+      {
+        class: `component-panel${isFirst ? ' active' : ''}`,
+        role: 'tabpanel',
+        id: `panel-${id}-${t.id}`,
+        'aria-labelledby': `tab-${id}-${t.id}`,
+        tabindex: '0',
+      },
+      t.content,
+    );
+    panels.append(panel);
+  });
+
+  // Wire tab switching (scoped to this component page)
+  const buttons = Array.from(tabList.querySelectorAll<HTMLButtonElement>('.component-tab'));
+  const panelEls = Array.from(panels.querySelectorAll<HTMLElement>('.component-panel'));
+  buttons.forEach((b, i) => {
+    b.addEventListener('click', () => {
+      buttons.forEach((bb, j) => {
+        const active = j === i;
+        bb.classList.toggle('active', active);
+        bb.setAttribute('aria-selected', String(active));
+        bb.setAttribute('tabindex', active ? '0' : '-1');
+      });
+      panelEls.forEach((p, j) => p.classList.toggle('active', j === i));
+    });
+    b.addEventListener('keydown', (e) => {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      e.preventDefault();
+      const next = (i + (e.key === 'ArrowRight' ? 1 : -1) + buttons.length) % buttons.length;
+      buttons[next]?.focus();
+      buttons[next]?.click();
+    });
+  });
+
+  return page(
+    id,
+    el(
+      'div',
+      { class: 'component-page-header' },
+      el('span', { class: 'component-eyebrow' }, 'Component'),
+      el('h1', { class: 'component-title' }, name),
+      el('p', { class: 'component-description' }, description),
+    ),
+    tabList,
+    panels,
+  );
+}
+
+// --- Button mock (CSS-only stand-in for the eventual Lit component)
+type BtnVariant = 'primary' | 'secondary' | 'tertiary' | 'destructive';
+type BtnSize = 'sm' | 'md' | 'lg';
+interface BtnOpts {
+  variant?: BtnVariant;
+  size?: BtnSize;
+  label?: string;
+  disabled?: boolean;
+  loading?: boolean;
+  leadingIcon?: string;
+  trailingIcon?: string;
+}
+
+function previewButton(opts: BtnOpts = {}): HTMLButtonElement {
+  const {
+    variant = 'primary',
+    size = 'md',
+    label = 'Button',
+    disabled = false,
+    loading = false,
+    leadingIcon,
+    trailingIcon,
+  } = opts;
+
+  const btn = el('button', {
+    type: 'button',
+    class: `cnx-btn cnx-btn--${variant} cnx-btn--${size}${loading ? ' cnx-btn--loading' : ''}`,
+  }) as HTMLButtonElement;
+  if (disabled) btn.setAttribute('disabled', '');
+  if (loading) btn.setAttribute('aria-busy', 'true');
+
+  if (loading) btn.append(el('span', { class: 'cnx-btn__spinner', 'aria-hidden': 'true' }));
+  else if (leadingIcon)
+    btn.append(el('span', { class: 'cnx-btn__icon', 'aria-hidden': 'true' }, leadingIcon));
+
+  btn.append(el('span', { class: 'cnx-btn__label' }, label));
+
+  if (!loading && trailingIcon)
+    btn.append(el('span', { class: 'cnx-btn__icon', 'aria-hidden': 'true' }, trailingIcon));
+
+  return btn;
+}
+
+// --- Button — Preview tab
+function buttonPreview(): HTMLElement {
+  const wrap = el('div', { class: 'tab-content' });
+
+  const block = (heading: string, lede: string, ...children: HTMLElement[]) => {
+    wrap.append(
+      el('div', { class: 'preview-block' },
+        el('h3', { class: 'preview-block__title' }, heading),
+        el('p', { class: 'preview-block__lede' }, lede),
+        el('div', { class: 'preview-row' }, ...children),
+      ),
+    );
+  };
+
+  block(
+    'Variants',
+    'Four hierarchies of button. Use primary for the single most important action, secondary for supporting actions, tertiary for low-emphasis actions, and destructive for irreversible actions.',
+    previewButton({ variant: 'primary', label: 'Primary' }),
+    previewButton({ variant: 'secondary', label: 'Secondary' }),
+    previewButton({ variant: 'tertiary', label: 'Tertiary' }),
+    previewButton({ variant: 'destructive', label: 'Destructive' }),
+  );
+
+  block(
+    'Sizes',
+    'Three sizes. Use medium by default. Small for dense UI like toolbars and tables; large for prominent CTAs.',
+    previewButton({ size: 'sm', label: 'Small' }),
+    previewButton({ size: 'md', label: 'Medium' }),
+    previewButton({ size: 'lg', label: 'Large' }),
+  );
+
+  block(
+    'States',
+    'States express what the button is doing or whether it can be used.',
+    previewButton({ label: 'Default' }),
+    previewButton({ label: 'Disabled', disabled: true }),
+    previewButton({ label: 'Loading…', loading: true }),
+  );
+
+  block(
+    'With icons',
+    'Icons must be paired with a text label. Icon-only buttons require an aria-label and use a separate IconButton component (forthcoming).',
+    previewButton({ label: 'Continue', trailingIcon: '→' }),
+    previewButton({ label: 'Add', leadingIcon: '+' }),
+    previewButton({ variant: 'secondary', label: 'Filter', leadingIcon: '⚲' }),
+  );
+
+  return wrap;
+}
+
+// --- Button — Controls tab (live prop editor)
+function buttonControls(): HTMLElement {
+  const wrap = el('div', { class: 'tab-content controls-layout' });
+
+  // Stage (renders the button live)
+  const stage = el('div', { class: 'preview-stage' });
+  function render() {
+    stage.replaceChildren(
+      previewButton({
+        variant: variantSel.value as BtnVariant,
+        size: sizeSel.value as BtnSize,
+        label: labelInput.value || 'Button',
+        disabled: disabledChk.checked,
+        loading: loadingChk.checked,
+        leadingIcon: leadingChk.checked ? '+' : undefined,
+        trailingIcon: trailingChk.checked ? '→' : undefined,
+      }),
+    );
+    codePre.textContent = renderCode();
+  }
+
+  function renderCode() {
+    const attrs: string[] = [];
+    if (variantSel.value !== 'primary') attrs.push(`variant="${variantSel.value}"`);
+    if (sizeSel.value !== 'md') attrs.push(`size="${sizeSel.value}"`);
+    if (disabledChk.checked) attrs.push('disabled');
+    if (loadingChk.checked) attrs.push('loading');
+    if (leadingChk.checked) attrs.push('leading-icon="plus"');
+    if (trailingChk.checked) attrs.push('trailing-icon="arrow-right"');
+    const attrStr = attrs.length ? ' ' + attrs.join(' ') : '';
+    return `<connex-button${attrStr}>${labelInput.value || 'Button'}</connex-button>`;
+  }
+
+  // Form controls
+  const variantSel = el('select', { id: 'ctrl-variant' },
+    ...(['primary', 'secondary', 'tertiary', 'destructive'] as const).map((v) =>
+      el('option', { value: v }, v.charAt(0).toUpperCase() + v.slice(1)),
+    ),
+  ) as HTMLSelectElement;
+
+  const sizeSel = el('select', { id: 'ctrl-size' },
+    ...(['sm', 'md', 'lg'] as const).map((s) => el('option', { value: s }, s.toUpperCase())),
+  ) as HTMLSelectElement;
+  sizeSel.value = 'md';
+
+  const labelInput = el('input', { type: 'text', id: 'ctrl-label', value: 'Button' }) as HTMLInputElement;
+
+  const disabledChk = el('input', { type: 'checkbox', id: 'ctrl-disabled' }) as HTMLInputElement;
+  const loadingChk = el('input', { type: 'checkbox', id: 'ctrl-loading' }) as HTMLInputElement;
+  const leadingChk = el('input', { type: 'checkbox', id: 'ctrl-leading' }) as HTMLInputElement;
+  const trailingChk = el('input', { type: 'checkbox', id: 'ctrl-trailing' }) as HTMLInputElement;
+
+  for (const ctrl of [variantSel, sizeSel, labelInput, disabledChk, loadingChk, leadingChk, trailingChk]) {
+    ctrl.addEventListener('input', render);
+    ctrl.addEventListener('change', render);
+  }
+
+  const ctrlField = (labelText: string, htmlFor: string, control: HTMLElement) =>
+    el('div', { class: 'ctrl-field' },
+      el('label', { for: htmlFor }, labelText),
+      control,
+    );
+
+  const ctrlChecks = el('div', { class: 'ctrl-checks' },
+    el('label', {}, disabledChk, ' Disabled'),
+    el('label', {}, loadingChk, ' Loading'),
+    el('label', {}, leadingChk, ' Leading icon'),
+    el('label', {}, trailingChk, ' Trailing icon'),
+  );
+
+  const panel = el('div', { class: 'ctrl-panel' },
+    el('h3', { class: 'preview-block__title' }, 'Properties'),
+    ctrlField('Variant', 'ctrl-variant', variantSel),
+    ctrlField('Size', 'ctrl-size', sizeSel),
+    ctrlField('Label', 'ctrl-label', labelInput),
+    ctrlChecks,
+  );
+
+  const codePre = el('pre', { class: 'code-block' }) as HTMLPreElement;
+  const codeWrap = el('div', { class: 'code-wrap' },
+    el('h3', { class: 'preview-block__title' }, 'Code'),
+    codePre,
+  );
+
+  wrap.append(panel, el('div', { class: 'ctrl-stage-wrap' }, stage, codeWrap));
+
+  // Initial render
+  queueMicrotask(render);
+  return wrap;
+}
+
+// --- Button — Usage guidelines (Do and Don't, separate sections)
+function buttonGuidelines(): HTMLElement {
+  const doCard = (preview: HTMLElement | HTMLElement[], copy: string) =>
+    el(
+      'div',
+      { class: 'do-card' },
+      el('div', { class: 'do-dont-header' }, '✓ Do'),
+      el(
+        'div',
+        { class: `do-dont-preview${Array.isArray(preview) ? ' do-dont-preview--row' : ''}` },
+        ...(Array.isArray(preview) ? preview : [preview]),
+      ),
+      el('p', {}, copy),
+    );
+
+  const dontCard = (preview: HTMLElement | HTMLElement[], copy: string) =>
+    el(
+      'div',
+      { class: 'dont-card' },
+      el('div', { class: 'do-dont-header' }, '✗ Don\'t'),
+      el(
+        'div',
+        { class: `do-dont-preview${Array.isArray(preview) ? ' do-dont-preview--row' : ''}` },
+        ...(Array.isArray(preview) ? preview : [preview]),
+      ),
+      el('p', {}, copy),
+    );
+
+  return el(
+    'div',
+    { class: 'tab-content guidelines-layout' },
+
+    // Do
+    el(
+      'section',
+      { class: 'guideline-section' },
+      el('h3', { class: 'guideline-heading do-heading' }, 'Do'),
+      el(
+        'p',
+        { class: 'preview-block__lede' },
+        'Patterns that strengthen hierarchy and make a button\'s action obvious.',
+      ),
+      el(
+        'div',
+        { class: 'do-dont-grid' },
+        doCard(
+          previewButton({ variant: 'primary', label: 'Save changes' }),
+          'Use one primary button per view to anchor the most important action.',
+        ),
+        doCard(
+          previewButton({ label: 'Add account', leadingIcon: '+' }),
+          'Pair icons with clear text labels. The icon reinforces meaning without replacing language.',
+        ),
+        doCard(
+          previewButton({ variant: 'destructive', label: 'Delete account' }),
+          'For destructive actions, name the consequence in the label.',
+        ),
+        doCard(
+          [
+            previewButton({ variant: 'primary', label: 'Save' }),
+            previewButton({ variant: 'secondary', label: 'Cancel' }),
+          ],
+          'Pair a primary action with a secondary, low-emphasis cancel option.',
+        ),
+      ),
+    ),
+
+    // Don't
+    el(
+      'section',
+      { class: 'guideline-section' },
+      el('h3', { class: 'guideline-heading dont-heading' }, 'Don\'t'),
+      el(
+        'p',
+        { class: 'preview-block__lede' },
+        'Patterns that weaken hierarchy or confuse the user about what an action will do.',
+      ),
+      el(
+        'div',
+        { class: 'do-dont-grid' },
+        dontCard(
+          [
+            previewButton({ variant: 'primary', label: 'Save' }),
+            previewButton({ variant: 'primary', label: 'Continue' }),
+            previewButton({ variant: 'primary', label: 'Submit' }),
+          ],
+          'Don\'t stack multiple primary buttons together — users won\'t know which action takes precedence.',
+        ),
+        dontCard(
+          previewButton({ label: 'Click here to perform the requested action now' }),
+          'Don\'t write long, vague labels. Use 1–3 word verb phrases.',
+        ),
+        dontCard(
+          previewButton({ variant: 'destructive', label: 'Yes' }),
+          'Don\'t use generic confirm-style labels for destructive actions. "Yes" doesn\'t tell the user what they\'re destroying.',
+        ),
+        dontCard(
+          previewButton({ variant: 'tertiary', label: 'OK', size: 'sm' }),
+          'Don\'t use tertiary buttons for primary actions — there\'s no visual hierarchy to anchor the user\'s next step.',
+        ),
+      ),
+    ),
+  );
+}
+
+// --- Button — Content
+function buttonContent(): HTMLElement {
+  return el(
+    'div',
+    { class: 'tab-content guidelines-layout' },
+    el(
+      'section',
+      { class: 'guideline-section' },
+      el('h3', { class: 'guideline-heading' }, 'Writing button labels'),
+      el(
+        'p',
+        { class: 'preview-block__lede' },
+        'Buttons live or die on their label. A good label tells the user exactly what will happen when they click.',
+      ),
+      el(
+        'ul',
+        { class: 'guideline-list' },
+        el('li', {}, 'Use sentence case ("Save changes", not "Save Changes" or "SAVE CHANGES").'),
+        el('li', {}, 'Lead with a verb. Buttons describe an action: "Add", "Submit", "Cancel".'),
+        el('li', {}, 'Keep labels under 3 words when possible. If you need more, you probably need a different component.'),
+        el('li', {}, 'Avoid redundancy. "Save" beats "Save now"; "Cancel" beats "Cancel this action".'),
+        el('li', {}, 'For destructive actions, name the consequence: "Delete account", not "Yes" or "Confirm".'),
+        el('li', {}, 'Match the verb tense to the user\'s intent. "Add" is invitational; "Added" is confirmational and shouldn\'t live on a button.'),
+      ),
+    ),
+    el(
+      'section',
+      { class: 'guideline-section' },
+      el('h3', { class: 'guideline-heading' }, 'Localization'),
+      el(
+        'ul',
+        { class: 'guideline-list' },
+        el('li', {}, 'Reserve at least 30% extra horizontal space for translated strings. German and French labels often run longer than English.'),
+        el('li', {}, 'Don\'t concatenate fragments to build a label — translate the full string. Avoid: "Add" + " " + entityType.'),
+        el('li', {}, 'Use the @lit/localize msg() helper to mark labels for translation.'),
+      ),
+    ),
+  );
+}
+
+// --- Button — Accessibility
+function buttonAccessibility(): HTMLElement {
+  return el(
+    'div',
+    { class: 'tab-content guidelines-layout' },
+    el(
+      'section',
+      { class: 'guideline-section' },
+      el('h3', { class: 'guideline-heading' }, 'Keyboard & focus'),
+      el(
+        'ul',
+        { class: 'guideline-list' },
+        el('li', {}, 'Renders as a native <button>. Receives keyboard focus and is activated by Enter and Space.'),
+        el('li', {}, 'Visible focus ring uses a 2px outline at offset 2px on :focus-visible. Never disable focus styles.'),
+        el('li', {}, 'Disabled buttons set the `disabled` attribute and are skipped in tab order.'),
+        el('li', {}, 'No keyboard trap: focus moves naturally to the next focusable element.'),
+      ),
+    ),
+    el(
+      'section',
+      { class: 'guideline-section' },
+      el('h3', { class: 'guideline-heading' }, 'Screen readers'),
+      el(
+        'ul',
+        { class: 'guideline-list' },
+        el('li', {}, 'Loading buttons set aria-busy="true" so assistive tech announces the state.'),
+        el('li', {}, 'Icon-only buttons require an aria-label that matches the visual intent ("Close", "Search").'),
+        el('li', {}, 'Decorative icons inside text buttons set aria-hidden="true" so they\'re not announced twice.'),
+      ),
+    ),
+    el(
+      'section',
+      { class: 'guideline-section' },
+      el('h3', { class: 'guideline-heading' }, 'Color & motion'),
+      el(
+        'ul',
+        { class: 'guideline-list' },
+        el('li', {}, 'Color contrast meets WCAG 2.1 AA against background-page in both light and dark themes.'),
+        el('li', {}, 'Status (info, success, warning, error) is never conveyed by color alone — pair with text or icons.'),
+        el('li', {}, 'Honors prefers-reduced-motion: state transitions and the loading spinner collapse for users who request reduced motion.'),
+      ),
+    ),
+  );
+}
+
+// --- Button — Code
+function buttonCode(): HTMLElement {
+  return el(
+    'div',
+    { class: 'tab-content guidelines-layout' },
+    el(
+      'section',
+      { class: 'guideline-section' },
+      el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
+      el(
+        'pre',
+        { class: 'code-block' },
+        `<connex-button variant="primary" size="md">
+  Save changes
+</connex-button>
+
+<connex-button variant="secondary" size="md" leading-icon="plus">
+  Add account
+</connex-button>
+
+<connex-button variant="destructive" loading>
+  Deleting…
+</connex-button>`,
+      ),
+    ),
+    el(
+      'section',
+      { class: 'guideline-section' },
+      el('h3', { class: 'guideline-heading' }, 'React (via @connex/react wrapper)'),
+      el(
+        'pre',
+        { class: 'code-block' },
+        `import { Button } from '@connex/react';
+
+<Button variant="primary" onClick={save}>
+  Save changes
+</Button>`,
+      ),
+    ),
+    el(
+      'section',
+      { class: 'guideline-section' },
+      el('h3', { class: 'guideline-heading' }, 'Props'),
+      el(
+        'div',
+        { class: 'props-table-wrap' },
+        el(
+          'table',
+          { class: 'props-table' },
+          el('thead', {},
+            el('tr', {},
+              el('th', {}, 'Prop'),
+              el('th', {}, 'Type'),
+              el('th', {}, 'Default'),
+              el('th', {}, 'Description'),
+            ),
+          ),
+          el('tbody', {},
+            el('tr', {}, el('td', {}, 'variant'), el('td', {}, '"primary" | "secondary" | "tertiary" | "destructive"'), el('td', {}, '"primary"'), el('td', {}, 'Visual hierarchy.')),
+            el('tr', {}, el('td', {}, 'size'), el('td', {}, '"sm" | "md" | "lg"'), el('td', {}, '"md"'), el('td', {}, 'Button size.')),
+            el('tr', {}, el('td', {}, 'disabled'), el('td', {}, 'boolean'), el('td', {}, 'false'), el('td', {}, 'Disable interaction.')),
+            el('tr', {}, el('td', {}, 'loading'), el('td', {}, 'boolean'), el('td', {}, 'false'), el('td', {}, 'Show spinner and set aria-busy.')),
+            el('tr', {}, el('td', {}, 'leading-icon'), el('td', {}, 'string'), el('td', {}, '—'), el('td', {}, 'Hero Icon name placed before the label.')),
+            el('tr', {}, el('td', {}, 'trailing-icon'), el('td', {}, 'string'), el('td', {}, '—'), el('td', {}, 'Hero Icon name placed after the label.')),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+// --- Components overview
 {
+  function componentLink(id: string, name: string, summary: string): HTMLElement {
+    return el(
+      'a',
+      { class: 'component-link-card', href: `#${id}` },
+      el('h4', {}, name),
+      el('p', {}, summary),
+      el('span', { class: 'component-link-card__arrow' }, '→'),
+    );
+  }
+
+  const grid = el(
+    'div',
+    { class: 'foundation-grid' },
+    componentLink('components-button', 'Button', 'Primary, secondary, tertiary, destructive variants. Sizes: small, medium, large. Loading and icon states.'),
+    emptyPanel('Input', 'Text, email, number, password. Native form association. Validation states wired to border-color.error and text-display-error.'),
+    emptyPanel('Modal', 'Focus-trapped, dismissible, scrim-backed. Uses elevation.4 + motion.duration.slow on enter.'),
+    emptyPanel('Table', 'Sortable, virtualized, sticky-header. Condensed-density-aware row heights.'),
+    emptyPanel('Tabs', 'Horizontal and vertical orientations. Keyboard navigation, ARIA tablist semantics.'),
+    emptyPanel('Toast', 'Stack of dismissible notifications. Status variants (info, success, warning, error). Reduced-motion compliant.'),
+  );
   app.append(
-    categoryBanner(
+    page(
       'components-overview',
-      'Components',
-      'Reusable Lit Web Components built on Connex tokens. Form-associated via ElementInternals, accessible to WCAG 2.1 AA, framework-agnostic with React wrappers.',
-    ),
-  );
-  app.append(
-    el(
-      'div',
-      { class: 'foundation-grid' },
-      emptyPanel('Button', 'Primary, secondary, tertiary, destructive variants. Sizes: small, medium, large. Loading and icon states.'),
-      emptyPanel('Input', 'Text, email, number, password. Native form association. Validation states wired to border-color.error and text-display-error.'),
-      emptyPanel('Modal', 'Focus-trapped, dismissible, scrim-backed. Uses elevation.4 + motion.duration.slow on enter.'),
-      emptyPanel('Table', 'Sortable, virtualized, sticky-header. Condensed-density-aware row heights.'),
-      emptyPanel('Tabs', 'Horizontal and vertical orientations. Keyboard navigation, ARIA tablist semantics.'),
-      emptyPanel('Toast', 'Stack of dismissible notifications. Status variants (info, success, warning, error). Reduced-motion compliant.'),
+      categoryBanner(
+        'Components',
+        'Reusable Lit Web Components built on Connex tokens. Form-associated via ElementInternals, accessible to WCAG 2.1 AA, framework-agnostic with React wrappers.',
+      ),
+      grid,
     ),
   );
 }
 
-// =================================================================
-// PATTERNS (placeholder)
-// =================================================================
-{
-  app.append(
-    categoryBanner(
-      'patterns-overview',
-      'Patterns',
-      'Combinations of components that solve recurring UX problems. Cross-product patterns live in core; product-specific patterns live in product repos and can be promoted upward.',
-    ),
-  );
-  app.append(
-    el(
-      'div',
-      { class: 'foundation-grid' },
-      emptyPanel('Empty state', 'Illustration, headline, description, primary action. Used when data is missing or unavailable.'),
-      emptyPanel('Form', 'Field grouping, inline validation, submission states, error summaries.'),
-      emptyPanel('Workflow stepper', 'Linear multi-step processes (close account, make payment). Progress indicator and back/next controls.'),
-      emptyPanel('Data table pattern', 'Toolbar + table + pagination. Filtering, sorting, bulk actions, row selection.'),
-    ),
-  );
-}
-
-// =================================================================
-// TEMPLATES (placeholder)
-// =================================================================
-{
-  app.append(
-    categoryBanner(
-      'templates-overview',
-      'Templates',
-      'Page-level layouts that combine patterns and components. Templates standardize the high-level shape of pages across products.',
-    ),
-  );
-  app.append(
-    el(
-      'div',
-      { class: 'foundation-grid' },
-      emptyPanel('Settings page', 'Sidebar navigation + scrolling content with section anchors. Used for any preference or configuration UI.'),
-      emptyPanel('Dashboard', 'Header + stat cards + chart row + activity table. The default landing for product home views.'),
-      emptyPanel('Detail view', 'Header with key actions, metadata strip, tabbed body. Used for entity pages (customer, account, ticket).'),
-      emptyPanel('List + filter', 'Filter sidebar + searchable, sortable list + detail panel. Used for any list-heavy product surface.'),
-    ),
-  );
-}
-
-// --- Sidebar active-link highlighting on scroll
-const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('.nav-group li a'));
-const anchorIds = links
-  .map((a) => a.getAttribute('href')?.replace('#', ''))
-  .filter(Boolean) as string[];
-
-const observer = new IntersectionObserver(
-  (entries) => {
-    for (const entry of entries) {
-      if (entry.isIntersecting) {
-        const id = entry.target.id;
-        for (const a of links) {
-          const li = a.closest('li');
-          if (!li) continue;
-          if (a.getAttribute('href') === `#${id}`) li.classList.add('active');
-          else li.classList.remove('active');
-        }
-      }
-    }
-  },
-  { rootMargin: '-80px 0px -70% 0px', threshold: 0 },
+// --- Button page
+app.append(
+  componentPage(
+    'components-button',
+    'Button',
+    'Triggers an action or navigates to a new view. Buttons are the primary way users interact with Connex products.',
+    [
+      { id: 'preview',       label: 'Preview',           content: buttonPreview() },
+      { id: 'controls',      label: 'Controls',          content: buttonControls() },
+      { id: 'guidelines',    label: 'Usage guidelines',  content: buttonGuidelines() },
+      { id: 'content',       label: 'Content',           content: buttonContent() },
+      { id: 'accessibility', label: 'Accessibility',     content: buttonAccessibility() },
+      { id: 'code',          label: 'Code',              content: buttonCode() },
+    ],
+  ),
 );
-for (const id of anchorIds) {
-  const node = document.getElementById(id);
-  if (node) observer.observe(node);
+
+// =================================================================
+// PATTERNS
+// =================================================================
+{
+  const grid = el(
+    'div',
+    { class: 'foundation-grid' },
+    emptyPanel('Empty state', 'Illustration, headline, description, primary action. Used when data is missing or unavailable.'),
+    emptyPanel('Form', 'Field grouping, inline validation, submission states, error summaries.'),
+    emptyPanel('Workflow stepper', 'Linear multi-step processes (close account, make payment). Progress indicator and back/next controls.'),
+    emptyPanel('Data table pattern', 'Toolbar + table + pagination. Filtering, sorting, bulk actions, row selection.'),
+  );
+  app.append(
+    page(
+      'patterns-overview',
+      categoryBanner(
+        'Patterns',
+        'Combinations of components that solve recurring UX problems. Cross-product patterns live in core; product-specific patterns live in product repos and can be promoted upward.',
+      ),
+      grid,
+    ),
+  );
 }
 
-// --- Mobile nav (hamburger) toggle
+// =================================================================
+// TEMPLATES
+// =================================================================
+{
+  const grid = el(
+    'div',
+    { class: 'foundation-grid' },
+    emptyPanel('Settings page', 'Sidebar navigation + scrolling content with section anchors. Used for any preference or configuration UI.'),
+    emptyPanel('Dashboard', 'Header + stat cards + chart row + activity table. The default landing for product home views.'),
+    emptyPanel('Detail view', 'Header with key actions, metadata strip, tabbed body. Used for entity pages (customer, account, ticket).'),
+    emptyPanel('List + filter', 'Filter sidebar + searchable, sortable list + detail panel. Used for any list-heavy product surface.'),
+  );
+  app.append(
+    page(
+      'templates-overview',
+      categoryBanner(
+        'Templates',
+        'Page-level layouts that combine patterns and components. Templates standardize the high-level shape of pages across products.',
+      ),
+      grid,
+    ),
+  );
+}
+
+// =================================================================
+// ROUTER — sidebar links switch which .page is visible (no scrolling)
+// =================================================================
+
+const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('.nav-group li a'));
+const pages = Array.from(document.querySelectorAll<HTMLElement>('.page'));
+const validIds = new Set(pages.map((p) => p.id));
+const defaultId = 'foundation-overview';
+
+function showPage(id: string) {
+  const target = validIds.has(id) ? id : defaultId;
+  for (const p of pages) p.classList.toggle('active', p.id === target);
+  for (const a of links) {
+    const li = a.closest('li');
+    if (!li) continue;
+    li.classList.toggle('active', a.getAttribute('href') === `#${target}`);
+  }
+  // Scroll the main content area to top so each "page" starts fresh
+  document.getElementById('app')?.scrollTo({ top: 0 });
+  window.scrollTo({ top: 0 });
+}
+
+function idFromHash(): string {
+  return (location.hash || `#${defaultId}`).slice(1);
+}
+
+// Intercept clicks: update hash, no native scroll
+for (const a of links) {
+  a.addEventListener('click', (e) => {
+    const href = a.getAttribute('href') || '';
+    if (!href.startsWith('#')) return;
+    e.preventDefault();
+    const id = href.slice(1);
+    if (id !== idFromHash()) {
+      history.pushState(null, '', `#${id}`);
+    }
+    showPage(id);
+    // On mobile, close the drawer after selection
+    if (window.matchMedia('(max-width: 960px)').matches) {
+      document.body.classList.remove('nav-open');
+    }
+  });
+}
+
+// Browser back/forward updates the page
+window.addEventListener('hashchange', () => showPage(idFromHash()));
+window.addEventListener('popstate', () => showPage(idFromHash()));
+
+// Initial render
+showPage(idFromHash());
+
+// =================================================================
+// Mobile nav (hamburger) toggle
+// =================================================================
+
 const navToggle = document.getElementById('nav-toggle');
 const scrim = document.getElementById('sidebar-scrim');
-const sidebar = document.getElementById('sidebar');
 const mq = window.matchMedia('(max-width: 960px)');
 
 function setNavOpen(open: boolean) {
@@ -609,18 +1215,10 @@ navToggle?.addEventListener('click', () => {
 });
 scrim?.addEventListener('click', closeNav);
 
-// Close drawer when a sidebar link is tapped (mobile UX)
-sidebar?.addEventListener('click', (e) => {
-  const target = e.target as HTMLElement;
-  if (target.closest('a[href^="#"]') && mq.matches) closeNav();
-});
-
-// Reset state when crossing the breakpoint back to desktop
 mq.addEventListener('change', (e) => {
   if (!e.matches) closeNav();
 });
 
-// Esc closes the drawer
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && document.body.classList.contains('nav-open')) closeNav();
 });
