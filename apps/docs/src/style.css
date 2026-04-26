@@ -882,6 +882,131 @@ body.nav-open .sidebar-scrim { opacity: 1; }
 }
 .do-heading::before { content: "✓"; }
 .dont-heading::before { content: "✗"; }
+
+/* ========================================================================
+   Iconography
+   ======================================================================== */
+.icon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: var(--connex-space-12);
+  background: var(--connex-background-surface);
+  border: var(--connex-border-width-1) solid var(--connex-border-color-secondary);
+  border-radius: var(--connex-radius-8);
+  padding: var(--connex-space-16);
+}
+.icon-grid--sizing {
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  align-items: end;
+}
+.icon-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--connex-space-8);
+  padding: var(--connex-space-12);
+  border-radius: var(--connex-radius-4);
+}
+.icon-stage {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  color: var(--connex-icon-display-primary);
+}
+.icon-stage svg {
+  display: block;
+  flex-shrink: 0;
+}
+.icon-name {
+  font-size: var(--connex-font-size-12);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--connex-text-display-secondary);
+  text-align: center;
+  word-break: break-word;
+  line-height: var(--connex-font-line-height-15);
+}
+
+/* Catalog toolbar (search + style switcher) */
+.icon-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--connex-space-12);
+  padding: var(--connex-space-12);
+  background: var(--connex-background-surface);
+  border: var(--connex-border-width-1) solid var(--connex-border-color-secondary);
+  border-radius: var(--connex-radius-8);
+}
+.icon-search {
+  flex: 1 1 240px;
+  min-width: 200px;
+  font-family: inherit;
+  font-size: var(--connex-font-size-14);
+  padding: var(--connex-space-8) var(--connex-space-12);
+  border: var(--connex-border-width-1) solid var(--connex-border-color-primary);
+  border-radius: var(--connex-radius-4);
+  background: var(--connex-background-page);
+  color: var(--connex-text-display-primary);
+}
+.icon-search:focus-visible {
+  outline: 2px solid var(--connex-text-interactive-primary);
+  outline-offset: 1px;
+}
+.icon-style-toggle {
+  display: inline-flex;
+  border: var(--connex-border-width-1) solid var(--connex-border-color-primary);
+  border-radius: var(--connex-radius-4);
+  overflow: hidden;
+}
+.icon-style-btn {
+  appearance: none;
+  background: var(--connex-background-page);
+  color: var(--connex-text-display-secondary);
+  border: none;
+  padding: var(--connex-space-8) var(--connex-space-12);
+  font-family: inherit;
+  font-size: var(--connex-font-size-12);
+  font-weight: var(--connex-font-weight-medium);
+  cursor: pointer;
+  border-right: var(--connex-border-width-1) solid var(--connex-border-color-primary);
+  transition: background var(--connex-motion-duration-fast) var(--connex-motion-easing-standard),
+              color var(--connex-motion-duration-fast) var(--connex-motion-easing-standard);
+}
+.icon-style-btn:last-child { border-right: none; }
+.icon-style-btn:hover { background: var(--connex-color-alpha-100); color: var(--connex-text-display-primary); }
+.icon-style-btn.active {
+  background: var(--connex-text-interactive-primary);
+  color: var(--connex-color-white);
+}
+.icon-count {
+  font-size: var(--connex-font-size-12);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--connex-text-display-secondary);
+  margin-left: auto;
+}
+
+/* Catalog grid — denser, fixed-row alignment */
+.icon-grid--catalog {
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: var(--connex-space-8);
+}
+.icon-grid--catalog .icon-cell {
+  padding: var(--connex-space-8);
+  background: var(--connex-background-page);
+  border-radius: var(--connex-radius-4);
+  cursor: default;
+  transition: background var(--connex-motion-duration-fast) var(--connex-motion-easing-standard);
+}
+.icon-grid--catalog .icon-cell:hover { background: var(--connex-color-alpha-100); }
+.icon-grid--catalog .icon-stage { min-height: 28px; }
+.icon-empty {
+  grid-column: 1 / -1;
+  padding: var(--connex-space-32);
+  text-align: center;
+  color: var(--connex-text-display-secondary);
+  font-style: italic;
+}
 .guideline-list {
   margin: 0;
   padding-left: var(--connex-space-24);

@@ -340,6 +340,289 @@ app.append(
   app.append(wrap);
 }
 
+// iconography
+{
+  // Hero Icons — full catalog (~316 per style) loaded from the heroicons package.
+  type IconStyle = 'outline' | 'solid' | 'mini' | 'micro';
+
+  const sources: Record<IconStyle, Record<string, string>> = {
+    outline: import.meta.glob('../node_modules/heroicons/24/outline/*.svg', {
+      query: '?raw',
+      import: 'default',
+      eager: true,
+    }) as Record<string, string>,
+    solid: import.meta.glob('../node_modules/heroicons/24/solid/*.svg', {
+      query: '?raw',
+      import: 'default',
+      eager: true,
+    }) as Record<string, string>,
+    mini: import.meta.glob('../node_modules/heroicons/20/solid/*.svg', {
+      query: '?raw',
+      import: 'default',
+      eager: true,
+    }) as Record<string, string>,
+    micro: import.meta.glob('../node_modules/heroicons/16/solid/*.svg', {
+      query: '?raw',
+      import: 'default',
+      eager: true,
+    }) as Record<string, string>,
+  };
+
+  // Build a {name -> svgString} map per style and a sorted list of names.
+  const byStyle: Record<IconStyle, Record<string, string>> = {
+    outline: {},
+    solid: {},
+    mini: {},
+    micro: {},
+  };
+  for (const style of Object.keys(sources) as IconStyle[]) {
+    for (const [path, raw] of Object.entries(sources[style])) {
+      const name = path.split('/').pop()!.replace('.svg', '');
+      byStyle[style][name] = raw;
+    }
+  }
+  const allNames = Array.from(
+    new Set([
+      ...Object.keys(byStyle.outline),
+      ...Object.keys(byStyle.solid),
+      ...Object.keys(byStyle.mini),
+      ...Object.keys(byStyle.micro),
+    ]),
+  ).sort();
+
+  // Native pixel size per style (Hero Icons ship at fixed sizes; don't scale).
+  const nativeSize: Record<IconStyle, number> = {
+    outline: 24,
+    solid: 24,
+    mini: 20,
+    micro: 16,
+  };
+
+  // Render an SVG by parsing the raw string. Always sets explicit width/height
+  // (heroicons SVGs only have viewBox, which collapses to 0×0 inside flex
+  // children in some browsers without explicit dimensions).
+  function renderIcon(raw: string, sizePx: number): SVGElement | null {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = raw;
+    const svg = tmp.querySelector('svg');
+    if (!svg) return null;
+    svg.removeAttribute('class');
+    svg.removeAttribute('data-slot');
+    svg.setAttribute('aria-hidden', 'true');
+    svg.setAttribute('width', String(sizePx));
+    svg.setAttribute('height', String(sizePx));
+    return svg;
+  }
+
+  function iconCell(name: string, style: IconStyle, sizePx?: number, label?: string): HTMLElement {
+    const raw = byStyle[style][name];
+    const dim = sizePx ?? nativeSize[style];
+    const stage = el('div', { class: 'icon-stage' });
+    if (raw) {
+      const svg = renderIcon(raw, dim);
+      if (svg) stage.append(svg);
+    } else {
+      stage.append(document.createTextNode('—'));
+    }
+    return el(
+      'div',
+      { class: 'icon-cell', title: name },
+      stage,
+      el('span', { class: 'icon-name' }, label ?? name),
+    );
+  }
+
+  const wrap = page(
+    'iconography',
+    header(
+      'Iconography',
+      'Connex uses Hero Icons (heroicons.com). Four styles are supported — Outline and Solid at 24×24, Mini at 20×20, Micro at 16×16. Icons inherit color via currentColor and re-theme automatically.',
+    ),
+  );
+
+  // Catalog (filterable, switchable style)
+  const styleMeta: Array<[IconStyle, string]> = [
+    ['outline', 'Outline · 24'],
+    ['solid', 'Solid · 24'],
+    ['mini', 'Mini · 20'],
+    ['micro', 'Micro · 16'],
+  ];
+
+  const search = el('input', {
+    type: 'search',
+    class: 'icon-search',
+    placeholder: 'Search icons (e.g. "arrow", "user", "chart")',
+    'aria-label': 'Search icons',
+  }) as HTMLInputElement;
+
+  const styleSel = el('div', { class: 'icon-style-toggle', role: 'radiogroup', 'aria-label': 'Icon style' }) as HTMLElement;
+  const styleButtons: HTMLButtonElement[] = [];
+  for (const [s, label] of styleMeta) {
+    const btn = el(
+      'button',
+      {
+        type: 'button',
+        class: 'icon-style-btn',
+        role: 'radio',
+        'aria-checked': s === 'outline' ? 'true' : 'false',
+        'data-style': s,
+      },
+      label,
+    ) as HTMLButtonElement;
+    if (s === 'outline') btn.classList.add('active');
+    styleButtons.push(btn);
+    styleSel.append(btn);
+  }
+
+  const count = el('span', { class: 'icon-count' });
+  const grid = el('div', { class: 'icon-grid icon-grid--catalog' });
+
+  let activeStyle: IconStyle = 'outline';
+
+  function rerender() {
+    const q = search.value.trim().toLowerCase();
+    const matches = q ? allNames.filter((n) => n.includes(q)) : allNames;
+    count.textContent = `${matches.length} of ${allNames.length} icons`;
+    grid.replaceChildren(...matches.map((n) => iconCell(n, activeStyle)));
+    if (matches.length === 0) {
+      grid.replaceChildren(el('div', { class: 'icon-empty' }, 'No icons match that search.'));
+    }
+  }
+
+  search.addEventListener('input', rerender);
+  for (const b of styleButtons) {
+    b.addEventListener('click', () => {
+      activeStyle = b.dataset.style as IconStyle;
+      for (const bb of styleButtons) {
+        const isActive = bb === b;
+        bb.classList.toggle('active', isActive);
+        bb.setAttribute('aria-checked', String(isActive));
+      }
+      rerender();
+    });
+  }
+
+  wrap.append(
+    el(
+      'div',
+      { class: 'preview-block' },
+      el('h3', { class: 'preview-block__title' }, 'Catalog'),
+      el(
+        'p',
+        { class: 'preview-block__lede' },
+        'The full Hero Icons set, loaded from the heroicons package. Switch styles to compare the same icon across Outline, Solid, Mini, and Micro. Search by name to filter.',
+      ),
+      el('div', { class: 'icon-toolbar' }, search, styleSel, count),
+      grid,
+    ),
+  );
+
+  rerender();
+
+  // Style comparison — same set of representative icons across all 4 styles
+  const featured = ['plus', 'check', 'x-mark', 'magnifying-glass', 'home', 'bell'];
+  for (const [style, label] of styleMeta) {
+    wrap.append(
+      el(
+        'div',
+        { class: 'preview-block' },
+        el('h3', { class: 'preview-block__title' }, `${label} — featured`),
+        el(
+          'p',
+          { class: 'preview-block__lede' },
+          style === 'outline'
+            ? 'Default for most UI surfaces — buttons, list rows, tabs.'
+            : style === 'solid'
+              ? 'Use for emphasis (active nav items, selected states) and brand surfaces.'
+              : style === 'mini'
+                ? 'Use inline next to body-size text and within compact controls.'
+                : 'Use only when space is severely constrained (table densities, badges).',
+        ),
+        el(
+          'div',
+          { class: 'icon-grid' },
+          ...featured.map((n) => iconCell(n, style)),
+        ),
+      ),
+    );
+  }
+
+  // Sizing
+  wrap.append(
+    el(
+      'div',
+      { class: 'preview-block' },
+      el('h3', { class: 'preview-block__title' }, 'Sizing'),
+      el(
+        'p',
+        { class: 'preview-block__lede' },
+        "Hero Icons ship at three native pixel sizes. Don't scale them — use the size designed for the context to keep stroke weight and detail crisp.",
+      ),
+      el(
+        'div',
+        { class: 'icon-grid icon-grid--sizing' },
+        iconCell('check', 'micro', 16, '16 · micro'),
+        iconCell('check', 'mini', 20, '20 · mini'),
+        iconCell('check', 'solid', 24, '24 · solid'),
+        iconCell('check', 'outline', 24, '24 · outline'),
+      ),
+    ),
+  );
+
+  // Color
+  const colorTokens: Array<[string, string]> = [
+    ['icon-display-primary', 'primary'],
+    ['icon-display-secondary', 'secondary'],
+    ['icon-display-info', 'info'],
+    ['icon-display-warning', 'warning'],
+    ['icon-display-success', 'success'],
+    ['icon-display-error', 'error'],
+  ];
+
+  wrap.append(
+    el(
+      'div',
+      { class: 'preview-block' },
+      el('h3', { class: 'preview-block__title' }, 'Color'),
+      el(
+        'p',
+        { class: 'preview-block__lede' },
+        'Icons inherit color via the CSS currentColor keyword, so any color set on a parent (or on an icon-display-* semantic token) cascades automatically. Status is never conveyed by color alone.',
+      ),
+      el(
+        'div',
+        { class: 'icon-grid' },
+        ...colorTokens.map(([token, label]) => {
+          const cell = iconCell('bell', 'solid', undefined, `icon.${label}`);
+          (cell.querySelector('.icon-stage') as HTMLElement).style.color = `var(${PREFIX}-${token})`;
+          return cell;
+        }),
+      ),
+    ),
+  );
+
+  // Usage notes
+  wrap.append(
+    el(
+      'div',
+      { class: 'preview-block' },
+      el('h3', { class: 'preview-block__title' }, 'Usage'),
+      el(
+        'ul',
+        { class: 'guideline-list' },
+        el('li', {}, 'Pair icons with text labels whenever possible. Icon-only controls require an aria-label.'),
+        el('li', {}, "Decorative icons sit alongside text and are marked aria-hidden=\"true\" so they're not announced."),
+        el('li', {}, 'Use Outline as the default style. Reserve Solid for emphasis (active state, brand moments).'),
+        el('li', {}, 'Match icon size to surrounding text size: 16 with body-small, 20 with body, 24 with body-large or as standalone affordance.'),
+        el('li', {}, "Don't recolor an icon to imply a different status — use the matching icon-display-* semantic token."),
+        el('li', {}, 'Source icons from heroicons.com only. Custom icons need design-system review and live in @connex/icons.'),
+      ),
+    ),
+  );
+
+  app.append(wrap);
+}
+
 // spacing
 {
   const wrap = page('spacing', header('Spacing', '4-based scale. Use these for padding, margin, gap.'));
