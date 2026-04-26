@@ -2,24 +2,15 @@
   "color": {
     "$description": "Primitive color scales. Stops 100 (lightest) → 800 (darkest). Values are starter defaults aligned with WCAG AA and may be tuned per design review.",
     "red": {
-      "100": { "$value": "#fee2e2", "$type": "color" },
-      "200": { "$value": "#fecaca", "$type": "color" },
-      "300": { "$value": "#fca5a5", "$type": "color" },
-      "400": { "$value": "#f87171", "$type": "color" },
-      "500": { "$value": "#ef4444", "$type": "color" },
-      "600": { "$value": "#dc2626", "$type": "color" },
-      "700": { "$value": "#b91c1c", "$type": "color" },
-      "800": { "$value": "#991b1b", "$type": "color" }
-    },
-    "orange": {
-      "100": { "$value": "#ffedd5", "$type": "color" },
-      "200": { "$value": "#fed7aa", "$type": "color" },
-      "300": { "$value": "#fdba74", "$type": "color" },
-      "400": { "$value": "#fb923c", "$type": "color" },
-      "500": { "$value": "#f97316", "$type": "color" },
-      "600": { "$value": "#ea580c", "$type": "color" },
-      "700": { "$value": "#c2410c", "$type": "color" },
-      "800": { "$value": "#9a3412", "$type": "color" }
+      "$description": "Red scale anchored at 500 = #CC2427. Hue ~359°, perceptually balanced from soft pink (100) to deep crimson (800).",
+      "100": { "$value": "#fbe9e9", "$type": "color" },
+      "200": { "$value": "#f7caca", "$type": "color" },
+      "300": { "$value": "#ef9595", "$type": "color" },
+      "400": { "$value": "#e05252", "$type": "color" },
+      "500": { "$value": "#cc2427", "$type": "color" },
+      "600": { "$value": "#a71b20", "$type": "color" },
+      "700": { "$value": "#85141a", "$type": "color" },
+      "800": { "$value": "#640c12", "$type": "color" }
     },
     "yellow": {
       "100": { "$value": "#fef9c3", "$type": "color" },
@@ -32,24 +23,26 @@
       "800": { "$value": "#854d0e", "$type": "color" }
     },
     "green": {
-      "100": { "$value": "#dcfce7", "$type": "color" },
-      "200": { "$value": "#bbf7d0", "$type": "color" },
-      "300": { "$value": "#86efac", "$type": "color" },
-      "400": { "$value": "#4ade80", "$type": "color" },
-      "500": { "$value": "#22c55e", "$type": "color" },
-      "600": { "$value": "#16a34a", "$type": "color" },
-      "700": { "$value": "#15803d", "$type": "color" },
-      "800": { "$value": "#166534", "$type": "color" }
+      "$description": "Green scale anchored at 500 = #47B52C. Hue ~108° (yellow-green/lime), perceptually balanced from pale wash (100) to deep forest (800).",
+      "100": { "$value": "#eef9eb", "$type": "color" },
+      "200": { "$value": "#d6f2cf", "$type": "color" },
+      "300": { "$value": "#ace69d", "$type": "color" },
+      "400": { "$value": "#73d85a", "$type": "color" },
+      "500": { "$value": "#47b52c", "$type": "color" },
+      "600": { "$value": "#359220", "$type": "color" },
+      "700": { "$value": "#277217", "$type": "color" },
+      "800": { "$value": "#17520f", "$type": "color" }
     },
     "blue": {
-      "100": { "$value": "#dbeafe", "$type": "color" },
-      "200": { "$value": "#bfdbfe", "$type": "color" },
-      "300": { "$value": "#93c5fd", "$type": "color" },
-      "400": { "$value": "#60a5fa", "$type": "color" },
-      "500": { "$value": "#3b82f6", "$type": "color" },
-      "600": { "$value": "#2563eb", "$type": "color" },
-      "700": { "$value": "#1d4ed8", "$type": "color" },
-      "800": { "$value": "#1e40af", "$type": "color" }
+      "$description": "Blue scale anchored at 500 = #029DD4 (Connex brand primary). Hue ~196°, high saturation through the middle, perceptually balanced from pale ice (100) to deep navy-teal (800).",
+      "100": { "$value": "#e7f8fe", "$type": "color" },
+      "200": { "$value": "#c4eefd", "$type": "color" },
+      "300": { "$value": "#88dcfb", "$type": "color" },
+      "400": { "$value": "#37c7fb", "$type": "color" },
+      "500": { "$value": "#029dd4", "$type": "color" },
+      "600": { "$value": "#047eaf", "$type": "color" },
+      "700": { "$value": "#066289", "$type": "color" },
+      "800": { "$value": "#064360", "$type": "color" }
     },
     "purple": {
       "100": { "$value": "#f3e8ff", "$type": "color" },
@@ -61,7 +54,19 @@
       "700": { "$value": "#7e22ce", "$type": "color" },
       "800": { "$value": "#6b21a8", "$type": "color" }
     },
-    "gray": {
+    "teal": {
+      "$description": "Teal scale anchored at 500 = #4F8AA0. Hue ~196°, perceptually balanced from pale wash (100) to deep teal (800).",
+      "100": { "$value": "#edf5f7", "$type": "color" },
+      "200": { "$value": "#d5e6ec", "$type": "color" },
+      "300": { "$value": "#afceda", "$type": "color" },
+      "400": { "$value": "#80b0c2", "$type": "color" },
+      "500": { "$value": "#4f8aa0", "$type": "color" },
+      "600": { "$value": "#3c6d80", "$type": "color" },
+      "700": { "$value": "#2c5263", "$type": "color" },
+      "800": { "$value": "#1e3b48", "$type": "color" }
+    },
+    "cool-gray": {
+      "$description": "Cool-leaning neutral (slight blue undertone). Default neutral for most UI surfaces.",
       "100": { "$value": "#f3f4f6", "$type": "color" },
       "200": { "$value": "#e5e7eb", "$type": "color" },
       "300": { "$value": "#d1d5db", "$type": "color" },
@@ -70,6 +75,17 @@
       "600": { "$value": "#4b5563", "$type": "color" },
       "700": { "$value": "#374151", "$type": "color" },
       "800": { "$value": "#1f2937", "$type": "color" }
+    },
+    "warm-gray": {
+      "$description": "Warm-leaning neutral (subtle brown undertone). Use for editorial / content-heavy surfaces or to soften reading interfaces.",
+      "100": { "$value": "#f5f5f4", "$type": "color" },
+      "200": { "$value": "#e7e5e4", "$type": "color" },
+      "300": { "$value": "#d6d3d1", "$type": "color" },
+      "400": { "$value": "#a8a29e", "$type": "color" },
+      "500": { "$value": "#78716c", "$type": "color" },
+      "600": { "$value": "#57534e", "$type": "color" },
+      "700": { "$value": "#44403c", "$type": "color" },
+      "800": { "$value": "#292524", "$type": "color" }
     },
     "alpha": {
       "$description": "Black-based transparency overlays for scrims, hovers, dividers.",

@@ -124,35 +124,166 @@ const app = document.getElementById('app')!;
         'Connex is structured as a private monorepo. Each package versions independently and ships to a private npm registry.',
       ),
       cards,
+      header(
+        'Density',
+        'Default vs. condensed. Condensed tightens typography line-heights so data-dense interfaces (agent desktops, tables) read more compactly without losing legibility.',
+      ),
+      header(
+        'Accessibility',
+        'WCAG 2.1 AA is the baseline for color contrast, focus indicators, keyboard navigation, and screen-reader semantics. Components honor `prefers-reduced-motion`. Logical CSS properties (margin-inline, padding-block) are used throughout for future RTL support.',
+      ),
+      header(
+        'Motion principles',
+        'Motion is purposeful: enter motion decelerates (eases the user in), exit motion accelerates (gets out of the way), hover/focus is fast (≤150ms). Every animated component honors `prefers-reduced-motion: reduce` by collapsing durations to 0.',
+      ),
     ),
   );
 }
 
 // foundation-theming
 {
-  const grid = el('div', { class: 'foundation-grid' });
-  grid.append(
+  // Helper: a small pill-style card showing a theme option
+  const themePill = (label: string, attr: string) =>
     el(
       'div',
-      { class: 'foundation-card' },
-      el('h4', {}, '[data-theme]'),
-      el('p', {}, 'light · dark — semantic color tokens flip; primitives stay constant.'),
+      { class: 'theme-pill' },
+      el('span', { class: 'theme-pill__label' }, label),
+      el('code', { class: 'theme-pill__code' }, attr),
+    );
+
+  // Products
+  const products: Array<[string, string]> = [
+    ['Empath', 'data-product="empath"'],
+    ['Sage', 'data-product="sage"'],
+    ['OneComm', 'data-product="onecomm"'],
+    ['Athena', 'data-product="athena"'],
+    ['Graffiti', 'data-product="graffiti"'],
+    ['Hubble', 'data-product="hubble"'],
+    ['Voyant', 'data-product="voyant"'],
+    ['ECHO', 'data-product="echo"'],
+    ['E4A', 'data-product="e4a"'],
+  ];
+
+  const productsBlock = el(
+    'section',
+    { class: 'theme-section' },
+    el('h3', { class: 'theme-section__heading' }, 'Products'),
+    el(
+      'p',
+      { class: 'theme-section__lede' },
+      'Each product gets its own theme. Product themes set brand colors, logos, and any product-specific token overrides while everything else (typography, spacing, motion, primitives) stays consistent across the system.',
+    ),
+    el('div', { class: 'theme-pill-grid' }, ...products.map(([n, a]) => themePill(n, a))),
+  );
+
+  // Custom themes
+  const customBlock = el(
+    'section',
+    { class: 'theme-section' },
+    el('h3', { class: 'theme-section__heading' }, 'Custom themes'),
+    el(
+      'p',
+      { class: 'theme-section__lede' },
+      'Two orthogonal axes that adapt the system to user preference and information density.',
     ),
     el(
       'div',
-      { class: 'foundation-card' },
-      el('h4', {}, '[data-density]'),
-      el('p', {}, 'default · condensed — typography line-heights and (later) component padding tighten for dense UIs.'),
-    ),
-    el(
-      'div',
-      { class: 'foundation-card' },
-      el('h4', {}, '[data-brand]'),
+      { class: 'theme-subgroup-grid' },
       el(
-        'p',
-        {},
-        'connex · empath · sage · onecomm · athena · graffiti · hubble · voyant · echo · e4a — brand color slots scope per product.',
+        'div',
+        { class: 'theme-subgroup' },
+        el('h4', { class: 'theme-subgroup__heading' }, 'Color'),
+        el(
+          'p',
+          { class: 'theme-subgroup__lede' },
+          'Light is the default. Dark flips semantic color tokens for low-light environments and reduced eye strain.',
+        ),
+        el(
+          'div',
+          { class: 'theme-pill-grid' },
+          themePill('Light', 'data-theme="light"'),
+          themePill('Dark', 'data-theme="dark"'),
+        ),
       ),
+      el(
+        'div',
+        { class: 'theme-subgroup' },
+        el('h4', { class: 'theme-subgroup__heading' }, 'Data density'),
+        el(
+          'p',
+          { class: 'theme-subgroup__lede' },
+          'Default for general-purpose UIs. Condensed tightens typography line-heights and component padding for data-dense surfaces (agent desktops, tables, dashboards).',
+        ),
+        el(
+          'div',
+          { class: 'theme-pill-grid' },
+          themePill('Default', 'data-density="default"'),
+          themePill('Condensed', 'data-density="condensed"'),
+        ),
+      ),
+    ),
+  );
+
+  // Language — matches the Custom themes card layout
+  const languageBlock = el(
+    'section',
+    { class: 'theme-section' },
+    el('h3', { class: 'theme-section__heading' }, 'Language'),
+    el(
+      'p',
+      { class: 'theme-section__lede' },
+      'Component strings are translated via @lit/localize. Set the language on the root element; locale bundles are lazy-loaded so apps that only ship English pay nothing for other locales.',
+    ),
+    el(
+      'div',
+      { class: 'theme-subgroup-grid' },
+      el(
+        'div',
+        { class: 'theme-subgroup' },
+        el('h4', { class: 'theme-subgroup__heading' }, 'Locale'),
+        el(
+          'p',
+          { class: 'theme-subgroup__lede' },
+          'English is the default. Additional locales are added by registering a translation bundle with @lit/localize and setting the lang attribute on the root.',
+        ),
+        el(
+          'div',
+          { class: 'theme-pill-grid' },
+          themePill('English', 'lang="en"'),
+          themePill('Spanish', 'lang="es"'),
+        ),
+      ),
+    ),
+  );
+
+  // Composition note
+  const compositionBlock = el(
+    'section',
+    { class: 'theme-section composition-block' },
+    el('h3', { class: 'theme-section__heading' }, 'How themes layer'),
+    el(
+      'p',
+      { class: 'theme-section__lede' },
+      'Custom themes (Color and Data density) and Language are independent of the product theme — any combination is valid. A single product can run multiple custom-theme + language pairings simultaneously without rebuilds.',
+    ),
+    el('pre', { class: 'code-block' },
+`<html
+  lang="es"
+  data-product="empath"
+  data-theme="dark"
+  data-density="condensed"
+>
+  <!-- Empath, dark mode, condensed density, Spanish -->
+</html>`,
+    ),
+    el(
+      'ul',
+      { class: 'guideline-list' },
+      el('li', {}, 'Product theme sets the brand identity (colors, logo). Always required.'),
+      el('li', {}, 'Color theme defaults to light if not set. Dark is opt-in.'),
+      el('li', {}, 'Density defaults to default. Condensed is opt-in for dense surfaces.'),
+      el('li', {}, 'Language defaults to en if not set. Each locale ships as a separate, lazy-loaded bundle.'),
+      el('li', {}, "Any attribute can be set on a sub-tree — e.g., a single <section data-density=\"condensed\"> inside a default-density app — and the cascade does the rest."),
     ),
   );
 
@@ -161,45 +292,17 @@ const app = document.getElementById('app')!;
       'foundation-theming',
       header(
         'Theming',
-        'Themes are scoped via data attributes on any element (typically <html>). Switching theme/density/brand is a single attribute change — no rebundle, no FOUC.',
+        'Connex themes are scoped via data attributes on any element (typically <html>). Switching product, color, density, or language is a single attribute change — no rebundle, no FOUC.',
       ),
-      grid,
+      productsBlock,
+      customBlock,
+      languageBlock,
+      compositionBlock,
     ),
   );
 }
 
-// foundation-density
-app.append(
-  page(
-    'foundation-density',
-    header(
-      'Density',
-      'Default vs. condensed. Condensed tightens typography line-heights so data-dense interfaces (agent desktops, tables) read more compactly without losing legibility.',
-    ),
-  ),
-);
-
-// foundation-accessibility
-app.append(
-  page(
-    'foundation-accessibility',
-    header(
-      'Accessibility',
-      'WCAG 2.1 AA is the baseline for color contrast, focus indicators, keyboard navigation, and screen-reader semantics. Components honor `prefers-reduced-motion`. Logical CSS properties (margin-inline, padding-block) are used throughout for future RTL support.',
-    ),
-  ),
-);
-
-// foundation-motion-principles
-app.append(
-  page(
-    'foundation-motion-principles',
-    header(
-      'Motion principles',
-      'Motion is purposeful: enter motion decelerates (eases the user in), exit motion accelerates (gets out of the way), hover/focus is fast (≤150ms). Every animated component honors `prefers-reduced-motion: reduce` by collapsing durations to 0.',
-    ),
-  ),
-);
+// (Density, Accessibility, Motion principles are now sections inside foundation-overview.)
 
 // =================================================================
 // TOKENS
@@ -225,9 +328,13 @@ app.append(
       'Primitive color scales (100 lightest → 800 darkest), alpha overlays for scrims, plus white and black anchors.',
     ),
   );
-  const hues = ['red', 'orange', 'yellow', 'green', 'blue', 'purple', 'gray'];
+  const hues = ['red', 'yellow', 'green', 'teal', 'blue', 'purple', 'cool-gray', 'warm-gray'];
   for (const hue of hues) {
-    wrap.append(subhead(hue.charAt(0).toUpperCase() + hue.slice(1)));
+    const hueLabel = hue
+      .split('-')
+      .map((part, i) => (i === 0 ? part.charAt(0).toUpperCase() + part.slice(1) : part))
+      .join(' ');
+    wrap.append(subhead(hueLabel));
     const grid = el('div', { class: 'grid dense' });
     for (const stop of ['100', '200', '300', '400', '500', '600', '700', '800']) {
       grid.append(colorSwatch(`color-${hue}-${stop}`, `${hue}.${stop}`));
@@ -518,34 +625,6 @@ app.append(
   );
 
   rerender();
-
-  // Style comparison — same set of representative icons across all 4 styles
-  const featured = ['plus', 'check', 'x-mark', 'magnifying-glass', 'home', 'bell'];
-  for (const [style, label] of styleMeta) {
-    wrap.append(
-      el(
-        'div',
-        { class: 'preview-block' },
-        el('h3', { class: 'preview-block__title' }, `${label} — featured`),
-        el(
-          'p',
-          { class: 'preview-block__lede' },
-          style === 'outline'
-            ? 'Default for most UI surfaces — buttons, list rows, tabs.'
-            : style === 'solid'
-              ? 'Use for emphasis (active nav items, selected states) and brand surfaces.'
-              : style === 'mini'
-                ? 'Use inline next to body-size text and within compact controls.'
-                : 'Use only when space is severely constrained (table densities, badges).',
-        ),
-        el(
-          'div',
-          { class: 'icon-grid' },
-          ...featured.map((n) => iconCell(n, style)),
-        ),
-      ),
-    );
-  }
 
   // Sizing
   wrap.append(

@@ -108,12 +108,13 @@ function generateTailwindPreset() {
 
   const colors = {
     red: colorScale('red'),
-    orange: colorScale('orange'),
     yellow: colorScale('yellow'),
     green: colorScale('green'),
     blue: colorScale('blue'),
     purple: colorScale('purple'),
-    gray: colorScale('gray'),
+    teal: colorScale('teal'),
+    'cool-gray': colorScale('cool-gray'),
+    'warm-gray': colorScale('warm-gray'),
     alpha: colorScale('alpha'),
     'alpha-white': colorScale('alpha-white'),
     white: v('color-white'),
