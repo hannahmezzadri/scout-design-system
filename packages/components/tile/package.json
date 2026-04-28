@@ -14,6 +14,7 @@
     "lit": "^3.2.0",
     "@connex/tokens": "workspace:*",
     "@connex/badge": "workspace:*",
+    "@connex/button": "workspace:*",
     "@connex/show-more": "workspace:*",
     "@connex/skeleton": "workspace:*"
   },

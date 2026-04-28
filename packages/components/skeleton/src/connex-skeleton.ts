@@ -39,6 +39,15 @@ export class ConnexSkeleton extends LitElement {
       --_sk-w: 100%;
       --_sk-h: 14px;
     }
+    /* Dark theme — cool-gray.100/200 are bright on light surfaces but blow
+       out against dark surfaces. Drop the base/shimmer down a few steps so
+       the skeleton reads as a subtle placeholder instead of a glaring slab.
+       :host-context pierces the shadow boundary to read the theme attribute
+       on <html>; consumers can still override via the public custom props. */
+    :host-context([data-theme='dark']) {
+      --_sk-base: var(--connex-skeleton-base, var(--connex-color-cool-gray-800));
+      --_sk-shimmer: var(--connex-skeleton-shimmer, var(--connex-color-cool-gray-700));
+    }
 
     /* ---- Shape presets ---- */
     :host([shape='line'])   { --_sk-w: 100%;  --_sk-h: 14px; --_sk-radius: var(--connex-radius-4); }
@@ -62,7 +71,13 @@ export class ConnexSkeleton extends LitElement {
           var(--_sk-base) 100%
         );
       background-size: 200% 100%;
-      animation: shimmer var(--connex-motion-duration-deliberate, 1200ms)
+      /* Anchor the shimmer cycle to a multiple of the slowest motion token
+         (deliberate = 600ms × 3 ≈ 1800ms). The shimmer is an ambient,
+         indefinite loop — using a single tier of deliberate makes it twitchy
+         and demands attention; tripling gives a calm, low-distraction pulse
+         that better signals "loading, not interactive." */
+      animation: shimmer
+        calc(var(--connex-motion-duration-deliberate, 600ms) * 3)
         var(--connex-motion-easing-standard, ease-in-out) infinite;
     }
 

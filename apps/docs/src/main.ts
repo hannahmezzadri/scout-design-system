@@ -125,6 +125,25 @@ function ctrlCheck(
   return c;
 }
 
+/**
+ * Toggle a controls-panel field's enablement. The field stays visible (so the
+ * panel still tells the full prop story for the component / variant), but its
+ * inner control is disabled and the wrapper picks up `is-disabled` so the
+ * label dims via CSS. Used to gate child props by their parent — e.g. the
+ * "Workflow header state" field is disabled when the Tile variant is set to
+ * tile or tile-button. Last-set values are preserved across toggles.
+ */
+function setFieldDisabled(field: HTMLElement, control: HTMLElement, disabled: boolean): void {
+  field.classList.toggle('is-disabled', disabled);
+  if (disabled) control.setAttribute('disabled', '');
+  else control.removeAttribute('disabled');
+}
+
+/** Standard `.ctrl-field` wrapper used by every component's controls panel. */
+function ctrlField(label: string, htmlFor: string, control: HTMLElement): HTMLElement {
+  return el('div', { class: 'ctrl-field' }, el('label', { for: htmlFor }, label), control);
+}
+
 function page(id: string, ...children: (Node | string)[]): HTMLElement {
   return el('section', { id, class: 'page', 'data-page': id }, ...children);
 }
@@ -336,7 +355,7 @@ const app = document.getElementById('app')!;
   const hero = el('section', { class: 'overview-hero' },
     el('div', { class: 'overview-hero__copy' },
       el('div', { class: 'overview-hero__eyebrow' }, 'Connex'),
-      el('h2', { class: 'overview-hero__title' }, 'A web-only design system.'),
+      el('h2', { class: 'overview-hero__title' }, "Capital One's design system for internal products within Card Servicing"),
       el('p', { class: 'overview-hero__body' },
         'Connex empowers a family of products with a single, cohesive visual and interaction language. It is built on atomic design methodology and follows a tokens → components → patterns → templates structure. Tokens and components are specific to Connex and form the building blocks of the system. Patterns and templates ship in both core/shared form and product-specific form.'),
       el('div', { class: 'overview-hero__products' },
@@ -352,7 +371,7 @@ const app = document.getElementById('app')!;
   // Section grid — Taxonomy + Build, each rendered as a colored card.
   const grid = el('div', { class: 'overview-section-grid' },
     sectionCard({
-      tone: 'blue',
+      tone: 'teal',
       eyebrow: 'Taxonomy',
       title: 'How Connex is organized',
       body: 'Atomic design at the system level. Lower tiers compose into higher tiers; product-specific surfaces extend the shared core without forking it.',
@@ -382,21 +401,21 @@ const app = document.getElementById('app')!;
   // their own colored tile, mirroring the Taxonomy + Build cards above.
   const principles = el('div', { class: 'overview-section-grid overview-section-grid--3up' },
     sectionCard({
-      tone: 'purple',
+      tone: 'teal',
       eyebrow: 'Density',
       title: 'Default vs. condensed',
       body: 'Condensed tightens typography line-heights so data-dense interfaces (agent desktops, tables) read more compactly without losing legibility.',
       illustration: 'Density',
     }),
     sectionCard({
-      tone: 'green',
+      tone: 'teal',
       eyebrow: 'Accessibility',
       title: 'WCAG 2.1 AA baseline',
       body: 'Color contrast, focus indicators, keyboard navigation, and screen-reader semantics meet WCAG 2.1 AA. Components honor prefers-reduced-motion. Logical CSS properties (margin-inline, padding-block) are used throughout for future RTL support.',
       illustration: 'Accessibility',
     }),
     sectionCard({
-      tone: 'yellow',
+      tone: 'teal',
       eyebrow: 'Motion principles',
       title: 'Purposeful motion',
       body: 'Enter motion decelerates (eases the user in), exit motion accelerates (gets out of the way), hover/focus is fast (≤150ms). Every animated component honors prefers-reduced-motion: reduce by collapsing durations to 0.',
@@ -670,7 +689,7 @@ const app = document.getElementById('app')!;
 {
   type TokenEntry = { id: string; name: string; summary: string };
   const tokenEntries: TokenEntry[] = [
-    { id: 'colors',      name: 'Colors',       summary: 'Three layers of color: primitive scales (red, yellow, green, teal, blue, purple, cool gray, warm gray, alpha), semantic aliases for text / icon / background / border / fill, and per-product brand palettes scoped via [data-brand].' },
+    { id: 'colors',      name: 'Color',        summary: 'Three layers of color: primitive scales (red, yellow, green, teal, blue, purple, cool gray, warm gray, alpha), semantic aliases for text / icon / background / border / fill, and per-product brand palettes scoped via [data-brand].' },
     { id: 'typography',  name: 'Typography',   summary: 'Composite typography tokens. Literata for heading + display, Inter for everything else. Toggle Density to compare default vs. condensed.' },
     { id: 'iconography', name: 'Iconography',  summary: 'Hero Icons referenced via primitive icon tokens. Stroke and fill variants, sized at 16 / 20 / 24, themed via the icon-display / icon-interactive semantic tokens.' },
     { id: 'spacing',     name: 'Spacing',      summary: '4-based scale used for padding, margin, and gap. 0 / 4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 / 96.' },
@@ -953,7 +972,7 @@ const app = document.getElementById('app')!;
     page(
       'colors',
       header(
-        'Colors',
+        'Color',
         'Primitive color scales for the entire system, plus the semantic aliases components consume. Toggle the topbar Theme/Density to watch the semantic values shift.',
       'Token',
       ),
@@ -989,21 +1008,48 @@ const app = document.getElementById('app')!;
     ['label', 't-label', 'Connex is the best'],
     ['caption', 't-caption', 'Connex is the best'],
   ];
+  // Read each typography token's resolved size + line-height + weight from
+  // CSS vars so the specimen card shows the actual rendered metrics. These
+  // re-read on demand because [data-density="condensed"] swaps the values
+  // at runtime.
+  function typographyMetrics(name: string): { size: string; lineHeight: string; weight: string } {
+    const get = (prop: string) =>
+      getComputedStyle(html).getPropertyValue(`${PREFIX}-typography-${name}-${prop}`).trim();
+    return {
+      size:       get('font-size'),
+      lineHeight: get('line-height'),
+      weight:     get('font-weight'),
+    };
+  }
+
+  const specimens: Array<{ row: HTMLElement; sizeEl: HTMLElement; name: string }> = [];
   for (const [name, cls, sample] of styles) {
-    wrap.append(
+    const m = typographyMetrics(name);
+    const sizeEl = el('span', { class: 'value' }, `${m.size} / ${m.lineHeight} · ${m.weight}`);
+    const row = el(
+      'div',
+      { class: 'specimen' },
       el(
         'div',
-        { class: 'specimen' },
-        el(
-          'div',
-          { class: 'meta' },
-          el('span', { class: 'key' }, name),
-          el('span', { class: 'key' }, `var(${PREFIX}-typography-${name}-*)`),
-        ),
-        el('div', { class: cls }, sample),
+        { class: 'meta' },
+        el('span', { class: 'key' }, name),
+        sizeEl,
+        el('span', { class: 'key' }, `var(${PREFIX}-typography-${name}-*)`),
       ),
+      el('div', { class: cls }, sample),
     );
+    wrap.append(row);
+    specimens.push({ row, sizeEl, name });
   }
+  // Re-read metrics whenever density flips at the document root so the
+  // displayed size/line-height stays accurate.
+  const refreshTypographyMetrics = () => {
+    for (const s of specimens) {
+      const m = typographyMetrics(s.name);
+      s.sizeEl.textContent = `${m.size} / ${m.lineHeight} · ${m.weight}`;
+    }
+  };
+  densitySel.addEventListener('connex-dropdown-change', () => requestAnimationFrame(refreshTypographyMetrics));
   app.append(wrap);
 }
 
@@ -2429,10 +2475,40 @@ function addressPreview(): HTMLElement {
 
   block(
     'Select tools',
-    'Add a selector when the user is choosing addresses (delete, set primary, mail to). Use checkbox for multi-select; radio for choose-one.',
+    'Add a selector when the user is interacting with addresses. Use connex-checkbox to select one or many for a bulk action (delete, mail to, export). Wrap the address in connex-accordion when only the most recently used address should be visible by default and the rest collapsed.',
     el('div', { class: 'preview-stack' },
-      previewAddress({ label: 'Checkbox', selectTool: 'checkbox', selected: true, name: 'selected', value: 'addr-1' }),
-      previewAddress({ label: 'Radio',    selectTool: 'radio',    selected: true, name: 'primary',  value: 'addr-1' }),
+      // Checkbox composition — pairs <connex-checkbox> with the address.
+      // The checkbox is the actual Connex component (not the native input
+      // the address component embeds via selectTool="checkbox"), so the
+      // pattern reads as "checkbox + address" the same way it would in a
+      // bulk-select list.
+      (() => {
+        const row = el('div', { class: 'address-select-row' });
+        const cb = document.createElement('connex-checkbox') as HTMLElement & { checked: boolean };
+        cb.setAttribute('checked', '');
+        cb.setAttribute('aria-label', 'Select home address');
+        row.append(cb, previewAddress({ label: 'Home address', meta: 'Last verified Mar 2024 · Primary' }));
+        return row;
+      })(),
+      // Accordion composition — wraps the address in a <connex-accordion>
+      // so it can collapse to its label when other priorities take focus.
+      (() => {
+        const acc = document.createElement('connex-accordion');
+        acc.setAttribute('mode', 'single');
+        acc.setAttribute('size', 'md');
+        acc.setAttribute('icon-position', 'right');
+        acc.setAttribute('divider', '');
+        const item = document.createElement('connex-accordion-item');
+        item.setAttribute('label', 'Home address');
+        item.setAttribute('expanded', '');
+        item.append(previewAddress({ lines: ['1234 Maple Street', 'Apt 5B', 'Anywhere, USA 12345'] }));
+        acc.append(item);
+        const item2 = document.createElement('connex-accordion-item');
+        item2.setAttribute('label', 'Work address');
+        item2.append(previewAddress({ lines: ['450 Industrial Blvd', 'Suite 200', 'Anywhere, USA 12346'] }));
+        acc.append(item2);
+        return acc;
+      })(),
     ),
   );
 
@@ -2514,13 +2590,26 @@ function addressControls(): HTMLElement {
     codePre.textContent = `${opener}${body}${meta}</connex-address>`;
   }
 
-  for (const c of [labelInput, sizeSel, selectToolSel, orientationSel, favoriteChk, dndChk, selectedChk, disabledChk, metaInput]) {
-    c.addEventListener('input', render);
-    c.addEventListener('change', render);
+  // Selected only applies when a select tool (checkbox or radio) is set —
+  // gate the checkbox via the wrapper class. The actual checkbox stays in
+  // the .ctrl-checks group since it's not wrapped in .ctrl-field, so we
+  // toggle its disabled attribute directly and dim it via parent class.
+  function applyAddressGating() {
+    const hasSelector = selectToolSel.value !== 'none';
+    if (hasSelector) {
+      selectedChk.removeAttribute('disabled');
+      selectedChk.classList.remove('is-disabled');
+    } else {
+      selectedChk.setAttribute('disabled', '');
+      selectedChk.classList.add('is-disabled');
+    }
   }
 
-  const ctrlField = (labelText: string, htmlFor: string, control: HTMLElement) =>
-    el('div', { class: 'ctrl-field' }, el('label', { for: htmlFor }, labelText), control);
+  for (const c of [labelInput, sizeSel, selectToolSel, orientationSel, favoriteChk, dndChk, selectedChk, disabledChk, metaInput]) {
+    c.addEventListener('input', () => { applyAddressGating(); render(); });
+    c.addEventListener('change', () => { applyAddressGating(); render(); });
+  }
+  applyAddressGating();
 
   const panel = el('div', { class: 'ctrl-panel' },
     el('h3', { class: 'preview-block__title' }, 'Properties'),
@@ -2869,7 +2958,12 @@ function avatarControls(): HTMLElement {
   const titleSizeSel = ddSelect('av-title-size', ['medium', 'large'] as const);
   const notificationChk = ctrlCheck('av-notif', 'Notification dot');
 
+  // Title size only applies when a Title is set — gate it.
+  const titleSizeField = ctrlField('Title size', 'av-title-size', titleSizeSel);
+
   function render() {
+    setFieldDisabled(titleSizeField, titleSizeSel, !titleInput.value);
+
     stage.replaceChildren(previewAvatar({
       initials: initialsInput.value || 'HM',
       size: sizeSel.value as AvSize,
@@ -2892,15 +2986,13 @@ function avatarControls(): HTMLElement {
     c.addEventListener('input', render);
     c.addEventListener('change', render);
   }
-  const ctrlField = (l: string, f: string, c: HTMLElement) =>
-    el('div', { class: 'ctrl-field' }, el('label', { for: f }, l), c);
   const panel = el('div', { class: 'ctrl-panel' },
     el('h3', { class: 'preview-block__title' }, 'Properties'),
     ctrlField('Initials', 'av-initials', initialsInput),
     ctrlField('Size', 'av-size', sizeSel),
     ctrlField('Color', 'av-color', colorSel),
     ctrlField('Title', 'av-title', titleInput),
-    ctrlField('Title size', 'av-title-size', titleSizeSel),
+    titleSizeField,
     el('div', { class: 'ctrl-checks' }, notificationChk),
   );
   wrap.append(panel, el('div', { class: 'ctrl-stage-wrap' }, stage,
@@ -3093,7 +3185,7 @@ function badgePreview(): HTMLElement {
   // the right. Rendered as a real <table> so it scans like reference material.
   const usageRows: Array<{ badge: HTMLElement; note: string }> = [
     {
-      badge: previewBadge({ type: 'informational', icon: true, label: 'New' }),
+      badge: previewBadge({ type: 'informational', label: 'New' }),
       note: 'Use for new content such as features or questions in a form.',
     },
     {
@@ -3113,12 +3205,20 @@ function badgePreview(): HTMLElement {
       note: 'Use for error, blocked, or destructive states — e.g. a failed payment, a closed account, or a flagged dispute.',
     },
     {
-      badge: previewBadge({ type: 'neutral', label: 'Draft' }),
-      note: 'Use for unsaved or non-status categorization. Neutral never renders a prescribed icon — it\'s the catch-all when no semantic state applies.',
+      badge: previewBadge({ type: 'success', label: 'Enrolled' }),
+      note: 'Use to confirm a customer or account is enrolled in a program, plan, or service.',
     },
     {
-      badge: previewBadge({ type: 'neutral-knockout', label: 'Default' }),
-      note: 'Use as a low-key chip on colored or imagery surfaces where a filled badge would compete with the background.',
+      badge: previewBadge({ type: 'warning', label: 'Pending' }),
+      note: 'Use for enrollments that are submitted but not yet confirmed — awaiting verification, processing, or approval.',
+    },
+    {
+      badge: previewBadge({ type: 'neutral', label: 'Unenrolled' }),
+      note: 'Use to mark a customer or account that is not currently enrolled — never enrolled, opted out, or cancelled.',
+    },
+    {
+      badge: previewBadge({ type: 'critical', label: 'Canceled' }),
+      note: 'Use for terminated or revoked enrollments — accounts, plans, or subscriptions that were active and have since been cancelled.',
     },
   ];
 
@@ -3702,7 +3802,12 @@ function cardControls(): HTMLElement {
   const aiChk = ctrlCheck('card-ai', 'AI callout', { checked: true });
   const showMoreChk = ctrlCheck('card-showmore', 'Show more');
 
+  // AI label only applies when AI callout is enabled — gate it.
+  const aiLabelField = ctrlField('AI label', 'card-ailabel', aiLabelInput);
+
   function render() {
+    setFieldDisabled(aiLabelField, aiLabelInput, !aiChk.checked);
+
     stage.replaceChildren(previewCard({
       background: bgSel.value as CardBg,
       accentBar: accentBarChk.checked,
@@ -3724,13 +3829,11 @@ function cardControls(): HTMLElement {
     c.addEventListener('input', render);
     c.addEventListener('change', render);
   }
-  const ctrlField = (l: string, f: string, c: HTMLElement) =>
-    el('div', { class: 'ctrl-field' }, el('label', { for: f }, l), c);
   const panel = el('div', { class: 'ctrl-panel' },
     el('h3', { class: 'preview-block__title' }, 'Properties'),
     ctrlField('Background', 'card-bg', bgSel),
     ctrlField('Body', 'card-body', bodyInput),
-    ctrlField('AI label', 'card-ailabel', aiLabelInput),
+    aiLabelField,
     el('div', { class: 'ctrl-checks' },
       accentBarChk,
       aiChk,
@@ -6829,23 +6932,29 @@ function notificationBadgeControls(): HTMLElement {
   sizeSel.value = 'medium';
   const countInput = ctrlText('nb-count', '3');
 
+  // The Number field only applies to the count variants (small / medium).
+  // Dot variants (xx-small / x-small) ignore the value, so disable the
+  // field when one of those is active.
+  const countField = ctrlField('Number (small/medium only)', 'nb-count', countInput);
+
   function render() {
     const size = sizeSel.value as NBSize;
-    const count = (size === 'small' || size === 'medium') ? countInput.value : '';
+    const isCountSize = size === 'small' || size === 'medium';
+    setFieldDisabled(countField, countInput, !isCountSize);
+
+    const count = isCountSize ? countInput.value : '';
     stage.replaceChildren(previewNotificationBadge({ size, count: count || undefined }));
-    const slot = (size === 'small' || size === 'medium') && count ? count : '';
+    const slot = isCountSize && count ? count : '';
     codePre.textContent = `<connex-notification-badge size="${size}">${slot}</connex-notification-badge>`;
   }
   for (const c of [sizeSel, countInput]) {
     c.addEventListener('input', render);
     c.addEventListener('change', render);
   }
-  const ctrlField = (l: string, f: string, c: HTMLElement) =>
-    el('div', { class: 'ctrl-field' }, el('label', { for: f }, l), c);
   const panel = el('div', { class: 'ctrl-panel' },
     el('h3', { class: 'preview-block__title' }, 'Properties'),
     ctrlField('Size', 'nb-size', sizeSel),
-    ctrlField('Number (small/medium only)', 'nb-count', countInput),
+    countField,
   );
   wrap.append(panel, el('div', { class: 'ctrl-stage-wrap' }, stage,
     el('div', { class: 'code-wrap' }, el('h3', { class: 'preview-block__title' }, 'Code'), codePre)));
@@ -8346,6 +8455,7 @@ interface TextFieldOpts {
   helper?: string;
   error?: string;
   disabled?: boolean;
+  optional?: boolean;
   confirmTarget?: string;
   id?: string;
 }
@@ -8360,6 +8470,7 @@ function previewTextField(opts: TextFieldOpts = {}): HTMLElement {
   if (opts.helper) f.setAttribute('helper', opts.helper);
   if (opts.error) f.setAttribute('error', opts.error);
   if (opts.disabled) f.setAttribute('disabled', '');
+  if (opts.optional) f.setAttribute('optional', '');
   if (opts.confirmTarget) f.setAttribute('confirm-target', opts.confirmTarget);
   if (opts.id) f.id = opts.id;
   return f;
@@ -8373,6 +8484,7 @@ interface TextAreaOpts {
   helper?: string;
   error?: string;
   disabled?: boolean;
+  optional?: boolean;
   rows?: number;
 }
 function previewTextArea(opts: TextAreaOpts = {}): HTMLElement {
@@ -8384,6 +8496,7 @@ function previewTextArea(opts: TextAreaOpts = {}): HTMLElement {
   if (opts.helper) t.setAttribute('helper', opts.helper);
   if (opts.error) t.setAttribute('error', opts.error);
   if (opts.disabled) t.setAttribute('disabled', '');
+  if (opts.optional) t.setAttribute('optional', '');
   if (typeof opts.rows === 'number') t.setAttribute('rows', String(opts.rows));
   return t;
 }
@@ -8544,6 +8657,7 @@ function textInputControls(): HTMLElement {
   const errorInput = ctrlText('ti-error', '');
   const valueInput = ctrlText('ti-value', '');
   const disabledChk = ctrlCheck('ti-disabled', 'Disabled');
+  const optionalChk = ctrlCheck('ti-optional', 'Optional label');
 
   function render() {
     const node = previewTextField({
@@ -8555,6 +8669,7 @@ function textInputControls(): HTMLElement {
       helper: helperInput.value,
       error: errorInput.value,
       disabled: disabledChk.checked,
+      optional: optionalChk.checked,
     });
     node.addEventListener('input', () => {
       valueInput.value = (node as any).value ?? '';
@@ -8572,14 +8687,13 @@ function textInputControls(): HTMLElement {
     if (helperInput.value) attrs.push(`helper="${helperInput.value}"`);
     if (errorInput.value) attrs.push(`error="${errorInput.value}"`);
     if (disabledChk.checked) attrs.push('disabled');
+    if (optionalChk.checked) attrs.push('optional');
     codePre.textContent = `<connex-text-field\n  ${attrs.join('\n  ')}\n></connex-text-field>`;
   }
-  for (const c of [variantSel, sizeSel, labelInput, placeholderInput, helperInput, errorInput, valueInput, disabledChk]) {
+  for (const c of [variantSel, sizeSel, labelInput, placeholderInput, helperInput, errorInput, valueInput, disabledChk, optionalChk]) {
     c.addEventListener('input', render);
     c.addEventListener('change', render);
   }
-  const ctrlField = (l: string, f: string, c: HTMLElement) =>
-    el('div', { class: 'ctrl-field' }, el('label', { for: f }, l), c);
   const panel = el('div', { class: 'ctrl-panel' },
     el('h3', { class: 'preview-block__title' }, 'Properties'),
     ctrlField('Variant', 'ti-variant', variantSel),
@@ -8591,6 +8705,7 @@ function textInputControls(): HTMLElement {
     ctrlField('Error', 'ti-error', errorInput),
     el('div', { class: 'ctrl-checks' },
       disabledChk,
+      optionalChk,
     ),
   );
   wrap.append(panel, el('div', { class: 'ctrl-stage-wrap' }, stage,
@@ -8990,8 +9105,25 @@ function tileControls(): HTMLElement {
   const wfFooterSel = ddSelect('tl-wf-footer', ['cancel-save', 'cancel-submit', 'cancel-continue', 'done', 'none']);
   const advFooterSel = ddSelect('tl-adv-footer', ['none', 'button-tertiary', 'show-more']);
 
+  // Variant-specific fields stay visible at all times so the controls panel
+  // tells the full story of every prop the component accepts. Fields whose
+  // underlying property doesn't apply to the active variant are disabled
+  // via the shared setFieldDisabled helper.
+  const wfStateField   = ctrlField('Workflow header state', 'tl-wf-state',  wfStateSel);
+  const wfFooterField  = ctrlField('Workflow footer',       'tl-wf-footer', wfFooterSel);
+  const advFooterField = ctrlField('Advanced footer',       'tl-adv-footer', advFooterSel);
+
   function render() {
     const v = variantSel.value;
+
+    // Variant-gated enablement — workflow header state + footer only apply
+    // to tile-workflow; advanced footer only applies to tile.
+    const workflowApplies = v === 'tile-workflow';
+    const advFooterApplies = v === 'tile';
+    setFieldDisabled(wfStateField,   wfStateSel,   !workflowApplies);
+    setFieldDisabled(wfFooterField,  wfFooterSel,  !workflowApplies);
+    setFieldDisabled(advFooterField, advFooterSel, !advFooterApplies);
+
     let node: HTMLElement;
     if (v === 'tile-button') {
       node = makeTileButton({
@@ -9032,17 +9164,15 @@ function tileControls(): HTMLElement {
     c.addEventListener('input', render);
     c.addEventListener('change', render);
   }
-  const ctrlField = (l: string, f: string, c: HTMLElement) =>
-    el('div', { class: 'ctrl-field' }, el('label', { for: f }, l), c);
   const panel = el('div', { class: 'ctrl-panel' },
     el('h3', { class: 'preview-block__title' }, 'Properties'),
-    ctrlField('Variant', 'tl-variant', variantSel),
-    ctrlField('Functional state', 'tl-state', stateSel),
-    ctrlField('Header', 'tl-header', headerInput),
-    ctrlField('Subhead', 'tl-subhead', subheadInput),
-    ctrlField('Workflow header state', 'tl-wf-state', wfStateSel),
-    ctrlField('Workflow footer', 'tl-wf-footer', wfFooterSel),
-    ctrlField('Advanced footer', 'tl-adv-footer', advFooterSel),
+    ctrlField('Variant',          'tl-variant', variantSel),
+    ctrlField('Functional state', 'tl-state',   stateSel),
+    ctrlField('Header',           'tl-header',  headerInput),
+    ctrlField('Subhead',          'tl-subhead', subheadInput),
+    wfStateField,
+    wfFooterField,
+    advFooterField,
   );
   wrap.append(panel, el('div', { class: 'ctrl-stage-wrap' }, stage,
     el('div', { class: 'code-wrap' }, el('h3', { class: 'preview-block__title' }, 'Code'), codePre)));
@@ -9577,18 +9707,29 @@ function paginationControls(): HTMLElement {
     if (disabledChk.checked) attrs.push('disabled');
     codePre.textContent = `<connex-pagination ${attrs.join(' ')}></connex-pagination>`;
   }
+  // Layout gates page-input (only meaningful when page numbers render) and
+  // page-size (only meaningful when the items-per-page dropdown renders).
+  const pageField     = ctrlField('Page',      'pg-page',     pageInput);
+  const pageSizeField = ctrlField('Page size', 'pg-pagesize', pageSizeInput);
+
   for (const c of [layoutSel, sizeSel, pageInput, pageSizeInput, totalInput, disabledChk]) {
-    c.addEventListener('input', render);
-    c.addEventListener('change', render);
+    c.addEventListener('input', () => { applyGating(); render(); });
+    c.addEventListener('change', () => { applyGating(); render(); });
   }
-  const ctrlField = (l: string, f: string, c: HTMLElement) =>
-    el('div', { class: 'ctrl-field' }, el('label', { for: f }, l), c);
+  function applyGating() {
+    const layout = layoutSel.value;
+    const showsPages    = layout === 'page-numbers' || layout === 'both';
+    const showsItemDD   = layout === 'item-dropdown' || layout === 'both';
+    setFieldDisabled(pageField,     pageInput,     !showsPages);
+    setFieldDisabled(pageSizeField, pageSizeInput, !showsItemDD);
+  }
+  applyGating();
   const panel = el('div', { class: 'ctrl-panel' },
     el('h3', { class: 'preview-block__title' }, 'Properties'),
     ctrlField('Layout', 'pg-layout', layoutSel),
     ctrlField('Size', 'pg-size', sizeSel),
-    ctrlField('Page', 'pg-page', pageInput),
-    ctrlField('Page size', 'pg-pagesize', pageSizeInput),
+    pageField,
+    pageSizeField,
     ctrlField('Total', 'pg-total', totalInput),
     el('div', { class: 'ctrl-checks' }, disabledChk),
   );
@@ -11975,7 +12116,15 @@ function showMoreControls(): HTMLElement {
   const expandedChk = ctrlCheck('sm-expanded', 'Expanded');
   const disabledChk = ctrlCheck('sm-disabled', 'Disabled');
 
+  // The two label inputs gate by Expanded — only the visible label applies
+  // at any given moment. Show label = collapsed; Hide label = expanded.
+  const showField = ctrlField('Show label', 'sm-show', showInput);
+  const hideField = ctrlField('Hide label', 'sm-hide', hideInput);
+
   function render() {
+    setFieldDisabled(showField, showInput,  expandedChk.checked);
+    setFieldDisabled(hideField, hideInput, !expandedChk.checked);
+
     stage.replaceChildren(previewShowMore({
       size: sizeSel.value as ShowMoreSize,
       showLabel: showInput.value,
@@ -12000,13 +12149,11 @@ function showMoreControls(): HTMLElement {
     c.addEventListener('input', render);
     c.addEventListener('change', render);
   }
-  const ctrlField = (l: string, f: string, c: HTMLElement) =>
-    el('div', { class: 'ctrl-field' }, el('label', { for: f }, l), c);
   const panel = el('div', { class: 'ctrl-panel' },
     el('h3', { class: 'preview-block__title' }, 'Properties'),
     ctrlField('Size', 'sm-size', sizeSel),
-    ctrlField('Show label', 'sm-show', showInput),
-    ctrlField('Hide label', 'sm-hide', hideInput),
+    showField,
+    hideField,
     el('div', { class: 'ctrl-checks' },
       expandedChk,
       disabledChk,
@@ -12450,7 +12597,11 @@ import '@connex/anchor-links';
       href: 'patterns-anchor-links',
     }),
     overviewTile({ title: 'Data display',      summary: 'Lists, tables, and grids for showing structured records at scale. Sorting, density, empty + loading states.', comingSoon: true }),
-    overviewTile({ title: 'Data table pattern', summary: 'Toolbar + table + pagination. Filtering, sorting, bulk actions, row selection.', comingSoon: true }),
+    overviewTile({
+      title: 'Data table',
+      summary: 'Rows and columns of structured data. Optional table / section / column headers, expandable rows, selectable rows, and a paginated or show-more footer.',
+      href: 'patterns-data-table',
+    }),
     overviewTile({ title: 'Data viz',         summary: 'Charts and visualizations for trends, comparisons, and distributions. Tokenized colors, accessible legends, responsive sizing.', comingSoon: true }),
     overviewTile({ title: 'Filter',           summary: 'Faceted filter rail + chip summary. Multi-select, date ranges, clear-all.', comingSoon: true }),
     overviewTile({ title: 'Form',             summary: 'Field grouping, inline validation, submission states, error summaries.', comingSoon: true }),
@@ -12816,6 +12967,672 @@ import '@connex/anchor-links';
   ));
 }
 
+// -----------------------------------------------------------------
+// Data table pattern — composed from existing Connex components rather
+// than a standalone Lit element, so the docs assemble the markup directly.
+// Each variant (display-only, selectable, expandable, paginated, show-more)
+// is rendered as a real <table> styled by tokens, with checkboxes,
+// pagination, show-more, and accordion content slotted in from their
+// respective component packages.
+// -----------------------------------------------------------------
+{
+  type DTSize = 'default' | 'condensed';
+  type DTRow = {
+    /** Stable identifier for the row, used for selection state. */
+    id: string;
+    /** Cell values keyed by column id. Strings render as text. */
+    cells: Record<string, string>;
+    /** Optional secondary text rendered below the first cell. */
+    secondary?: string;
+    /** Optional expandable detail content (string or HTMLElement). */
+    detail?: string | HTMLElement;
+  };
+  type DTColumn = {
+    id: string;
+    label: string;
+    sortable?: boolean;
+    align?: 'left' | 'right';
+    width?: string;
+  };
+
+  // === Sample data ================================================
+  const accountColumns: DTColumn[] = [
+    { id: 'name',    label: 'Account',  sortable: true },
+    { id: 'plan',    label: 'Plan' },
+    { id: 'status',  label: 'Status' },
+    { id: 'balance', label: 'Balance', align: 'right', sortable: true },
+  ];
+  const accountRows: DTRow[] = [
+    { id: 'a1', cells: { name: 'Hannah Mezzadri',  plan: 'Premium',  status: 'enrolled',   balance: '$0.00'   }, secondary: 'acct ····4429' },
+    { id: 'a2', cells: { name: 'Jordan Diaz',      plan: 'Standard', status: 'pending',    balance: '$124.50' }, secondary: 'acct ····8861' },
+    { id: 'a3', cells: { name: 'Ali Bautista',     plan: 'Premium',  status: 'enrolled',   balance: '$0.00'   }, secondary: 'acct ····0042' },
+    { id: 'a4', cells: { name: 'Sam Caro',         plan: 'Lite',     status: 'unenrolled', balance: '—'       }, secondary: 'acct ····7715' },
+    { id: 'a5', cells: { name: 'Rin Ito',          plan: 'Standard', status: 'canceled',   balance: '—'       }, secondary: 'acct ····3320' },
+  ];
+
+  // === Helpers ====================================================
+  /** Render a status cell as a low-emphasis Connex badge so the docs
+   *  dogfood the prescriptive enrollment-lifecycle variants we just
+   *  added (Enrolled / Pending / Unenrolled / Canceled). */
+  function statusBadge(value: string): HTMLElement {
+    const map: Record<string, { type: string; label: string }> = {
+      enrolled:   { type: 'success',  label: 'Enrolled'   },
+      pending:    { type: 'warning',  label: 'Pending'    },
+      unenrolled: { type: 'neutral',  label: 'Unenrolled' },
+      canceled:   { type: 'critical', label: 'Canceled'   },
+    };
+    const meta = map[value] ?? { type: 'neutral', label: value };
+    const b = document.createElement('connex-badge');
+    b.setAttribute('type', meta.type);
+    b.setAttribute('emphasis', 'low');
+    b.setAttribute('size', 'condensed');
+    b.textContent = meta.label;
+    return b;
+  }
+
+  /** Build the <thead> column-header row. Adds a sort affordance to
+   *  sortable columns and an optional leading checkbox cell when the
+   *  table is selectable. */
+  function thead(opts: {
+    columns: DTColumn[];
+    selectable?: boolean;
+    expandable?: boolean;
+    sortKey?: string;
+    sortDir?: 'asc' | 'desc';
+    onToggleAll?: (selected: boolean) => void;
+    allSelected?: boolean;
+  }): HTMLElement {
+    const tr = el('tr', { class: 'dt-row dt-row--header' });
+    if (opts.selectable) {
+      const cell = el('th', { class: 'dt-cell dt-cell--select', scope: 'col' });
+      const cb = document.createElement('connex-checkbox') as HTMLElement & { checked: boolean };
+      cb.setAttribute('aria-label', 'Select all rows');
+      if (opts.allSelected) cb.setAttribute('checked', '');
+      cb.addEventListener('connex-checkbox-change', () => {
+        opts.onToggleAll?.(cb.checked);
+      });
+      cell.append(cb);
+      tr.append(cell);
+    }
+    if (opts.expandable) {
+      tr.append(el('th', { class: 'dt-cell dt-cell--expand', 'aria-hidden': 'true' }));
+    }
+    for (const col of opts.columns) {
+      const cell = el('th', {
+        class: `dt-cell dt-cell--header${col.align === 'right' ? ' dt-cell--right' : ''}`,
+        scope: 'col',
+        'aria-sort': col.sortable
+          ? opts.sortKey === col.id
+            ? (opts.sortDir === 'desc' ? 'descending' : 'ascending')
+            : 'none'
+          : '',
+      });
+      if (col.sortable) {
+        const btn = el('button', { class: 'dt-sort', type: 'button' },
+          el('span', {}, col.label),
+          el('span', { class: 'dt-sort__icon', 'aria-hidden': 'true' },
+            opts.sortKey === col.id && opts.sortDir === 'desc' ? '↓' : '↑'),
+        );
+        cell.append(btn);
+      } else {
+        cell.append(document.createTextNode(col.label));
+      }
+      tr.append(cell);
+    }
+    return tr;
+  }
+
+  /** Render a single body row with optional select / expand affordances. */
+  function bodyRow(row: DTRow, opts: {
+    columns: DTColumn[];
+    selectable?: boolean;
+    selected?: Set<string>;
+    onToggle?: (id: string, selected: boolean) => void;
+    expandable?: boolean;
+    expanded?: Set<string>;
+    onExpand?: (id: string, open: boolean) => void;
+  }): HTMLElement[] {
+    const tr = el('tr', {
+      class: `dt-row dt-row--body${opts.selected?.has(row.id) ? ' dt-row--selected' : ''}`,
+    });
+
+    if (opts.selectable) {
+      const cell = el('td', { class: 'dt-cell dt-cell--select' });
+      const cb = document.createElement('connex-checkbox') as HTMLElement & { checked: boolean };
+      cb.setAttribute('aria-label', `Select ${row.cells[opts.columns[0]?.id ?? ''] ?? row.id}`);
+      if (opts.selected?.has(row.id)) cb.setAttribute('checked', '');
+      cb.addEventListener('connex-checkbox-change', () => {
+        opts.onToggle?.(row.id, cb.checked);
+      });
+      cell.append(cb);
+      tr.append(cell);
+    }
+
+    if (opts.expandable) {
+      const cell = el('td', { class: 'dt-cell dt-cell--expand' });
+      const isOpen = !!opts.expanded?.has(row.id);
+      const btn = el('button', {
+        type: 'button',
+        class: `dt-expand-btn${isOpen ? ' dt-expand-btn--open' : ''}`,
+        'aria-expanded': String(isOpen),
+        'aria-label': isOpen ? 'Collapse row' : 'Expand row',
+      }, '›');
+      btn.addEventListener('click', () => opts.onExpand?.(row.id, !isOpen));
+      cell.append(btn);
+      tr.append(cell);
+    }
+
+    opts.columns.forEach((col, i) => {
+      const cell = el('td', {
+        class: `dt-cell dt-cell--body${col.align === 'right' ? ' dt-cell--right' : ''}`,
+      });
+      const value = row.cells[col.id] ?? '';
+      if (col.id === 'status') {
+        cell.append(statusBadge(value));
+      } else if (i === 0 && row.secondary) {
+        cell.append(
+          el('div', { class: 'dt-cell__primary' }, value),
+          el('div', { class: 'dt-cell__secondary' }, row.secondary),
+        );
+      } else {
+        cell.append(document.createTextNode(value));
+      }
+      tr.append(cell);
+    });
+
+    const out: HTMLElement[] = [tr];
+
+    // Expandable detail row — rendered as a second <tr> that the toggle
+    // shows/hides. Spans the full set of columns (plus select / expand
+    // affordance cells) so the detail content fills the row width.
+    if (opts.expandable && opts.expanded?.has(row.id)) {
+      const totalCols = opts.columns.length + (opts.selectable ? 1 : 0) + 1;
+      const detail = el('tr', { class: 'dt-row dt-row--detail' },
+        el('td', { class: 'dt-cell dt-cell--detail', colspan: String(totalCols) },
+          el('div', { class: 'dt-detail-body' },
+            typeof row.detail === 'string' || row.detail === undefined
+              ? document.createTextNode(typeof row.detail === 'string'
+                  ? row.detail
+                  : `Expanded detail for ${row.cells[opts.columns[0]?.id ?? ''] ?? row.id}. Anything you'd put in a side panel — call notes, payment history, related accounts — fits here.`)
+              : row.detail,
+          ),
+        ),
+      );
+      out.push(detail);
+    }
+
+    return out;
+  }
+
+  /** Optional table-level header strip rendered above the column headers. */
+  function tableHeaderRow(opts: {
+    title: string;
+    description?: string;
+    action?: { label: string; href?: string; onClick?: () => void };
+    columnSpan: number;
+  }): HTMLElement {
+    const tr = el('tr', { class: 'dt-row dt-row--table-header' });
+    const cell = el('th', { class: 'dt-cell dt-cell--table-header', colspan: String(opts.columnSpan), scope: 'colgroup' });
+    cell.append(
+      el('div', { class: 'dt-table-header__copy' },
+        el('div', { class: 'dt-table-header__title' }, opts.title),
+        ...(opts.description
+          ? [el('div', { class: 'dt-table-header__description' }, opts.description)]
+          : []),
+      ),
+    );
+    if (opts.action) {
+      const btn = document.createElement('connex-button');
+      btn.setAttribute('variant', 'tertiary');
+      btn.setAttribute('size', 'condensed');
+      btn.textContent = opts.action.label;
+      if (opts.action.onClick) btn.addEventListener('click', opts.action.onClick);
+      cell.append(el('div', { class: 'dt-table-header__action' }, btn));
+    }
+    tr.append(cell);
+    return tr;
+  }
+
+  /** Optional in-body section header — separates rows into named groups. */
+  function sectionHeaderRow(label: string, columnSpan: number): HTMLElement {
+    return el('tr', { class: 'dt-row dt-row--section' },
+      el('th', { class: 'dt-cell dt-cell--section', colspan: String(columnSpan), scope: 'colgroup' }, label),
+    );
+  }
+
+  /** Top-level data-table builder. Accepts options for every variant
+   *  (selectable, expandable, sectioned, sized, with a header row and
+   *  any of the supported footers) and returns a fully-wired HTMLElement. */
+  function buildDataTable(opts: {
+    columns: DTColumn[];
+    rows: DTRow[];
+    size?: DTSize;
+    header?: { title: string; description?: string; action?: { label: string; onClick?: () => void } };
+    sections?: Array<{ label: string; rowIds: string[] }>;
+    selectable?: boolean;
+    expandable?: boolean;
+    footer?: 'none' | 'pagination' | 'show-more';
+  }): HTMLElement {
+    const size = opts.size ?? 'default';
+    const selected = new Set<string>();
+    const expanded = new Set<string>();
+    let allSelected = false;
+    let showMoreCount = 3;
+
+    const wrap = el('div', {
+      class: `dt-pattern dt-pattern--${size}`,
+      role: 'region',
+      'aria-label': opts.header?.title ?? 'Data table',
+    });
+
+    function rerender() {
+      const totalCols = opts.columns.length + (opts.selectable ? 1 : 0) + (opts.expandable ? 1 : 0);
+      const table = el('table', { class: 'dt-table' });
+      const head = el('thead', {});
+
+      if (opts.header) {
+        head.append(tableHeaderRow({
+          title: opts.header.title,
+          description: opts.header.description,
+          action: opts.header.action,
+          columnSpan: totalCols,
+        }));
+      }
+
+      head.append(thead({
+        columns: opts.columns,
+        selectable: opts.selectable,
+        expandable: opts.expandable,
+        allSelected,
+        onToggleAll: (sel) => {
+          allSelected = sel;
+          if (sel) for (const r of opts.rows) selected.add(r.id);
+          else selected.clear();
+          rerender();
+        },
+      }));
+
+      const body = el('tbody', {});
+
+      // Footer = show-more clamps the visible row count.
+      const visibleRows = opts.footer === 'show-more'
+        ? opts.rows.slice(0, showMoreCount)
+        : opts.rows;
+
+      if (opts.sections && opts.sections.length) {
+        for (const sec of opts.sections) {
+          body.append(sectionHeaderRow(sec.label, totalCols));
+          for (const id of sec.rowIds) {
+            const r = visibleRows.find((row) => row.id === id);
+            if (!r) continue;
+            for (const node of bodyRow(r, {
+              columns: opts.columns,
+              selectable: opts.selectable,
+              selected,
+              onToggle: (rid, sel) => {
+                if (sel) selected.add(rid); else selected.delete(rid);
+                allSelected = selected.size === opts.rows.length;
+                rerender();
+              },
+              expandable: opts.expandable,
+              expanded,
+              onExpand: (rid, open) => {
+                if (open) expanded.add(rid); else expanded.delete(rid);
+                rerender();
+              },
+            })) body.append(node);
+          }
+        }
+      } else {
+        for (const r of visibleRows) {
+          for (const node of bodyRow(r, {
+            columns: opts.columns,
+            selectable: opts.selectable,
+            selected,
+            onToggle: (rid, sel) => {
+              if (sel) selected.add(rid); else selected.delete(rid);
+              allSelected = selected.size === opts.rows.length;
+              rerender();
+            },
+            expandable: opts.expandable,
+            expanded,
+            onExpand: (rid, open) => {
+              if (open) expanded.add(rid); else expanded.delete(rid);
+              rerender();
+            },
+          })) body.append(node);
+        }
+      }
+
+      table.append(head, body);
+
+      const parts: (Node | string)[] = [table];
+
+      // Footer: pagination uses connex-pagination; show-more uses
+      // connex-show-more. Either is rendered as a sibling block below
+      // the <table> so it has room to breathe and isn't constrained by
+      // a colspan cell.
+      if (opts.footer === 'pagination') {
+        const p = document.createElement('connex-pagination') as HTMLElement & {
+          page: number; pageSize: number; total: number;
+        };
+        p.setAttribute('total', String(opts.rows.length * 8));
+        p.setAttribute('page', '1');
+        p.setAttribute('page-size', '10');
+        p.setAttribute('layout', 'both');
+        parts.push(el('div', { class: 'dt-footer' }, p));
+      } else if (opts.footer === 'show-more') {
+        const sm = document.createElement('connex-show-more') as HTMLElement & { expanded: boolean };
+        if (showMoreCount >= opts.rows.length) sm.setAttribute('expanded', '');
+        sm.addEventListener('connex-show-more-toggle', (e: Event) => {
+          const detail = (e as CustomEvent<{ expanded: boolean }>).detail;
+          showMoreCount = detail.expanded ? opts.rows.length : 3;
+          rerender();
+        });
+        parts.push(el('div', { class: 'dt-footer dt-footer--show-more' }, sm));
+      }
+
+      wrap.replaceChildren(...parts);
+    }
+
+    rerender();
+    return wrap;
+  }
+
+  // === Preview tab ================================================
+  function dataTablePreview(): HTMLElement {
+    const wrap = el('div', { class: 'tab-content' });
+    const block = (heading: string, lede: string, content: HTMLElement) => {
+      wrap.append(el('div', { class: 'preview-block' },
+        el('h3', { class: 'preview-block__title' }, heading),
+        el('p', { class: 'preview-block__lede' }, lede),
+        el('div', { class: 'preview-row preview-row--block' }, content),
+      ));
+    };
+
+    block('Display only',
+      'Rows and columns of structured data with column headers and an optional table header. No selection, no expansion — read-only at-a-glance reference.',
+      buildDataTable({
+        columns: accountColumns,
+        rows: accountRows,
+        header: { title: 'Customer accounts', description: 'All active and recent enrollments for this household.' },
+      }),
+    );
+
+    block('Selectable rows',
+      'Each row gets a leading checkbox; the column-header checkbox selects or clears all rows at once. Selected rows pick up an interactive surface tint.',
+      buildDataTable({
+        columns: accountColumns,
+        rows: accountRows,
+        selectable: true,
+        header: { title: 'Customer accounts' },
+      }),
+    );
+
+    block('Expandable rows',
+      'Each row gets a leading chevron; expanding reveals a detail content row beneath. Use for context that would otherwise need a side-panel — call notes, payment history, related records.',
+      buildDataTable({
+        columns: accountColumns,
+        rows: accountRows.slice(0, 3),
+        expandable: true,
+      }),
+    );
+
+    block('Sectioned rows',
+      'Optional in-body section headers separate rows into named groups (e.g., by month). The header spans the full row width and shares the same surface treatment as the table header.',
+      buildDataTable({
+        columns: accountColumns,
+        rows: accountRows,
+        sections: [
+          { label: 'Active',   rowIds: ['a1', 'a3'] },
+          { label: 'Inactive', rowIds: ['a2', 'a4', 'a5'] },
+        ],
+      }),
+    );
+
+    block('Footer — pagination',
+      'Page through long datasets via the pagination component. Items-per-page dropdown, range readout, prev / next chevrons, and numbered page buttons all token-driven.',
+      buildDataTable({
+        columns: accountColumns,
+        rows: accountRows,
+        header: { title: 'Customer accounts' },
+        footer: 'pagination',
+      }),
+    );
+
+    block('Footer — show more',
+      'Clamp the visible row count and reveal the rest via the show-more toggle. Use when the dataset is short enough to render in full but long enough to crowd the page.',
+      buildDataTable({
+        columns: accountColumns,
+        rows: accountRows,
+        header: { title: 'Customer accounts' },
+        footer: 'show-more',
+      }),
+    );
+
+    block('Sizes',
+      'Default for general-purpose surfaces. Condensed tightens row height and typography for data-dense surfaces (agent desktops, dashboards).',
+      el('div', { class: 'preview-stack' },
+        buildDataTable({ columns: accountColumns, rows: accountRows.slice(0, 3), size: 'default'   }),
+        buildDataTable({ columns: accountColumns, rows: accountRows.slice(0, 3), size: 'condensed' }),
+      ),
+    );
+
+    return wrap;
+  }
+
+  // === Controls tab ===============================================
+  function dataTableControls(): HTMLElement {
+    const wrap = el('div', { class: 'tab-content controls-layout' });
+    const stage = el('div', { class: 'preview-stage preview-stage--block' });
+
+    const sizeSel       = ddSelect('dt-size',   ['default', 'condensed'] as const);
+    const footerSel     = ddSelect('dt-footer', ['none', 'pagination', 'show-more'] as const);
+    const headerChk     = ctrlCheck('dt-header',     'Table header',     { checked: true });
+    const selectableChk = ctrlCheck('dt-selectable', 'Selectable rows');
+    const expandableChk = ctrlCheck('dt-expandable', 'Expandable rows');
+    const sectionedChk  = ctrlCheck('dt-sectioned',  'Sectioned rows');
+
+    function rerender() {
+      stage.replaceChildren(buildDataTable({
+        columns: accountColumns,
+        rows: accountRows,
+        size: sizeSel.value as DTSize,
+        header: headerChk.checked
+          ? { title: 'Customer accounts', description: 'All active and recent enrollments for this household.' }
+          : undefined,
+        selectable: selectableChk.checked,
+        expandable: expandableChk.checked,
+        sections: sectionedChk.checked
+          ? [
+              { label: 'Active',   rowIds: ['a1', 'a3'] },
+              { label: 'Inactive', rowIds: ['a2', 'a4', 'a5'] },
+            ]
+          : undefined,
+        footer: footerSel.value === 'none' ? 'none' : (footerSel.value as 'pagination' | 'show-more'),
+      }));
+    }
+    for (const c of [sizeSel, footerSel, headerChk, selectableChk, expandableChk, sectionedChk]) {
+      c.addEventListener('input', rerender);
+      c.addEventListener('change', rerender);
+    }
+    const ctrlField = (l: string, f: string, c: HTMLElement) =>
+      el('div', { class: 'ctrl-field' }, el('label', { for: f }, l), c);
+    const panel = el('div', { class: 'ctrl-panel' },
+      el('h3', { class: 'preview-block__title' }, 'Properties'),
+      ctrlField('Size',   'dt-size',   sizeSel),
+      ctrlField('Footer', 'dt-footer', footerSel),
+      el('div', { class: 'ctrl-checks' },
+        headerChk,
+        selectableChk,
+        expandableChk,
+        sectionedChk,
+      ),
+    );
+    wrap.append(panel, el('div', { class: 'ctrl-stage-wrap' }, stage));
+    queueMicrotask(rerender);
+    return wrap;
+  }
+
+  // === Usage guidelines ===========================================
+  function dataTableGuidelines(): HTMLElement {
+    const doCard = (p: HTMLElement, c: string) =>
+      el('div', { class: 'do-card' },
+        el('div', { class: 'do-dont-header' }, heroIconSvg('check-circle', 16), ' Do'),
+        el('div', { class: 'do-dont-preview do-dont-preview--block' }, p),
+        el('p', {}, c));
+    const dontCard = (p: HTMLElement, c: string) =>
+      el('div', { class: 'dont-card' },
+        el('div', { class: 'do-dont-header' }, heroIconSvg('x-circle', 16), " Don't"),
+        el('div', { class: 'do-dont-preview do-dont-preview--block' }, p),
+        el('p', {}, c));
+    return el('div', { class: 'tab-content guidelines-layout' },
+      el('section', { class: 'guideline-section' },
+        el('h3', { class: 'guideline-heading' }, 'Anatomy'),
+        el('p', { class: 'preview-block__lede' },
+          'A data table is composed of smaller parts that work together. Each is optional except cells.'),
+        el('ul', { class: 'guideline-list' },
+          el('li', {}, el('strong', {}, 'Table header'),  ' (optional) — describes the table. Anatomy: title, tooltip (optional), small button (optional), link (optional).'),
+          el('li', {}, el('strong', {}, 'Section header'), ' (optional) — describes a group of content/rows within a table (e.g., separating content by month). Anatomy: label, tooltip (optional), small button (optional), link (optional).'),
+          el('li', {}, el('strong', {}, 'Column header'),  ' (optional) — describes the content within a column. Can be used to sort. Anatomy: label, tooltip (optional), sortable (optional), checkbox (optional), badge (optional).'),
+          el('li', {}, el('strong', {}, 'Cells'),          ' — specific data within the table. Anatomy: cell label, secondary text (optional). Types: text, link, checkbox, icon, button. Sizes: default, condensed.'),
+          el('li', {}, el('strong', {}, 'Footer'),         ' (optional) — displays at the bottom of the table. Types: show more or pagination.'),
+        ),
+      ),
+      el('section', { class: 'guideline-section' },
+        el('h3', { class: 'guideline-heading' }, 'Rows'),
+        el('p', { class: 'preview-block__lede' },
+          'Rows can be display-only, expandable, or selectable. Each row mode brings its own affordances and states.'),
+        el('ul', { class: 'guideline-list' },
+          el('li', {}, el('strong', {}, 'Expandable rows'), ' — use the connex-accordion component. Lets the user expand and collapse a row to reveal more information. Interactive states: default, hover, focus, pressed, disabled. Functional states: expanded, collapsed. Layout: chevron on left or right.'),
+          el('li', {}, el('strong', {}, 'Selectable rows'), ' — use the connex-checkbox component. Lets the user select a row, multiple rows, or all rows via the parent checkbox at the top of the table. Interactive states: default, hover, focus, pressed, disabled. Functional states: selected, not selected. Layout: left-only.'),
+        ),
+      ),
+      el('section', { class: 'guideline-section' },
+        el('h3', { class: 'guideline-heading do-heading' }, heroIconSvg('check-circle', 20), ' Do'),
+        el('p', { class: 'preview-block__lede' }, 'Patterns that keep the table scannable and accessible.'),
+        el('div', { class: 'do-dont-grid' },
+          doCard(buildDataTable({ columns: accountColumns, rows: accountRows.slice(0, 3), header: { title: 'Customer accounts' } }),
+            'Use a table header to describe the table when the page does not already make the dataset obvious.'),
+          doCard(buildDataTable({ columns: accountColumns, rows: accountRows.slice(0, 3), size: 'condensed' }),
+            'Use the condensed size on data-dense surfaces (agent desktops, dashboards) to fit more rows above the fold without losing legibility.'),
+        ),
+      ),
+      el('section', { class: 'guideline-section' },
+        el('h3', { class: 'guideline-heading dont-heading' }, heroIconSvg('x-circle', 20), " Don't"),
+        el('p', { class: 'preview-block__lede' }, 'Patterns that obscure structure or fight the user.'),
+        el('div', { class: 'do-dont-grid' },
+          dontCard(buildDataTable({ columns: accountColumns, rows: accountRows, selectable: true, expandable: true }),
+            "Don't combine selection and expansion in the same row unless you genuinely need both. Two leading affordances make the row harder to scan."),
+        ),
+      ),
+    );
+  }
+
+  // === Content ====================================================
+  function dataTableContent(): HTMLElement {
+    return el('div', { class: 'tab-content guidelines-layout' },
+      el('section', { class: 'guideline-section' },
+        el('h3', { class: 'guideline-heading' }, 'Cell types'),
+        el('ul', { class: 'guideline-list' },
+          el('li', {}, 'Text — primary value, optional secondary line for context (account number, timestamp).'),
+          el('li', {}, 'Link — for navigable values (a name that opens the customer record). Use connex-link.'),
+          el('li', {}, 'Checkbox — selection only; never use a checkbox cell for editable boolean data.'),
+          el('li', {}, 'Icon — for status icons paired with a badge or used as a low-emphasis affordance.'),
+          el('li', {}, 'Button — small, in-row actions. Reserve for truly per-row actions; bulk actions belong in the table header.'),
+        ),
+      ),
+      el('section', { class: 'guideline-section' },
+        el('h3', { class: 'guideline-heading' }, 'Footer'),
+        el('ul', { class: 'guideline-list' },
+          el('li', {}, el('strong', {}, 'Show more'), ' — inherits the connex-show-more component. When clicked, shows the rest of the data.'),
+          el('li', {}, el('strong', {}, 'Pagination'), " — inherits connex-pagination. Lets users page individually via arrows, jump to first/last via double arrows, choose items-per-page via the inherited dropdown, and reads “first–last of total” inline."),
+        ),
+      ),
+      el('section', { class: 'guideline-section' },
+        el('h3', { class: 'guideline-heading' }, 'Functions'),
+        el('ul', { class: 'guideline-list' },
+          el('li', {}, 'Display only — the default. Read-only data with optional sorting.'),
+          el('li', {}, 'Selectable — leading checkbox column for row selection (single or multi).'),
+          el('li', {}, 'Expandable — leading chevron column that reveals an inline detail row.'),
+          el('li', {}, 'Accordion — uses the connex-accordion component for the expand/collapse mechanism.'),
+        ),
+      ),
+    );
+  }
+
+  // === Accessibility ==============================================
+  function dataTableAccessibility(): HTMLElement {
+    return el('div', { class: 'tab-content guidelines-layout' },
+      el('section', { class: 'guideline-section' },
+        el('h3', { class: 'guideline-heading' }, 'Semantics'),
+        el('ul', { class: 'guideline-list' },
+          el('li', {}, 'Use a real <table> element. Column headers use <th scope="col">, section headers use <th scope="colgroup">.'),
+          el('li', {}, 'Sortable column headers expose aria-sort = ascending | descending | none.'),
+          el('li', {}, 'The table-level header is rendered as a <th colspan> in <thead> so screen readers announce it before the column headers.'),
+        ),
+      ),
+      el('section', { class: 'guideline-section' },
+        el('h3', { class: 'guideline-heading' }, 'Selection'),
+        el('ul', { class: 'guideline-list' },
+          el('li', {}, 'Each row checkbox carries an aria-label that names the row (e.g., "Select Hannah Mezzadri").'),
+          el('li', {}, 'The header checkbox toggles all rows; its aria-label reads "Select all rows".'),
+          el('li', {}, 'Selected rows pick up a token-driven background tint that meets WCAG 2.1 AA contrast against the text.'),
+        ),
+      ),
+      el('section', { class: 'guideline-section' },
+        el('h3', { class: 'guideline-heading' }, 'Expansion'),
+        el('ul', { class: 'guideline-list' },
+          el('li', {}, 'Each expand toggle is a real <button> with aria-expanded reflecting the open state.'),
+          el('li', {}, 'The detail content is a sibling <tr> in the DOM, so screen readers reach it via tabbing past the toggle.'),
+          el('li', {}, 'Honors prefers-reduced-motion: the chevron rotation collapses to no transition.'),
+        ),
+      ),
+    );
+  }
+
+  // === Code =======================================================
+  function dataTableCode(): HTMLElement {
+    return el('div', { class: 'tab-content guidelines-layout' },
+      el('section', { class: 'guideline-section' },
+        el('h3', { class: 'guideline-heading' }, 'Install / register'),
+        el('pre', { class: 'code-block' },
+          `pnpm add @connex/checkbox @connex/badge @connex/pagination @connex/show-more @connex/accordion @connex/tokens lit\n\nimport '@connex/checkbox';\nimport '@connex/badge';\nimport '@connex/pagination';\nimport '@connex/show-more';\nimport '@connex/accordion';`)),
+      el('section', { class: 'guideline-section' },
+        el('h3', { class: 'guideline-heading' }, 'Markup'),
+        el('pre', { class: 'code-block' },
+          `<table class="dt-table">\n  <thead>\n    <!-- Optional table header -->\n    <tr class="dt-row--table-header">\n      <th colspan="4">Customer accounts</th>\n    </tr>\n    <!-- Column headers -->\n    <tr>\n      <th scope="col">\n        <connex-checkbox aria-label="Select all rows"></connex-checkbox>\n      </th>\n      <th scope="col" aria-sort="ascending">Account</th>\n      <th scope="col">Status</th>\n      <th scope="col">Balance</th>\n    </tr>\n  </thead>\n  <tbody>\n    <!-- Optional section header -->\n    <tr class="dt-row--section">\n      <th colspan="4" scope="colgroup">Active</th>\n    </tr>\n    <tr>\n      <td><connex-checkbox aria-label="Select Hannah Mezzadri"></connex-checkbox></td>\n      <td>Hannah Mezzadri</td>\n      <td><connex-badge type="success" emphasis="low" size="condensed">Enrolled</connex-badge></td>\n      <td>$0.00</td>\n    </tr>\n  </tbody>\n</table>\n\n<!-- Footer: pagination OR show-more -->\n<connex-pagination total="240" page="1" page-size="10" layout="both"></connex-pagination>`)),
+      el('section', { class: 'guideline-section' },
+        el('h3', { class: 'guideline-heading' }, 'Anatomy'),
+        el('div', { class: 'props-table-wrap' },
+          el('table', { class: 'props-table' },
+            el('thead', {}, el('tr', {}, el('th', {}, 'Part'), el('th', {}, 'Required'), el('th', {}, 'Description'))),
+            el('tbody', {},
+              el('tr', {}, el('td', {}, 'Table header'),  el('td', {}, 'Optional'), el('td', {}, 'Describes the table. Title + optional tooltip / small button / link.')),
+              el('tr', {}, el('td', {}, 'Section header'), el('td', {}, 'Optional'), el('td', {}, 'Describes a group of rows. Title + optional tooltip / small button / link.')),
+              el('tr', {}, el('td', {}, 'Column header'),  el('td', {}, 'Optional'), el('td', {}, 'Describes a column. Sortable, checkbox-prefixed, or badge-tagged variants.')),
+              el('tr', {}, el('td', {}, 'Cells'),          el('td', {}, 'Required'), el('td', {}, 'The data. Text, link, checkbox, icon, or button. Default or condensed size.')),
+              el('tr', {}, el('td', {}, 'Footer'),         el('td', {}, 'Optional'), el('td', {}, 'Show-more toggle or pagination. Use one or none.')),
+            )))),
+    );
+  }
+
+  app.append(componentPage(
+    'patterns-data-table',
+    'Data table',
+    'Rows and columns of structured data composed from smaller Connex parts — table header, section header, column headers, cells, and an optional footer — that work together to keep content clear and organized.',
+    [
+      { id: 'preview', label: 'Preview', content: dataTablePreview() },
+      { id: 'controls', label: 'Controls', content: dataTableControls() },
+      { id: 'guidelines', label: 'Usage guidelines', content: dataTableGuidelines() },
+      { id: 'content', label: 'Content', content: dataTableContent() },
+      { id: 'accessibility', label: 'Accessibility', content: dataTableAccessibility() },
+      { id: 'code', label: 'Code', content: dataTableCode() },
+    ],
+    'pattern',
+  ));
+}
+
 // =================================================================
 // TEMPLATES
 // =================================================================
@@ -12863,7 +13680,7 @@ const navSections: NavSection[] = [
     el: document.getElementById('nav-tokens') as NavSection['el'],
     items: [
       { id: 'tokens-overview', label: 'Overview' },
-      { id: 'colors',          label: 'Colors' },
+      { id: 'colors',          label: 'Color' },
       { id: 'typography',      label: 'Typography' },
       { id: 'iconography',     label: 'Iconography' },
       { id: 'spacing',         label: 'Spacing' },
@@ -12925,7 +13742,7 @@ const navSections: NavSection[] = [
       { id: 'patterns-overview',      label: 'Overview' },
       { id: 'patterns-anchor-links',  label: 'Anchor links' },
       { id: 'patterns-data-display',  label: 'Data display',     disabled: true, tag: 'Soon' },
-      { id: 'patterns-data-table',    label: 'Data table',       disabled: true, tag: 'Soon' },
+      { id: 'patterns-data-table',    label: 'Data table' },
       { id: 'patterns-data-viz',      label: 'Data viz',         disabled: true, tag: 'Soon' },
       { id: 'patterns-filter',        label: 'Filter',           disabled: true, tag: 'Soon' },
       { id: 'patterns-form',          label: 'Form',             disabled: true, tag: 'Soon' },

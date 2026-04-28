@@ -235,8 +235,8 @@ section > p.lede {
   font-weight: var(--connex-font-weight-semibold);
   font-size: var(--connex-font-size-20);
   /* Top space-24 separates the subhead from the previous swatch grid;
-     bottom space-8 matches the title → content rhythm used elsewhere
-     in the docs (preview-block titles, page headers). */
+     bottom space-8 keeps the swatch grid tight to its label so each
+     primitive scale (Red / Yellow / Green / …) reads as one unit. */
   margin: var(--connex-space-24) 0 var(--connex-space-8);
 }
 
@@ -270,9 +270,9 @@ section > p.lede {
   align-items: center;
   background: var(--connex-color-white);
   border: var(--connex-border-width-1) solid var(--connex-border-secondary);
-  border-radius: var(--connex-radius-4);
+  border-radius: var(--connex-radius-8);
   padding: var(--connex-space-48) var(--connex-space-48);
-  margin-bottom: var(--connex-space-32);
+  margin-bottom: var(--connex-space-32); /* hero → first grid */
 }
 .overview-hero__copy { display: flex; flex-direction: column; gap: var(--connex-space-12); }
 .overview-hero__eyebrow {
@@ -337,41 +337,26 @@ section > p.lede {
 .overview-section-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-  gap: var(--connex-space-24);
-  margin-bottom: var(--connex-space-48);
+  /* Consistent 32px rhythm — same gap between cards in a row, same margin
+     between grid rows, and same margin from the hero above. Anchored to
+     --connex-space-32 so the spacing scales with the token system. */
+  gap: var(--connex-space-32);
+  margin-bottom: var(--connex-space-32);
 }
 /* 3-up modifier — used by the Principles row so Density / Accessibility /
-   Motion principles share equal width on wide screens and wrap below. The
-   3-up cards also flip layout: the illustration becomes an edge-to-edge
-   banner along the top of the card, with the copy inset below it. */
+   Motion principles share equal width on wide screens and wrap below. Each
+   card inherits the default .overview-card styling (padding, illustration
+   below the copy, dashed-border placeholder) so the principles tiles match
+   the Taxonomy / Build tiles in the row above. */
 .overview-section-grid--3up {
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-}
-.overview-section-grid--3up > .overview-card {
-  /* Drop the all-around padding so the illustration can sit flush to the
-     card's left, top, and right edges. Copy gets its own inset below. */
-  padding: 0;
-  grid-template-rows: auto 1fr;
-  gap: 0;
-  overflow: hidden; /* clip the banner to the card's rounded corners */
-}
-.overview-section-grid--3up > .overview-card .overview-card__illustration {
-  order: -1;
-  min-height: 140px;
-  border-radius: 0;
-  border: none;
-  border-bottom: var(--connex-border-width-1) dashed currentColor;
-  background: rgba(255, 255, 255, 0.6);
-}
-.overview-section-grid--3up > .overview-card .overview-card__copy {
-  padding: var(--connex-space-24) var(--connex-space-24) var(--connex-space-32);
 }
 .overview-card {
   display: grid;
   grid-template-rows: 1fr auto;
   gap: var(--connex-space-24);
   padding: var(--connex-space-32);
-  border-radius: var(--connex-radius-4);
+  border-radius: var(--connex-radius-8);
   border: var(--connex-border-width-1) solid transparent;
 }
 .overview-card__copy { display: flex; flex-direction: column; gap: var(--connex-space-12); }
@@ -534,11 +519,9 @@ section > p.lede {
 [data-theme='dark'] .overview-card--yellow .overview-card__illustration { color: var(--connex-color-yellow-800); }
 
 /* Illustration placeholder: white tint reads on light tinted cards; on
-   dark cards the slot picks up a darker tint so the dashed border still
-   reads as a banner divider. Applies to both the 2-up Taxonomy/Build
-   cards and the 3-up Principles row. */
-[data-theme='dark'] .overview-card__illustration,
-[data-theme='dark'] .overview-section-grid--3up > .overview-card .overview-card__illustration {
+   dark cards the slot picks up a darker tint so the dashed border stays
+   visible. */
+[data-theme='dark'] .overview-card__illustration {
   background: rgba(0, 0, 0, 0.25);
 }
 
@@ -610,6 +593,20 @@ section > p.lede {
   gap: var(--connex-space-12);
 }
 .grid.dense { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+
+/* Tokens > Color > Semantic — sizes the semantic-tab swatches to match the
+   Brand tab (180px min, 1fr max, auto-fill). Semantic token names run much
+   longer than primitives ("interactive.background.critical-strong-pressed"),
+   so allow the .name to wrap to multiple lines inside the cell instead of
+   forcing a wider column. word-break: break-word ensures unbreakable
+   strings (no whitespace) still wrap rather than overflow. */
+[id='panel-colors-semantic'] .grid {
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+}
+[id='panel-colors-semantic'] .swatch .name {
+  white-space: normal;
+  word-break: break-word;
+}
 
 /* Color swatch */
 .swatch {
@@ -949,6 +946,11 @@ body.nav-open .sidebar-scrim { opacity: 1; }
    from stretching the badge to the full header width. */
 .page-badge {
   align-self: flex-start;
+  /* Render the page-kind label in uppercase ("TOKEN" / "COMPONENT" /
+     "PATTERN" / "TEMPLATE"). Source strings stay sentence-case so the TS
+     type stays readable; CSS handles the visual transform. */
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 .component-title {
   font-family: var(--connex-font-family-literata);
@@ -981,6 +983,14 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   display: flex;
   flex-direction: column;
   gap: var(--connex-space-32);
+}
+/* Colors panels render a long stream of <subheading> + <grid> pairs as
+   direct children of .tab-content. The default 32px flex gap dominates the
+   subheading's own bottom margin and pushes each grid too far from its
+   label. Drop the gap here; the .subheading margins (24 above / 4 below)
+   handle the rhythm — tight to its grid, generous between scales. */
+[id^='panel-colors-'] .tab-content {
+  gap: 0;
 }
 
 /* Preview blocks */
@@ -1090,6 +1100,13 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   font-weight: var(--connex-font-weight-semibold);
 
   color: var(--connex-text-display-secondary);
+}
+/* Variant-gated controls — when the active variant doesn't accept a given
+   prop, the field stays visible so users can see the cross-variant API but
+   the control is disabled and the label is dimmed to communicate that the
+   value won't be applied. */
+.ctrl-field.is-disabled label {
+  color: var(--connex-text-display-disabled, var(--connex-color-cool-gray-400));
 }
 .ctrl-field select,
 .ctrl-field input[type="text"],
@@ -1940,3 +1957,209 @@ body.nav-open .sidebar-scrim { opacity: 1; }
     line-height: var(--connex-font-line-height-40);
   }
 }
+
+/* Address > Select tools — pairs a connex-checkbox with the address card
+   so the docs show the actual Connex checkbox component, not the native
+   input the address embeds via selectTool="checkbox". */
+.address-select-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--connex-space-12);
+}
+.address-select-row > connex-address { flex: 1; min-width: 0; }
+.address-select-row > connex-checkbox { margin-top: var(--connex-space-12); }
+
+/* === Data table pattern (Patterns > Data table) ===
+   Composed from existing components, styled with semantic tokens so it
+   theme-shifts on dark and re-tints with the brand. The .dt-pattern
+   wrapper holds the <table> and (optionally) a <connex-pagination> or
+   <connex-show-more> footer beneath it. */
+.dt-pattern {
+  font-family: var(--connex-font-family-inter);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--connex-space-12);
+  --_dt-row-pad-y: var(--connex-space-12);
+  --_dt-row-pad-x: var(--connex-space-16);
+  --_dt-fs: var(--connex-font-size-14);
+  --_dt-lh: var(--connex-font-line-height-21);
+}
+.dt-pattern--condensed {
+  --_dt-row-pad-y: var(--connex-space-4);
+  --_dt-row-pad-x: var(--connex-space-12);
+  --_dt-fs: var(--connex-font-size-12);
+  --_dt-lh: var(--connex-font-line-height-18);
+}
+
+.dt-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--connex-surface-primary);
+  border: var(--connex-border-width-1) solid var(--connex-border-secondary);
+  border-radius: var(--connex-radius-8);
+  overflow: hidden;
+  font-size: var(--_dt-fs);
+  line-height: var(--_dt-lh);
+  color: var(--connex-text-display-primary);
+}
+
+/* Cells share the same vertical-align + padding contract regardless of
+   header/body/section variant. */
+.dt-cell {
+  text-align: left;
+  vertical-align: middle;
+  padding: var(--_dt-row-pad-y) var(--_dt-row-pad-x);
+  border-bottom: var(--connex-border-width-1) solid var(--connex-border-secondary);
+}
+.dt-cell--right { text-align: right; }
+.dt-row:last-child .dt-cell { border-bottom: none; }
+.dt-row--section + .dt-row .dt-cell,
+.dt-row--table-header + .dt-row .dt-cell { /* keep separator after grouping rows */ }
+
+/* Table header — table-level title row, spans the full width and sits
+   above the column headers. */
+.dt-cell--table-header {
+  background: var(--connex-surface-primary);
+  padding: var(--connex-space-16) var(--connex-space-16);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--connex-space-16);
+}
+.dt-row--table-header .dt-cell--table-header {
+  border-bottom: var(--connex-border-width-1) solid var(--connex-border-secondary);
+}
+.dt-table-header__copy { display: flex; flex-direction: column; gap: 2px; }
+.dt-table-header__title {
+  font-family: var(--connex-font-family-literata);
+  font-weight: var(--connex-font-weight-semibold);
+  font-size: var(--connex-font-size-16);
+  color: var(--connex-text-display-primary);
+}
+.dt-table-header__description {
+  font-size: var(--connex-font-size-14);
+  color: var(--connex-text-display-secondary);
+}
+.dt-table-header__action { flex-shrink: 0; }
+
+/* Section header — in-body group separator. */
+.dt-cell--section {
+  background: var(--connex-interactive-background-hover);
+  font-size: var(--connex-font-size-12);
+  font-weight: var(--connex-font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--connex-text-display-secondary);
+  padding: var(--connex-space-8) var(--connex-space-16);
+  border-top: var(--connex-border-width-1) solid var(--connex-border-secondary);
+}
+
+/* Column headers */
+.dt-cell--header {
+  font-size: var(--connex-font-size-12);
+  font-weight: var(--connex-font-weight-semibold);
+  color: var(--connex-text-display-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: var(--connex-surface-page);
+}
+.dt-sort {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--connex-space-4);
+  text-transform: inherit;
+  letter-spacing: inherit;
+}
+.dt-sort:hover { color: var(--connex-text-display-primary); }
+.dt-sort:focus-visible {
+  outline: var(--connex-focus-ring-width) solid var(--connex-focus-ring-color);
+  outline-offset: 2px;
+  border-radius: var(--connex-radius-2);
+}
+.dt-sort__icon { font-size: 10px; opacity: 0.7; }
+
+/* Body cells */
+.dt-cell--body { color: var(--connex-text-display-primary); }
+.dt-cell__primary { font-weight: var(--connex-font-weight-medium); }
+.dt-cell__secondary {
+  font-size: var(--connex-font-size-12);
+  color: var(--connex-text-display-secondary);
+  margin-top: 2px;
+}
+
+/* Selectable rows */
+.dt-cell--select {
+  width: 36px;
+  padding-right: 0;
+}
+.dt-row--selected .dt-cell--body {
+  background: var(--connex-interactive-background-selected);
+}
+
+/* Expandable rows */
+.dt-cell--expand {
+  width: 36px;
+  padding-right: 0;
+}
+.dt-expand-btn {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--connex-text-display-secondary);
+  border-radius: var(--connex-radius-4);
+  cursor: pointer;
+  transition: transform var(--connex-motion-duration-base, 240ms)
+              var(--connex-motion-easing-standard, ease),
+              background var(--connex-motion-duration-fast, 120ms)
+                var(--connex-motion-easing-standard, ease);
+}
+.dt-expand-btn:hover {
+  background: var(--connex-interactive-background-hover);
+  color: var(--connex-text-display-primary);
+}
+.dt-expand-btn:focus-visible {
+  outline: var(--connex-focus-ring-width) solid var(--connex-focus-ring-color);
+  outline-offset: 1px;
+}
+.dt-expand-btn--open { transform: rotate(90deg); }
+@media (prefers-reduced-motion: reduce) {
+  .dt-expand-btn { transition: none; }
+}
+
+/* Detail row — the inline content revealed under an expandable row. */
+.dt-cell--detail {
+  background: var(--connex-surface-page);
+  padding: 0;
+}
+.dt-detail-body {
+  padding: var(--connex-space-16) var(--connex-space-24);
+  font-size: var(--connex-font-size-14);
+  line-height: var(--connex-font-line-height-21);
+  color: var(--connex-text-display-secondary);
+}
+
+/* Footer wrapper sits below the <table> as a sibling of dt-table. */
+.dt-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--connex-space-16);
+}
+.dt-footer--show-more { justify-content: flex-start; }

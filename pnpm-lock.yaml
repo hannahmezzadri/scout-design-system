@@ -778,6 +778,9 @@ importers:
       '@connex/badge':
         specifier: workspace:*
         version: link:../badge
+      '@connex/button':
+        specifier: workspace:*
+        version: link:../button
       '@connex/show-more':
         specifier: workspace:*
         version: link:../show-more

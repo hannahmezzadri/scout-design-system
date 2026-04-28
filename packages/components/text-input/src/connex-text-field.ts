@@ -34,6 +34,8 @@ const ICONS = {
  * @attr disabled                               - Disables interaction.
  * @attr name                                   - Form field name.
  * @attr required                               - Marks the field as required.
+ * @attr optional                               - When set, renders an "(Optional)" hint next to the label.
+ *                                                 Mutually exclusive with `required` — if both are set, `required` wins.
  * @attr {string} confirm-target                - For `variant="confirmation"`: CSS selector for another text-field
  *                                                 whose value must match. When set, the trailing checkmark appears
  *                                                 only when both fields agree.
@@ -69,6 +71,13 @@ export class ConnexTextField extends LitElement {
       font-weight: var(--connex-font-weight-semibold);
       color: var(--connex-text-display-primary);
       margin-bottom: var(--connex-space-4);
+    }
+    /* Optional hint sits inline with the label, regular weight + secondary
+       color so it reads as supporting metadata, not part of the label name. */
+    .label .optional {
+      margin-left: var(--connex-space-4);
+      font-weight: var(--connex-font-weight-regular);
+      color: var(--connex-text-display-secondary);
     }
 
     .field {
@@ -186,6 +195,7 @@ export class ConnexTextField extends LitElement {
   @property({ type: Boolean, reflect: true }) disabled = false;
   @property({ type: Boolean, reflect: true }) invalid = false;
   @property({ type: Boolean }) required = false;
+  @property({ type: Boolean, reflect: true }) optional = false;
   @property() name = '';
   @property({ attribute: 'confirm-target' }) confirmTarget = '';
 
@@ -356,7 +366,13 @@ export class ConnexTextField extends LitElement {
   render() {
     const id = `cnx-tf-${Math.random().toString(36).slice(2, 9)}`;
     return html`
-      ${this.label ? html`<label class="label" for=${id}>${this.label}</label>` : nothing}
+      ${this.label
+        ? html`<label class="label" for=${id}>
+            ${this.label}${this.optional && !this.required
+              ? html`<span class="optional">(Optional)</span>`
+              : nothing}
+          </label>`
+        : nothing}
       <div class="field">
         ${this._renderLeading()}
         <input

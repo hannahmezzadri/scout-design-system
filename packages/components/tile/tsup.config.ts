@@ -11,6 +11,7 @@ export default defineConfig({
     'lit/decorators.js',
     '@connex/tokens',
     '@connex/badge',
+    '@connex/button',
     '@connex/show-more',
     '@connex/skeleton',
   ],

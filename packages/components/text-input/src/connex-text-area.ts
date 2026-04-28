@@ -21,6 +21,7 @@ import type { TextInputSize } from './types.js';
  * @attr {number} rows                - Initial visible row count. Default 4.
  * @attr {string} resize              - One of `vertical` (default), `none`, `both`.
  * @attr name                         - Form field name.
+ * @attr optional                     - When set, renders an "(Optional)" hint next to the label.
  *
  * @fires input  - Native, bubbles, composed.
  * @fires change - Native, bubbles, composed.
@@ -50,6 +51,13 @@ export class ConnexTextArea extends LitElement {
       font-weight: var(--connex-font-weight-semibold);
       color: var(--connex-text-display-primary);
       margin-bottom: var(--connex-space-4);
+    }
+    /* Optional hint sits inline with the label, regular weight + secondary
+       color so it reads as supporting metadata, not part of the label name. */
+    .label .optional {
+      margin-left: var(--connex-space-4);
+      font-weight: var(--connex-font-weight-regular);
+      color: var(--connex-text-display-secondary);
     }
 
     textarea {
@@ -106,6 +114,7 @@ export class ConnexTextArea extends LitElement {
   @property({ type: Number }) rows = 4;
   @property({ reflect: true }) resize: 'vertical' | 'none' | 'both' = 'vertical';
   @property() name = '';
+  @property({ type: Boolean, reflect: true }) optional = false;
 
   private readonly _internals: ElementInternals;
 
@@ -131,7 +140,13 @@ export class ConnexTextArea extends LitElement {
   render() {
     const id = `cnx-ta-${Math.random().toString(36).slice(2, 9)}`;
     return html`
-      ${this.label ? html`<label class="label" for=${id}>${this.label}</label>` : nothing}
+      ${this.label
+        ? html`<label class="label" for=${id}>
+            ${this.label}${this.optional
+              ? html`<span class="optional">(Optional)</span>`
+              : nothing}
+          </label>`
+        : nothing}
       <textarea
         id=${id}
         rows=${this.rows}

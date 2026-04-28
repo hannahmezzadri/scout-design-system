@@ -1,10 +1,10 @@
 import { LitElement, html, css, svg, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import '@connex/skeleton';
+import '@connex/button';
 import type { TileFunctionalState, WorkflowHeaderState } from './types.js';
 
 const CHECK   = svg`<path d="M5 10.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`;
-const CHEVRON = svg`<path d="M5 7.5l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>`;
 const EDIT    = svg`<path d="M16.475 5.408 14.592 3.525a1.875 1.875 0 0 0-2.652 0L4 11.466V14h2.535l7.94-7.94a1.875 1.875 0 0 0 0-2.652Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>`;
 
 /**
@@ -157,35 +157,16 @@ export class ConnexTileWorkflow extends LitElement {
       flex-shrink: 0;
     }
 
-    .edit-btn {
-      appearance: none;
-      background: transparent;
-      border: 0;
-      width: 28px;
-      height: 28px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--connex-text-display-secondary);
-      cursor: pointer;
-      border-radius: var(--connex-radius-4);
+    /* Edit affordance — a connex-button (variant="tertiary", size="condensed")
+       with a leading pencil icon. Replaces the old icon-only edit button and
+       the chevron toggle. The connex-button handles its own hover/focus/press
+       chrome via tokens; we just size its leading icon here. */
+    .edit-btn-cnx svg {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: currentColor;
     }
-    .edit-btn:hover { background: var(--connex-interactive-background-hover); color: var(--connex-text-display-primary); }
-    .edit-btn:focus-visible {
-      outline: var(--connex-focus-ring-width) solid var(--connex-focus-ring-color);
-      outline-offset: 1px;
-    }
-    .edit-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; }
-
-    .toggle {
-      width: 24px; height: 24px;
-      display: inline-flex; align-items: center; justify-content: center;
-      color: var(--connex-text-display-secondary);
-      transition: transform var(--connex-motion-duration-base, 240ms)
-        var(--connex-motion-easing-standard, ease);
-    }
-    :host([expanded]) .toggle { transform: rotate(180deg); }
-    .toggle svg { width: 16px; height: 16px; }
 
     /* Body ----------------------------------------------------------- */
     .body {
@@ -226,7 +207,7 @@ export class ConnexTileWorkflow extends LitElement {
     .error svg { width: 20px; height: 20px; fill: currentColor; flex-shrink: 0; }
 
     @media (prefers-reduced-motion: reduce) {
-      .toggle, .body { transition: none; }
+      .body { transition: none; }
     }
   `;
 
@@ -306,14 +287,17 @@ export class ConnexTileWorkflow extends LitElement {
           </span>
           <span class="right">
             ${showEdit
-              ? html`<button
-                  class="edit-btn"
-                  type="button"
-                  aria-label="Edit step"
+              ? html`<connex-button
+                  class="edit-btn-cnx"
+                  variant="tertiary"
+                  size="condensed"
+                  ?disabled=${this.disabled}
                   @click=${this._onEdit}
-                ><svg viewBox="0 0 20 20" aria-hidden="true">${EDIT}</svg></button>`
+                >
+                  <svg slot="icon-leading" viewBox="0 0 20 20" aria-hidden="true">${EDIT}</svg>
+                  Edit
+                </connex-button>`
               : nothing}
-            <span class="toggle"><svg viewBox="0 0 20 20" aria-hidden="true">${CHEVRON}</svg></span>
           </span>
         </button>
         <div class="body" aria-hidden=${String(!this.expanded)}>
