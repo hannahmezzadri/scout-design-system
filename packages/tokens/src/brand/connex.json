@@ -6,5 +6,10 @@
       "primary": { "$value": "#029DD4", "$type": "color" },
       "dark":    { "$value": "#336D92", "$type": "color" }
     }
+  },
+  "illustration": {
+    "$description": "Per-brand illustration overrides. Activated when [data-brand=\"connex\"]. Other slots (secondary, surface) inherit the global semantic defaults so they stay neutral across brands.",
+    "primary": { "$value": "#029DD4", "$type": "color" },
+    "accent":  { "$value": "#97D4EB", "$type": "color" }
   }
 }

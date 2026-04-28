@@ -103,7 +103,9 @@ function generateTailwindPreset() {
 
   const colorScale = (hue) =>
     Object.fromEntries(
-      ['100', '200', '300', '400', '500', '600', '700', '800'].map((s) => [s, v(`color-${hue}-${s}`)]),
+      ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '950', '999'].map(
+        (s) => [s, v(`color-${hue}-${s}`)],
+      ),
     );
 
   const colors = {
@@ -145,18 +147,23 @@ function generateTailwindPreset() {
     },
     border: {
       none: 'transparent',
-      primary: v('border-color-primary'),
-      secondary: v('border-color-secondary'),
-      knockout: v('border-color-knockout'),
-      info: v('border-color-info'),
-      warning: v('border-color-warning'),
-      error: v('border-color-error'),
-      success: v('border-color-success'),
+      primary: v('border-primary'),
+      secondary: v('border-secondary'),
+      disabled: v('border-disabled'),
+      knockout: v('border-knockout'),
+      inverse: v('border-inverse'),
+      info: v('border-info'),
+      warning: v('border-warning'),
+      error: v('border-error'),
+      success: v('border-success'),
     },
-    bg: {
-      page: v('background-page'),
-      surface: v('background-surface'),
-      scrim: v('background-scrim'),
+    surface: {
+      page:           v('surface-page'),
+      primary:        v('surface-primary'),
+      scrim:          v('surface-scrim'),
+      disabled:       v('surface-disabled'),
+      inverse:        v('surface-inverse'),
+      'inverse-strong': v('surface-inverse-strong'),
     },
   };
 

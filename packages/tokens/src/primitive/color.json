@@ -1,8 +1,9 @@
 {
   "color": {
-    "$description": "Primitive color scales. Stops 100 (lightest) → 800 (darkest). Values are starter defaults aligned with WCAG AA and may be tuned per design review.",
+    "$description": "Primitive color scales — 12 stops per hue (50 lightest → 999 darkest). Stops 100–800 are the canonical mid-range; 50 is for very subtle wash backgrounds; 900/950/999 are for deep-dark surfaces and high-contrast borders.",
     "red": {
-      "$description": "Red scale anchored at 500 = #CC2427. Hue ~359°, perceptually balanced from soft pink (100) to deep crimson (800).",
+      "$description": "Anchored at 500 = #CC2427.",
+      "50":  { "$value": "#fdf3f3", "$type": "color" },
       "100": { "$value": "#fbe9e9", "$type": "color" },
       "200": { "$value": "#f7caca", "$type": "color" },
       "300": { "$value": "#ef9595", "$type": "color" },
@@ -10,9 +11,13 @@
       "500": { "$value": "#cc2427", "$type": "color" },
       "600": { "$value": "#a71b20", "$type": "color" },
       "700": { "$value": "#85141a", "$type": "color" },
-      "800": { "$value": "#640c12", "$type": "color" }
+      "800": { "$value": "#640c12", "$type": "color" },
+      "900": { "$value": "#3f0710", "$type": "color" },
+      "950": { "$value": "#250308", "$type": "color" },
+      "999": { "$value": "#150103", "$type": "color" }
     },
     "yellow": {
+      "50":  { "$value": "#fefce8", "$type": "color" },
       "100": { "$value": "#fef9c3", "$type": "color" },
       "200": { "$value": "#fef08a", "$type": "color" },
       "300": { "$value": "#fde047", "$type": "color" },
@@ -20,10 +25,14 @@
       "500": { "$value": "#eab308", "$type": "color" },
       "600": { "$value": "#ca8a04", "$type": "color" },
       "700": { "$value": "#a16207", "$type": "color" },
-      "800": { "$value": "#854d0e", "$type": "color" }
+      "800": { "$value": "#854d0e", "$type": "color" },
+      "900": { "$value": "#713f12", "$type": "color" },
+      "950": { "$value": "#422006", "$type": "color" },
+      "999": { "$value": "#1f0e02", "$type": "color" }
     },
     "green": {
-      "$description": "Green scale anchored at 500 = #47B52C. Hue ~108° (yellow-green/lime), perceptually balanced from pale wash (100) to deep forest (800).",
+      "$description": "Anchored at 500 = #47B52C.",
+      "50":  { "$value": "#f4fcf0", "$type": "color" },
       "100": { "$value": "#eef9eb", "$type": "color" },
       "200": { "$value": "#d6f2cf", "$type": "color" },
       "300": { "$value": "#ace69d", "$type": "color" },
@@ -31,31 +40,14 @@
       "500": { "$value": "#47b52c", "$type": "color" },
       "600": { "$value": "#359220", "$type": "color" },
       "700": { "$value": "#277217", "$type": "color" },
-      "800": { "$value": "#17520f", "$type": "color" }
-    },
-    "blue": {
-      "$description": "Blue scale anchored at 500 = #029DD4 (Connex brand primary). Hue ~196°, high saturation through the middle, perceptually balanced from pale ice (100) to deep navy-teal (800).",
-      "100": { "$value": "#e7f8fe", "$type": "color" },
-      "200": { "$value": "#c4eefd", "$type": "color" },
-      "300": { "$value": "#88dcfb", "$type": "color" },
-      "400": { "$value": "#37c7fb", "$type": "color" },
-      "500": { "$value": "#029dd4", "$type": "color" },
-      "600": { "$value": "#047eaf", "$type": "color" },
-      "700": { "$value": "#066289", "$type": "color" },
-      "800": { "$value": "#064360", "$type": "color" }
-    },
-    "purple": {
-      "100": { "$value": "#f3e8ff", "$type": "color" },
-      "200": { "$value": "#e9d5ff", "$type": "color" },
-      "300": { "$value": "#d8b4fe", "$type": "color" },
-      "400": { "$value": "#c084fc", "$type": "color" },
-      "500": { "$value": "#a855f7", "$type": "color" },
-      "600": { "$value": "#9333ea", "$type": "color" },
-      "700": { "$value": "#7e22ce", "$type": "color" },
-      "800": { "$value": "#6b21a8", "$type": "color" }
+      "800": { "$value": "#17520f", "$type": "color" },
+      "900": { "$value": "#0e3409", "$type": "color" },
+      "950": { "$value": "#072105", "$type": "color" },
+      "999": { "$value": "#031003", "$type": "color" }
     },
     "teal": {
-      "$description": "Teal scale anchored at 500 = #4F8AA0. Hue ~196°, perceptually balanced from pale wash (100) to deep teal (800).",
+      "$description": "Anchored at 500 = #4F8AA0.",
+      "50":  { "$value": "#f6fafb", "$type": "color" },
       "100": { "$value": "#edf5f7", "$type": "color" },
       "200": { "$value": "#d5e6ec", "$type": "color" },
       "300": { "$value": "#afceda", "$type": "color" },
@@ -63,10 +55,43 @@
       "500": { "$value": "#4f8aa0", "$type": "color" },
       "600": { "$value": "#3c6d80", "$type": "color" },
       "700": { "$value": "#2c5263", "$type": "color" },
-      "800": { "$value": "#1e3b48", "$type": "color" }
+      "800": { "$value": "#1e3b48", "$type": "color" },
+      "900": { "$value": "#162a33", "$type": "color" },
+      "950": { "$value": "#0c1a21", "$type": "color" },
+      "999": { "$value": "#060f13", "$type": "color" }
+    },
+    "blue": {
+      "$description": "Anchored at 500 = #029DD4 (Connex brand primary).",
+      "50":  { "$value": "#eefcff", "$type": "color" },
+      "100": { "$value": "#e7f8fe", "$type": "color" },
+      "200": { "$value": "#c4eefd", "$type": "color" },
+      "300": { "$value": "#88dcfb", "$type": "color" },
+      "400": { "$value": "#37c7fb", "$type": "color" },
+      "500": { "$value": "#029dd4", "$type": "color" },
+      "600": { "$value": "#047eaf", "$type": "color" },
+      "700": { "$value": "#066289", "$type": "color" },
+      "800": { "$value": "#064360", "$type": "color" },
+      "900": { "$value": "#02314a", "$type": "color" },
+      "950": { "$value": "#011d2e", "$type": "color" },
+      "999": { "$value": "#000d17", "$type": "color" }
+    },
+    "purple": {
+      "50":  { "$value": "#faf5ff", "$type": "color" },
+      "100": { "$value": "#f3e8ff", "$type": "color" },
+      "200": { "$value": "#e9d5ff", "$type": "color" },
+      "300": { "$value": "#d8b4fe", "$type": "color" },
+      "400": { "$value": "#c084fc", "$type": "color" },
+      "500": { "$value": "#a855f7", "$type": "color" },
+      "600": { "$value": "#9333ea", "$type": "color" },
+      "700": { "$value": "#7e22ce", "$type": "color" },
+      "800": { "$value": "#6b21a8", "$type": "color" },
+      "900": { "$value": "#581c87", "$type": "color" },
+      "950": { "$value": "#3b0764", "$type": "color" },
+      "999": { "$value": "#1d032d", "$type": "color" }
     },
     "cool-gray": {
       "$description": "Cool-leaning neutral (slight blue undertone). Default neutral for most UI surfaces.",
+      "50":  { "$value": "#f9fafb", "$type": "color" },
       "100": { "$value": "#f3f4f6", "$type": "color" },
       "200": { "$value": "#e5e7eb", "$type": "color" },
       "300": { "$value": "#d1d5db", "$type": "color" },
@@ -74,10 +99,14 @@
       "500": { "$value": "#6b7280", "$type": "color" },
       "600": { "$value": "#4b5563", "$type": "color" },
       "700": { "$value": "#374151", "$type": "color" },
-      "800": { "$value": "#1f2937", "$type": "color" }
+      "800": { "$value": "#1f2937", "$type": "color" },
+      "900": { "$value": "#111827", "$type": "color" },
+      "950": { "$value": "#030712", "$type": "color" },
+      "999": { "$value": "#000204", "$type": "color" }
     },
     "warm-gray": {
       "$description": "Warm-leaning neutral (subtle brown undertone). Use for editorial / content-heavy surfaces or to soften reading interfaces.",
+      "50":  { "$value": "#fafaf9", "$type": "color" },
       "100": { "$value": "#f5f5f4", "$type": "color" },
       "200": { "$value": "#e7e5e4", "$type": "color" },
       "300": { "$value": "#d6d3d1", "$type": "color" },
@@ -85,29 +114,20 @@
       "500": { "$value": "#78716c", "$type": "color" },
       "600": { "$value": "#57534e", "$type": "color" },
       "700": { "$value": "#44403c", "$type": "color" },
-      "800": { "$value": "#292524", "$type": "color" }
+      "800": { "$value": "#292524", "$type": "color" },
+      "900": { "$value": "#1c1917", "$type": "color" },
+      "950": { "$value": "#0c0a09", "$type": "color" },
+      "999": { "$value": "#040302", "$type": "color" }
     },
     "alpha": {
-      "$description": "Black-based transparency overlays for scrims, hovers, dividers.",
-      "100": { "$value": "rgba(0,0,0,0.04)", "$type": "color" },
-      "200": { "$value": "rgba(0,0,0,0.08)", "$type": "color" },
-      "300": { "$value": "rgba(0,0,0,0.16)", "$type": "color" },
-      "400": { "$value": "rgba(0,0,0,0.24)", "$type": "color" },
-      "500": { "$value": "rgba(0,0,0,0.40)", "$type": "color" },
-      "600": { "$value": "rgba(0,0,0,0.56)", "$type": "color" },
-      "700": { "$value": "rgba(0,0,0,0.72)", "$type": "color" },
-      "800": { "$value": "rgba(0,0,0,0.88)", "$type": "color" }
+      "$description": "Black-based transparency overlays. Two opacity levels — 20 for hovers/dividers, 80 for scrims/backdrops. The stop number IS the opacity percentage.",
+      "20": { "$value": "rgba(0,0,0,0.20)", "$type": "color" },
+      "80": { "$value": "rgba(0,0,0,0.80)", "$type": "color" }
     },
     "alpha-white": {
-      "$description": "White-based transparency overlays (for dark surfaces).",
-      "100": { "$value": "rgba(255,255,255,0.04)", "$type": "color" },
-      "200": { "$value": "rgba(255,255,255,0.08)", "$type": "color" },
-      "300": { "$value": "rgba(255,255,255,0.16)", "$type": "color" },
-      "400": { "$value": "rgba(255,255,255,0.24)", "$type": "color" },
-      "500": { "$value": "rgba(255,255,255,0.40)", "$type": "color" },
-      "600": { "$value": "rgba(255,255,255,0.56)", "$type": "color" },
-      "700": { "$value": "rgba(255,255,255,0.72)", "$type": "color" },
-      "800": { "$value": "rgba(255,255,255,0.88)", "$type": "color" }
+      "$description": "White-based transparency overlays for use on dark surfaces. Two opacity levels — 20 and 80 — matching alpha.",
+      "20": { "$value": "rgba(255,255,255,0.20)", "$type": "color" },
+      "80": { "$value": "rgba(255,255,255,0.80)", "$type": "color" }
     },
     "white": { "$value": "#ffffff", "$type": "color" },
     "black": { "$value": "#000000", "$type": "color" }

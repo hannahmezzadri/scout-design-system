@@ -1,0 +1,22 @@
+{
+  "interactive": {
+    "$description": "Interactive-state colors. The `background.*` set is the single source of truth for hover / pressed / selected backgrounds across every interactive component. Replaces the dozens of raw `--connex-color-cool-gray-100` / `cool-gray-200` / `blue-50` / `blue-700` / `red-700` references that used to live in component CSS.",
+    "background": {
+      "hover":           { "$value": "{color.cool-gray.100}", "$type": "color", "$description": "Default hover background for buttons, list items, dropdown options." },
+      "pressed":         { "$value": "{color.cool-gray.200}", "$type": "color", "$description": "Default active / pressed background." },
+      "selected":        { "$value": "{color.cool-gray.100}", "$type": "color", "$description": "Resting selected background (segmented control track, sidebar selected row)." },
+
+      "brand-hover":     { "$value": "{color.blue.50}",      "$type": "color", "$description": "Hover for brand-tinted neutral surfaces (anchor-links rest hover, sidebar nav rest hover)." },
+      "brand-pressed":   { "$value": "{color.blue.100}",     "$type": "color", "$description": "Pressed for brand-tinted neutral surfaces." },
+      "brand-strong":         { "$value": "{color.blue.500}", "$type": "color", "$description": "Filled brand surface — primary button rest." },
+      "brand-strong-hover":   { "$value": "{color.blue.600}", "$type": "color", "$description": "Filled brand surface hovered." },
+      "brand-strong-pressed": { "$value": "{color.blue.700}", "$type": "color", "$description": "Filled brand surface pressed." },
+
+      "critical-hover":     { "$value": "{color.red.50}",   "$type": "color" },
+      "critical-pressed":   { "$value": "{color.red.100}",  "$type": "color" },
+      "critical-strong":         { "$value": "{color.red.500}", "$type": "color", "$description": "Filled critical surface — critical button rest." },
+      "critical-strong-hover":   { "$value": "{color.red.600}", "$type": "color" },
+      "critical-strong-pressed": { "$value": "{color.red.700}", "$type": "color" }
+    }
+  }
+}

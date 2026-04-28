@@ -1,0 +1,7 @@
+{
+  "stroke": {
+    "$description": "Stroke style tokens for borders and dividers. Maps directly to CSS border-style values.",
+    "solid":  { "$value": "solid",  "$type": "strokeStyle" },
+    "dashed": { "$value": "dashed", "$type": "strokeStyle" }
+  }
+}

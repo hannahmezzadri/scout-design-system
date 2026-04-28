@@ -1,25 +1,32 @@
 {
   "icon": {
-    "$description": "Semantic icon colors. `display` = decorative/static. `interactive` = clickable icons.",
+    "$description": "Semantic icon colors. `display` = decorative / static. `interactive` = clickable icons. `inverse` = icons on dark surfaces.",
     "display": {
-      "primary":   { "$value": "{color.cool-gray.800}",  "$type": "color" },
-      "secondary": { "$value": "{color.cool-gray.600}",  "$type": "color" },
-      "info":      { "$value": "{color.blue.600}",  "$type": "color" },
-      "warning":   { "$value": "{color.yellow.600}","$type": "color" },
-      "error":     { "$value": "{color.red.600}",   "$type": "color" },
-      "success":   { "$value": "{color.green.600}", "$type": "color" },
-      "increase":  { "$value": "{color.green.600}", "$type": "color" },
-      "decrease":  { "$value": "{color.red.600}",   "$type": "color" }
+      "primary":   { "$value": "{color.cool-gray.800}", "$type": "color" },
+      "secondary": { "$value": "{color.cool-gray.600}", "$type": "color" },
+      "disabled":  { "$value": "{color.cool-gray.400}", "$type": "color" },
+      "info":      { "$value": "{color.blue.600}",      "$type": "color" },
+      "warning":   { "$value": "{color.yellow.600}",    "$type": "color" },
+      "error":     { "$value": "{color.red.600}",       "$type": "color" },
+      "success":   { "$value": "{color.green.600}",     "$type": "color" },
+      "increase":  { "$value": "{color.green.600}",     "$type": "color" },
+      "decrease":  { "$value": "{color.red.600}",       "$type": "color" }
     },
     "interactive": {
-      "primary":   { "$value": "{color.blue.500}",  "$type": "color" },
-      "secondary": { "$value": "{color.cool-gray.600}",  "$type": "color" },
-      "info":      { "$value": "{color.blue.700}",  "$type": "color" },
-      "warning":   { "$value": "{color.yellow.700}","$type": "color" },
-      "error":     { "$value": "{color.red.700}",   "$type": "color" },
-      "success":   { "$value": "{color.green.700}", "$type": "color" },
-      "increase":  { "$value": "{color.green.700}", "$type": "color" },
-      "decrease":  { "$value": "{color.red.700}",   "$type": "color" }
+      "$description": "Mirrors the display set. v1 only had primary + delete; expanded so interactive status icons don't have to fall back to text-interactive-* tokens.",
+      "primary":   { "$value": "{color.cool-gray.800}", "$type": "color" },
+      "secondary": { "$value": "{color.cool-gray.600}", "$type": "color" },
+      "delete":    { "$value": "{color.red.500}",       "$type": "color" },
+      "info":      { "$value": "{color.blue.600}",      "$type": "color" },
+      "warning":   { "$value": "{color.yellow.600}",    "$type": "color" },
+      "error":     { "$value": "{color.red.600}",       "$type": "color" },
+      "success":   { "$value": "{color.green.600}",     "$type": "color" },
+      "increase":  { "$value": "{color.green.600}",     "$type": "color" },
+      "decrease":  { "$value": "{color.red.600}",       "$type": "color" }
+    },
+    "inverse": {
+      "primary":   { "$value": "{color.white}",          "$type": "color" },
+      "secondary": { "$value": "{color.alpha-white.80}", "$type": "color" }
     }
   }
 }

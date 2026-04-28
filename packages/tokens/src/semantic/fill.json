@@ -1,0 +1,28 @@
+{
+  "fill": {
+    "$description": "Tinted backgrounds for highlight zones — distinct from `surface.*` which covers opaque chrome. The status pairs (`subtle` / `bold`) replace the dozens of raw `*-50` / `*-500` references in badge / inline-alert / status-dot / snackbar / share-with-customer / card.",
+    "always-white": { "$value": "{color.white}",          "$type": "color", "$description": "Plain white fill that does NOT theme — stays white in dark mode. Used by the tile family." },
+    "primary":      { "$value": "{color.blue.50}",        "$type": "color", "$description": "Subtle brand-tinted fill (alias of `fill.info.subtle`)." },
+    "secondary":    { "$value": "{color.cool-gray.100}",  "$type": "color", "$description": "Subtle neutral fill." },
+    "info": {
+      "subtle": { "$value": "{color.blue.50}",   "$type": "color" },
+      "bold":   { "$value": "{color.blue.500}",  "$type": "color" }
+    },
+    "success": {
+      "subtle": { "$value": "{color.green.50}",  "$type": "color" },
+      "bold":   { "$value": "{color.green.500}", "$type": "color" }
+    },
+    "warning": {
+      "subtle": { "$value": "{color.yellow.50}", "$type": "color" },
+      "bold":   { "$value": "{color.yellow.500}","$type": "color" }
+    },
+    "critical": {
+      "subtle": { "$value": "{color.red.50}",    "$type": "color" },
+      "bold":   { "$value": "{color.red.500}",   "$type": "color" }
+    },
+    "ai": {
+      "subtle": { "$value": "{color.purple.50}", "$type": "color" },
+      "bold":   { "$value": "{color.purple.500}","$type": "color" }
+    }
+  }
+}

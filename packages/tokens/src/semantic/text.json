@@ -1,25 +1,31 @@
 {
   "text": {
-    "$description": "Semantic text colors. `display` = information only. `interactive` = links/buttons/actionable.",
+    "$description": "Semantic text colors. `display` = information only. `interactive` = links / buttons / actionable. `inverse` = text on dark surfaces.",
     "display": {
-      "primary":   { "$value": "{color.cool-gray.800}",  "$type": "color" },
-      "secondary": { "$value": "{color.cool-gray.600}",  "$type": "color" },
-      "info":      { "$value": "{color.blue.700}",  "$type": "color" },
-      "warning":   { "$value": "{color.yellow.700}","$type": "color" },
-      "error":     { "$value": "{color.red.700}",   "$type": "color" },
-      "success":   { "$value": "{color.green.700}", "$type": "color" },
-      "increase":  { "$value": "{color.green.700}", "$type": "color" },
-      "decrease":  { "$value": "{color.red.700}",   "$type": "color" }
+      "primary":   { "$value": "{color.cool-gray.800}", "$type": "color" },
+      "secondary": { "$value": "{color.cool-gray.600}", "$type": "color" },
+      "disabled":  { "$value": "{color.cool-gray.400}", "$type": "color", "$description": "Disabled inputs, dimmed labels, locked controls." },
+      "info":      { "$value": "{color.blue.600}",      "$type": "color" },
+      "warning":   { "$value": "{color.yellow.600}",    "$type": "color" },
+      "error":     { "$value": "{color.red.600}",       "$type": "color" },
+      "success":   { "$value": "{color.green.600}",     "$type": "color" },
+      "increase":  { "$value": "{color.green.600}",     "$type": "color" },
+      "decrease":  { "$value": "{color.red.600}",       "$type": "color" }
     },
     "interactive": {
-      "primary":   { "$value": "{color.blue.500}",  "$type": "color" },
-      "secondary": { "$value": "{color.cool-gray.600}",  "$type": "color" },
-      "info":      { "$value": "{color.blue.700}",  "$type": "color" },
-      "warning":   { "$value": "{color.yellow.700}","$type": "color" },
-      "error":     { "$value": "{color.red.700}",   "$type": "color" },
-      "success":   { "$value": "{color.green.700}", "$type": "color" },
-      "increase":  { "$value": "{color.green.700}", "$type": "color" },
-      "decrease":  { "$value": "{color.red.700}",   "$type": "color" }
+      "primary":   { "$value": "{color.blue.500}",      "$type": "color" },
+      "secondary": { "$value": "{color.cool-gray.600}", "$type": "color" },
+      "info":      { "$value": "{color.blue.600}",      "$type": "color" },
+      "warning":   { "$value": "{color.yellow.600}",    "$type": "color" },
+      "error":     { "$value": "{color.red.600}",       "$type": "color" },
+      "success":   { "$value": "{color.green.600}",     "$type": "color" },
+      "increase":  { "$value": "{color.green.600}",     "$type": "color" },
+      "decrease":  { "$value": "{color.red.600}",       "$type": "color" }
+    },
+    "inverse": {
+      "$description": "Text on dark / inverse surfaces (snackbar interior, dialogs on inverse panels, tile-workflow inverse step).",
+      "primary":   { "$value": "{color.white}",            "$type": "color" },
+      "secondary": { "$value": "{color.alpha-white.80}",   "$type": "color" }
     }
   }
 }

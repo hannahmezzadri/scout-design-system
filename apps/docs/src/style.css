@@ -9,9 +9,22 @@
 /* Reset-ish */
 *, *::before, *::after { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
+
+/* Topbar height — single source of truth used by both topbar and sidebar
+   so the sidebar's internal scroll calc tracks the actual topbar size. */
+:root { --topbar-h: 60px; }
+@media (max-width: 600px) { :root { --topbar-h: 112px; } }
+
+/* Page margin — single source of truth for the inline padding around the
+   main content area. Each breakpoint shrinks the gutter while keeping
+   left/right symmetric across every page. */
+:root { --page-margin: var(--connex-space-32); }
+@media (max-width: 960px) { :root { --page-margin: var(--connex-space-24); } }
+@media (max-width: 600px) { :root { --page-margin: var(--connex-space-16); } }
+@media (max-width: 380px) { :root { --page-margin: var(--connex-space-12); } }
 body {
   font-family: var(--connex-font-family-inter);
-  background: var(--connex-background-page);
+  background: var(--connex-surface-page);
   color: var(--connex-text-display-primary);
   -webkit-font-smoothing: antialiased;
   transition: background var(--connex-motion-duration-base) var(--connex-motion-easing-standard),
@@ -28,14 +41,20 @@ body {
   align-items: center;
   gap: var(--connex-space-24);
   padding: var(--connex-space-12) var(--connex-space-24);
-  background: var(--connex-background-surface);
-  border-bottom: var(--connex-border-width-1) solid var(--connex-border-color-secondary);
+  background: var(--connex-surface-primary);
+  border-bottom: var(--connex-border-width-1) solid var(--connex-border-secondary);
   box-shadow: var(--connex-elevation-1);
 }
 .brand {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: var(--connex-space-8);
+}
+/* Optical nudge — badge sits 2px below the wordmark's centerline so the
+   uppercase "BETA" letterforms read as horizontally centered against the
+   "Connex" wordmark's x-height. */
+.brand connex-badge {
+  transform: translateY(2px);
 }
 .brand .logo {
   font-size: 24px;
@@ -59,91 +78,70 @@ body {
 .controls {
   display: flex;
   gap: var(--connex-space-16);
+  align-items: flex-end;
 }
-.controls label {
-  display: flex;
-  flex-direction: column;
-  gap: var(--connex-space-4);
-  font-size: var(--connex-font-size-10);
-  font-weight: var(--connex-font-weight-semibold);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--connex-text-display-secondary);
-}
-.controls select {
-  font-family: inherit;
-  font-size: var(--connex-font-size-14);
-  padding: var(--connex-space-4) var(--connex-space-8);
-  border: var(--connex-border-width-1) solid var(--connex-border-color-primary);
-  border-radius: var(--connex-radius-4);
-  background: var(--connex-background-surface);
-  color: var(--connex-text-display-primary);
-  text-transform: none;
-  letter-spacing: 0;
-  font-weight: var(--connex-font-weight-regular);
-  cursor: pointer;
+/* Topbar dropdowns: narrow fixed width so they don't stretch the header.
+   The base Connex Dropdown defaults to 100% width / max 320px; the topbar
+   wants a more compact footprint. +20px from the previous 140px baseline. */
+.controls connex-dropdown-select {
+  width: 160px;
 }
 
-/* === Layout: sidebar + main === */
+/* === Layout: sidebar + main ===
+   Sidebar is a fixed column; main is offset by the sidebar width via
+   padding-left. This guarantees the sidebar gets its own independent
+   scroll container regardless of how tall the page content is — sticky
+   inside a grid track was unreliable once both nav sections were open. */
 .layout {
-  display: grid;
-  grid-template-columns: 260px 1fr;
-  align-items: start;
-  min-height: calc(100vh - 60px);
+  min-height: calc(100dvh - var(--topbar-h));
 }
+/* 260px reserves the sidebar column; the additional space is breathing room
+   between the sidebar edge and the main content. */
+.layout > main { padding-left: calc(260px + var(--page-margin)); }
 
-/* === Sidebar === */
+/* === Sidebar ===
+   Fixed at the left edge under the topbar. Scrolls its own contents
+   independently of the page. `overscroll-behavior: contain` prevents
+   wheel events from leaking out to the page once it bottoms out. */
 .sidebar {
-  position: sticky;
-  top: 60px;
-  align-self: start;
-  height: calc(100vh - 60px);
+  position: fixed;
+  top: var(--topbar-h);
+  left: 0;
+  width: 260px;
+  height: calc(100dvh - var(--topbar-h));
+  z-index: 50;
   overflow-y: auto;
-  padding: var(--connex-space-16) var(--connex-space-12);
-  background: var(--connex-background-surface);
-  border-right: var(--connex-border-width-1) solid var(--connex-border-color-secondary);
+  overscroll-behavior: contain;
+  padding: var(--connex-space-16) var(--connex-space-12) var(--connex-space-32);
+  background: var(--connex-surface-primary);
+  border-right: var(--connex-border-width-1) solid var(--connex-border-secondary);
   display: flex;
   flex-direction: column;
   gap: var(--connex-space-4);
 }
-.nav-group {
-  border-radius: var(--connex-radius-4);
-  overflow: hidden;
-}
-.nav-group > summary {
-  cursor: pointer;
-  list-style: none;
+/* === Sidebar nav (powered by <connex-accordion>) ===
+   The five sections (Foundation, Tokens, Components, Patterns, Templates)
+   are <connex-accordion-item>s. We restyle the accordion's trigger via
+   ::part(trigger) so the section label keeps the small uppercase nav-header
+   look, then style the slotted <ul>/<li> at the light-DOM level. */
+.sidebar .nav-accordion {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--connex-space-8) var(--connex-space-12);
-  font-family: var(--connex-font-family-inter);
-  font-size: var(--connex-font-size-12);
-  font-weight: var(--connex-font-weight-semibold);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--connex-text-display-secondary);
-  user-select: none;
-  border-radius: var(--connex-radius-4);
-  transition: background var(--connex-motion-duration-fast) var(--connex-motion-easing-standard);
+  flex-direction: column;
+  gap: var(--connex-space-4);
 }
-.nav-group > summary:hover {
-  background: var(--connex-color-alpha-100);
-  color: var(--connex-text-display-primary);
+/* Section triggers (Foundation / Tokens / Components / Patterns / Templates)
+   are intentionally NOT restyled here. All visual properties — typography,
+   color, padding, hover, focus, and the chevron — come from the connex-accordion
+   component itself (size="sm" on the parent <connex-accordion>). The sidebar
+   gets the same trigger appearance the accordion ships with anywhere else. */
+/* Each accordion section's body is a <connex-anchor-links> in manual mode */
+.sidebar connex-anchor-links {
+  width: 100%;
+  display: block;
+  margin: var(--connex-space-4) 0 var(--connex-space-8);
 }
-.nav-group > summary::-webkit-details-marker { display: none; }
-.nav-group > summary::after {
-  content: "›";
-  display: inline-block;
-  font-size: var(--connex-font-size-16);
-  transform: rotate(90deg);
-  transition: transform var(--connex-motion-duration-fast) var(--connex-motion-easing-standard);
-  color: var(--connex-text-display-secondary);
-}
-.nav-group:not([open]) > summary::after {
-  transform: rotate(0deg);
-}
-.nav-group ul {
+
+.sidebar ul {
   list-style: none;
   margin: var(--connex-space-4) 0 var(--connex-space-8);
   padding: 0;
@@ -151,7 +149,7 @@ body {
   flex-direction: column;
   gap: 2px;
 }
-.nav-group li {
+.sidebar li {
   font-size: var(--connex-font-size-14);
   display: flex;
   align-items: center;
@@ -159,37 +157,39 @@ body {
   padding: var(--connex-space-4) var(--connex-space-12) var(--connex-space-4) var(--connex-space-24);
   border-radius: var(--connex-radius-4);
 }
-.nav-group li.muted {
+.sidebar li.muted {
   color: var(--connex-text-display-secondary);
   cursor: not-allowed;
 }
-.nav-group li a {
+.sidebar li a {
   flex: 1;
   color: var(--connex-text-interactive-primary);
   text-decoration: none;
   font-weight: var(--connex-font-weight-medium);
 }
-.nav-group li:has(a):hover {
-  background: var(--connex-color-alpha-100);
+.sidebar li:has(a):hover {
+  background: var(--connex-interactive-background-brand-hover);
 }
-.nav-group li.active {
-  background: var(--connex-color-alpha-200);
+.sidebar li.active {
+  background: var(--connex-color-alpha-20);
 }
-.nav-group li.active a { color: var(--connex-text-display-primary); }
-.nav-group .tag {
+.sidebar li.active a { color: var(--connex-text-display-primary); }
+.sidebar .tag {
   font-size: 10px;
   font-weight: var(--connex-font-weight-medium);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+
   padding: 2px var(--connex-space-4);
   border-radius: var(--connex-radius-2);
-  background: var(--connex-color-alpha-100);
+  background: var(--connex-color-alpha-20);
   color: var(--connex-text-display-secondary);
 }
 
-/* === Main content === */
+/* === Main content ===
+   Inline padding comes from --page-margin so it's identical on every page
+   and stays symmetric (left = right) at every breakpoint. The desktop
+   sidebar offset is layered on top via .layout > main below. */
 main {
-  padding: var(--connex-space-32) var(--connex-space-32) var(--connex-space-96);
+  padding: var(--page-margin) var(--page-margin) var(--connex-space-96);
   display: flex;
   flex-direction: column;
   gap: var(--connex-space-64);
@@ -199,19 +199,23 @@ main {
 .page { display: none; }
 .page.active { display: block; }
 
-.page-header { margin-bottom: var(--connex-space-24); }
+.page-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--connex-space-8);
+  margin-bottom: var(--connex-space-24);
+}
 .page-header h2 {
   font-family: var(--connex-font-family-literata);
   font-weight: var(--connex-font-weight-semibold);
   font-size: var(--connex-font-size-32);
   line-height: var(--connex-font-line-height-40);
-  margin: 0 0 var(--connex-space-8);
+  margin: 0;
 }
 .page-header p.lede {
   margin: 0;
   font-size: var(--connex-font-size-16);
   color: var(--connex-text-display-secondary);
-  max-width: 65ch;
 }
 
 section > h2 {
@@ -225,21 +229,20 @@ section > p.lede {
   margin: 0 0 var(--connex-space-24);
   font-size: var(--connex-font-size-16);
   color: var(--connex-text-display-secondary);
-  max-width: 65ch;
 }
 .subheading {
   font-family: var(--connex-font-family-literata);
   font-weight: var(--connex-font-weight-semibold);
   font-size: var(--connex-font-size-20);
-  margin: var(--connex-space-32) 0 var(--connex-space-12);
+  /* Top space-24 separates the subhead from the previous swatch grid;
+     bottom space-8 matches the title → content rhythm used elsewhere
+     in the docs (preview-block titles, page headers). */
+  margin: var(--connex-space-24) 0 var(--connex-space-8);
 }
 
-/* Category banner (Foundation, Components, etc.) */
+/* Category banner (Foundation, Components, etc.) — title + lede only;
+   no surface, border, or padding. The page itself provides spacing. */
 .category-banner {
-  background: var(--connex-background-surface);
-  border: var(--connex-border-width-1) solid var(--connex-border-color-secondary);
-  border-radius: var(--connex-radius-12);
-  padding: var(--connex-space-32);
   margin-bottom: var(--connex-space-32);
 }
 .category-banner h1 {
@@ -253,13 +256,304 @@ section > p.lede {
   margin: 0;
   font-size: var(--connex-font-size-16);
   color: var(--connex-text-display-secondary);
-  max-width: 65ch;
+}
+
+/* === Foundation > Overview hero + section cards ===
+       The overview page leads with a colored hero introducing Connex and the
+       products it empowers, followed by a 2-up grid of "section cards" tinted
+       with primitive color scales (blue, teal, etc). Each card pairs copy
+       with a placeholder slot for an illustration that may land later. */
+.overview-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: var(--connex-space-32);
+  align-items: center;
+  background: var(--connex-color-white);
+  border: var(--connex-border-width-1) solid var(--connex-border-secondary);
+  border-radius: var(--connex-radius-4);
+  padding: var(--connex-space-48) var(--connex-space-48);
+  margin-bottom: var(--connex-space-32);
+}
+.overview-hero__copy { display: flex; flex-direction: column; gap: var(--connex-space-12); }
+.overview-hero__eyebrow {
+  font-family: var(--connex-font-family-inter);
+  font-size: var(--connex-font-size-12);
+  font-weight: var(--connex-font-weight-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--connex-color-blue-500);
+}
+.overview-hero__title {
+  margin: 0;
+  font-family: var(--connex-font-family-literata);
+  font-weight: var(--connex-font-weight-bold);
+  font-size: var(--connex-font-size-32);
+  line-height: var(--connex-font-line-height-40, 1.25);
+  color: var(--connex-text-display-primary);
+}
+.overview-hero__body {
+  margin: 0;
+  font-size: var(--connex-font-size-16);
+  line-height: var(--connex-font-line-height-24);
+  color: var(--connex-text-display-secondary);
+  max-width: 60ch;
+}
+.overview-hero__products {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--connex-space-8);
+  margin-top: var(--connex-space-12);
+}
+.overview-hero__products-label {
+  font-family: var(--connex-font-family-inter);
+  font-size: var(--connex-font-size-12);
+  font-weight: var(--connex-font-weight-semibold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--connex-text-display-secondary);
+  margin-right: var(--connex-space-4);
+}
+.overview-hero__product-chip {
+  font-family: var(--connex-font-family-inter);
+  font-size: var(--connex-font-size-14);
+  font-weight: var(--connex-font-weight-medium);
+  color: var(--connex-color-blue-500);
+  background: var(--connex-color-white);
+  border: var(--connex-border-width-1) solid var(--connex-color-blue-200);
+  border-radius: 999px;
+  padding: var(--connex-space-4) var(--connex-space-12);
+}
+.overview-hero__illustration {
+  min-height: 220px;
+  border-radius: var(--connex-radius-8);
+  border: var(--connex-border-width-1) dashed var(--connex-border-secondary);
+  background: var(--connex-surface-secondary, var(--connex-color-cool-gray-50, #f8fafc));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.overview-section-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: var(--connex-space-24);
+  margin-bottom: var(--connex-space-48);
+}
+/* 3-up modifier — used by the Principles row so Density / Accessibility /
+   Motion principles share equal width on wide screens and wrap below. The
+   3-up cards also flip layout: the illustration becomes an edge-to-edge
+   banner along the top of the card, with the copy inset below it. */
+.overview-section-grid--3up {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+.overview-section-grid--3up > .overview-card {
+  /* Drop the all-around padding so the illustration can sit flush to the
+     card's left, top, and right edges. Copy gets its own inset below. */
+  padding: 0;
+  grid-template-rows: auto 1fr;
+  gap: 0;
+  overflow: hidden; /* clip the banner to the card's rounded corners */
+}
+.overview-section-grid--3up > .overview-card .overview-card__illustration {
+  order: -1;
+  min-height: 140px;
+  border-radius: 0;
+  border: none;
+  border-bottom: var(--connex-border-width-1) dashed currentColor;
+  background: rgba(255, 255, 255, 0.6);
+}
+.overview-section-grid--3up > .overview-card .overview-card__copy {
+  padding: var(--connex-space-24) var(--connex-space-24) var(--connex-space-32);
+}
+.overview-card {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: var(--connex-space-24);
+  padding: var(--connex-space-32);
+  border-radius: var(--connex-radius-4);
+  border: var(--connex-border-width-1) solid transparent;
+}
+.overview-card__copy { display: flex; flex-direction: column; gap: var(--connex-space-12); }
+.overview-card__eyebrow {
+  font-family: var(--connex-font-family-inter);
+  font-size: var(--connex-font-size-12);
+  font-weight: var(--connex-font-weight-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.overview-card__title {
+  margin: 0;
+  font-family: var(--connex-font-family-literata);
+  font-weight: var(--connex-font-weight-semibold);
+  font-size: var(--connex-font-size-24);
+  line-height: var(--connex-font-line-height-32, 1.25);
+  color: var(--connex-text-display-primary);
+}
+.overview-card__body {
+  margin: 0;
+  font-size: var(--connex-font-size-16);
+  line-height: var(--connex-font-line-height-24);
+  color: var(--connex-text-display-secondary);
+}
+.overview-card__list {
+  margin: var(--connex-space-4) 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--connex-space-8);
+}
+.overview-card__list li {
+  position: relative;
+  padding-left: var(--connex-space-16);
+  font-family: var(--connex-font-family-inter);
+  font-size: var(--connex-font-size-14);
+  line-height: var(--connex-font-line-height-21);
+  color: var(--connex-text-display-primary);
+}
+.overview-card__list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: calc(var(--connex-font-line-height-21) / 2 - 3px);
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.45;
+}
+.overview-card__illustration {
+  min-height: 140px;
+  border-radius: var(--connex-radius-8);
+  border: var(--connex-border-width-1) dashed currentColor;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.55);
+}
+.overview-card__illustration-label {
+  font-family: var(--connex-font-family-inter);
+  font-size: var(--connex-font-size-12);
+  font-weight: var(--connex-font-weight-medium);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--connex-text-display-secondary);
+  opacity: 0.7;
+}
+
+/* Tonal variants — each pulls from a different primitive scale so the
+   sections read with distinct identity while remaining in-system. */
+.overview-card--blue {
+  background: var(--connex-color-blue-50);
+  border-color: var(--connex-color-blue-200);
+}
+.overview-card--blue .overview-card__eyebrow { color: var(--connex-color-blue-500); }
+.overview-card--blue .overview-card__illustration { color: var(--connex-color-blue-200); }
+
+.overview-card--teal {
+  background: var(--connex-color-teal-50);
+  border-color: var(--connex-color-teal-200);
+}
+.overview-card--teal .overview-card__eyebrow { color: var(--connex-color-teal-500); }
+.overview-card--teal .overview-card__illustration { color: var(--connex-color-teal-200); }
+
+.overview-card--purple {
+  background: var(--connex-color-purple-50);
+  border-color: var(--connex-color-purple-200);
+}
+.overview-card--purple .overview-card__eyebrow { color: var(--connex-color-purple-500); }
+.overview-card--purple .overview-card__illustration { color: var(--connex-color-purple-200); }
+
+.overview-card--green {
+  background: var(--connex-color-green-50);
+  border-color: var(--connex-color-green-200);
+}
+.overview-card--green .overview-card__eyebrow { color: var(--connex-color-green-500); }
+.overview-card--green .overview-card__illustration { color: var(--connex-color-green-200); }
+
+.overview-card--yellow {
+  background: var(--connex-color-yellow-50);
+  border-color: var(--connex-color-yellow-200);
+}
+.overview-card--yellow .overview-card__eyebrow { color: var(--connex-color-yellow-500); }
+.overview-card--yellow .overview-card__illustration { color: var(--connex-color-yellow-200); }
+
+/* === Dark theme — primitive color scales don't theme-shift on their own,
+   so override each surface tied to a primitive (-50 / -200) with its
+   darker equivalent (-900 / -800) when the document opts into dark. The
+   eyebrow keeps the -500 brand color since that mid-step reads well on
+   both light and dark backgrounds. */
+[data-theme='dark'] .overview-hero {
+  background: var(--connex-surface-primary);
+  border-color: var(--connex-border-primary);
+}
+[data-theme='dark'] .overview-hero__product-chip {
+  background: var(--connex-surface-page);
+  color: var(--connex-color-blue-200);
+  border-color: var(--connex-color-blue-800);
+}
+[data-theme='dark'] .overview-hero__illustration {
+  background: var(--connex-surface-page);
+  border-color: var(--connex-border-primary);
+}
+
+[data-theme='dark'] .overview-card--blue {
+  background: var(--connex-color-blue-900);
+  border-color: var(--connex-color-blue-800);
+}
+[data-theme='dark'] .overview-card--blue .overview-card__eyebrow { color: var(--connex-color-blue-200); }
+[data-theme='dark'] .overview-card--blue .overview-card__illustration { color: var(--connex-color-blue-800); }
+
+[data-theme='dark'] .overview-card--teal {
+  background: var(--connex-color-teal-900);
+  border-color: var(--connex-color-teal-800);
+}
+[data-theme='dark'] .overview-card--teal .overview-card__eyebrow { color: var(--connex-color-teal-200); }
+[data-theme='dark'] .overview-card--teal .overview-card__illustration { color: var(--connex-color-teal-800); }
+
+[data-theme='dark'] .overview-card--purple {
+  background: var(--connex-color-purple-900);
+  border-color: var(--connex-color-purple-800);
+}
+[data-theme='dark'] .overview-card--purple .overview-card__eyebrow { color: var(--connex-color-purple-200); }
+[data-theme='dark'] .overview-card--purple .overview-card__illustration { color: var(--connex-color-purple-800); }
+
+[data-theme='dark'] .overview-card--green {
+  background: var(--connex-color-green-900);
+  border-color: var(--connex-color-green-800);
+}
+[data-theme='dark'] .overview-card--green .overview-card__eyebrow { color: var(--connex-color-green-200); }
+[data-theme='dark'] .overview-card--green .overview-card__illustration { color: var(--connex-color-green-800); }
+
+[data-theme='dark'] .overview-card--yellow {
+  background: var(--connex-color-yellow-900);
+  border-color: var(--connex-color-yellow-800);
+}
+[data-theme='dark'] .overview-card--yellow .overview-card__eyebrow { color: var(--connex-color-yellow-200); }
+[data-theme='dark'] .overview-card--yellow .overview-card__illustration { color: var(--connex-color-yellow-800); }
+
+/* Illustration placeholder: white tint reads on light tinted cards; on
+   dark cards the slot picks up a darker tint so the dashed border still
+   reads as a banner divider. Applies to both the 2-up Taxonomy/Build
+   cards and the 3-up Principles row. */
+[data-theme='dark'] .overview-card__illustration,
+[data-theme='dark'] .overview-section-grid--3up > .overview-card .overview-card__illustration {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+@media (max-width: 720px) {
+  .overview-hero {
+    grid-template-columns: 1fr;
+    padding: var(--connex-space-32);
+  }
+  .overview-hero__illustration { min-height: 160px; }
 }
 
 /* Coming soon panel */
 .empty-panel {
-  background: var(--connex-background-surface);
-  border: var(--connex-border-width-1) dashed var(--connex-border-color-secondary);
+  background: var(--connex-surface-primary);
+  border: var(--connex-border-width-1) dashed var(--connex-border-secondary);
   border-radius: var(--connex-radius-8);
   padding: var(--connex-space-32);
   display: flex;
@@ -267,16 +561,8 @@ section > p.lede {
   gap: var(--connex-space-8);
   align-items: flex-start;
 }
-.empty-panel .badge {
-  font-size: var(--connex-font-size-10);
-  font-weight: var(--connex-font-weight-semibold);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  background: var(--connex-color-alpha-200);
-  color: var(--connex-text-display-secondary);
-  padding: 2px var(--connex-space-8);
-  border-radius: var(--connex-radius-2);
-}
+/* The "Coming soon" indicator is now a <connex-badge>; no extra styling needed
+   — the badge component handles its own type/emphasis/size styling. */
 .empty-panel h3 {
   margin: 0;
   font-family: var(--connex-font-family-literata);
@@ -296,8 +582,8 @@ section > p.lede {
   gap: var(--connex-space-16);
 }
 .foundation-card {
-  background: var(--connex-background-surface);
-  border: var(--connex-border-width-1) solid var(--connex-border-color-secondary);
+  background: var(--connex-surface-primary);
+  border: var(--connex-border-width-1) solid var(--connex-border-secondary);
   border-radius: var(--connex-radius-8);
   padding: var(--connex-space-16);
   display: flex;
@@ -331,8 +617,8 @@ section > p.lede {
   flex-direction: column;
   border-radius: var(--connex-radius-8);
   overflow: hidden;
-  border: var(--connex-border-width-1) solid var(--connex-border-color-secondary);
-  background: var(--connex-background-surface);
+  border: var(--connex-border-width-1) solid var(--connex-border-secondary);
+  background: var(--connex-surface-primary);
 }
 .swatch .chip { height: 64px; }
 .swatch .meta {
@@ -350,6 +636,10 @@ section > p.lede {
   color: var(--connex-text-display-secondary);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
+.swatch .value--ref {
+  color: var(--connex-text-display-primary);
+  font-weight: var(--connex-font-weight-medium);
+}
 
 /* Spacing visualizer */
 .space-row {
@@ -358,7 +648,7 @@ section > p.lede {
   gap: var(--connex-space-12);
   align-items: center;
   padding: var(--connex-space-8) 0;
-  border-bottom: var(--connex-border-width-1) solid var(--connex-border-color-secondary);
+  border-bottom: var(--connex-border-width-1) solid var(--connex-border-secondary);
 }
 .space-row:last-child { border-bottom: none; }
 .space-row .label, .space-row .value {
@@ -383,8 +673,8 @@ section > p.lede {
 .radius-row .box {
   width: 96px;
   height: 96px;
-  background: var(--connex-color-blue-200);
-  border: var(--connex-border-width-2) solid var(--connex-color-blue-500);
+  background: var(--connex-surface-primary);
+  border: var(--connex-border-width-2) solid var(--connex-border-primary);
 }
 .radius-row .name { font-size: var(--connex-font-size-12); font-weight: var(--connex-font-weight-semibold); }
 .radius-row .value {
@@ -393,8 +683,8 @@ section > p.lede {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 .border-row .box {
-  background: var(--connex-background-surface);
-  border-color: var(--connex-border-color-primary);
+  background: var(--connex-surface-primary);
+  border-color: var(--connex-border-primary);
   border-style: solid;
   border-radius: var(--connex-radius-8);
 }
@@ -408,7 +698,7 @@ section > p.lede {
   gap: var(--connex-space-4);
   height: 96px;
   padding: var(--connex-space-12);
-  background: var(--connex-background-surface);
+  background: var(--connex-surface-primary);
   border-radius: var(--connex-radius-8);
 }
 .elev-card .name { font-size: var(--connex-font-size-14); font-weight: var(--connex-font-weight-semibold); }
@@ -420,7 +710,7 @@ section > p.lede {
 
 /* Type specimen */
 .specimen {
-  border-bottom: var(--connex-border-width-1) solid var(--connex-border-color-secondary);
+  border-bottom: var(--connex-border-width-1) solid var(--connex-border-secondary);
   padding: var(--connex-space-16) 0;
   display: grid;
   grid-template-columns: 160px 1fr;
@@ -456,8 +746,8 @@ section > p.lede {
   gap: var(--connex-space-16);
 }
 .motion-card {
-  background: var(--connex-background-surface);
-  border: var(--connex-border-width-1) solid var(--connex-border-color-secondary);
+  background: var(--connex-surface-primary);
+  border: var(--connex-border-width-1) solid var(--connex-border-secondary);
   border-radius: var(--connex-radius-8);
   padding: var(--connex-space-16);
   display: flex;
@@ -487,14 +777,17 @@ section > p.lede {
   height: 220px;
   background: var(--connex-color-cool-gray-100);
   border-radius: var(--connex-radius-8);
-  border: var(--connex-border-width-1) dashed var(--connex-border-color-secondary);
+  border: var(--connex-border-width-1) dashed var(--connex-border-secondary);
   overflow: hidden;
+}
+[data-theme='dark'] .z-stack {
+  background: var(--connex-color-cool-gray-800);
 }
 .z-stack .layer {
   position: absolute;
   padding: var(--connex-space-8) var(--connex-space-12);
-  background: var(--connex-background-surface);
-  border: var(--connex-border-width-1) solid var(--connex-border-color-primary);
+  background: var(--connex-surface-primary);
+  border: var(--connex-border-width-1) solid var(--connex-border-primary);
   border-radius: var(--connex-radius-4);
   font-size: var(--connex-font-size-12);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -514,7 +807,7 @@ section > p.lede {
   width: 36px;
   height: 36px;
   background: transparent;
-  border: var(--connex-border-width-1) solid var(--connex-border-color-secondary);
+  border: var(--connex-border-width-1) solid var(--connex-border-secondary);
   border-radius: var(--connex-radius-4);
   padding: 0;
   cursor: pointer;
@@ -523,7 +816,7 @@ section > p.lede {
   justify-content: center;
   gap: 4px;
 }
-.nav-toggle:hover { background: var(--connex-color-alpha-100); }
+.nav-toggle:hover { background: var(--connex-color-alpha-20); }
 .nav-toggle span {
   display: block;
   width: 18px;
@@ -542,7 +835,7 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-6px) rotate
   display: none;
   position: fixed;
   inset: 0;
-  background: var(--connex-background-scrim);
+  background: var(--connex-surface-scrim);
   z-index: 90;
   opacity: 0;
   transition: opacity var(--connex-motion-duration-base) var(--connex-motion-easing-standard);
@@ -550,7 +843,10 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-6px) rotate
 body.nav-open .sidebar-scrim { opacity: 1; }
 
 @media (max-width: 960px) {
-  .layout { grid-template-columns: 1fr; }
+  /* Off-canvas drawer mode — main no longer reserves space for the sidebar.
+     Reset the desktop sidebar offset to the standard --page-margin so left
+     and right gutters match. */
+  .layout > main { padding-left: var(--page-margin); }
 
   .nav-toggle { display: inline-flex; }
 
@@ -570,10 +866,7 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   body.nav-open .sidebar { transform: translateX(0); }
   body.nav-open .sidebar-scrim { display: block; }
 
-  main {
-    padding: var(--connex-space-24);
-    max-width: 100%;
-  }
+  main { max-width: 100%; }
 }
 
 @media (max-width: 600px) {
@@ -594,16 +887,14 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   }
   .controls select { width: 100%; }
 
-  main {
-    padding: var(--connex-space-16);
-    gap: var(--connex-space-48);
-  }
+  /* Inline padding comes from --page-margin; only the inter-section gap
+     tightens at this breakpoint. */
+  main { gap: var(--connex-space-48); }
 
   section > h2 {
     font-size: var(--connex-font-size-24);
     line-height: var(--connex-font-line-height-30);
   }
-  .category-banner { padding: var(--connex-space-24); }
   .category-banner h1 {
     font-size: var(--connex-font-size-32);
     line-height: var(--connex-font-line-height-40);
@@ -651,16 +942,13 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   display: flex;
   flex-direction: column;
   gap: var(--connex-space-8);
-  padding-bottom: var(--connex-space-24);
-  border-bottom: var(--connex-border-width-1) solid var(--connex-border-color-secondary);
   margin-bottom: var(--connex-space-24);
 }
-.component-eyebrow {
-  font-size: var(--connex-font-size-10);
-  font-weight: var(--connex-font-weight-semibold);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--connex-text-display-secondary);
+/* Page-eyebrow badge — knockout low-emphasis connex-badge labelled
+   TOKEN / COMPONENT / PATTERN. align-self prevents the flex column
+   from stretching the badge to the full header width. */
+.page-badge {
+  align-self: flex-start;
 }
 .component-title {
   font-family: var(--connex-font-family-literata);
@@ -674,52 +962,16 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   line-height: var(--connex-font-line-height-24);
   color: var(--connex-text-display-secondary);
   margin: 0;
-  max-width: 65ch;
 }
 
-/* Tab list */
-.component-tabs {
-  display: flex;
-  gap: var(--connex-space-4);
-  border-bottom: var(--connex-border-width-1) solid var(--connex-border-color-secondary);
+/* Tab list — every component / pattern / token tabbed page renders its
+   tabs through <connex-tabs>. Add the same 32px breathing room that the
+   old hand-rolled .component-tabs container had between the tab list and
+   the active panel. */
+.component-page-header + connex-tabs,
+.page-header + connex-tabs {
   margin-bottom: var(--connex-space-32);
-  overflow-x: auto;
-}
-.component-tab {
-  appearance: none;
-  background: transparent;
-  border: none;
-  padding: var(--connex-space-12) var(--connex-space-16);
-  font-family: inherit;
-  font-size: var(--connex-font-size-14);
-  font-weight: var(--connex-font-weight-medium);
-  color: var(--connex-text-display-secondary);
-  cursor: pointer;
-  position: relative;
-  white-space: nowrap;
-  border-radius: var(--connex-radius-4) var(--connex-radius-4) 0 0;
-  transition: color var(--connex-motion-duration-fast) var(--connex-motion-easing-standard),
-              background var(--connex-motion-duration-fast) var(--connex-motion-easing-standard);
-}
-.component-tab:hover {
-  color: var(--connex-text-display-primary);
-  background: var(--connex-color-alpha-100);
-}
-.component-tab.active {
-  color: var(--connex-text-interactive-primary);
-}
-.component-tab.active::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -1px;
-  height: 2px;
-  background: var(--connex-text-interactive-primary);
-}
-.component-tab:focus-visible {
-  outline: 2px solid var(--connex-text-interactive-primary);
-  outline-offset: -2px;
+  display: block;
 }
 
 /* Panels */
@@ -755,10 +1007,60 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   gap: var(--connex-space-12);
   align-items: center;
   padding: var(--connex-space-24);
-  background: var(--connex-background-surface);
-  border: var(--connex-border-width-1) solid var(--connex-border-color-secondary);
+  background: var(--connex-surface-primary);
+  border: var(--connex-border-width-1) solid var(--connex-border-secondary);
   border-radius: var(--connex-radius-8);
 }
+/* Control type grid — labeled cells with stage + caption */
+.preview-row.control-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: var(--connex-space-12);
+  align-items: start;
+}
+.control-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--connex-space-8);
+  padding: var(--connex-space-8);
+}
+.control-cell__stage {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+}
+.control-cell__label {
+  font-size: var(--connex-font-size-12);
+  color: var(--connex-text-display-secondary);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  text-align: center;
+}
+
+/* Block-direction preview (for accordion, tables, anything that fills width) */
+.preview-row--block {
+  flex-direction: column;
+  align-items: stretch;
+  padding: var(--connex-space-12);
+}
+.preview-row--block > * { width: 100%; }
+.preview-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--connex-space-16);
+  width: 100%;
+}
+.preview-stage--block {
+  align-items: stretch;
+  padding: var(--connex-space-16);
+}
+.preview-stage--block > * { width: 100%; }
+.do-dont-preview--block {
+  display: block;
+  padding: var(--connex-space-12);
+}
+.do-dont-preview--block > * { width: 100%; }
 
 /* Controls layout */
 .controls-layout {
@@ -772,8 +1074,8 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   flex-direction: column;
   gap: var(--connex-space-16);
   padding: var(--connex-space-16);
-  background: var(--connex-background-surface);
-  border: var(--connex-border-width-1) solid var(--connex-border-color-secondary);
+  background: var(--connex-surface-primary);
+  border: var(--connex-border-width-1) solid var(--connex-border-secondary);
   border-radius: var(--connex-radius-8);
   position: sticky;
   top: 80px;
@@ -786,20 +1088,402 @@ body.nav-open .sidebar-scrim { opacity: 1; }
 .ctrl-field label {
   font-size: var(--connex-font-size-12);
   font-weight: var(--connex-font-weight-semibold);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+
   color: var(--connex-text-display-secondary);
 }
 .ctrl-field select,
-.ctrl-field input[type="text"] {
+.ctrl-field input[type="text"],
+.ctrl-field input[type="number"] {
   font-family: inherit;
   font-size: var(--connex-font-size-14);
   padding: var(--connex-space-8) var(--connex-space-12);
-  border: var(--connex-border-width-1) solid var(--connex-border-color-primary);
+  border: var(--connex-border-width-1) solid var(--connex-border-primary);
   border-radius: var(--connex-radius-4);
-  background: var(--connex-background-page);
+  background: var(--connex-surface-page);
   color: var(--connex-text-display-primary);
 }
+/* Dropdown component used in place of native <select> in controls panels */
+.ctrl-field connex-dropdown-select {
+  width: 100%;
+}
+
+/* Popover docs — trigger button + tip-placement preview grid */
+.pop-trigger {
+  appearance: none;
+  font-family: inherit;
+  font-size: var(--connex-font-size-14);
+  font-weight: var(--connex-font-weight-medium);
+  padding: var(--connex-space-8) var(--connex-space-12);
+  border: var(--connex-border-width-1) solid var(--connex-border-primary);
+  border-radius: var(--connex-radius-4);
+  background: var(--connex-surface-primary);
+  color: var(--connex-text-display-primary);
+  cursor: pointer;
+}
+.pop-trigger:hover { background: var(--connex-interactive-background-hover); }
+.pop-trigger:focus-visible {
+  outline: var(--connex-focus-ring-width) solid var(--connex-focus-ring-color);
+  outline-offset: var(--connex-focus-ring-offset);
+}
+
+.preview-stack--inline {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--connex-space-32);
+}
+.preview-grid--tooltips {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--connex-space-48) var(--connex-space-32);
+  padding: var(--connex-space-48) var(--connex-space-24);
+  justify-items: center;
+}
+
+/* === Overview tiles (every overview page renders connex-tile-button via
+       the overviewTile helper). Body slot stacks an optional "Coming soon"
+       badge above the summary text with a small gap. */
+.overview-tile-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--connex-space-8);
+}
+.overview-tile-body p {
+  margin: 0;
+  color: var(--connex-text-display-secondary);
+  font-size: var(--connex-font-size-14);
+  line-height: var(--connex-font-line-height-21);
+}
+
+/* === Data pair preview === */
+.data-pair-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--connex-space-24);
+  width: 100%;
+}
+
+/* === Divider previews === */
+.divider-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--connex-space-12);
+  width: 100%;
+  max-width: 360px;
+  font-family: var(--connex-font-family-inter);
+}
+.divider-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--connex-space-8);
+}
+.divider-row > span {
+  font-size: var(--connex-font-size-12);
+  color: var(--connex-text-display-secondary);
+}
+.divider-row--dark {
+  background: var(--connex-color-cool-gray-800, #2a3340);
+  padding: var(--connex-space-12);
+  border-radius: var(--connex-radius-4);
+  color: var(--connex-color-white);
+}
+.divider-row--dark > span { color: var(--connex-color-white); }
+.divider-vert-row {
+  display: inline-flex;
+  align-items: stretch;
+  gap: var(--connex-space-12);
+  height: 32px;
+  font-size: var(--connex-font-size-14);
+}
+.divider-vert-row > span {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* === Tile previews ===
+   Preview rows already provide the surface fill. Tiles themselves render
+   transparent surfaces by spec (Border 0, Elevation 0), so we put them on
+   the page background within the docs to keep a visible boundary. */
+.tile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--connex-space-16);
+  width: 100%;
+}
+.tile-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--connex-space-12);
+  width: 100%;
+}
+/* All three tile variants now ship fill.white + 1px cool-gray-200 borders
+   from the components themselves — no docs-level surface overrides needed. */
+/* Header overflow button used inside tile */
+.tile-overflow {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--connex-radius-4);
+  font-size: 18px;
+  color: var(--connex-text-display-secondary);
+  cursor: pointer;
+}
+.tile-overflow:hover { background: var(--connex-interactive-background-hover); color: var(--connex-text-display-primary); }
+
+/* === Text inputs preview === */
+.ti-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--connex-space-32);
+  width: 100%;
+}
+.ti-variant {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: var(--connex-space-24) var(--connex-space-32);
+  align-items: start;
+}
+@media (max-width: 760px) {
+  .ti-variant { grid-template-columns: 1fr; }
+}
+.ti-variant__head h4 {
+  margin: 0 0 var(--connex-space-4);
+  font-family: var(--connex-font-family-literata);
+  font-weight: var(--connex-font-weight-semibold);
+  font-size: var(--connex-font-size-16);
+  color: var(--connex-text-display-primary);
+}
+.ti-variant__head p {
+  margin: 0;
+  font-size: var(--connex-font-size-12);
+  color: var(--connex-text-display-secondary);
+  max-width: 32ch;
+}
+.ti-variant__pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--connex-space-16);
+  align-items: start;
+}
+@media (max-width: 600px) {
+  .ti-variant__pair { grid-template-columns: 1fr; }
+}
+.ti-confirm-pair {
+  display: flex;
+  flex-direction: column;
+  gap: var(--connex-space-12);
+}
+.ti-states-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--connex-space-16);
+}
+.ti-states-grid h4 {
+  margin: 0 0 var(--connex-space-8);
+  font-size: var(--connex-font-size-12);
+  font-weight: var(--connex-font-weight-semibold);
+
+  color: var(--connex-text-display-secondary);
+}
+
+/* === Tabs in-context demo (in docs) — panel below the live tab list === */
+.tabs-demo-panel {
+  padding: var(--connex-space-16) 0 0;
+  font-family: var(--connex-font-family-inter);
+}
+.tabs-demo-panel h4 {
+  font-family: var(--connex-font-family-literata);
+  font-weight: var(--connex-font-weight-semibold);
+  font-size: var(--connex-font-size-16);
+  margin: 0 0 var(--connex-space-4);
+}
+.tabs-demo-panel p {
+  margin: 0;
+  font-size: var(--connex-font-size-14);
+  line-height: var(--connex-font-line-height-21);
+  color: var(--connex-text-display-secondary);
+}
+
+/* === Status-dot in-context demo (in docs) === */
+.sd-rows {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 360px;
+  border: var(--connex-border-width-1) solid var(--connex-border-secondary);
+  border-radius: var(--connex-radius-4);
+  overflow: hidden;
+  background: var(--connex-surface-primary);
+  font-family: var(--connex-font-family-inter);
+}
+.sd-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--connex-space-8) var(--connex-space-12);
+  font-size: var(--connex-font-size-14);
+  border-bottom: var(--connex-border-width-1) solid var(--connex-border-secondary);
+}
+.sd-row:last-child { border-bottom: none; }
+.sd-row__acct {
+  font-variant-numeric: tabular-nums;
+  color: var(--connex-text-display-primary);
+}
+
+/* === Skeleton demos (in docs) === */
+.skeleton-demo-card {
+  width: 100%;
+  max-width: 480px;
+  padding: var(--connex-space-16);
+  background: var(--connex-surface-primary);
+  border: var(--connex-border-width-1) solid var(--connex-border-secondary);
+  border-radius: var(--connex-radius-8);
+}
+.skeleton-demo-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--connex-space-16);
+  width: 100%;
+  max-width: 420px;
+}
+.skeleton-demo-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--connex-space-12);
+}
+.skeleton-demo-row__text {
+  flex: 1;
+  min-width: 0;
+}
+
+/* === Show-more standalone demo (in docs) === */
+.show-more-demo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--connex-space-8);
+  font-family: var(--connex-font-family-inter);
+  font-size: var(--connex-font-size-14);
+  line-height: var(--connex-font-line-height-21);
+  color: var(--connex-text-display-primary);
+  width: 100%;
+}
+.show-more-demo__body {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+.show-more-demo__body--expanded {
+  -webkit-line-clamp: unset;
+  display: block;
+}
+
+/* === Sensitive data don't-card stand-in (component refuses bad labels) === */
+.sd-fake {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--connex-space-8);
+  font-family: var(--connex-font-family-inter);
+  font-size: var(--connex-font-size-14);
+  color: var(--connex-text-display-primary);
+}
+.sd-fake__btn {
+  appearance: none;
+  background: transparent;
+  border: none;
+  padding: 2px var(--connex-space-4);
+  font: inherit;
+  font-size: var(--connex-font-size-12);
+  font-weight: var(--connex-font-weight-semibold);
+  color: var(--connex-text-interactive-primary);
+  cursor: not-allowed;
+  border-radius: var(--connex-radius-2);
+}
+
+/* === Progress component preview === */
+.preview-row.preview-row--gauges {
+  display: flex;
+  gap: var(--connex-space-32);
+  align-items: flex-end;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+/* === Badge prescriptive-usage reference table === */
+.badge-usage-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--connex-font-size-14);
+  line-height: var(--connex-font-line-height-21);
+}
+.badge-usage-table thead th {
+  text-align: left;
+  font-size: var(--connex-font-size-12);
+  font-weight: var(--connex-font-weight-semibold);
+
+  color: var(--connex-text-display-secondary);
+  padding: var(--connex-space-8) var(--connex-space-12);
+  border-bottom: var(--connex-border-width-1) solid var(--connex-border-secondary);
+}
+.badge-usage-table tbody td {
+  padding: var(--connex-space-12);
+  vertical-align: top;
+  border-bottom: var(--connex-border-width-1) solid var(--connex-border-secondary);
+  color: var(--connex-text-display-primary);
+}
+.badge-usage-table tbody tr:last-child td {
+  border-bottom: none;
+}
+.badge-usage-table__badge {
+  width: 1%;          /* shrink to badge width */
+  white-space: nowrap;
+}
+.badge-usage-table__note {
+  color: var(--connex-text-display-secondary);
+}
+
+/* === Anchor links pattern demo === */
+.pattern-demo {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: var(--connex-space-32);
+  align-items: start;
+}
+.pattern-demo-body {
+  height: 320px;
+  overflow-y: auto;
+  border: var(--connex-border-width-1) solid var(--connex-border-secondary);
+  border-radius: var(--connex-radius-8);
+  padding: var(--connex-space-24);
+  background: var(--connex-surface-primary);
+  scroll-behavior: smooth;
+}
+.pattern-demo-section + .pattern-demo-section {
+  margin-top: var(--connex-space-32);
+}
+.pattern-demo-section h3 {
+  font-family: var(--connex-font-family-literata);
+  font-size: var(--connex-font-size-20);
+  margin: 0 0 var(--connex-space-8);
+}
+.pattern-demo-section p {
+  margin: 0 0 var(--connex-space-12);
+  color: var(--connex-text-display-secondary);
+  font-size: var(--connex-font-size-14);
+  line-height: var(--connex-font-line-height-21);
+}
+
+/* States showcase grid */
+.pattern-states-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--connex-space-24);
+  align-items: start;
+}
+.pattern-states-grid > div { display: flex; flex-direction: column; gap: var(--connex-space-8); }
 .ctrl-checks {
   display: flex;
   flex-direction: column;
@@ -823,8 +1507,8 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   justify-content: center;
   min-height: 200px;
   padding: var(--connex-space-32);
-  background: var(--connex-background-surface);
-  border: var(--connex-border-width-1) solid var(--connex-border-color-secondary);
+  background: var(--connex-surface-primary);
+  border: var(--connex-border-width-1) solid var(--connex-border-secondary);
   border-radius: var(--connex-radius-8);
 }
 .code-wrap {
@@ -838,7 +1522,7 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   margin: 0;
   padding: var(--connex-space-16);
   background: var(--connex-color-cool-gray-100);
-  border: var(--connex-border-width-1) solid var(--connex-border-color-secondary);
+  border: var(--connex-border-width-1) solid var(--connex-border-secondary);
   border-radius: var(--connex-radius-8);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: var(--connex-font-size-12);
@@ -858,30 +1542,21 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   flex-direction: column;
   gap: var(--connex-space-16);
 }
+/* Match the size of `.preview-block__title` so all six tabs (Preview,
+   Controls, Usage guidelines, Content, Accessibility, Code) share one
+   visual hierarchy for sub-section headings. */
 .guideline-heading {
   font-family: var(--connex-font-family-literata);
   font-weight: var(--connex-font-weight-semibold);
-  font-size: var(--connex-font-size-24);
+  font-size: var(--connex-font-size-20);
   line-height: var(--connex-font-line-height-30);
   margin: 0;
-  padding-bottom: var(--connex-space-8);
-  border-bottom: var(--connex-border-width-1) solid var(--connex-border-color-secondary);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--connex-space-8);
 }
-.do-heading {
-  color: var(--connex-text-display-success);
-  border-bottom-color: var(--connex-border-color-success);
-}
-.dont-heading {
-  color: var(--connex-text-display-error);
-  border-bottom-color: var(--connex-border-color-error);
-}
-.do-heading::before,
-.dont-heading::before {
-  display: inline-block;
-  margin-right: var(--connex-space-8);
-}
-.do-heading::before { content: "✓"; }
-.dont-heading::before { content: "✗"; }
+.do-heading { color: var(--connex-text-display-success); }
+.dont-heading { color: var(--connex-text-display-error); }
 
 /* ========================================================================
    Theming page
@@ -891,9 +1566,7 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   flex-direction: column;
   gap: var(--connex-space-12);
   padding-bottom: var(--connex-space-32);
-  border-bottom: var(--connex-border-width-1) solid var(--connex-border-color-secondary);
 }
-.theme-section:last-child { border-bottom: none; }
 .theme-section__heading {
   font-family: var(--connex-font-family-literata);
   font-weight: var(--connex-font-weight-semibold);
@@ -919,8 +1592,8 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   align-items: center;
   gap: var(--connex-space-8);
   padding: var(--connex-space-8) var(--connex-space-12);
-  background: var(--connex-background-surface);
-  border: var(--connex-border-width-1) solid var(--connex-border-color-secondary);
+  background: var(--connex-surface-primary);
+  border: var(--connex-border-width-1) solid var(--connex-border-secondary);
   border-radius: var(--connex-radius-999);
 }
 .theme-pill__label {
@@ -950,8 +1623,8 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   flex-direction: column;
   gap: var(--connex-space-8);
   padding: var(--connex-space-16);
-  background: var(--connex-background-surface);
-  border: var(--connex-border-width-1) solid var(--connex-border-color-secondary);
+  background: var(--connex-surface-primary);
+  border: var(--connex-border-width-1) solid var(--connex-border-secondary);
   border-radius: var(--connex-radius-8);
 }
 .theme-subgroup__heading {
@@ -976,8 +1649,8 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   gap: var(--connex-space-12);
-  background: var(--connex-background-surface);
-  border: var(--connex-border-width-1) solid var(--connex-border-color-secondary);
+  background: var(--connex-surface-primary);
+  border: var(--connex-border-width-1) solid var(--connex-border-secondary);
   border-radius: var(--connex-radius-8);
   padding: var(--connex-space-16);
 }
@@ -998,7 +1671,7 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   align-items: center;
   justify-content: center;
   min-height: 32px;
-  color: var(--connex-icon-display-primary);
+  color: var(--connex-color-cool-gray-500);
 }
 .icon-stage svg {
   display: block;
@@ -1020,8 +1693,8 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   align-items: center;
   gap: var(--connex-space-12);
   padding: var(--connex-space-12);
-  background: var(--connex-background-surface);
-  border: var(--connex-border-width-1) solid var(--connex-border-color-secondary);
+  background: var(--connex-surface-primary);
+  border: var(--connex-border-width-1) solid var(--connex-border-secondary);
   border-radius: var(--connex-radius-8);
 }
 .icon-search {
@@ -1030,41 +1703,17 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   font-family: inherit;
   font-size: var(--connex-font-size-14);
   padding: var(--connex-space-8) var(--connex-space-12);
-  border: var(--connex-border-width-1) solid var(--connex-border-color-primary);
+  border: var(--connex-border-width-1) solid var(--connex-border-primary);
   border-radius: var(--connex-radius-4);
-  background: var(--connex-background-page);
+  background: var(--connex-surface-page);
   color: var(--connex-text-display-primary);
 }
 .icon-search:focus-visible {
-  outline: 2px solid var(--connex-text-interactive-primary);
+  outline: var(--connex-focus-ring-width) solid var(--connex-focus-ring-color);
   outline-offset: 1px;
 }
-.icon-style-toggle {
-  display: inline-flex;
-  border: var(--connex-border-width-1) solid var(--connex-border-color-primary);
-  border-radius: var(--connex-radius-4);
-  overflow: hidden;
-}
-.icon-style-btn {
-  appearance: none;
-  background: var(--connex-background-page);
-  color: var(--connex-text-display-secondary);
-  border: none;
-  padding: var(--connex-space-8) var(--connex-space-12);
-  font-family: inherit;
-  font-size: var(--connex-font-size-12);
-  font-weight: var(--connex-font-weight-medium);
-  cursor: pointer;
-  border-right: var(--connex-border-width-1) solid var(--connex-border-color-primary);
-  transition: background var(--connex-motion-duration-fast) var(--connex-motion-easing-standard),
-              color var(--connex-motion-duration-fast) var(--connex-motion-easing-standard);
-}
-.icon-style-btn:last-child { border-right: none; }
-.icon-style-btn:hover { background: var(--connex-color-alpha-100); color: var(--connex-text-display-primary); }
-.icon-style-btn.active {
-  background: var(--connex-text-interactive-primary);
-  color: var(--connex-color-white);
-}
+/* Icon-style switcher uses <connex-segmented-control> directly — no extra
+   styling needed. */
 .icon-count {
   font-size: var(--connex-font-size-12);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -1079,12 +1728,12 @@ body.nav-open .sidebar-scrim { opacity: 1; }
 }
 .icon-grid--catalog .icon-cell {
   padding: var(--connex-space-8);
-  background: var(--connex-background-page);
+  background: var(--connex-surface-page);
   border-radius: var(--connex-radius-4);
   cursor: default;
   transition: background var(--connex-motion-duration-fast) var(--connex-motion-easing-standard);
 }
-.icon-grid--catalog .icon-cell:hover { background: var(--connex-color-alpha-100); }
+.icon-grid--catalog .icon-cell:hover { background: var(--connex-color-alpha-20); }
 .icon-grid--catalog .icon-stage { min-height: 28px; }
 .icon-empty {
   grid-column: 1 / -1;
@@ -1109,8 +1758,7 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   font-weight: var(--connex-font-weight-semibold);
   margin: 0;
   color: var(--connex-text-display-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+
 }
 
 /* Do / Don't grid */
@@ -1125,16 +1773,19 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   flex-direction: column;
   gap: var(--connex-space-12);
   padding: var(--connex-space-16);
-  border: var(--connex-border-width-1) solid var(--connex-border-color-secondary);
+  border: var(--connex-border-width-1) solid var(--connex-border-secondary);
   border-top-width: 4px;
   border-radius: var(--connex-radius-8);
-  background: var(--connex-background-surface);
+  background: var(--connex-surface-primary);
 }
-.do-card { border-top-color: var(--connex-border-color-success); }
-.dont-card { border-top-color: var(--connex-border-color-error); }
+.do-card { border-top-color: var(--connex-border-success); }
+.dont-card { border-top-color: var(--connex-border-error); }
 .do-dont-header {
   font-size: var(--connex-font-size-14);
   font-weight: var(--connex-font-weight-semibold);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--connex-space-4);
 }
 .do-card .do-dont-header { color: var(--connex-text-display-success); }
 .dont-card .do-dont-header { color: var(--connex-text-display-error); }
@@ -1144,7 +1795,7 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   justify-content: center;
   min-height: 80px;
   padding: var(--connex-space-16);
-  background: var(--connex-background-page);
+  background: var(--connex-surface-page);
   border-radius: var(--connex-radius-4);
 }
 .do-dont-preview--row {
@@ -1162,7 +1813,7 @@ body.nav-open .sidebar-scrim { opacity: 1; }
 /* Props table */
 .props-table-wrap {
   overflow-x: auto;
-  border: var(--connex-border-width-1) solid var(--connex-border-color-secondary);
+  border: var(--connex-border-width-1) solid var(--connex-border-secondary);
   border-radius: var(--connex-radius-8);
 }
 .props-table {
@@ -1174,15 +1825,14 @@ body.nav-open .sidebar-scrim { opacity: 1; }
 .props-table td {
   text-align: left;
   padding: var(--connex-space-12);
-  border-bottom: var(--connex-border-width-1) solid var(--connex-border-color-secondary);
+  border-bottom: var(--connex-border-width-1) solid var(--connex-border-secondary);
 }
 .props-table tr:last-child td { border-bottom: none; }
 .props-table th {
-  background: var(--connex-background-page);
+  background: var(--connex-surface-page);
   font-weight: var(--connex-font-weight-semibold);
   font-size: var(--connex-font-size-12);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+
   color: var(--connex-text-display-secondary);
 }
 .props-table td:first-child,
@@ -1192,14 +1842,53 @@ body.nav-open .sidebar-scrim { opacity: 1; }
 }
 .props-table td:nth-child(2) { color: var(--connex-text-display-secondary); }
 
+/* Components-overview search */
+.component-search-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--connex-space-12);
+  padding: var(--connex-space-12);
+  margin-bottom: var(--connex-space-16);
+  background: var(--connex-surface-primary);
+  border: var(--connex-border-width-1) solid var(--connex-border-secondary);
+  border-radius: var(--connex-radius-8);
+}
+.component-search {
+  flex: 1;
+  font-family: inherit;
+  font-size: var(--connex-font-size-14);
+  padding: var(--connex-space-8) var(--connex-space-12);
+  border: var(--connex-border-width-1) solid var(--connex-border-primary);
+  border-radius: var(--connex-radius-4);
+  background: var(--connex-surface-page);
+  color: var(--connex-text-display-primary);
+}
+.component-search:focus-visible {
+  outline: var(--connex-focus-ring-width) solid var(--connex-focus-ring-color);
+  outline-offset: 1px;
+}
+.component-search-count {
+  font-size: var(--connex-font-size-12);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--connex-text-display-secondary);
+  flex-shrink: 0;
+}
+.component-search-empty {
+  grid-column: 1 / -1;
+  padding: var(--connex-space-32);
+  text-align: center;
+  color: var(--connex-text-display-secondary);
+  font-style: italic;
+}
+
 /* Component link card on overview page */
 .component-link-card {
   display: flex;
   flex-direction: column;
   gap: var(--connex-space-8);
   padding: var(--connex-space-16);
-  background: var(--connex-background-surface);
-  border: var(--connex-border-width-1) solid var(--connex-border-color-secondary);
+  background: var(--connex-surface-primary);
+  border: var(--connex-border-width-1) solid var(--connex-border-secondary);
   border-radius: var(--connex-radius-8);
   text-decoration: none;
   color: inherit;
@@ -1237,108 +1926,6 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   transform: translateX(4px);
 }
 
-/* ========================================================================
-   Connex Button — CSS-only mock of the eventual <connex-button> Lit element
-   ======================================================================== */
-.cnx-btn {
-  appearance: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--connex-space-8);
-  font-family: var(--connex-font-family-inter);
-  font-weight: var(--connex-font-weight-semibold);
-  font-size: var(--connex-font-size-14);
-  line-height: 1;
-  border: var(--connex-border-width-1) solid transparent;
-  border-radius: var(--connex-radius-4);
-  cursor: pointer;
-  white-space: nowrap;
-  user-select: none;
-  transition:
-    background var(--connex-motion-duration-fast) var(--connex-motion-easing-standard),
-    border-color var(--connex-motion-duration-fast) var(--connex-motion-easing-standard),
-    color var(--connex-motion-duration-fast) var(--connex-motion-easing-standard),
-    transform var(--connex-motion-duration-fast) var(--connex-motion-easing-standard),
-    box-shadow var(--connex-motion-duration-fast) var(--connex-motion-easing-standard);
-}
-.cnx-btn:focus-visible {
-  outline: 2px solid var(--connex-text-interactive-primary);
-  outline-offset: 2px;
-}
-.cnx-btn:active:not([disabled]) {
-  transform: translateY(1px);
-}
-.cnx-btn[disabled] {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-.cnx-btn__icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2em;
-  line-height: 1;
-}
-.cnx-btn__label { line-height: 1; }
-
-/* Sizes */
-.cnx-btn--sm { padding: var(--connex-space-4) var(--connex-space-12); font-size: var(--connex-font-size-12); min-height: 28px; }
-.cnx-btn--md { padding: var(--connex-space-8) var(--connex-space-16); font-size: var(--connex-font-size-14); min-height: 36px; }
-.cnx-btn--lg { padding: var(--connex-space-12) var(--connex-space-24); font-size: var(--connex-font-size-16); min-height: 44px; }
-
-/* Variant: primary (filled) */
-.cnx-btn--primary {
-  background: var(--connex-text-interactive-primary);
-  color: var(--connex-color-white);
-}
-.cnx-btn--primary:hover:not([disabled]) { background: var(--connex-color-blue-600); }
-
-/* Variant: secondary (outlined) */
-.cnx-btn--secondary {
-  background: var(--connex-background-surface);
-  color: var(--connex-text-interactive-primary);
-  border-color: var(--connex-border-color-primary);
-}
-.cnx-btn--secondary:hover:not([disabled]) {
-  background: var(--connex-color-alpha-100);
-  border-color: var(--connex-text-interactive-primary);
-}
-
-/* Variant: tertiary (text-only) */
-.cnx-btn--tertiary {
-  background: transparent;
-  color: var(--connex-text-interactive-primary);
-}
-.cnx-btn--tertiary:hover:not([disabled]) {
-  background: var(--connex-color-alpha-100);
-}
-
-/* Variant: destructive (filled red) */
-.cnx-btn--destructive {
-  background: var(--connex-color-red-600);
-  color: var(--connex-color-white);
-}
-.cnx-btn--destructive:hover:not([disabled]) { background: var(--connex-color-red-700); }
-
-/* Loading state */
-.cnx-btn--loading { cursor: progress; }
-.cnx-btn__spinner {
-  width: 1em;
-  height: 1em;
-  border-radius: 50%;
-  border: 2px solid currentColor;
-  border-right-color: transparent;
-  animation: cnx-btn-spin 0.6s linear infinite;
-  display: inline-block;
-}
-@keyframes cnx-btn-spin {
-  to { transform: rotate(360deg); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .cnx-btn__spinner { animation-duration: 0s; }
-  .cnx-btn { transition: none; }
-}
 
 /* Responsive: stack controls layout below 800px */
 @media (max-width: 800px) {

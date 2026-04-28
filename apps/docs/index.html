@@ -25,99 +25,58 @@
         <span></span><span></span><span></span>
       </button>
       <div class="brand">
-        <span class="logo">⬡</span>
         <span class="title">Connex</span>
-        <span class="subtitle">v0.1.0</span>
+        <connex-badge type="informational" emphasis="low" size="condensed">BETA</connex-badge>
       </div>
       <div class="controls">
-        <label>
-          <span>Theme</span>
-          <select id="theme">
-            <option value="light">Light</option>
-            <option value="dark">Dark</option>
-          </select>
-        </label>
-        <label>
-          <span>Density</span>
-          <select id="density">
-            <option value="default">Default</option>
-            <option value="condensed">Condensed</option>
-          </select>
-        </label>
-        <label>
-          <span>Brand</span>
-          <select id="brand">
-            <option value="connex">Connex</option>
-            <option value="empath">Empath</option>
-            <option value="sage">Sage</option>
-          </select>
-        </label>
+        <connex-dropdown-select id="brand" label="Brand" size="condensed" value="connex">
+          <connex-dropdown-option value="connex">Connex</connex-dropdown-option>
+          <connex-dropdown-option value="empath">Empath</connex-dropdown-option>
+          <connex-dropdown-option value="sage">Sage</connex-dropdown-option>
+          <connex-dropdown-option value="onecomm">OneComm</connex-dropdown-option>
+          <connex-dropdown-option value="athena">Athena</connex-dropdown-option>
+          <connex-dropdown-option value="graffiti">Graffiti</connex-dropdown-option>
+          <connex-dropdown-option value="hubble">Hubble</connex-dropdown-option>
+          <connex-dropdown-option value="voyant">Voyant</connex-dropdown-option>
+          <connex-dropdown-option value="echo">ECHO</connex-dropdown-option>
+          <connex-dropdown-option value="e4a">E4A</connex-dropdown-option>
+          <connex-dropdown-option value="eno">Eno</connex-dropdown-option>
+        </connex-dropdown-select>
+        <connex-dropdown-select id="theme" label="Theme" size="condensed" value="light">
+          <connex-dropdown-option value="light">Light</connex-dropdown-option>
+          <connex-dropdown-option value="dark">Dark</connex-dropdown-option>
+        </connex-dropdown-select>
+        <connex-dropdown-select id="density" label="Density" size="condensed" value="default">
+          <connex-dropdown-option value="default">Default</connex-dropdown-option>
+          <connex-dropdown-option value="condensed">Condensed</connex-dropdown-option>
+        </connex-dropdown-select>
       </div>
     </header>
 
     <div class="layout">
       <div class="sidebar-scrim" id="sidebar-scrim" aria-hidden="true"></div>
       <aside class="sidebar" id="sidebar">
-        <details class="nav-group" open>
-          <summary>Foundation</summary>
-          <ul>
-            <li><a href="#foundation-overview">Overview</a></li>
-            <li><a href="#foundation-theming">Theming</a></li>
-          </ul>
-        </details>
+        <connex-accordion class="nav-accordion" mode="multi" size="sm">
+          <connex-accordion-item label="Foundation" expanded>
+            <connex-anchor-links id="nav-foundation" mode="manual" prevent-scroll></connex-anchor-links>
+          </connex-accordion-item>
 
-        <details class="nav-group" open>
-          <summary>Tokens</summary>
-          <ul>
-            <li><a href="#tokens-overview">Overview</a></li>
-            <li><a href="#colors">Colors</a></li>
-            <li><a href="#brand">Brand</a></li>
-            <li><a href="#typography">Typography</a></li>
-            <li><a href="#iconography">Iconography</a></li>
-            <li><a href="#spacing">Spacing</a></li>
-            <li><a href="#radius">Corner radius</a></li>
-            <li><a href="#border">Border width</a></li>
-            <li><a href="#elevation">Elevation</a></li>
-            <li><a href="#motion">Motion</a></li>
-            <li><a href="#z-index">Z-index</a></li>
-            <li><a href="#semantic">Semantic</a></li>
-          </ul>
-        </details>
+          <connex-accordion-item label="Tokens">
+            <connex-anchor-links id="nav-tokens" mode="manual" prevent-scroll></connex-anchor-links>
+          </connex-accordion-item>
 
-        <details class="nav-group">
-          <summary>Components</summary>
-          <ul>
-            <li><a href="#components-overview">Overview</a></li>
-            <li><a href="#components-button">Button</a></li>
-            <li class="muted">Input <span class="tag">soon</span></li>
-            <li class="muted">Modal <span class="tag">soon</span></li>
-            <li class="muted">Table <span class="tag">soon</span></li>
-            <li class="muted">Tabs <span class="tag">soon</span></li>
-            <li class="muted">Toast <span class="tag">soon</span></li>
-          </ul>
-        </details>
+          <connex-accordion-item label="Components">
+            <connex-anchor-links id="nav-components" mode="manual" prevent-scroll></connex-anchor-links>
+          </connex-accordion-item>
 
-        <details class="nav-group">
-          <summary>Patterns</summary>
-          <ul>
-            <li><a href="#patterns-overview">Overview</a></li>
-            <li class="muted">Empty state <span class="tag">soon</span></li>
-            <li class="muted">Form <span class="tag">soon</span></li>
-            <li class="muted">Workflow stepper <span class="tag">soon</span></li>
-            <li class="muted">Data table <span class="tag">soon</span></li>
-          </ul>
-        </details>
+          <connex-accordion-item label="Patterns">
+            <connex-anchor-links id="nav-patterns" mode="manual" prevent-scroll></connex-anchor-links>
+          </connex-accordion-item>
 
-        <details class="nav-group">
-          <summary>Templates</summary>
-          <ul>
-            <li><a href="#templates-overview">Overview</a></li>
-            <li class="muted">Settings page <span class="tag">soon</span></li>
-            <li class="muted">Dashboard <span class="tag">soon</span></li>
-            <li class="muted">Detail view <span class="tag">soon</span></li>
-            <li class="muted">List + filter <span class="tag">soon</span></li>
-          </ul>
-        </details>
+          <connex-accordion-item label="Templates">
+            <connex-anchor-links id="nav-templates" mode="manual" prevent-scroll></connex-anchor-links>
+          </connex-accordion-item>
+        </connex-accordion>
       </aside>
 
       <main id="app"></main>
