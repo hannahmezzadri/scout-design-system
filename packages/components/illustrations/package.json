@@ -1,7 +1,7 @@
 {
-  "name": "@connex/illustrations",
+  "name": "@scout/illustrations",
   "version": "0.1.0",
-  "description": "Connex Illustrations — token-driven SVG illustrations. Each illustration is its own custom element so consumers tree-shake to only the artwork they import.",
+  "description": "Scout Illustrations — token-driven SVG illustrations. Each illustration is its own custom element so consumers tree-shake to only the artwork they import.",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -15,8 +15,8 @@
   },
   "files": ["dist"],
   "scripts": { "build": "tsup", "dev": "tsup --watch", "clean": "rm -rf dist .turbo" },
-  "peerDependencies": { "lit": "^3.2.0", "@connex/tokens": "workspace:*" },
-  "dependencies": { "lit": "^3.2.0", "@connex/tokens": "workspace:*" },
+  "peerDependencies": { "lit": "^3.2.0", "@scout/tokens": "workspace:*" },
+  "dependencies": { "lit": "^3.2.0", "@scout/tokens": "workspace:*" },
   "devDependencies": { "tsup": "^8.3.0", "typescript": "^5.6.3" },
   "publishConfig": { "access": "restricted" },
   "sideEffects": ["./dist/**/*.js"]

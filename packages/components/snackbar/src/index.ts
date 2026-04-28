@@ -1,4 +1,4 @@
-export { ConnexSnackbar } from './connex-snackbar.js';
+export { ScoutSnackbar } from './scout-snackbar.js';
 export type { SnackbarStatus } from './types.js';
 
-import './connex-snackbar.js';
+import './scout-snackbar.js';

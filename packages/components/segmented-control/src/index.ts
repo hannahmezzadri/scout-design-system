@@ -1,8 +1,8 @@
-export { ConnexSegmentedControl } from './connex-segmented-control.js';
-export { ConnexSegment } from './connex-segment.js';
-export { ConnexLanguageTabs, SUPPORTED_LANGUAGE_VALUES } from './connex-language-tabs.js';
-export type { LanguageTabSpec, SupportedLanguageValue } from './connex-language-tabs.js';
+export { ScoutSegmentedControl } from './scout-segmented-control.js';
+export { ScoutSegment } from './scout-segment.js';
+export { ScoutLanguageTabs, SUPPORTED_LANGUAGE_VALUES } from './scout-language-tabs.js';
+export type { LanguageTabSpec, SupportedLanguageValue } from './scout-language-tabs.js';
 
-import './connex-segmented-control.js';
-import './connex-segment.js';
-import './connex-language-tabs.js';
+import './scout-segmented-control.js';
+import './scout-segment.js';
+import './scout-language-tabs.js';

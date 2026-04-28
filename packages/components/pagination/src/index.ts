@@ -1,4 +1,4 @@
-export { ConnexPagination } from './connex-pagination.js';
+export { ScoutPagination } from './scout-pagination.js';
 export type { PaginationLayout, PaginationSize } from './types.js';
 
-import './connex-pagination.js';
+import './scout-pagination.js';

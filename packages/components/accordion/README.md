@@ -1,40 +1,40 @@
-# @connex/accordion
+# @scout/accordion
 
-`<connex-accordion>` and `<connex-accordion-item>` — Connex's accordion Web Components.
+`<scout-accordion>` and `<scout-accordion-item>` — Scout's accordion Web Components.
 
 ## Install
 
 ```bash
-pnpm add @connex/accordion @connex/tokens lit
+pnpm add @scout/accordion @scout/tokens lit
 ```
 
 ## Use
 
 ```html
-<!-- Load Connex tokens once at the app root -->
-<link rel="stylesheet" href="node_modules/@connex/tokens/dist/css/tokens.css" />
+<!-- Load Scout tokens once at the app root -->
+<link rel="stylesheet" href="node_modules/@scout/tokens/dist/css/tokens.css" />
 
-<connex-accordion mode="single" size="md" icon-position="right" divider>
-  <connex-accordion-item label="What is Connex?" expanded>
-    Connex is the enterprise design system powering Empath and 7+ other products.
-  </connex-accordion-item>
-  <connex-accordion-item label="How do I install?">
+<scout-accordion mode="single" size="md" icon-position="right" divider>
+  <scout-accordion-item label="What is Scout?" expanded>
+    Scout is the enterprise design system powering Empath and 7+ other products.
+  </scout-accordion-item>
+  <scout-accordion-item label="How do I install?">
     Components ship to a private npm registry. See the docs site for setup.
-  </connex-accordion-item>
-  <connex-accordion-item label="Disabled item" disabled>
+  </scout-accordion-item>
+  <scout-accordion-item label="Disabled item" disabled>
     This row cannot be toggled.
-  </connex-accordion-item>
-</connex-accordion>
+  </scout-accordion-item>
+</scout-accordion>
 ```
 
 ```ts
-// Auto-registers <connex-accordion> and <connex-accordion-item>
-import '@connex/accordion';
+// Auto-registers <scout-accordion> and <scout-accordion-item>
+import '@scout/accordion';
 ```
 
 ## API
 
-### `<connex-accordion>`
+### `<scout-accordion>`
 
 | Attribute       | Type                  | Default   | Description                                              |
 | --------------- | --------------------- | --------- | -------------------------------------------------------- |
@@ -43,7 +43,7 @@ import '@connex/accordion';
 | `icon-position` | `"left"` \| `"right"` | `"right"` | Where the chevron sits relative to the label.            |
 | `divider`       | boolean               | `false`   | Renders a 1px rule between items.                        |
 
-### `<connex-accordion-item>`
+### `<scout-accordion-item>`
 
 | Attribute  | Type    | Default | Description                                  |
 | ---------- | ------- | ------- | -------------------------------------------- |
@@ -53,7 +53,7 @@ import '@connex/accordion';
 
 ### Events
 
-`connex-accordion-toggle` — bubbles, composed. `event.detail = { expanded: boolean }`.
+`scout-accordion-toggle` — bubbles, composed. `event.detail = { expanded: boolean }`.
 
 ## Accessibility
 
@@ -64,12 +64,12 @@ import '@connex/accordion';
 
 ## Styling hooks
 
-All visual values come from `@connex/tokens` so theme/density/brand toggles
+All visual values come from `@scout/tokens` so theme/density/brand toggles
 on `<html>` are honored automatically. Override per-instance with the
 following CSS custom properties (rare):
 
 ```css
-connex-accordion {
+scout-accordion {
   --_cnx-accordion-padding-block: 1rem;
   --_cnx-accordion-padding-inline: 1.5rem;
 }

@@ -1,6 +1,6 @@
-export { ConnexDialog } from './connex-dialog.js';
-export { ConnexDisclosureDialog } from './connex-disclosure-dialog.js';
+export { ScoutDialog } from './scout-dialog.js';
+export { ScoutDisclosureDialog } from './scout-disclosure-dialog.js';
 export type { DialogSize, DisclosureDialogType } from './types.js';
 
-import './connex-dialog.js';
-import './connex-disclosure-dialog.js';
+import './scout-dialog.js';
+import './scout-disclosure-dialog.js';

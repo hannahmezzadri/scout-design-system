@@ -1,7 +1,7 @@
 {
-  "name": "@connex/tokens",
+  "name": "@scout/tokens",
   "version": "0.1.0",
-  "description": "Design tokens for the Connex design system",
+  "description": "Design tokens for the Scout design system",
   "type": "module",
   "main": "./dist/ts/tokens.js",
   "types": "./dist/ts/tokens.d.ts",
@@ -15,7 +15,7 @@
     "./css/dark": "./dist/css/dark.css",
     "./css/density-default": "./dist/css/density-default.css",
     "./css/density-condensed": "./dist/css/density-condensed.css",
-    "./css/brand/connex": "./dist/css/brand-connex.css",
+    "./css/brand/scout": "./dist/css/brand-scout.css",
     "./css/brand/empath": "./dist/css/brand-empath.css",
     "./css/brand/sage": "./dist/css/brand-sage.css",
     "./json": "./dist/json/tokens.json",

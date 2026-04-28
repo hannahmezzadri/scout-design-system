@@ -1,6 +1,6 @@
-export { ConnexCheckbox } from './connex-checkbox.js';
-export { ConnexCheckboxGroup } from './connex-checkbox-group.js';
+export { ScoutCheckbox } from './scout-checkbox.js';
+export { ScoutCheckboxGroup } from './scout-checkbox-group.js';
 export type { CheckboxGroupOrientation } from './types.js';
 
-import './connex-checkbox.js';
-import './connex-checkbox-group.js';
+import './scout-checkbox.js';
+import './scout-checkbox-group.js';

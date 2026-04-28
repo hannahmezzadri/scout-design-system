@@ -1,9 +1,9 @@
 import { svg } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { ConnexIllustrationBase } from './base.js';
+import { ScoutIllustrationBase } from './base.js';
 
 /**
- * `<connex-illustration-accordion>` — three stacked panels with the middle
+ * `<scout-illustration-accordion>` — three stacked panels with the middle
  * panel expanded showing content lines. Visual metaphor for the accordion's
  * disclosure pattern: rows reveal nested content on demand.
  *
@@ -14,8 +14,8 @@ import { ConnexIllustrationBase } from './base.js';
  *   - Tiny content lines inside the active panel
  *   - A chevron rotated downward on the active panel
  */
-@customElement('connex-illustration-accordion')
-export class ConnexIllustrationAccordion extends ConnexIllustrationBase {
+@customElement('scout-illustration-accordion')
+export class ScoutIllustrationAccordion extends ScoutIllustrationBase {
   protected renderArtwork() {
     return svg`
       <!-- Backdrop: soft accent halo so the stack reads against the surface -->
@@ -64,6 +64,6 @@ export class ConnexIllustrationAccordion extends ConnexIllustrationBase {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'connex-illustration-accordion': ConnexIllustrationAccordion;
+    'scout-illustration-accordion': ScoutIllustrationAccordion;
   }
 }

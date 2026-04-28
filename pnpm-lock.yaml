@@ -17,121 +17,121 @@ importers:
 
   apps/docs:
     dependencies:
-      '@connex/accordion':
+      '@scout/accordion':
         specifier: workspace:*
         version: link:../../packages/components/accordion
-      '@connex/address':
+      '@scout/address':
         specifier: workspace:*
         version: link:../../packages/components/address
-      '@connex/anchor-links':
+      '@scout/anchor-links':
         specifier: workspace:*
         version: link:../../packages/components/anchor-links
-      '@connex/avatar':
+      '@scout/avatar':
         specifier: workspace:*
         version: link:../../packages/components/avatar
-      '@connex/badge':
+      '@scout/badge':
         specifier: workspace:*
         version: link:../../packages/components/badge
-      '@connex/breadcrumb':
+      '@scout/breadcrumb':
         specifier: workspace:*
         version: link:../../packages/components/breadcrumb
-      '@connex/button':
+      '@scout/button':
         specifier: workspace:*
         version: link:../../packages/components/button
-      '@connex/card':
+      '@scout/card':
         specifier: workspace:*
         version: link:../../packages/components/card
-      '@connex/checkbox':
+      '@scout/checkbox':
         specifier: workspace:*
         version: link:../../packages/components/checkbox
-      '@connex/control':
+      '@scout/control':
         specifier: workspace:*
         version: link:../../packages/components/control
-      '@connex/data-pair':
+      '@scout/data-pair':
         specifier: workspace:*
         version: link:../../packages/components/data-pair
-      '@connex/data-unavailable':
+      '@scout/data-unavailable':
         specifier: workspace:*
         version: link:../../packages/components/data-unavailable
-      '@connex/dialog':
+      '@scout/dialog':
         specifier: workspace:*
         version: link:../../packages/components/dialog
-      '@connex/divider':
+      '@scout/divider':
         specifier: workspace:*
         version: link:../../packages/components/divider
-      '@connex/dropdown':
+      '@scout/dropdown':
         specifier: workspace:*
         version: link:../../packages/components/dropdown
-      '@connex/error-state':
+      '@scout/error-state':
         specifier: workspace:*
         version: link:../../packages/components/error-state
-      '@connex/filter-chip':
+      '@scout/filter-chip':
         specifier: workspace:*
         version: link:../../packages/components/filter-chip
-      '@connex/inline-alert':
+      '@scout/inline-alert':
         specifier: workspace:*
         version: link:../../packages/components/inline-alert
-      '@connex/link':
+      '@scout/link':
         specifier: workspace:*
         version: link:../../packages/components/link
-      '@connex/multiselect':
+      '@scout/multiselect':
         specifier: workspace:*
         version: link:../../packages/components/multiselect
-      '@connex/notification-badge':
+      '@scout/notification-badge':
         specifier: workspace:*
         version: link:../../packages/components/notification-badge
-      '@connex/overlay':
+      '@scout/overlay':
         specifier: workspace:*
         version: link:../../packages/components/overlay
-      '@connex/pagination':
+      '@scout/pagination':
         specifier: workspace:*
         version: link:../../packages/components/pagination
-      '@connex/popover':
+      '@scout/popover':
         specifier: workspace:*
         version: link:../../packages/components/popover
-      '@connex/progress':
+      '@scout/progress':
         specifier: workspace:*
         version: link:../../packages/components/progress
-      '@connex/radio':
+      '@scout/radio':
         specifier: workspace:*
         version: link:../../packages/components/radio
-      '@connex/segmented-control':
+      '@scout/segmented-control':
         specifier: workspace:*
         version: link:../../packages/components/segmented-control
-      '@connex/sensitive-data':
+      '@scout/sensitive-data':
         specifier: workspace:*
         version: link:../../packages/components/sensitive-data
-      '@connex/share-with-customer':
+      '@scout/share-with-customer':
         specifier: workspace:*
         version: link:../../packages/components/share-with-customer
-      '@connex/show-more':
+      '@scout/show-more':
         specifier: workspace:*
         version: link:../../packages/components/show-more
-      '@connex/skeleton':
+      '@scout/skeleton':
         specifier: workspace:*
         version: link:../../packages/components/skeleton
-      '@connex/snackbar':
+      '@scout/snackbar':
         specifier: workspace:*
         version: link:../../packages/components/snackbar
-      '@connex/status-dot':
+      '@scout/status-dot':
         specifier: workspace:*
         version: link:../../packages/components/status-dot
-      '@connex/system-outage':
+      '@scout/system-outage':
         specifier: workspace:*
         version: link:../../packages/components/system-outage
-      '@connex/tabs':
+      '@scout/tabs':
         specifier: workspace:*
         version: link:../../packages/components/tabs
-      '@connex/text-input':
+      '@scout/text-input':
         specifier: workspace:*
         version: link:../../packages/components/text-input
-      '@connex/tile':
+      '@scout/tile':
         specifier: workspace:*
         version: link:../../packages/components/tile
-      '@connex/toggle-switch':
+      '@scout/toggle-switch':
         specifier: workspace:*
         version: link:../../packages/components/toggle-switch
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../packages/tokens
       heroicons:
@@ -150,7 +150,7 @@ importers:
 
   packages/components/accordion:
     dependencies:
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -166,7 +166,7 @@ importers:
 
   packages/components/address:
     dependencies:
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -182,10 +182,10 @@ importers:
 
   packages/components/anchor-links:
     dependencies:
-      '@connex/badge':
+      '@scout/badge':
         specifier: workspace:*
         version: link:../badge
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -201,10 +201,10 @@ importers:
 
   packages/components/avatar:
     dependencies:
-      '@connex/notification-badge':
+      '@scout/notification-badge':
         specifier: workspace:*
         version: link:../notification-badge
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -220,7 +220,7 @@ importers:
 
   packages/components/badge:
     dependencies:
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -236,7 +236,7 @@ importers:
 
   packages/components/breadcrumb:
     dependencies:
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -252,7 +252,7 @@ importers:
 
   packages/components/button:
     dependencies:
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -268,13 +268,13 @@ importers:
 
   packages/components/card:
     dependencies:
-      '@connex/badge':
+      '@scout/badge':
         specifier: workspace:*
         version: link:../badge
-      '@connex/show-more':
+      '@scout/show-more':
         specifier: workspace:*
         version: link:../show-more
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -290,7 +290,7 @@ importers:
 
   packages/components/checkbox:
     dependencies:
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -306,7 +306,7 @@ importers:
 
   packages/components/control:
     dependencies:
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -322,7 +322,7 @@ importers:
 
   packages/components/data-pair:
     dependencies:
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -338,7 +338,7 @@ importers:
 
   packages/components/data-unavailable:
     dependencies:
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -354,13 +354,13 @@ importers:
 
   packages/components/dialog:
     dependencies:
-      '@connex/control':
+      '@scout/control':
         specifier: workspace:*
         version: link:../control
-      '@connex/overlay':
+      '@scout/overlay':
         specifier: workspace:*
         version: link:../overlay
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -376,7 +376,7 @@ importers:
 
   packages/components/divider:
     dependencies:
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -392,7 +392,7 @@ importers:
 
   packages/components/dropdown:
     dependencies:
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -408,7 +408,7 @@ importers:
 
   packages/components/error-state:
     dependencies:
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -424,7 +424,7 @@ importers:
 
   packages/components/filter-chip:
     dependencies:
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -440,7 +440,7 @@ importers:
 
   packages/components/illustrations:
     dependencies:
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -456,10 +456,10 @@ importers:
 
   packages/components/inline-alert:
     dependencies:
-      '@connex/control':
+      '@scout/control':
         specifier: workspace:*
         version: link:../control
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -475,7 +475,7 @@ importers:
 
   packages/components/link:
     dependencies:
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -491,7 +491,7 @@ importers:
 
   packages/components/multiselect:
     dependencies:
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -507,7 +507,7 @@ importers:
 
   packages/components/notification-badge:
     dependencies:
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -523,7 +523,7 @@ importers:
 
   packages/components/overlay:
     dependencies:
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -539,10 +539,10 @@ importers:
 
   packages/components/pagination:
     dependencies:
-      '@connex/dropdown':
+      '@scout/dropdown':
         specifier: workspace:*
         version: link:../dropdown
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -558,7 +558,7 @@ importers:
 
   packages/components/popover:
     dependencies:
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -574,7 +574,7 @@ importers:
 
   packages/components/progress:
     dependencies:
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -590,7 +590,7 @@ importers:
 
   packages/components/radio:
     dependencies:
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -606,7 +606,7 @@ importers:
 
   packages/components/segmented-control:
     dependencies:
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -622,7 +622,7 @@ importers:
 
   packages/components/sensitive-data:
     dependencies:
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -638,10 +638,10 @@ importers:
 
   packages/components/share-with-customer:
     dependencies:
-      '@connex/segmented-control':
+      '@scout/segmented-control':
         specifier: workspace:*
         version: link:../segmented-control
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -657,7 +657,7 @@ importers:
 
   packages/components/show-more:
     dependencies:
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -673,7 +673,7 @@ importers:
 
   packages/components/skeleton:
     dependencies:
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -689,10 +689,10 @@ importers:
 
   packages/components/snackbar:
     dependencies:
-      '@connex/control':
+      '@scout/control':
         specifier: workspace:*
         version: link:../control
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -708,7 +708,7 @@ importers:
 
   packages/components/status-dot:
     dependencies:
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -724,10 +724,10 @@ importers:
 
   packages/components/system-outage:
     dependencies:
-      '@connex/control':
+      '@scout/control':
         specifier: workspace:*
         version: link:../control
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -743,7 +743,7 @@ importers:
 
   packages/components/tabs:
     dependencies:
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -759,7 +759,7 @@ importers:
 
   packages/components/text-input:
     dependencies:
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -775,19 +775,19 @@ importers:
 
   packages/components/tile:
     dependencies:
-      '@connex/badge':
+      '@scout/badge':
         specifier: workspace:*
         version: link:../badge
-      '@connex/button':
+      '@scout/button':
         specifier: workspace:*
         version: link:../button
-      '@connex/show-more':
+      '@scout/show-more':
         specifier: workspace:*
         version: link:../show-more
-      '@connex/skeleton':
+      '@scout/skeleton':
         specifier: workspace:*
         version: link:../skeleton
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:
@@ -803,7 +803,7 @@ importers:
 
   packages/components/toggle-switch:
     dependencies:
-      '@connex/tokens':
+      '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
       lit:

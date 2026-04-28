@@ -1,8 +1,8 @@
-export { ConnexTileButton } from './connex-tile-button.js';
-export { ConnexTile } from './connex-tile.js';
-export { ConnexTileWorkflow } from './connex-tile-workflow.js';
+export { ScoutTileButton } from './scout-tile-button.js';
+export { ScoutTile } from './scout-tile.js';
+export { ScoutTileWorkflow } from './scout-tile-workflow.js';
 export type { TileFunctionalState, TileFooter, WorkflowHeaderState } from './types.js';
 
-import './connex-tile-button.js';
-import './connex-tile.js';
-import './connex-tile-workflow.js';
+import './scout-tile-button.js';
+import './scout-tile.js';
+import './scout-tile-workflow.js';

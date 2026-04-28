@@ -1,4 +1,4 @@
-export { ConnexControl } from './connex-control.js';
+export { ScoutControl } from './scout-control.js';
 export type { ControlType, ControlSize, ControlColor } from './types.js';
 
-import './connex-control.js';
+import './scout-control.js';

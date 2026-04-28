@@ -1,4 +1,4 @@
-export { ConnexDataUnavailable } from './connex-data-unavailable.js';
+export { ScoutDataUnavailable } from './scout-data-unavailable.js';
 export type { DataUnavailableSize } from './types.js';
 
-import './connex-data-unavailable.js';
+import './scout-data-unavailable.js';

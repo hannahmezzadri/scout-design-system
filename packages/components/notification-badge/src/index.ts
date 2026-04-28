@@ -1,4 +1,4 @@
-export { ConnexNotificationBadge } from './connex-notification-badge.js';
+export { ScoutNotificationBadge } from './scout-notification-badge.js';
 export type { NotificationBadgeSize } from './types.js';
 
-import './connex-notification-badge.js';
+import './scout-notification-badge.js';

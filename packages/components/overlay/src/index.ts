@@ -1,3 +1,3 @@
-export { ConnexOverlay } from './connex-overlay.js';
+export { ScoutOverlay } from './scout-overlay.js';
 
-import './connex-overlay.js';
+import './scout-overlay.js';

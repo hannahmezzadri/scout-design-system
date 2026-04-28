@@ -1,4 +1,4 @@
-export { ConnexInlineAlert } from './connex-inline-alert.js';
+export { ScoutInlineAlert } from './scout-inline-alert.js';
 export type { InlineAlertStatus, InlineAlertSize } from './types.js';
 
-import './connex-inline-alert.js';
+import './scout-inline-alert.js';

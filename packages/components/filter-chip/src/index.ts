@@ -1,4 +1,4 @@
-export { ConnexFilterChip } from './connex-filter-chip.js';
+export { ScoutFilterChip } from './scout-filter-chip.js';
 export type { FilterChipSize } from './types.js';
 
-import './connex-filter-chip.js';
+import './scout-filter-chip.js';

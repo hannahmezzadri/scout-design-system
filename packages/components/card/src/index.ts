@@ -1,4 +1,4 @@
-export { ConnexCard } from './connex-card.js';
+export { ScoutCard } from './scout-card.js';
 export type { CardBackground } from './types.js';
 
-import './connex-card.js';
+import './scout-card.js';

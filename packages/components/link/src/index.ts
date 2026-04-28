@@ -1,4 +1,4 @@
-export { ConnexLink } from './connex-link.js';
+export { ScoutLink } from './scout-link.js';
 export type { LinkType, LinkSize } from './types.js';
 
-import './connex-link.js';
+import './scout-link.js';

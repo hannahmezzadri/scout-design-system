@@ -3,7 +3,7 @@ import { property, state } from 'lit/decorators.js';
 import type { IllustrationSize } from './types.js';
 
 /**
- * `ConnexIllustrationBase` — the contract every Connex illustration extends.
+ * `ScoutIllustrationBase` — the contract every Scout illustration extends.
  *
  * Provides:
  *   - The four color slots (`--_illust-{primary,secondary,accent,surface}`)
@@ -18,7 +18,7 @@ import type { IllustrationSize } from './types.js';
  * Path fills reference `var(--_illust-primary)` etc. so brand and theme
  * changes re-tint without re-exporting.
  */
-export class ConnexIllustrationBase extends LitElement {
+export class ScoutIllustrationBase extends LitElement {
   static styles = css`
     :host {
       display: inline-block;
@@ -29,10 +29,10 @@ export class ConnexIllustrationBase extends LitElement {
       /* Color slots — wired to brand-aware semantic tokens. Override per host
          instance with inline style if a single illustration needs a custom
          palette. */
-      --_illust-primary:   var(--connex-illustration-primary);
-      --_illust-secondary: var(--connex-illustration-secondary);
-      --_illust-accent:    var(--connex-illustration-accent);
-      --_illust-surface:   var(--connex-illustration-surface);
+      --_illust-primary:   var(--scout-illustration-primary);
+      --_illust-secondary: var(--scout-illustration-secondary);
+      --_illust-accent:    var(--scout-illustration-accent);
+      --_illust-surface:   var(--scout-illustration-surface);
 
       /* Default size (medium). Per-size overrides below. */
       --_illust-size: 128px;
@@ -46,10 +46,10 @@ export class ConnexIllustrationBase extends LitElement {
          (page-router) skip the gate entirely so they render normally when
          their page becomes visible later. */
       transition:
-        opacity var(--connex-motion-duration-deliberate, 600ms)
-          var(--connex-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)),
-        transform var(--connex-motion-duration-deliberate, 600ms)
-          var(--connex-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1));
+        opacity var(--scout-motion-duration-deliberate, 600ms)
+          var(--scout-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)),
+        transform var(--scout-motion-duration-deliberate, 600ms)
+          var(--scout-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1));
     }
     :host([data-enter]:not([visible])) {
       opacity: 0;

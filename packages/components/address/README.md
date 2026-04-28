@@ -1,36 +1,36 @@
-# @connex/address
+# @scout/address
 
-`<connex-address>` — Connex's pre-formatted address display.
+`<scout-address>` — Scout's pre-formatted address display.
 
 ## Install
 
 ```bash
-pnpm add @connex/address @connex/tokens lit
+pnpm add @scout/address @scout/tokens lit
 ```
 
 ## Use
 
 ```html
-<connex-address label="Home address" favorite>
+<scout-address label="Home address" favorite>
   123 Main St<br />
   Apt 4B<br />
   Brooklyn, NY 11201
   <span slot="meta">Last verified Mar 2024 · Primary</span>
-</connex-address>
+</scout-address>
 
-<connex-address label="Mailing address" select-tool="radio" name="primary-addr" value="addr-1" selected>
+<scout-address label="Mailing address" select-tool="radio" name="primary-addr" value="addr-1" selected>
   500 Park Ave<br />
   New York, NY 10022
-</connex-address>
+</scout-address>
 
-<connex-address size="single-line">
+<scout-address size="single-line">
   123 Main St, Apt 4B, Brooklyn, NY 11201
-</connex-address>
+</scout-address>
 
-<connex-address do-not-disclose label="Backup address">
+<scout-address do-not-disclose label="Backup address">
   PO Box 123<br />
   Anywhere, USA
-</connex-address>
+</scout-address>
 ```
 
 ## API
@@ -56,7 +56,7 @@ pnpm add @connex/address @connex/tokens lit
 
 ### Events
 
-`connex-address-change` — bubbling, composed. `event.detail = { selected: boolean, value: string }`.
+`scout-address-change` — bubbling, composed. `event.detail = { selected: boolean, value: string }`.
 
 ## Privacy
 

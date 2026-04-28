@@ -1,4 +1,4 @@
-export { ConnexDivider } from './connex-divider.js';
+export { ScoutDivider } from './scout-divider.js';
 export type { DividerWeight, DividerColor, DividerOrientation } from './types.js';
 
-import './connex-divider.js';
+import './scout-divider.js';

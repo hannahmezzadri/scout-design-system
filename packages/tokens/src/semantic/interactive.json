@@ -1,6 +1,6 @@
 {
   "interactive": {
-    "$description": "Interactive-state colors. The `background.*` set is the single source of truth for hover / pressed / selected backgrounds across every interactive component. Replaces the dozens of raw `--connex-color-cool-gray-100` / `cool-gray-200` / `blue-50` / `blue-700` / `red-700` references that used to live in component CSS.",
+    "$description": "Interactive-state colors. The `background.*` set is the single source of truth for hover / pressed / selected backgrounds across every interactive component. Replaces the dozens of raw `--scout-color-cool-gray-100` / `cool-gray-200` / `blue-50` / `blue-700` / `red-700` references that used to live in component CSS.",
     "background": {
       "hover":           { "$value": "{color.cool-gray.100}", "$type": "color", "$description": "Default hover background for buttons, list items, dropdown options." },
       "pressed":         { "$value": "{color.cool-gray.200}", "$type": "color", "$description": "Default active / pressed background." },

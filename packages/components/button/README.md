@@ -1,33 +1,33 @@
-# @connex/button
+# @scout/button
 
-`<connex-button>` — Connex's clickable button Web Component.
+`<scout-button>` — Scout's clickable button Web Component.
 
 ## Install
 
 ```bash
-pnpm add @connex/button @connex/tokens lit
+pnpm add @scout/button @scout/tokens lit
 ```
 
 ## Use
 
 ```html
-<connex-button variant="primary" size="default">Save changes</connex-button>
+<scout-button variant="primary" size="default">Save changes</scout-button>
 
-<connex-button variant="action">
+<scout-button variant="action">
   <svg slot="icon-leading">…</svg>
   Add account
-</connex-button>
+</scout-button>
 
-<connex-button variant="critical" loading>Deleting…</connex-button>
+<scout-button variant="critical" loading>Deleting…</scout-button>
 
 <form>
-  <connex-button type="submit" variant="primary">Submit</connex-button>
-  <connex-button type="reset" variant="secondary">Reset</connex-button>
+  <scout-button type="submit" variant="primary">Submit</scout-button>
+  <scout-button type="reset" variant="secondary">Reset</scout-button>
 </form>
 ```
 
 ```ts
-import '@connex/button';
+import '@scout/button';
 ```
 
 ## API
@@ -50,7 +50,7 @@ import '@connex/button';
 
 ### Form association
 
-`<connex-button>` uses the [ElementInternals API](https://developer.mozilla.org/en-US/docs/Web/API/ElementInternals).
+`<scout-button>` uses the [ElementInternals API](https://developer.mozilla.org/en-US/docs/Web/API/ElementInternals).
 When inside a `<form>`:
 - `type="submit"` → `form.requestSubmit()`
 - `type="reset"`  → `form.reset()`

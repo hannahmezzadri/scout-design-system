@@ -9,8 +9,8 @@ export default defineConfig({
   external: [
     'lit',
     'lit/decorators.js',
-    '@connex/tokens',
-    '@connex/segmented-control',
+    '@scout/tokens',
+    '@scout/segmented-control',
   ],
   target: 'es2022',
 });

@@ -1,7 +1,7 @@
 import { defineConfig } from 'tsup';
 
 export default defineConfig({
-  // One entry per illustration so consumers can `import '@connex/illustrations/accordion'`
+  // One entry per illustration so consumers can `import '@scout/illustrations/accordion'`
   // and tree-shake out the rest. `index` re-exports everything for convenience.
   entry: [
     'src/index.ts',
@@ -14,6 +14,6 @@ export default defineConfig({
   dts: true,
   sourcemap: true,
   clean: true,
-  external: ['lit', 'lit/decorators.js', '@connex/tokens'],
+  external: ['lit', 'lit/decorators.js', '@scout/tokens'],
   target: 'es2022',
 });

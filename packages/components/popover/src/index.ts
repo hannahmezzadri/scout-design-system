@@ -1,10 +1,10 @@
-export { ConnexTooltip } from './connex-tooltip.js';
-export { ConnexPopoverMenu, ConnexPopoverMenuItem } from './connex-popover-menu.js';
-export { ConnexPopoverDate } from './connex-popover-date.js';
-export { ConnexPopoverTime } from './connex-popover-time.js';
+export { ScoutTooltip } from './scout-tooltip.js';
+export { ScoutPopoverMenu, ScoutPopoverMenuItem } from './scout-popover-menu.js';
+export { ScoutPopoverDate } from './scout-popover-date.js';
+export { ScoutPopoverTime } from './scout-popover-time.js';
 export type * from './types.js';
 
-import './connex-tooltip.js';
-import './connex-popover-menu.js';
-import './connex-popover-date.js';
-import './connex-popover-time.js';
+import './scout-tooltip.js';
+import './scout-popover-menu.js';
+import './scout-popover-date.js';
+import './scout-popover-time.js';

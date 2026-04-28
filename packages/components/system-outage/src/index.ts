@@ -1,4 +1,4 @@
-export { ConnexSystemOutage } from './connex-system-outage.js';
+export { ScoutSystemOutage } from './scout-system-outage.js';
 export type { SystemOutageStatus } from './types.js';
 
-import './connex-system-outage.js';
+import './scout-system-outage.js';

@@ -1,43 +1,43 @@
-// Connex docs — page-based router. Sidebar clicks switch which page is visible.
+// Scout docs — page-based router. Sidebar clicks switch which page is visible.
 // No anchor scrolling. Each sidebar link corresponds to one .page element.
 
 // Register dropdown, accordion, anchor-links, and badge early so the topbar,
 // sidebar, and every page-eyebrow badge (which dogfood these components)
 // upgrade on first paint.
-import '@connex/dropdown';
-import '@connex/accordion';
-import '@connex/anchor-links';
-import '@connex/badge';
-// Tile registers the connex-tile-button used by every overview page's grid.
-import '@connex/tile';
+import '@scout/dropdown';
+import '@scout/accordion';
+import '@scout/anchor-links';
+import '@scout/badge';
+// Tile registers the scout-tile-button used by every overview page's grid.
+import '@scout/tile';
 // Text-input + checkbox are used by every Controls panel via the ctrlText /
 // ctrlCheck helpers below; eager-import so the elements are upgraded before
 // any controls render.
-import '@connex/text-input';
-import '@connex/checkbox';
+import '@scout/text-input';
+import '@scout/checkbox';
 // Tabs power both the per-page tab list (componentPage helper) and the Colors
 // page's tabbed view; eager-import so they're upgraded on first paint.
-import '@connex/tabs';
+import '@scout/tabs';
 // Segmented control is used by Tokens > Iconography (icon-style switcher);
 // hoisted here so the elements are upgraded before that page renders.
-import '@connex/segmented-control';
-import type { AnchorLinkItem } from '@connex/anchor-links';
+import '@scout/segmented-control';
+import type { AnchorLinkItem } from '@scout/anchor-links';
 
-const PREFIX = '--connex';
+const PREFIX = '--scout';
 const html = document.documentElement;
 
-// --- Theme controls (now <connex-dropdown-select>)
+// --- Theme controls (now <scout-dropdown-select>)
 type DropdownEl = HTMLElement & { value: string };
 const brandSel = document.getElementById('brand') as DropdownEl;
 const themeSel = document.getElementById('theme') as DropdownEl;
 const densitySel = document.getElementById('density') as DropdownEl;
-brandSel.addEventListener('connex-dropdown-change', () =>
+brandSel.addEventListener('scout-dropdown-change', () =>
   html.setAttribute('data-brand', brandSel.value),
 );
-themeSel.addEventListener('connex-dropdown-change', () =>
+themeSel.addEventListener('scout-dropdown-change', () =>
   html.setAttribute('data-theme', themeSel.value),
 );
-densitySel.addEventListener('connex-dropdown-change', () =>
+densitySel.addEventListener('scout-dropdown-change', () =>
   html.setAttribute('data-density', densitySel.value),
 );
 
@@ -58,8 +58,8 @@ function el(tag: string, attrs: Record<string, string> = {}, ...children: (Node 
 }
 
 /**
- * Controls-panel dropdown helper. Returns a `<connex-dropdown-select size="condensed">`
- * with the supplied options, and bridges its `connex-dropdown-change` event to a
+ * Controls-panel dropdown helper. Returns a `<scout-dropdown-select size="condensed">`
+ * with the supplied options, and bridges its `scout-dropdown-change` event to a
  * native `change` event so existing render() loops in each control panel keep working.
  */
 type DDOption = string | { value: string; label: string };
@@ -68,26 +68,26 @@ function ddSelect(
   options: readonly DDOption[],
   value?: string,
 ): HTMLElement & { value: string } {
-  const dd = document.createElement('connex-dropdown-select') as HTMLElement & { value: string };
+  const dd = document.createElement('scout-dropdown-select') as HTMLElement & { value: string };
   dd.id = id;
   dd.setAttribute('size', 'condensed');
   const norm = options.map((o) => (typeof o === 'string' ? { value: o, label: o } : o));
   // Default to first option to mirror native <select> behavior used previously
   dd.setAttribute('value', value ?? norm[0]?.value ?? '');
   for (const { value: v, label } of norm) {
-    const o = document.createElement('connex-dropdown-option');
+    const o = document.createElement('scout-dropdown-option');
     o.setAttribute('value', v);
     o.textContent = label;
     dd.appendChild(o);
   }
-  dd.addEventListener('connex-dropdown-change', () => {
+  dd.addEventListener('scout-dropdown-change', () => {
     dd.dispatchEvent(new Event('change', { bubbles: true }));
   });
   return dd;
 }
 
 /**
- * Controls-panel text field. Returns a `<connex-text-field size="condensed">`
+ * Controls-panel text field. Returns a `<scout-text-field size="condensed">`
  * with the same `.value` getter and native `input`/`change` events that the
  * docs' render() loops expect, so existing wiring keeps working unchanged.
  */
@@ -96,7 +96,7 @@ function ctrlText(
   value = '',
   opts: { placeholder?: string; type?: 'text' | 'number' } = {},
 ): HTMLElement & { value: string } {
-  const t = document.createElement('connex-text-field') as HTMLElement & { value: string };
+  const t = document.createElement('scout-text-field') as HTMLElement & { value: string };
   t.id = id;
   t.setAttribute('size', 'condensed');
   // The `number` variant strips non-digits as the user types; bounds
@@ -108,7 +108,7 @@ function ctrlText(
 }
 
 /**
- * Controls-panel checkbox. Returns a `<connex-checkbox>` whose label content
+ * Controls-panel checkbox. Returns a `<scout-checkbox>` whose label content
  * is slotted from `label`, so the surrounding `el('label', {}, chk, ' Text')`
  * wrapper used previously is no longer needed — drop the chk into the
  * `.ctrl-checks` container directly.
@@ -118,7 +118,7 @@ function ctrlCheck(
   label: string,
   opts: { checked?: boolean } = {},
 ): HTMLElement & { checked: boolean } {
-  const c = document.createElement('connex-checkbox') as HTMLElement & { checked: boolean };
+  const c = document.createElement('scout-checkbox') as HTMLElement & { checked: boolean };
   c.id = id;
   if (opts.checked) c.setAttribute('checked', '');
   c.appendChild(document.createTextNode(label));
@@ -150,11 +150,11 @@ function page(id: string, ...children: (Node | string)[]): HTMLElement {
 
 /**
  * Knockout low-emphasis badge rendered above the page title — identifies the
- * page kind ("Token" / "Component" / "Pattern"). Uses the live connex-badge
+ * page kind ("Token" / "Component" / "Pattern"). Uses the live scout-badge
  * component so all docs eyebrows match the badge component's visual contract.
  */
 function pageBadge(label: 'Token' | 'Component' | 'Pattern'): HTMLElement {
-  const b = document.createElement('connex-badge');
+  const b = document.createElement('scout-badge');
   b.setAttribute('type', 'neutral-knockout');
   b.setAttribute('emphasis', 'low');
   b.setAttribute('size', 'condensed');
@@ -179,7 +179,7 @@ function categoryBanner(title: string, lede: string): HTMLElement {
 
 /**
  * Shared overview-page card. Every overview (Tokens, Components, Patterns,
- * Templates) renders its grid as `<connex-tile-button>`s through this
+ * Templates) renders its grid as `<scout-tile-button>`s through this
  * helper. Click navigates to `href` (hash route); coming-soon variants are
  * disabled and show a yellow "Coming soon" badge above the summary.
  */
@@ -189,7 +189,7 @@ function overviewTile(opts: {
   href?: string;
   comingSoon?: boolean;
 }): HTMLElement {
-  const tile = document.createElement('connex-tile-button');
+  const tile = document.createElement('scout-tile-button');
   tile.setAttribute('header', opts.title);
   if (opts.comingSoon) tile.setAttribute('disabled', '');
 
@@ -198,7 +198,7 @@ function overviewTile(opts: {
   // textual marker.
   const body = el('div', { class: 'overview-tile-body' });
   if (opts.comingSoon) {
-    const b = document.createElement('connex-badge');
+    const b = document.createElement('scout-badge');
     b.setAttribute('type', 'warning');
     b.setAttribute('emphasis', 'low');
     b.setAttribute('size', 'condensed');
@@ -209,7 +209,7 @@ function overviewTile(opts: {
   tile.appendChild(body);
 
   if (opts.href && !opts.comingSoon) {
-    tile.addEventListener('connex-tile-click', () => {
+    tile.addEventListener('scout-tile-click', () => {
       const next = `#${opts.href}`;
       if (location.hash !== next) location.hash = next;
     });
@@ -220,7 +220,7 @@ function overviewTile(opts: {
 function emptyPanel(title: string, body: string): HTMLElement {
   // "Coming soon" tag uses the warning (yellow) badge to match the rest of the
   // doc site's "soon" indicators (e.g. anchor-links sidebar tags).
-  const badge = document.createElement('connex-badge');
+  const badge = document.createElement('scout-badge');
   badge.setAttribute('type', 'warning');
   badge.setAttribute('emphasis', 'low');
   badge.setAttribute('size', 'condensed');
@@ -349,15 +349,15 @@ const app = document.getElementById('app')!;
     return card;
   }
 
-  // Hero — full-width intro stating what Connex is and which products it
+  // Hero — full-width intro stating what Scout is and which products it
   // empowers. Pill-style product chips render directly inline with the copy.
   const products = ['Empath', 'Sage', 'OneComm', 'Athena', 'Graffiti', 'Hubble', 'Voyant', 'ECHO', 'E4A', 'Eno'];
   const hero = el('section', { class: 'overview-hero' },
     el('div', { class: 'overview-hero__copy' },
-      el('div', { class: 'overview-hero__eyebrow' }, 'Connex'),
+      el('div', { class: 'overview-hero__eyebrow' }, 'Scout'),
       el('h2', { class: 'overview-hero__title' }, "Capital One's design system for internal products within Card Servicing"),
       el('p', { class: 'overview-hero__body' },
-        'Connex empowers a family of products with a single, cohesive visual and interaction language. It is built on atomic design methodology and follows a tokens → components → patterns → templates structure. Tokens and components are specific to Connex and form the building blocks of the system. Patterns and templates ship in both core/shared form and product-specific form.'),
+        'Scout empowers a family of products with a single, cohesive visual and interaction language. It is built on atomic design methodology and follows a tokens → components → patterns → templates structure. Tokens and components are specific to Scout and form the building blocks of the system. Patterns and templates ship in both core/shared form and product-specific form.'),
       el('div', { class: 'overview-hero__products' },
         el('span', { class: 'overview-hero__products-label' }, 'Empowers'),
         ...products.map((p) => el('span', { class: 'overview-hero__product-chip' }, p)),
@@ -373,7 +373,7 @@ const app = document.getElementById('app')!;
     sectionCard({
       tone: 'teal',
       eyebrow: 'Taxonomy',
-      title: 'How Connex is organized',
+      title: 'How Scout is organized',
       body: 'Atomic design at the system level. Lower tiers compose into higher tiers; product-specific surfaces extend the shared core without forking it.',
       items: [
         'Core tokens',
@@ -428,7 +428,7 @@ const app = document.getElementById('app')!;
       'foundation-overview',
       categoryBanner(
         'Foundation',
-        'The principles, theming model, and accessibility baseline that every Connex token, component, and pattern is built on.',
+        'The principles, theming model, and accessibility baseline that every Scout token, component, and pattern is built on.',
       ),
       hero,
       grid,
@@ -566,7 +566,7 @@ const app = document.getElementById('app')!;
       'foundation-theming',
       header(
         'Theming',
-        'Connex themes are scoped via data attributes on any element (typically <html>). Switching product, color, density, or language is a single attribute change — no rebundle, no FOUC.',
+        'Scout themes are scoped via data attributes on any element (typically <html>). Switching product, color, density, or language is a single attribute change — no rebundle, no FOUC.',
       ),
       customBlock,
       languageBlock,
@@ -592,7 +592,7 @@ const app = document.getElementById('app')!;
 
   function renderProducts(): HTMLElement {
     const products: Array<[string, string]> = [
-      ['Connex',   'data-product="connex"'],
+      ['Scout',   'data-product="scout"'],
       ['Empath',   'data-product="empath"'],
       ['Sage',     'data-product="sage"'],
       ['OneComm',  'data-product="onecomm"'],
@@ -620,7 +620,7 @@ const app = document.getElementById('app')!;
         el('p', { class: 'theme-section__lede' },
           'A brand-aware illustration library is in development. Each illustration will use four color slots (primary, secondary, accent, surface) that re-tint per product theme and per color theme.'),
         (() => {
-          const b = document.createElement('connex-badge');
+          const b = document.createElement('scout-badge');
           b.setAttribute('type', 'warning');
           b.setAttribute('emphasis', 'low');
           b.setAttribute('size', 'condensed');
@@ -636,12 +636,12 @@ const app = document.getElementById('app')!;
     { id: 'illustrations', label: 'Illustrations', content: renderIllustrations() },
   ];
 
-  const tabsEl = document.createElement('connex-tabs');
+  const tabsEl = document.createElement('scout-tabs');
   tabsEl.setAttribute('value', tabs[0].id);
   const panels = el('div', { class: 'component-panels' });
 
   tabs.forEach((t, i) => {
-    const tabEl = document.createElement('connex-tab');
+    const tabEl = document.createElement('scout-tab');
     tabEl.setAttribute('value', t.id);
     tabEl.textContent = t.label;
     tabsEl.appendChild(tabEl);
@@ -659,7 +659,7 @@ const app = document.getElementById('app')!;
     );
   });
 
-  tabsEl.addEventListener('connex-tabs-change', (e) => {
+  tabsEl.addEventListener('scout-tabs-change', (e) => {
     const v = (e as CustomEvent<{ value: string }>).detail.value;
     panels.querySelectorAll<HTMLElement>('.component-panel').forEach((p) => {
       p.classList.toggle('active', p.id === `panel-foundation-brand-${v}`);
@@ -742,7 +742,7 @@ const app = document.getElementById('app')!;
       'tokens-overview',
       categoryBanner(
         'Tokens',
-        'The atomic visual values of Connex. Three layers: primitives (raw values), semantic (purposeful aliases), composite (component-level token bundles).',
+        'The atomic visual values of Scout. Three layers: primitives (raw values), semantic (purposeful aliases), composite (component-level token bundles).',
       ),
       searchToolbar,
       grid,
@@ -896,7 +896,7 @@ const app = document.getElementById('app')!;
     wrap.append(el('p', { class: 'preview-block__lede' },
       'Per-product brand colors, scoped via [data-brand]. Switch the Brand control above to see the active set update.'));
     const brands: Array<[string, string[]]> = [
-      ['connex', ['light', 'primary', 'dark']],
+      ['scout', ['light', 'primary', 'dark']],
       ['empath', ['primary', 'accent']],
       ['sage', ['primary', 'cream']],
     ];
@@ -928,7 +928,7 @@ const app = document.getElementById('app')!;
     return wrap;
   }
 
-  // === Build the tabbed page using the connex-tabs component (same pattern
+  // === Build the tabbed page using the scout-tabs component (same pattern
   //     as componentPage). The token page header replaces the component-page
   //     header above the tab list. ===
   const tabs = [
@@ -937,12 +937,12 @@ const app = document.getElementById('app')!;
     { id: 'brand',      label: 'Brand',      content: renderBrand() },
   ];
 
-  const tabsEl = document.createElement('connex-tabs');
+  const tabsEl = document.createElement('scout-tabs');
   tabsEl.setAttribute('value', tabs[0].id);
   const panels = el('div', { class: 'component-panels' });
 
   tabs.forEach((t, i) => {
-    const tabEl = document.createElement('connex-tab');
+    const tabEl = document.createElement('scout-tab');
     tabEl.setAttribute('value', t.id);
     tabEl.textContent = t.label;
     tabsEl.appendChild(tabEl);
@@ -961,7 +961,7 @@ const app = document.getElementById('app')!;
     );
   });
 
-  tabsEl.addEventListener('connex-tabs-change', (e) => {
+  tabsEl.addEventListener('scout-tabs-change', (e) => {
     const v = (e as CustomEvent<{ value: string }>).detail.value;
     panels.querySelectorAll<HTMLElement>('.component-panel').forEach((p) => {
       p.classList.toggle('active', p.id === `panel-colors-${v}`);
@@ -995,18 +995,18 @@ const app = document.getElementById('app')!;
     ),
   );
   const styles: Array<[string, string, string]> = [
-    ['display-large', 't-display-large', 'Connex is the best'],
-    ['display-small', 't-display-small', 'Connex is the best'],
-    ['heading-1', 't-h1', 'Connex is the best'],
-    ['heading-2', 't-h2', 'Connex is the best'],
-    ['heading-3', 't-h3', 'Connex is the best'],
-    ['heading-4', 't-h4', 'Connex is the best'],
-    ['heading-5', 't-h5', 'Connex is the best'],
-    ['body-large', 't-body-large', 'Connex is the best'],
-    ['body', 't-body', 'Connex is the best'],
-    ['body-small', 't-body-small', 'Connex is the best'],
-    ['label', 't-label', 'Connex is the best'],
-    ['caption', 't-caption', 'Connex is the best'],
+    ['display-large', 't-display-large', 'Scout is the best'],
+    ['display-small', 't-display-small', 'Scout is the best'],
+    ['heading-1', 't-h1', 'Scout is the best'],
+    ['heading-2', 't-h2', 'Scout is the best'],
+    ['heading-3', 't-h3', 'Scout is the best'],
+    ['heading-4', 't-h4', 'Scout is the best'],
+    ['heading-5', 't-h5', 'Scout is the best'],
+    ['body-large', 't-body-large', 'Scout is the best'],
+    ['body', 't-body', 'Scout is the best'],
+    ['body-small', 't-body-small', 'Scout is the best'],
+    ['label', 't-label', 'Scout is the best'],
+    ['caption', 't-caption', 'Scout is the best'],
   ];
   // Read each typography token's resolved size + line-height + weight from
   // CSS vars so the specimen card shows the actual rendered metrics. These
@@ -1049,7 +1049,7 @@ const app = document.getElementById('app')!;
       s.sizeEl.textContent = `${m.size} / ${m.lineHeight} · ${m.weight}`;
     }
   };
-  densitySel.addEventListener('connex-dropdown-change', () => requestAnimationFrame(refreshTypographyMetrics));
+  densitySel.addEventListener('scout-dropdown-change', () => requestAnimationFrame(refreshTypographyMetrics));
   app.append(wrap);
 }
 
@@ -1149,7 +1149,7 @@ const app = document.getElementById('app')!;
     'iconography',
     header(
       'Iconography',
-      'Connex uses Hero Icons (heroicons.com). Four styles are supported — Outline and Solid at 24×24, Mini at 20×20, Micro at 16×16. Icons inherit color via currentColor and re-theme automatically.',
+      'Scout uses Hero Icons (heroicons.com). Four styles are supported — Outline and Solid at 24×24, Mini at 20×20, Micro at 16×16. Icons inherit color via currentColor and re-theme automatically.',
     'Token',
     ),
   );
@@ -1169,13 +1169,13 @@ const app = document.getElementById('app')!;
     'aria-label': 'Search icons',
   }) as HTMLInputElement;
 
-  // Style switcher uses the connex-segmented-control component so the
+  // Style switcher uses the scout-segmented-control component so the
   // iconography page dogfoods the same primitive used in product UIs.
-  const styleSel = document.createElement('connex-segmented-control');
+  const styleSel = document.createElement('scout-segmented-control');
   styleSel.setAttribute('value', 'outline');
   styleSel.setAttribute('aria-label', 'Icon style');
   for (const [s, label] of styleMeta) {
-    const seg = document.createElement('connex-segment');
+    const seg = document.createElement('scout-segment');
     seg.setAttribute('value', s);
     seg.textContent = label;
     styleSel.appendChild(seg);
@@ -1197,7 +1197,7 @@ const app = document.getElementById('app')!;
   }
 
   search.addEventListener('input', rerender);
-  styleSel.addEventListener('connex-segmented-change', (e) => {
+  styleSel.addEventListener('scout-segmented-change', (e) => {
     activeStyle = (e as CustomEvent<{ value: string }>).detail.value as IconStyle;
     rerender();
   });
@@ -1258,7 +1258,7 @@ const app = document.getElementById('app')!;
       el(
         'p',
         { class: 'preview-block__lede' },
-        'Icons inherit color via the CSS currentColor keyword, so any color set on a parent cascades automatically. The default Connex icon color is cool-gray.500; status hues use the .500 stop of their respective scale.',
+        'Icons inherit color via the CSS currentColor keyword, so any color set on a parent cascades automatically. The default Scout icon color is cool-gray.500; status hues use the .500 stop of their respective scale.',
       ),
       el(
         'div',
@@ -1286,7 +1286,7 @@ const app = document.getElementById('app')!;
         el('li', {}, 'Use Outline as the default style. Reserve Solid for emphasis (active state, brand moments).'),
         el('li', {}, 'Match icon size to surrounding text size: 16 with body-small, 20 with body, 24 with body-large or as standalone affordance.'),
         el('li', {}, "Don't recolor an icon to imply a different status — use the matching icon-display-* semantic token."),
-        el('li', {}, 'Source icons from heroicons.com only. Custom icons need design-system review and live in @connex/icons.'),
+        el('li', {}, 'Source icons from heroicons.com only. Custom icons need design-system review and live in @scout/icons.'),
       ),
     ),
   );
@@ -1472,15 +1472,15 @@ function componentPage(
   tabs: ComponentTab[],
   kind: 'component' | 'pattern' = 'component',
 ): HTMLElement {
-  // Tab list — dogfoods the connex-tabs component. The connex-tab children
+  // Tab list — dogfoods the scout-tabs component. The scout-tab children
   // carry the panel id as their `value` so we can map change events back to
   // the right panel without maintaining a parallel index.
-  const tabsEl = document.createElement('connex-tabs');
+  const tabsEl = document.createElement('scout-tabs');
   tabsEl.setAttribute('value', tabs[0]?.id ?? '');
   const panels = el('div', { class: 'component-panels' });
 
   tabs.forEach((t, i) => {
-    const tabEl = document.createElement('connex-tab');
+    const tabEl = document.createElement('scout-tab');
     tabEl.setAttribute('value', t.id);
     tabEl.textContent = t.label;
     tabsEl.appendChild(tabEl);
@@ -1500,9 +1500,9 @@ function componentPage(
     );
   });
 
-  // Switching: when the connex-tabs component fires a change, flip the active
+  // Switching: when the scout-tabs component fires a change, flip the active
   // panel by matching the panel's id to the tab's value.
-  tabsEl.addEventListener('connex-tabs-change', (e) => {
+  tabsEl.addEventListener('scout-tabs-change', (e) => {
     const v = (e as CustomEvent<{ value: string }>).detail.value;
     panels.querySelectorAll<HTMLElement>('.component-panel').forEach((p) => {
       p.classList.toggle('active', p.id === `panel-${id}-${v}`);
@@ -1523,8 +1523,8 @@ function componentPage(
   );
 }
 
-// --- Button (real Lit component from @connex/button)
-import '@connex/button';
+// --- Button (real Lit component from @scout/button)
+import '@scout/button';
 
 type BtnVariant = 'primary' | 'secondary' | 'tertiary' | 'action' | 'critical' | 'critical-tertiary';
 type BtnSize = 'default' | 'condensed';
@@ -1549,7 +1549,7 @@ function previewButton(opts: BtnOpts = {}): HTMLElement {
     trailingIcon,
   } = opts;
 
-  const btn = document.createElement('connex-button');
+  const btn = document.createElement('scout-button');
   btn.setAttribute('variant', variant);
   btn.setAttribute('size', size);
   if (disabled) btn.setAttribute('disabled', '');
@@ -1661,10 +1661,10 @@ function buttonControls(): HTMLElement {
     if (size !== 'default') attrs.push(`size="${size}"`);
     if (disabledChk.checked) attrs.push('disabled');
     if (loadingChk.checked) attrs.push('loading');
-    const open = `<connex-button${attrs.length ? ' ' + attrs.join(' ') : ''}>`;
+    const open = `<scout-button${attrs.length ? ' ' + attrs.join(' ') : ''}>`;
     const lead = leadingChk.checked ? '\n  <svg slot="icon-leading">…</svg>' : '';
     const trail = trailingChk.checked ? '\n  <svg slot="icon-trailing">…</svg>' : '';
-    codePre.textContent = `${open}${lead}\n  ${labelInput.value || 'Button'}${trail}\n</connex-button>`;
+    codePre.textContent = `${open}${lead}\n  ${labelInput.value || 'Button'}${trail}\n</scout-button>`;
   }
 
   for (const c of [variantSel, sizeSel, labelInput, disabledChk, loadingChk, leadingChk, trailingChk]) {
@@ -1833,7 +1833,7 @@ function buttonAccessibility(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Form association'),
       el('ul', { class: 'guideline-list' },
-        el('li', {}, 'connex-button uses the ElementInternals API. Set type="submit" inside a <form> to submit it; type="reset" to reset.'),
+        el('li', {}, 'scout-button uses the ElementInternals API. Set type="submit" inside a <form> to submit it; type="reset" to reset.'),
         el('li', {}, 'Loading and disabled buttons block submit/reset clicks at the host level.'),
       ),
     ),
@@ -1848,28 +1848,28 @@ function buttonCode(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
       el('pre', { class: 'code-block' },
-        `<connex-button variant="primary">Save changes</connex-button>
+        `<scout-button variant="primary">Save changes</scout-button>
 
-<connex-button variant="action">
+<scout-button variant="action">
   <svg slot="icon-leading">…</svg>
   Add account
-</connex-button>
+</scout-button>
 
-<connex-button variant="critical" loading>Deleting…</connex-button>
+<scout-button variant="critical" loading>Deleting…</scout-button>
 
 <form>
-  <connex-button type="submit" variant="primary">Submit</connex-button>
-  <connex-button type="reset"  variant="tertiary">Reset</connex-button>
+  <scout-button type="submit" variant="primary">Submit</scout-button>
+  <scout-button type="reset"  variant="tertiary">Reset</scout-button>
 </form>`,
       ),
     ),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
       el('pre', { class: 'code-block' },
-        `pnpm add @connex/button @connex/tokens lit
+        `pnpm add @scout/button @scout/tokens lit
 
 // In your app entry:
-import '@connex/button';`,
+import '@scout/button';`,
       ),
     ),
     el('section', { class: 'guideline-section' },
@@ -1992,7 +1992,7 @@ import '@connex/button';`,
       'components-overview',
       categoryBanner(
         'Components',
-        'Reusable Lit Web Components built on Connex tokens. Form-associated via ElementInternals, accessible to WCAG 2.1 AA, framework-agnostic with React wrappers.',
+        'Reusable Lit Web Components built on Scout tokens. Form-associated via ElementInternals, accessible to WCAG 2.1 AA, framework-agnostic with React wrappers.',
       ),
       searchToolbar,
       grid,
@@ -2000,8 +2000,8 @@ import '@connex/button';`,
   );
 }
 
-// --- Accordion (real Lit component from @connex/accordion)
-import '@connex/accordion';
+// --- Accordion (real Lit component from @scout/accordion)
+import '@scout/accordion';
 
 type AccSize = 'sm' | 'md' | 'lg';
 type AccIconPos = 'left' | 'right';
@@ -2022,20 +2022,20 @@ function previewAccordion(opts: AccOpts = {}): HTMLElement {
     iconPosition = 'right',
     divider = false,
     items = [
-      { label: 'What is Connex?', content: 'Connex is the enterprise design system powering Empath and 7+ other internal tools. It ships tokens, components, and patterns built on Lit Web Components.', expanded: true },
+      { label: 'What is Scout?', content: 'Scout is the enterprise design system powering Empath and 7+ other internal tools. It ships tokens, components, and patterns built on Lit Web Components.', expanded: true },
       { label: 'How is the system structured?', content: 'Three tiers: Core (tokens + primitives), Shared (cross-product patterns), and Product (product-scoped patterns that can be promoted to Shared or Core).' },
-      { label: 'Can I theme components?', content: 'Yes. Connex uses CSS custom properties for every visual value, so theme, density, language, and product brand all swap via data attributes on the root element with no rebuild.' },
+      { label: 'Can I theme components?', content: 'Yes. Scout uses CSS custom properties for every visual value, so theme, density, language, and product brand all swap via data attributes on the root element with no rebuild.' },
     ],
   } = opts;
 
-  const acc = document.createElement('connex-accordion');
+  const acc = document.createElement('scout-accordion');
   acc.setAttribute('mode', mode);
   acc.setAttribute('size', size);
   acc.setAttribute('icon-position', iconPosition);
   if (divider) acc.setAttribute('divider', '');
 
   for (const item of items) {
-    const i = document.createElement('connex-accordion-item');
+    const i = document.createElement('scout-accordion-item');
     i.setAttribute('label', item.label);
     if (item.expanded) i.setAttribute('expanded', '');
     if (item.disabled) i.setAttribute('disabled', '');
@@ -2093,7 +2093,7 @@ function accordionPreview(): HTMLElement {
   );
   block(
     'States',
-    'Default · Disabled. Hover, focus, and pressed are interactive states best seen by interacting with the live components — they all use the standard Connex motion easing.',
+    'Default · Disabled. Hover, focus, and pressed are interactive states best seen by interacting with the live components — they all use the standard Scout motion easing.',
     previewAccordion({ divider: true, items: [
       { label: 'Default row', content: 'Hover or focus me.' },
       { label: 'Expanded row', content: 'Already open.', expanded: true },
@@ -2134,14 +2134,14 @@ function accordionControls(): HTMLElement {
 
     const attrs = [`mode="${mode}"`, `size="${size}"`, `icon-position="${iconPosition}"`];
     if (divider) attrs.push('divider');
-    codePre.textContent = `<connex-accordion ${attrs.join(' ')}>
-  <connex-accordion-item label="What is Connex?" expanded>
-    Connex is the enterprise design system…
-  </connex-accordion-item>
-  <connex-accordion-item label="How is the system structured?">
+    codePre.textContent = `<scout-accordion ${attrs.join(' ')}>
+  <scout-accordion-item label="What is Scout?" expanded>
+    Scout is the enterprise design system…
+  </scout-accordion-item>
+  <scout-accordion-item label="How is the system structured?">
     Three tiers: Core, Shared, Product…
-  </connex-accordion-item>
-</connex-accordion>`;
+  </scout-accordion-item>
+</scout-accordion>`;
   }
 
   for (const c of [modeSel, sizeSel, iconPosSel, dividerChk]) {
@@ -2248,7 +2248,7 @@ function accordionContent(): HTMLElement {
       el('h3', { class: 'guideline-heading' }, 'Inside the row'),
       el('ul', { class: 'guideline-list' },
         el('li', {}, 'Keep content focused. If a row needs more than ~200 words, consider linking out to a dedicated page.'),
-        el('li', {}, 'Format with the rest of Connex typography (Body, Body small, Label) — accordions inherit naturally.'),
+        el('li', {}, 'Format with the rest of Scout typography (Body, Body small, Label) — accordions inherit naturally.'),
         el('li', {}, 'Group related controls and content. A "Notification preferences" row should contain the actual toggles, not just a description.'),
       ),
     ),
@@ -2264,7 +2264,7 @@ function accordionAccessibility(): HTMLElement {
         el('li', {}, 'Tab moves focus to the next accordion trigger; Shift+Tab moves back.'),
         el('li', {}, 'Enter and Space toggle the focused row.'),
         el('li', {}, 'Disabled rows are skipped in tab order.'),
-        el('li', {}, 'Focus ring uses Connex `text.interactive.primary` at 2px inset for visibility on hover backgrounds.'),
+        el('li', {}, 'Focus ring uses Scout `text.interactive.primary` at 2px inset for visibility on hover backgrounds.'),
       ),
     ),
     el('section', { class: 'guideline-section' },
@@ -2291,28 +2291,28 @@ function accordionCode(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
       el('pre', { class: 'code-block' },
-        `<connex-accordion mode="single" size="md" icon-position="right" divider>
-  <connex-accordion-item label="What is Connex?" expanded>
-    Connex is the enterprise design system…
-  </connex-accordion-item>
+        `<scout-accordion mode="single" size="md" icon-position="right" divider>
+  <scout-accordion-item label="What is Scout?" expanded>
+    Scout is the enterprise design system…
+  </scout-accordion-item>
 
-  <connex-accordion-item label="Disabled row" disabled>
+  <scout-accordion-item label="Disabled row" disabled>
     This row cannot be toggled.
-  </connex-accordion-item>
-</connex-accordion>`,
+  </scout-accordion-item>
+</scout-accordion>`,
       ),
     ),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
       el('pre', { class: 'code-block' },
-        `pnpm add @connex/accordion @connex/tokens lit
+        `pnpm add @scout/accordion @scout/tokens lit
 
 // In your app entry, side-effect import to register the elements:
-import '@connex/accordion';`,
+import '@scout/accordion';`,
       ),
     ),
     el('section', { class: 'guideline-section' },
-      el('h3', { class: 'guideline-heading' }, 'Props — <connex-accordion>'),
+      el('h3', { class: 'guideline-heading' }, 'Props — <scout-accordion>'),
       el('div', { class: 'props-table-wrap' },
         el('table', { class: 'props-table' },
           el('thead', {}, el('tr', {},
@@ -2328,7 +2328,7 @@ import '@connex/accordion';`,
       ),
     ),
     el('section', { class: 'guideline-section' },
-      el('h3', { class: 'guideline-heading' }, 'Props — <connex-accordion-item>'),
+      el('h3', { class: 'guideline-heading' }, 'Props — <scout-accordion-item>'),
       el('div', { class: 'props-table-wrap' },
         el('table', { class: 'props-table' },
           el('thead', {}, el('tr', {},
@@ -2346,7 +2346,7 @@ import '@connex/accordion';`,
       el('h3', { class: 'guideline-heading' }, 'Events'),
       el('pre', { class: 'code-block' },
         `// Bubbles, composed. detail = { expanded: boolean }
-accordion.addEventListener('connex-accordion-toggle', (e) => {
+accordion.addEventListener('scout-accordion-toggle', (e) => {
   console.log('row toggled to', e.detail.expanded);
 });`,
       ),
@@ -2372,9 +2372,9 @@ app.append(
 );
 
 // =================================================================
-// Address (real Lit component from @connex/address)
+// Address (real Lit component from @scout/address)
 // =================================================================
-import '@connex/address';
+import '@scout/address';
 
 type AddrSize = 'full' | 'condensed' | 'single-line';
 type AddrSelectTool = 'none' | 'checkbox' | 'radio';
@@ -2412,7 +2412,7 @@ function previewAddress(opts: AddrOpts = {}): HTMLElement {
     meta,
   } = opts;
 
-  const a = document.createElement('connex-address');
+  const a = document.createElement('scout-address');
   if (label) a.setAttribute('label', label);
   a.setAttribute('size', size);
   a.setAttribute('select-tool', selectTool);
@@ -2475,35 +2475,35 @@ function addressPreview(): HTMLElement {
 
   block(
     'Select tools',
-    'Add a selector when the user is interacting with addresses. Use connex-checkbox to select one or many for a bulk action (delete, mail to, export). Wrap the address in connex-accordion when only the most recently used address should be visible by default and the rest collapsed.',
+    'Add a selector when the user is interacting with addresses. Use scout-checkbox to select one or many for a bulk action (delete, mail to, export). Wrap the address in scout-accordion when only the most recently used address should be visible by default and the rest collapsed.',
     el('div', { class: 'preview-stack' },
-      // Checkbox composition — pairs <connex-checkbox> with the address.
-      // The checkbox is the actual Connex component (not the native input
+      // Checkbox composition — pairs <scout-checkbox> with the address.
+      // The checkbox is the actual Scout component (not the native input
       // the address component embeds via selectTool="checkbox"), so the
       // pattern reads as "checkbox + address" the same way it would in a
       // bulk-select list.
       (() => {
         const row = el('div', { class: 'address-select-row' });
-        const cb = document.createElement('connex-checkbox') as HTMLElement & { checked: boolean };
+        const cb = document.createElement('scout-checkbox') as HTMLElement & { checked: boolean };
         cb.setAttribute('checked', '');
         cb.setAttribute('aria-label', 'Select home address');
         row.append(cb, previewAddress({ label: 'Home address', meta: 'Last verified Mar 2024 · Primary' }));
         return row;
       })(),
-      // Accordion composition — wraps the address in a <connex-accordion>
+      // Accordion composition — wraps the address in a <scout-accordion>
       // so it can collapse to its label when other priorities take focus.
       (() => {
-        const acc = document.createElement('connex-accordion');
+        const acc = document.createElement('scout-accordion');
         acc.setAttribute('mode', 'single');
         acc.setAttribute('size', 'md');
         acc.setAttribute('icon-position', 'right');
         acc.setAttribute('divider', '');
-        const item = document.createElement('connex-accordion-item');
+        const item = document.createElement('scout-accordion-item');
         item.setAttribute('label', 'Home address');
         item.setAttribute('expanded', '');
         item.append(previewAddress({ lines: ['1234 Maple Street', 'Apt 5B', 'Anywhere, USA 12345'] }));
         acc.append(item);
-        const item2 = document.createElement('connex-accordion-item');
+        const item2 = document.createElement('scout-accordion-item');
         item2.setAttribute('label', 'Work address');
         item2.append(previewAddress({ lines: ['450 Industrial Blvd', 'Suite 200', 'Anywhere, USA 12346'] }));
         acc.append(item2);
@@ -2582,12 +2582,12 @@ function addressControls(): HTMLElement {
     if (opts.disabled) attrs.push('disabled');
 
     const indent = attrs.length > 1 ? '\n  ' : ' ';
-    const opener = attrs.length ? `<connex-address${indent}${attrs.join(indent)}\n>` : '<connex-address>';
+    const opener = attrs.length ? `<scout-address${indent}${attrs.join(indent)}\n>` : '<scout-address>';
     const body = opts.size === 'single-line'
       ? '\n  123 Main St, Apt 4B, Brooklyn, NY 11201\n'
       : '\n  123 Main St<br />\n  Apt 4B<br />\n  Brooklyn, NY 11201\n';
     const meta = opts.meta ? `  <span slot="meta">${opts.meta}</span>\n` : '';
-    codePre.textContent = `${opener}${body}${meta}</connex-address>`;
+    codePre.textContent = `${opener}${body}${meta}</scout-address>`;
   }
 
   // Selected only applies when a select tool (checkbox or radio) is set —
@@ -2718,7 +2718,7 @@ function addressContent(): HTMLElement {
       el('h3', { class: 'guideline-heading' }, 'Privacy'),
       el('ul', { class: 'guideline-list' },
         el('li', {}, 'Use `do-not-disclose` whenever the customer has flagged the address as private. Banner is mandatory; do not omit.'),
-        el('li', {}, 'Do not paraphrase the privacy notice — "Do not disclose" is the standardized wording across Connex products.'),
+        el('li', {}, 'Do not paraphrase the privacy notice — "Do not disclose" is the standardized wording across Scout products.'),
       ),
     ),
   );
@@ -2759,14 +2759,14 @@ function addressCode(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
       el('pre', { class: 'code-block' },
-        `<connex-address label="Home address" favorite>
+        `<scout-address label="Home address" favorite>
   123 Main St<br />
   Apt 4B<br />
   Brooklyn, NY 11201
   <span slot="meta">Last verified Mar 2024 · Primary</span>
-</connex-address>
+</scout-address>
 
-<connex-address
+<scout-address
   label="Mailing address"
   select-tool="radio"
   name="primary-addr"
@@ -2775,24 +2775,24 @@ function addressCode(): HTMLElement {
 >
   500 Park Ave<br />
   New York, NY 10022
-</connex-address>
+</scout-address>
 
-<connex-address size="single-line">
+<scout-address size="single-line">
   123 Main St, Apt 4B, Brooklyn, NY 11201
-</connex-address>
+</scout-address>
 
-<connex-address do-not-disclose label="Backup">
+<scout-address do-not-disclose label="Backup">
   PO Box 4421<br />
   Anywhere, USA 12345
-</connex-address>`,
+</scout-address>`,
       ),
     ),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
       el('pre', { class: 'code-block' },
-        `pnpm add @connex/address @connex/tokens lit
+        `pnpm add @scout/address @scout/tokens lit
 
-import '@connex/address';`,
+import '@scout/address';`,
       ),
     ),
     el('section', { class: 'guideline-section' },
@@ -2834,7 +2834,7 @@ import '@connex/address';`,
       el('h3', { class: 'guideline-heading' }, 'Events'),
       el('pre', { class: 'code-block' },
         `// Bubbles, composed. detail = { selected: boolean, value: string }
-addr.addEventListener('connex-address-change', (e) => {
+addr.addEventListener('scout-address-change', (e) => {
   console.log(e.detail);
 });`,
       ),
@@ -2860,9 +2860,9 @@ app.append(
 );
 
 // =================================================================
-// Avatar (real Lit component from @connex/avatar)
+// Avatar (real Lit component from @scout/avatar)
 // =================================================================
-import '@connex/avatar';
+import '@scout/avatar';
 
 type AvSize = 'small' | 'medium' | 'large';
 type AvColor = 'blue' | 'gray' | 'knockout';
@@ -2886,7 +2886,7 @@ function previewAvatar(opts: AvOpts = {}): HTMLElement {
     title,
     titleSize = 'medium',
   } = opts;
-  const a = document.createElement('connex-avatar');
+  const a = document.createElement('scout-avatar');
   a.setAttribute('initials', initials);
   a.setAttribute('size', size);
   a.setAttribute('color', color);
@@ -2921,7 +2921,7 @@ function avatarPreview(): HTMLElement {
 
   block(
     'Colors',
-    'Blue is the default Connex brand treatment. Gray is a neutral fallback for non-personal entities. Knockout uses the page surface for use on tinted or photo backgrounds.',
+    'Blue is the default Scout brand treatment. Gray is a neutral fallback for non-personal entities. Knockout uses the page surface for use on tinted or photo backgrounds.',
     previewAvatar({ color: 'blue', initials: 'HM' }),
     previewAvatar({ color: 'gray', initials: 'JD' }),
     previewAvatar({ color: 'knockout', initials: 'AB' }),
@@ -2980,7 +2980,7 @@ function avatarControls(): HTMLElement {
     const titleSlot = titleInput.value
       ? `\n  <span slot="title">${titleInput.value}</span>\n`
       : '';
-    codePre.textContent = `<connex-avatar ${attrs.join(' ')}>${titleSlot}${titleSlot ? '' : ''}</connex-avatar>`;
+    codePre.textContent = `<scout-avatar ${attrs.join(' ')}>${titleSlot}${titleSlot ? '' : ''}</scout-avatar>`;
   }
   for (const c of [initialsInput, sizeSel, colorSel, titleInput, titleSizeSel, notificationChk]) {
     c.addEventListener('input', render);
@@ -3069,16 +3069,16 @@ function avatarCode(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
       el('pre', { class: 'code-block' },
-        `<connex-avatar initials="HM" size="medium" color="blue"></connex-avatar>
+        `<scout-avatar initials="HM" size="medium" color="blue"></scout-avatar>
 
-<connex-avatar initials="JD" size="large" color="gray" notification>
+<scout-avatar initials="JD" size="large" color="gray" notification>
   <span slot="title">Jane Doe</span>
-</connex-avatar>
+</scout-avatar>
 
-<connex-avatar initials="AC" size="small" color="knockout"></connex-avatar>`)),
+<scout-avatar initials="AC" size="small" color="knockout"></scout-avatar>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @connex/avatar @connex/tokens lit\n\nimport '@connex/avatar';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout/avatar @scout/tokens lit\n\nimport '@scout/avatar';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -3108,9 +3108,9 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Badge (real Lit component from @connex/badge)
+// Badge (real Lit component from @scout/badge)
 // =================================================================
-import '@connex/badge';
+import '@scout/badge';
 
 type BgType = 'informational' | 'neutral' | 'neutral-knockout' | 'success' | 'warning' | 'critical' | 'ai-summary';
 type BgEmphasis = 'high' | 'low';
@@ -3130,7 +3130,7 @@ function previewBadge(opts: {
     icon = false,
     label = 'Label',
   } = opts;
-  const b = document.createElement('connex-badge');
+  const b = document.createElement('scout-badge');
   b.setAttribute('type', type);
   b.setAttribute('emphasis', emphasis);
   b.setAttribute('size', size);
@@ -3277,7 +3277,7 @@ function badgeControls(): HTMLElement {
     if (emphasisSel.value !== 'low') attrs.push(`emphasis="${emphasisSel.value}"`);
     if (sizeSel.value !== 'default') attrs.push(`size="${sizeSel.value}"`);
     if (iconChk.checked) attrs.push('icon');
-    codePre.textContent = `<connex-badge${attrs.length ? ' ' + attrs.join(' ') : ''}>${labelInput.value || 'Label'}</connex-badge>`;
+    codePre.textContent = `<scout-badge${attrs.length ? ' ' + attrs.join(' ') : ''}>${labelInput.value || 'Label'}</scout-badge>`;
   }
   for (const c of [typeSel, emphasisSel, sizeSel, labelInput, iconChk]) {
     c.addEventListener('input', render);
@@ -3377,18 +3377,18 @@ function badgeCode(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
       el('pre', { class: 'code-block' },
-        `<connex-badge type="success">Active</connex-badge>
+        `<scout-badge type="success">Active</scout-badge>
 
-<connex-badge type="critical" emphasis="high" icon>Failed</connex-badge>
+<scout-badge type="critical" emphasis="high" icon>Failed</scout-badge>
 
-<connex-badge type="neutral-knockout" size="condensed">Default</connex-badge>
+<scout-badge type="neutral-knockout" size="condensed">Default</scout-badge>
 
-<connex-badge type="warning" icon>
+<scout-badge type="warning" icon>
   Pending review
-</connex-badge>`)),
+</scout-badge>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @connex/badge @connex/tokens lit\n\nimport '@connex/badge';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout/badge @scout/tokens lit\n\nimport '@scout/badge';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -3417,17 +3417,17 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Breadcrumb (real Lit component from @connex/breadcrumb)
+// Breadcrumb (real Lit component from @scout/breadcrumb)
 // =================================================================
-import '@connex/breadcrumb';
+import '@scout/breadcrumb';
 
 interface CrumbDef { label: string; href?: string; current?: boolean; disabled?: boolean }
 
 function previewBreadcrumb(opts: { back?: boolean; items: CrumbDef[] }): HTMLElement {
-  const bc = document.createElement('connex-breadcrumb');
+  const bc = document.createElement('scout-breadcrumb');
   if (opts.back) bc.setAttribute('back', '');
   for (const item of opts.items) {
-    const li = document.createElement('connex-breadcrumb-item');
+    const li = document.createElement('scout-breadcrumb-item');
     if (item.href) li.setAttribute('href', item.href);
     if (item.current) li.setAttribute('current', '');
     if (item.disabled) li.setAttribute('disabled', '');
@@ -3521,10 +3521,10 @@ function breadcrumbControls(): HTMLElement {
         const attrs: string[] = [];
         if (it.href) attrs.push(`href="${it.href}"`);
         if (it.current) attrs.push('current');
-        return `  <connex-breadcrumb-item${attrs.length ? ' ' + attrs.join(' ') : ''}>${it.label}</connex-breadcrumb-item>`;
+        return `  <scout-breadcrumb-item${attrs.length ? ' ' + attrs.join(' ') : ''}>${it.label}</scout-breadcrumb-item>`;
       })
       .join('\n');
-    codePre.textContent = `<connex-breadcrumb${isBack ? ' back' : ''}>\n${itemMarkup}\n</connex-breadcrumb>`;
+    codePre.textContent = `<scout-breadcrumb${isBack ? ' back' : ''}>\n${itemMarkup}\n</scout-breadcrumb>`;
   }
   for (const c of [modeSel, levelsInput]) {
     c.addEventListener('input', render);
@@ -3624,21 +3624,21 @@ function breadcrumbCode(): HTMLElement {
       el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
       el('pre', { class: 'code-block' },
         `<!-- Multi-level -->
-<connex-breadcrumb>
-  <connex-breadcrumb-item href="/">Home</connex-breadcrumb-item>
-  <connex-breadcrumb-item href="/customers">Customers</connex-breadcrumb-item>
-  <connex-breadcrumb-item current>Jane Doe</connex-breadcrumb-item>
-</connex-breadcrumb>
+<scout-breadcrumb>
+  <scout-breadcrumb-item href="/">Home</scout-breadcrumb-item>
+  <scout-breadcrumb-item href="/customers">Customers</scout-breadcrumb-item>
+  <scout-breadcrumb-item current>Jane Doe</scout-breadcrumb-item>
+</scout-breadcrumb>
 
 <!-- Single back link -->
-<connex-breadcrumb back>
-  <connex-breadcrumb-item href="/customers">Customers</connex-breadcrumb-item>
-</connex-breadcrumb>`)),
+<scout-breadcrumb back>
+  <scout-breadcrumb-item href="/customers">Customers</scout-breadcrumb-item>
+</scout-breadcrumb>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @connex/breadcrumb @connex/tokens lit\n\nimport '@connex/breadcrumb';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout/breadcrumb @scout/tokens lit\n\nimport '@scout/breadcrumb';`)),
     el('section', { class: 'guideline-section' },
-      el('h3', { class: 'guideline-heading' }, 'Props — <connex-breadcrumb>'),
+      el('h3', { class: 'guideline-heading' }, 'Props — <scout-breadcrumb>'),
       el('div', { class: 'props-table-wrap' },
         el('table', { class: 'props-table' },
           el('thead', {}, el('tr', {}, el('th', {}, 'Prop'), el('th', {}, 'Type'), el('th', {}, 'Default'), el('th', {}, 'Description'))),
@@ -3646,7 +3646,7 @@ function breadcrumbCode(): HTMLElement {
             el('tr', {}, el('td', {}, 'back'), el('td', {}, 'boolean'), el('td', {}, 'false'), el('td', {}, 'Switches to single back-link mode with leading arrow.')),
           )))),
     el('section', { class: 'guideline-section' },
-      el('h3', { class: 'guideline-heading' }, 'Props — <connex-breadcrumb-item>'),
+      el('h3', { class: 'guideline-heading' }, 'Props — <scout-breadcrumb-item>'),
       el('div', { class: 'props-table-wrap' },
         el('table', { class: 'props-table' },
           el('thead', {}, el('tr', {}, el('th', {}, 'Prop'), el('th', {}, 'Type'), el('th', {}, 'Default'), el('th', {}, 'Description'))),
@@ -3676,7 +3676,7 @@ app.append(
   componentPage(
     'components-button',
     'Button',
-    'Triggers an action or navigates to a new view. Buttons are the primary way users interact with Connex products.',
+    'Triggers an action or navigates to a new view. Buttons are the primary way users interact with Scout products.',
     [
       { id: 'preview',       label: 'Preview',           content: buttonPreview() },
       { id: 'controls',      label: 'Controls',          content: buttonControls() },
@@ -3689,9 +3689,9 @@ app.append(
 );
 
 // =================================================================
-// Card (real Lit component from @connex/card)
+// Card (real Lit component from @scout/card)
 // =================================================================
-import '@connex/card';
+import '@scout/card';
 
 type CardBg = 'white' | 'cool-gray-100' | 'warm-gray-100';
 
@@ -3717,7 +3717,7 @@ function previewCard(opts: CardOpts = {}): HTMLElement {
     body = 'Customer mentioned a recurring charge issue. Last call was 2 days ago. Identity verified.',
     aiLabel,
   } = opts;
-  const c = document.createElement('connex-card');
+  const c = document.createElement('scout-card');
   c.setAttribute('background', background);
   if (accentBar) c.setAttribute('accent-bar', '');
   if (aiCallout) c.setAttribute('ai-callout', '');
@@ -3823,7 +3823,7 @@ function cardControls(): HTMLElement {
     if (showMoreChk.checked) attrs.push('show-more');
     const aiSlot = aiChk.checked && aiLabelInput.value !== 'AI summary'
       ? `\n  <span slot="ai-label">${aiLabelInput.value}</span>` : '';
-    codePre.textContent = `<connex-card${attrs.length ? ' ' + attrs.join(' ') : ''}>${aiSlot}\n  ${bodyInput.value}\n</connex-card>`;
+    codePre.textContent = `<scout-card${attrs.length ? ' ' + attrs.join(' ') : ''}>${aiSlot}\n  ${bodyInput.value}\n</scout-card>`;
   }
   for (const c of [bgSel, bodyInput, aiLabelInput, accentBarChk, aiChk, showMoreChk]) {
     c.addEventListener('input', render);
@@ -3921,18 +3921,18 @@ function cardCode(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
       el('pre', { class: 'code-block' },
-        `<connex-card ai-callout>
+        `<scout-card ai-callout>
   Customer mentioned a recurring $9.99 charge they didn't recognize.
-</connex-card>
+</scout-card>
 
-<connex-card background="cool-gray-100" ai-callout show-more>
+<scout-card background="cool-gray-100" ai-callout show-more>
   <span slot="ai-label">AI insight</span>
   After reviewing the account, the charge originates from a streaming
   service subscription set up in March 2024…
-</connex-card>`)),
+</scout-card>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @connex/card @connex/tokens lit\n\nimport '@connex/card';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout/card @scout/tokens lit\n\nimport '@scout/card';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -3962,9 +3962,9 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Checkbox (real Lit component from @connex/checkbox)
+// Checkbox (real Lit component from @scout/checkbox)
 // =================================================================
-import '@connex/checkbox';
+import '@scout/checkbox';
 
 interface CheckboxOpts {
   label?: string;
@@ -3988,7 +3988,7 @@ function previewCheckbox(opts: CheckboxOpts = {}): HTMLElement {
     name,
     value,
   } = opts;
-  const c = document.createElement('connex-checkbox');
+  const c = document.createElement('scout-checkbox');
   if (checked) c.setAttribute('checked', '');
   if (indeterminate) c.setAttribute('indeterminate', '');
   if (disabled) c.setAttribute('disabled', '');
@@ -4011,7 +4011,7 @@ interface GroupOpts {
 }
 
 function previewCheckboxGroup(opts: GroupOpts): HTMLElement {
-  const g = document.createElement('connex-checkbox-group');
+  const g = document.createElement('scout-checkbox-group');
   if (opts.label) g.setAttribute('label', opts.label);
   if (opts.helper) g.setAttribute('helper', opts.helper);
   if (opts.error) g.setAttribute('error', opts.error);
@@ -4148,7 +4148,7 @@ function checkboxControls(): HTMLElement {
     if (disabledChk.checked) attrs.push('disabled');
     if (invalidChk.checked) attrs.push('invalid');
     if (secondaryInput.value) attrs.push(`secondary="${secondaryInput.value}"`);
-    codePre.textContent = `<connex-checkbox${attrs.length ? ' ' + attrs.join(' ') : ''}>\n  ${labelInput.value || 'Checkbox'}\n</connex-checkbox>`;
+    codePre.textContent = `<scout-checkbox${attrs.length ? ' ' + attrs.join(' ') : ''}>\n  ${labelInput.value || 'Checkbox'}\n</scout-checkbox>`;
   }
   for (const c of [labelInput, secondaryInput, checkedChk, indeterminateChk, disabledChk, invalidChk]) {
     c.addEventListener('input', render);
@@ -4247,7 +4247,7 @@ function checkboxAccessibility(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Form association'),
       el('ul', { class: 'guideline-list' },
-        el('li', {}, 'connex-checkbox uses ElementInternals so the host element submits with the form using its name/value.'),
+        el('li', {}, 'scout-checkbox uses ElementInternals so the host element submits with the form using its name/value.'),
         el('li', {}, 'Multiple checkboxes with the same name submit as repeated fields, matching native form behavior.'),
       )),
     el('section', { class: 'guideline-section' },
@@ -4265,27 +4265,27 @@ function checkboxCode(): HTMLElement {
       el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
       el('pre', { class: 'code-block' },
         `<!-- Single -->
-<connex-checkbox name="newsletter" value="yes">
+<scout-checkbox name="newsletter" value="yes">
   Subscribe to email updates
-</connex-checkbox>
+</scout-checkbox>
 
 <!-- Group with helper, error, and warning -->
-<connex-checkbox-group
+<scout-checkbox-group
   label="Notification preferences"
   helper="Choose how you want to be notified."
   orientation="vertical"
 >
-  <connex-checkbox name="notif" value="email" checked
-    secondary="Real-time email alerts">Email</connex-checkbox>
-  <connex-checkbox name="notif" value="sms"
-    secondary="SMS to your registered phone">SMS</connex-checkbox>
-  <connex-checkbox name="notif" value="push" disabled>Push (coming soon)</connex-checkbox>
-</connex-checkbox-group>`)),
+  <scout-checkbox name="notif" value="email" checked
+    secondary="Real-time email alerts">Email</scout-checkbox>
+  <scout-checkbox name="notif" value="sms"
+    secondary="SMS to your registered phone">SMS</scout-checkbox>
+  <scout-checkbox name="notif" value="push" disabled>Push (coming soon)</scout-checkbox>
+</scout-checkbox-group>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @connex/checkbox @connex/tokens lit\n\nimport '@connex/checkbox';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout/checkbox @scout/tokens lit\n\nimport '@scout/checkbox';`)),
     el('section', { class: 'guideline-section' },
-      el('h3', { class: 'guideline-heading' }, 'Props — <connex-checkbox>'),
+      el('h3', { class: 'guideline-heading' }, 'Props — <scout-checkbox>'),
       el('div', { class: 'props-table-wrap' },
         el('table', { class: 'props-table' },
           el('thead', {}, el('tr', {}, el('th', {}, 'Prop'), el('th', {}, 'Type'), el('th', {}, 'Default'), el('th', {}, 'Description'))),
@@ -4298,7 +4298,7 @@ function checkboxCode(): HTMLElement {
             el('tr', {}, el('td', {}, 'secondary'), el('td', {}, 'string'), el('td', {}, '""'), el('td', {}, 'Optional secondary text rendered under the label.')),
           )))),
     el('section', { class: 'guideline-section' },
-      el('h3', { class: 'guideline-heading' }, 'Props — <connex-checkbox-group>'),
+      el('h3', { class: 'guideline-heading' }, 'Props — <scout-checkbox-group>'),
       el('div', { class: 'props-table-wrap' },
         el('table', { class: 'props-table' },
           el('thead', {}, el('tr', {}, el('th', {}, 'Prop'), el('th', {}, 'Type'), el('th', {}, 'Default'), el('th', {}, 'Description'))),
@@ -4327,9 +4327,9 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Control (real Lit component from @connex/control)
+// Control (real Lit component from @scout/control)
 // =================================================================
-import '@connex/control';
+import '@scout/control';
 
 const CONTROL_TYPES = ['x-close', 'x-clear', 'arrow-left', 'arrow-right', 'arrow-left-double', 'arrow-right-double', 'chevron-up', 'chevron-down', 'tooltip', 'trash', 'kebab'] as const;
 type CtrlType = typeof CONTROL_TYPES[number];
@@ -4343,7 +4343,7 @@ interface CtrlOpts {
 }
 
 function previewControl(opts: CtrlOpts = {}): HTMLElement {
-  const c = document.createElement('connex-control');
+  const c = document.createElement('scout-control');
   c.setAttribute('type', opts.type ?? 'x-close');
   c.setAttribute('size', opts.size ?? 'default');
   c.setAttribute('color', opts.color ?? 'primary');
@@ -4430,7 +4430,7 @@ function controlControls(): HTMLElement {
     if (sizeSel.value !== 'default') attrs.push(`size="${sizeSel.value}"`);
     if (colorSel.value !== 'primary') attrs.push(`color="${colorSel.value}"`);
     if (disabledChk.checked) attrs.push('disabled');
-    codePre.textContent = `<connex-control ${attrs.join(' ')}></connex-control>`;
+    codePre.textContent = `<scout-control ${attrs.join(' ')}></scout-control>`;
   }
   for (const c of [typeSel, sizeSel, colorSel, disabledChk]) {
     c.addEventListener('input', render);
@@ -4529,16 +4529,16 @@ function controlCode(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
       el('pre', { class: 'code-block' },
-        `<connex-control type="x-close" aria-label-override="Close dialog"></connex-control>
+        `<scout-control type="x-close" aria-label-override="Close dialog"></scout-control>
 
-<connex-control type="trash" color="critical" size="condensed"></connex-control>
+<scout-control type="trash" color="critical" size="condensed"></scout-control>
 
-<connex-control type="kebab"></connex-control>
+<scout-control type="kebab"></scout-control>
 
-<connex-control type="arrow-right" size="condensed"></connex-control>`)),
+<scout-control type="arrow-right" size="condensed"></scout-control>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @connex/control @connex/tokens lit\n\nimport '@connex/control';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout/control @scout/tokens lit\n\nimport '@scout/control';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -4568,9 +4568,9 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Data pair (real Lit component from @connex/data-pair)
+// Data pair (real Lit component from @scout/data-pair)
 // =================================================================
-import '@connex/data-pair';
+import '@scout/data-pair';
 
 interface DataPairOpts {
   label?: string;
@@ -4581,7 +4581,7 @@ interface DataPairOpts {
 }
 
 function previewDataPair(opts: DataPairOpts = {}): HTMLElement {
-  const dp = document.createElement('connex-data-pair');
+  const dp = document.createElement('scout-data-pair');
   if (opts.label) dp.setAttribute('label', opts.label);
   if (opts.orientation) dp.setAttribute('orientation', opts.orientation);
   dp.appendChild(document.createTextNode(opts.description ?? ''));
@@ -4629,7 +4629,7 @@ function dataPairPreview(): HTMLElement {
 
   block(
     'With meta + link',
-    'Both meta and link slots are optional. Drop a `<connex-link>`, an `<a>`, or any custom element into slot="link"; consumers own the affordance.',
+    'Both meta and link slots are optional. Drop a `<scout-link>`, an `<a>`, or any custom element into slot="link"; consumers own the affordance.',
     previewDataPair({
       label: 'Auto-pay',
       description: 'Enrolled · Wells Fargo ····2204',
@@ -4665,7 +4665,7 @@ function dataPairControls(): HTMLElement {
     if (metaInput.value) slots.push(`  <span slot="meta">${metaInput.value}</span>`);
     if (linkInput.value) slots.push(`  <a slot="link" href="#">${linkInput.value}</a>`);
     codePre.textContent =
-      `<connex-data-pair label="${labelInput.value}"${orientationSel.value !== 'vertical' ? ` orientation="${orientationSel.value}"` : ''}>\n${slots.join('\n')}\n</connex-data-pair>`;
+      `<scout-data-pair label="${labelInput.value}"${orientationSel.value !== 'vertical' ? ` orientation="${orientationSel.value}"` : ''}>\n${slots.join('\n')}\n</scout-data-pair>`;
   }
   for (const c of [orientationSel, labelInput, descInput, metaInput, linkInput]) {
     c.addEventListener('input', render);
@@ -4713,7 +4713,7 @@ function dataPairGuidelines(): HTMLElement {
       el('p', { class: 'preview-block__lede' }, 'Don\'t use data pairs for editable inputs.'),
       el('div', { class: 'do-dont-grid' },
         dontCard(previewDataPair({ label: 'Phone', description: 'Click to edit' }),
-          "Don't use a data pair as a fake editable field. Use connex-text-field for input — data pair is read-only display."),
+          "Don't use a data pair as a fake editable field. Use scout-text-field for input — data pair is read-only display."),
         dontCard(previewDataPair({ label: '', description: 'A long paragraph of marketing copy that doesn\'t need a label and isn\'t structured key/value data at all.' }),
           "Don't use data pair for prose. Use a paragraph or content body — data pair is for short, structured key/value pairs."),
       )));
@@ -4738,7 +4738,7 @@ function dataPairContent(): HTMLElement {
       el('h3', { class: 'guideline-heading' }, 'Meta vs. link'),
       el('ul', { class: 'guideline-list' },
         el('li', {}, 'Meta — supplementary detail that doesn\'t lead anywhere. "Verified", "Last updated 2 days ago".'),
-        el('li', {}, 'Link — a follow-up action. "Manage", "View statements", "Change funding source". Use connex-link for the slotted element.'),
+        el('li', {}, 'Link — a follow-up action. "Manage", "View statements", "Change funding source". Use scout-link for the slotted element.'),
       )));
 }
 
@@ -4754,7 +4754,7 @@ function dataPairAccessibility(): HTMLElement {
       el('h3', { class: 'guideline-heading' }, 'Color & focus'),
       el('ul', { class: 'guideline-list' },
         el('li', {}, 'Label uses text-display-secondary; description uses text-display-primary — meets WCAG AA against page and surface backgrounds.'),
-        el('li', {}, 'Slotted links inherit their own focus styling. Pair with connex-link for token-driven focus rings.'),
+        el('li', {}, 'Slotted links inherit their own focus styling. Pair with scout-link for token-driven focus rings.'),
       )));
 }
 
@@ -4764,22 +4764,22 @@ function dataPairCode(): HTMLElement {
       el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
       el('pre', { class: 'code-block' },
         `<!-- Vertical (default) -->
-<connex-data-pair label="Account name">Jamie Tran</connex-data-pair>
+<scout-data-pair label="Account name">Jamie Tran</scout-data-pair>
 
 <!-- Horizontal -->
-<connex-data-pair orientation="horizontal" label="Phone">
+<scout-data-pair orientation="horizontal" label="Phone">
   555-014-2237
-</connex-data-pair>
+</scout-data-pair>
 
 <!-- With meta + link -->
-<connex-data-pair label="Auto-pay">
+<scout-data-pair label="Auto-pay">
   Enrolled · Wells Fargo ····2204
   <span slot="meta">Will draft on the statement due date.</span>
   <a slot="link" href="/funding">Change funding source</a>
-</connex-data-pair>`)),
+</scout-data-pair>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @connex/data-pair @connex/tokens lit\n\nimport '@connex/data-pair';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout/data-pair @scout/tokens lit\n\nimport '@scout/data-pair';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -4807,13 +4807,13 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Data unavailable (real Lit component from @connex/data-unavailable)
+// Data unavailable (real Lit component from @scout/data-unavailable)
 // =================================================================
-import '@connex/data-unavailable';
-import type { DataUnavailableSize } from '@connex/data-unavailable';
+import '@scout/data-unavailable';
+import type { DataUnavailableSize } from '@scout/data-unavailable';
 
 function previewDataUnavailable(opts: { label?: string; size?: DataUnavailableSize } = {}): HTMLElement {
-  const du = document.createElement('connex-data-unavailable');
+  const du = document.createElement('scout-data-unavailable');
   if (opts.label) du.setAttribute('label', opts.label);
   if (opts.size) du.setAttribute('size', opts.size);
   return du;
@@ -4875,7 +4875,7 @@ function dataUnavailableControls(): HTMLElement {
     if (labelInput.value !== 'Data unavailable') attrs.push(`label="${labelInput.value}"`);
     if (sizeSel.value !== 'medium') attrs.push(`size="${sizeSel.value}"`);
     codePre.textContent =
-      `<connex-data-unavailable${attrs.length ? ' ' + attrs.join(' ') : ''}></connex-data-unavailable>`;
+      `<scout-data-unavailable${attrs.length ? ' ' + attrs.join(' ') : ''}></scout-data-unavailable>`;
   }
   for (const c of [sizeSel, labelInput]) {
     c.addEventListener('input', render);
@@ -4922,7 +4922,7 @@ function dataUnavailableGuidelines(): HTMLElement {
         dontCard(previewDataUnavailable({ label: 'No payments yet' }),
           "Don't use data-unavailable when data is simply absent. \"No payments yet\" is an empty state — pair an illustration + headline pattern there."),
         dontCard(previewDataUnavailable({ label: 'Enter a valid SSN' }),
-          "Don't use data-unavailable for input validation errors. Use connex-text-field's error attribute or connex-inline-alert."),
+          "Don't use data-unavailable for input validation errors. Use scout-text-field's error attribute or scout-inline-alert."),
       )));
 }
 
@@ -4973,16 +4973,16 @@ function dataUnavailableCode(): HTMLElement {
       el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
       el('pre', { class: 'code-block' },
         `<!-- Default copy + medium size -->
-<connex-data-unavailable></connex-data-unavailable>
+<scout-data-unavailable></scout-data-unavailable>
 
 <!-- Specific label + small size for a table cell -->
-<connex-data-unavailable size="small" label="Activity unavailable"></connex-data-unavailable>
+<scout-data-unavailable size="small" label="Activity unavailable"></scout-data-unavailable>
 
 <!-- Large for a full-card replacement -->
-<connex-data-unavailable size="large" label="Couldn't load statements"></connex-data-unavailable>`)),
+<scout-data-unavailable size="large" label="Couldn't load statements"></scout-data-unavailable>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @connex/data-unavailable @connex/tokens lit\n\nimport '@connex/data-unavailable';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout/data-unavailable @scout/tokens lit\n\nimport '@scout/data-unavailable';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -5010,16 +5010,16 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Divider (real Lit component from @connex/divider)
+// Divider (real Lit component from @scout/divider)
 // =================================================================
-import '@connex/divider';
+import '@scout/divider';
 
 function previewDivider(opts: {
   weight?: '1' | '2';
   color?: 'default' | 'light' | 'knockout';
   orientation?: 'horizontal' | 'vertical';
 } = {}): HTMLElement {
-  const d = document.createElement('connex-divider');
+  const d = document.createElement('scout-divider');
   if (opts.weight) d.setAttribute('weight', opts.weight);
   if (opts.color) d.setAttribute('color', opts.color);
   if (opts.orientation) d.setAttribute('orientation', opts.orientation);
@@ -5097,7 +5097,7 @@ function dividerControls(): HTMLElement {
     if (orientationSel.value !== 'horizontal') attrs.push(`orientation="${orientationSel.value}"`);
     if (weightSel.value !== '1') attrs.push(`weight="${weightSel.value}"`);
     if (colorSel.value !== 'default') attrs.push(`color="${colorSel.value}"`);
-    codePre.textContent = `<connex-divider${attrs.length ? ' ' + attrs.join(' ') : ''}></connex-divider>`;
+    codePre.textContent = `<scout-divider${attrs.length ? ' ' + attrs.join(' ') : ''}></scout-divider>`;
   }
   for (const c of [orientationSel, weightSel, colorSel]) {
     c.addEventListener('input', render);
@@ -5211,16 +5211,16 @@ function dividerCode(): HTMLElement {
       el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
       el('pre', { class: 'code-block' },
         `<!-- Default 1px horizontal -->
-<connex-divider></connex-divider>
+<scout-divider></scout-divider>
 
 <!-- 2px, light -->
-<connex-divider weight="2" color="light"></connex-divider>
+<scout-divider weight="2" color="light"></scout-divider>
 
 <!-- Vertical, knockout (e.g., on a dark surface) -->
-<connex-divider orientation="vertical" color="knockout"></connex-divider>`)),
+<scout-divider orientation="vertical" color="knockout"></scout-divider>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @connex/divider @connex/tokens lit\n\nimport '@connex/divider';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout/divider @scout/tokens lit\n\nimport '@scout/divider';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -5249,9 +5249,9 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Dropdown (real Lit components from @connex/dropdown)
+// Dropdown (real Lit components from @scout/dropdown)
 // =================================================================
-import '@connex/dropdown';
+import '@scout/dropdown';
 
 const COUNTRY_OPTIONS = [
   { value: 'us', label: 'United States' },
@@ -5281,7 +5281,7 @@ interface DropOpts {
 }
 
 function previewDropdown(opts: DropOpts = {}): HTMLElement {
-  const tag = opts.variant === 'searchable' ? 'connex-dropdown-searchable' : 'connex-dropdown-select';
+  const tag = opts.variant === 'searchable' ? 'scout-dropdown-searchable' : 'scout-dropdown-select';
   const d = document.createElement(tag);
   if (opts.label) d.setAttribute('label', opts.label);
   if (opts.placeholder) d.setAttribute('placeholder', opts.placeholder);
@@ -5291,7 +5291,7 @@ function previewDropdown(opts: DropOpts = {}): HTMLElement {
   if (opts.size) d.setAttribute('size', opts.size);
   if (opts.disabled) d.setAttribute('disabled', '');
   for (const o of opts.options ?? COUNTRY_OPTIONS) {
-    const opt = document.createElement('connex-dropdown-option');
+    const opt = document.createElement('scout-dropdown-option');
     opt.setAttribute('value', o.value);
     if (o.disabled) opt.setAttribute('disabled', '');
     opt.textContent = o.label;
@@ -5364,13 +5364,13 @@ function dropdownControls(): HTMLElement {
       size: sizeSel.value as 'default' | 'condensed',
       disabled: disabledChk.checked,
     }));
-    const tag = variantSel.value === 'searchable' ? 'connex-dropdown-searchable' : 'connex-dropdown-select';
+    const tag = variantSel.value === 'searchable' ? 'scout-dropdown-searchable' : 'scout-dropdown-select';
     const attrs: string[] = [`label="${labelInput.value}"`, `placeholder="${placeholderInput.value}"`];
     if (helperInput.value) attrs.push(`helper="${helperInput.value}"`);
     if (errorInput.value) attrs.push(`error="${errorInput.value}"`);
     if (sizeSel.value !== 'default') attrs.push(`size="${sizeSel.value}"`);
     if (disabledChk.checked) attrs.push('disabled');
-    codePre.textContent = `<${tag} ${attrs.join(' ')}>\n  <connex-dropdown-option value="us">United States</connex-dropdown-option>\n  <connex-dropdown-option value="ca">Canada</connex-dropdown-option>\n  …\n</${tag}>`;
+    codePre.textContent = `<${tag} ${attrs.join(' ')}>\n  <scout-dropdown-option value="us">United States</scout-dropdown-option>\n  <scout-dropdown-option value="ca">Canada</scout-dropdown-option>\n  …\n</${tag}>`;
   }
   for (const c of [variantSel, labelInput, placeholderInput, helperInput, errorInput, sizeSel, disabledChk]) {
     c.addEventListener('input', render);
@@ -5479,21 +5479,21 @@ function dropdownCode(): HTMLElement {
       el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
       el('pre', { class: 'code-block' },
         `<!-- Standard single-select -->
-<connex-dropdown-select label="Country" placeholder="Select a country" name="country">
-  <connex-dropdown-option value="us">United States</connex-dropdown-option>
-  <connex-dropdown-option value="ca">Canada</connex-dropdown-option>
-  <connex-dropdown-option value="mx">Mexico</connex-dropdown-option>
-</connex-dropdown-select>
+<scout-dropdown-select label="Country" placeholder="Select a country" name="country">
+  <scout-dropdown-option value="us">United States</scout-dropdown-option>
+  <scout-dropdown-option value="ca">Canada</scout-dropdown-option>
+  <scout-dropdown-option value="mx">Mexico</scout-dropdown-option>
+</scout-dropdown-select>
 
 <!-- Searchable single-select -->
-<connex-dropdown-searchable label="Country" placeholder="Search countries…" name="country">
-  <connex-dropdown-option value="us">United States</connex-dropdown-option>
-  <connex-dropdown-option value="ca">Canada</connex-dropdown-option>
+<scout-dropdown-searchable label="Country" placeholder="Search countries…" name="country">
+  <scout-dropdown-option value="us">United States</scout-dropdown-option>
+  <scout-dropdown-option value="ca">Canada</scout-dropdown-option>
   …
-</connex-dropdown-searchable>`)),
+</scout-dropdown-searchable>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @connex/dropdown @connex/tokens lit\n\nimport '@connex/dropdown';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout/dropdown @scout/tokens lit\n\nimport '@scout/dropdown';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Common props (both variants)'),
       el('div', { class: 'props-table-wrap' },
@@ -5526,9 +5526,9 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Error state (real Lit component from @connex/error-state)
+// Error state (real Lit component from @scout/error-state)
 // =================================================================
-import '@connex/error-state';
+import '@scout/error-state';
 
 interface ErrOpts {
   header?: string;
@@ -5544,7 +5544,7 @@ function previewErrorState(opts: ErrOpts = {}): HTMLElement {
     link,
     linkHref = '#',
   } = opts;
-  const e = document.createElement('connex-error-state');
+  const e = document.createElement('scout-error-state');
   if (header) {
     const h = document.createElement('span');
     h.setAttribute('slot', 'header');
@@ -5610,7 +5610,7 @@ function errorStateControls(): HTMLElement {
       link: linkInput.value || undefined,
     }));
     const linkSlot = linkInput.value ? `\n  <a slot="link" href="/support">${linkInput.value}</a>` : '';
-    codePre.textContent = `<connex-error-state>\n  <span slot="header">${headerInput.value}</span>\n  ${messageInput.value}${linkSlot}\n</connex-error-state>`;
+    codePre.textContent = `<scout-error-state>\n  <span slot="header">${headerInput.value}</span>\n  ${messageInput.value}${linkSlot}\n</scout-error-state>`;
   }
   for (const c of [headerInput, messageInput, linkInput]) {
     c.addEventListener('input', render);
@@ -5711,23 +5711,23 @@ function errorStateCode(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
       el('pre', { class: 'code-block' },
-        `<connex-error-state>
+        `<scout-error-state>
   <span slot="header">Something went wrong</span>
   We couldn't load this page. Try refreshing or contact support
   if the problem continues.
   <a slot="link" href="/support">Contact support</a>
-</connex-error-state>
+</scout-error-state>
 
 <!-- Custom illustration -->
-<connex-error-state>
+<scout-error-state>
   <svg slot="illustration" viewBox="0 0 200 160">…</svg>
   <span slot="header">Empath is unavailable</span>
   We're working to restore service.
   <a slot="link" href="/status">Check status page</a>
-</connex-error-state>`)),
+</scout-error-state>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @connex/error-state @connex/tokens lit\n\nimport '@connex/error-state';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout/error-state @scout/tokens lit\n\nimport '@scout/error-state';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Slots'),
       el('div', { class: 'props-table-wrap' },
@@ -5756,9 +5756,9 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Filter chip (real Lit component from @connex/filter-chip)
+// Filter chip (real Lit component from @scout/filter-chip)
 // =================================================================
-import '@connex/filter-chip';
+import '@scout/filter-chip';
 
 interface ChipOpts {
   label?: string;
@@ -5770,7 +5770,7 @@ interface ChipOpts {
 
 function previewChip(opts: ChipOpts = {}): HTMLElement {
   const { label = 'Filter', size = 'default', selected = false, menu = false, disabled = false } = opts;
-  const c = document.createElement('connex-filter-chip');
+  const c = document.createElement('scout-filter-chip');
   c.setAttribute('size', size);
   if (selected) c.setAttribute('selected', '');
   if (menu) c.setAttribute('menu', '');
@@ -5803,7 +5803,7 @@ function filterChipPreview(): HTMLElement {
   );
 
   block('Menu mode',
-    'Set the menu attribute when clicking the chip should open a popover (e.g. choose filter values). The chip renders a chevron and dispatches connex-filter-chip-menu instead of toggling selection.',
+    'Set the menu attribute when clicking the chip should open a popover (e.g. choose filter values). The chip renders a chevron and dispatches scout-filter-chip-menu instead of toggling selection.',
     previewChip({ label: 'Status', menu: true }),
     previewChip({ label: 'Status: Active', menu: true, selected: true }),
     previewChip({ label: 'Date range', menu: true }),
@@ -5845,7 +5845,7 @@ function filterChipControls(): HTMLElement {
     if (selectedChk.checked) attrs.push('selected');
     if (menuChk.checked) attrs.push('menu');
     if (disabledChk.checked) attrs.push('disabled');
-    codePre.textContent = `<connex-filter-chip${attrs.length ? ' ' + attrs.join(' ') : ''}>${labelInput.value || 'Filter'}</connex-filter-chip>`;
+    codePre.textContent = `<scout-filter-chip${attrs.length ? ' ' + attrs.join(' ') : ''}>${labelInput.value || 'Filter'}</scout-filter-chip>`;
   }
   for (const c of [labelInput, sizeSel, selectedChk, menuChk, disabledChk]) {
     c.addEventListener('input', render);
@@ -5948,23 +5948,23 @@ function filterChipCode(): HTMLElement {
       el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
       el('pre', { class: 'code-block' },
         `<!-- Toggle mode -->
-<connex-filter-chip>Active</connex-filter-chip>
-<connex-filter-chip selected>Active · 12</connex-filter-chip>
+<scout-filter-chip>Active</scout-filter-chip>
+<scout-filter-chip selected>Active · 12</scout-filter-chip>
 
 <!-- Menu mode (consumer manages selected state) -->
-<connex-filter-chip menu>Status</connex-filter-chip>
-<connex-filter-chip menu selected>Status: Active</connex-filter-chip>
+<scout-filter-chip menu>Status</scout-filter-chip>
+<scout-filter-chip menu selected>Status: Active</scout-filter-chip>
 
 <!-- Listen for state changes -->
 <script>
-  document.querySelector('connex-filter-chip')
-    .addEventListener('connex-filter-chip-change', (e) => {
+  document.querySelector('scout-filter-chip')
+    .addEventListener('scout-filter-chip-change', (e) => {
       console.log('Selected:', e.detail.selected);
     });
 </script>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @connex/filter-chip @connex/tokens lit\n\nimport '@connex/filter-chip';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout/filter-chip @scout/tokens lit\n\nimport '@scout/filter-chip';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -5993,9 +5993,9 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Inline alert (real Lit component from @connex/inline-alert)
+// Inline alert (real Lit component from @scout/inline-alert)
 // =================================================================
-import '@connex/inline-alert';
+import '@scout/inline-alert';
 
 type IAStatus = 'informational' | 'favorable' | 'warning' | 'critical';
 type IASize = 'default' | 'condensed';
@@ -6018,7 +6018,7 @@ function previewInlineAlert(opts: IAOpts = {}): HTMLElement {
     action,
     closable = false,
   } = opts;
-  const a = document.createElement('connex-inline-alert');
+  const a = document.createElement('scout-inline-alert');
   a.setAttribute('status', status);
   a.setAttribute('size', size);
   if (closable) a.setAttribute('closable', '');
@@ -6030,7 +6030,7 @@ function previewInlineAlert(opts: IAOpts = {}): HTMLElement {
   }
   a.appendChild(document.createTextNode(message));
   if (action) {
-    const btn = document.createElement('connex-button');
+    const btn = document.createElement('scout-button');
     btn.setAttribute('slot', 'action');
     btn.setAttribute('variant', 'tertiary');
     btn.setAttribute('size', 'condensed');
@@ -6105,8 +6105,8 @@ function inlineAlertControls(): HTMLElement {
     if (sizeSel.value !== 'default') attrs.push(`size="${sizeSel.value}"`);
     if (closableChk.checked) attrs.push('closable');
     const titleSlot = titleInput.value ? `\n  <span slot="title">${titleInput.value}</span>` : '';
-    const actionSlot = actionInput.value ? `\n  <connex-button slot="action" variant="tertiary" size="condensed">${actionInput.value}</connex-button>` : '';
-    codePre.textContent = `<connex-inline-alert${attrs.length ? ' ' + attrs.join(' ') : ''}>${titleSlot}\n  ${messageInput.value}${actionSlot}\n</connex-inline-alert>`;
+    const actionSlot = actionInput.value ? `\n  <scout-button slot="action" variant="tertiary" size="condensed">${actionInput.value}</scout-button>` : '';
+    codePre.textContent = `<scout-inline-alert${attrs.length ? ' ' + attrs.join(' ') : ''}>${titleSlot}\n  ${messageInput.value}${actionSlot}\n</scout-inline-alert>`;
   }
 
   for (const c of [statusSel, sizeSel, titleInput, messageInput, actionInput, closableChk]) {
@@ -6213,17 +6213,17 @@ function inlineAlertCode(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
       el('pre', { class: 'code-block' },
-        `<connex-inline-alert status="warning" closable>
+        `<scout-inline-alert status="warning" closable>
   <span slot="title">Verify identity</span>
   This account requires identity verification before changes can be made.
-  <connex-button slot="action" variant="tertiary" size="condensed">Verify now</connex-button>
-</connex-inline-alert>`)),
+  <scout-button slot="action" variant="tertiary" size="condensed">Verify now</scout-button>
+</scout-inline-alert>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
       el('pre', { class: 'code-block' },
-        `pnpm add @connex/inline-alert @connex/tokens lit
+        `pnpm add @scout/inline-alert @scout/tokens lit
 
-import '@connex/inline-alert';`)),
+import '@scout/inline-alert';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -6251,9 +6251,9 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Link (real Lit component from @connex/link)
+// Link (real Lit component from @scout/link)
 // =================================================================
-import '@connex/link';
+import '@scout/link';
 
 const ARROW_RIGHT_PATH = 'M12.22 5.22a.75.75 0 0 1 1.06 0l6 6a.75.75 0 0 1 0 1.06l-6 6a.75.75 0 1 1-1.06-1.06l4.72-4.72H4.25a.75.75 0 0 1 0-1.5h12.69l-4.72-4.72a.75.75 0 0 1 0-1.06Z';
 
@@ -6275,7 +6275,7 @@ function previewLink(opts: LinkOpts = {}): HTMLElement {
     iconPosition = 'none',
     disabled = false,
   } = opts;
-  const link = document.createElement('connex-link');
+  const link = document.createElement('scout-link');
   link.setAttribute('href', href);
   link.setAttribute('type', type);
   link.setAttribute('size', size);
@@ -6314,13 +6314,13 @@ function linkPreview(): HTMLElement {
   block('Types',
     'Inline lives within paragraph text. Standalone is a block-level CTA. Hyperlink is for external destinations and auto-renders an "open in new tab" icon.',
     el('div', { class: 'preview-stack' },
-      el('p', { style: 'margin: 0; font-size: var(--connex-font-size-14); line-height: var(--connex-font-line-height-21);' },
+      el('p', { style: 'margin: 0; font-size: var(--scout-font-size-14); line-height: var(--scout-font-line-height-21);' },
         'Inline links sit inside flowing text — like ',
         previewLink({ label: 'this one', type: 'inline' }),
         ' — and inherit the paragraph\'s font size and color treatment.',
       ),
       previewLink({ label: 'Read the docs', type: 'standalone' }),
-      el('p', { style: 'margin: 0; font-size: var(--connex-font-size-14); line-height: var(--connex-font-line-height-21);' },
+      el('p', { style: 'margin: 0; font-size: var(--scout-font-size-14); line-height: var(--scout-font-line-height-21);' },
         'External destinations use the hyperlink type, which adds an icon: visit ',
         previewLink({ label: 'heroicons.com', href: 'https://heroicons.com', type: 'hyperlink' }),
         ' to browse the icon set.',
@@ -6385,7 +6385,7 @@ function linkControls(): HTMLElement {
       ? `\n  <svg slot="icon-leading">…</svg>` :
       iconSel.value === 'trailing'
         ? `\n  <svg slot="icon-trailing">…</svg>` : '';
-    codePre.textContent = `<connex-link ${attrs.join(' ')}>${slotMarkup}\n  ${labelInput.value || 'Link'}\n</connex-link>`;
+    codePre.textContent = `<scout-link ${attrs.join(' ')}>${slotMarkup}\n  ${labelInput.value || 'Link'}\n</scout-link>`;
   }
   for (const c of [labelInput, hrefInput, typeSel, sizeSel, iconSel, disabledChk]) {
     c.addEventListener('input', render);
@@ -6487,23 +6487,23 @@ function linkCode(): HTMLElement {
       el('pre', { class: 'code-block' },
         `<!-- Inline (within paragraph text) -->
 <p>
-  See the <connex-link href="/docs" type="inline">documentation</connex-link>
+  See the <scout-link href="/docs" type="inline">documentation</scout-link>
   for details.
 </p>
 
 <!-- Standalone CTA with trailing icon -->
-<connex-link href="/customers" type="standalone">
+<scout-link href="/customers" type="standalone">
   <svg slot="icon-trailing">…</svg>
   View all customers
-</connex-link>
+</scout-link>
 
 <!-- External hyperlink -->
-<connex-link href="https://heroicons.com" type="hyperlink">
+<scout-link href="https://heroicons.com" type="hyperlink">
   Hero Icons
-</connex-link>`)),
+</scout-link>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @connex/link @connex/tokens lit\n\nimport '@connex/link';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout/link @scout/tokens lit\n\nimport '@scout/link';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -6533,9 +6533,9 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Multiselect (real Lit component from @connex/multiselect)
+// Multiselect (real Lit component from @scout/multiselect)
 // =================================================================
-import '@connex/multiselect';
+import '@scout/multiselect';
 
 const MS_TAG_OPTIONS = [
   { value: 'fraud', label: 'Fraud risk' },
@@ -6565,7 +6565,7 @@ interface MSOpts {
 }
 
 function previewMultiselect(opts: MSOpts = {}): HTMLElement {
-  const ms = document.createElement('connex-multiselect');
+  const ms = document.createElement('scout-multiselect');
   if (opts.label) ms.setAttribute('label', opts.label);
   if (opts.placeholder) ms.setAttribute('placeholder', opts.placeholder);
   if (opts.values?.length) ms.setAttribute('values', opts.values.join(','));
@@ -6577,7 +6577,7 @@ function previewMultiselect(opts: MSOpts = {}): HTMLElement {
   if (opts.showClearAll) ms.setAttribute('show-clear-all', '');
   if (opts.showSelectAll === false) ms.removeAttribute('show-select-all');
   for (const o of opts.options ?? MS_TAG_OPTIONS) {
-    const opt = document.createElement('connex-multiselect-option');
+    const opt = document.createElement('scout-multiselect-option');
     opt.setAttribute('value', o.value);
     if (o.disabled) opt.setAttribute('disabled', '');
     opt.textContent = o.label;
@@ -6672,7 +6672,7 @@ function multiselectControls(): HTMLElement {
     if (counterChk.checked) attrs.push('show-counter');
     if (clearAllChk.checked) attrs.push('show-clear-all');
     if (!selectAllChk.checked) attrs.push('show-select-all="false"');
-    codePre.textContent = `<connex-multiselect ${attrs.join(' ')}>\n  <connex-multiselect-option value="fraud">Fraud risk</connex-multiselect-option>\n  <connex-multiselect-option value="verified">Identity verified</connex-multiselect-option>\n  …\n</connex-multiselect>`;
+    codePre.textContent = `<scout-multiselect ${attrs.join(' ')}>\n  <scout-multiselect-option value="fraud">Fraud risk</scout-multiselect-option>\n  <scout-multiselect-option value="verified">Identity verified</scout-multiselect-option>\n  …\n</scout-multiselect>`;
   }
   for (const c of [labelInput, placeholderInput, helperInput, errorInput, sizeSel, counterChk, clearAllChk, selectAllChk, disabledChk]) {
     c.addEventListener('input', render);
@@ -6785,7 +6785,7 @@ function multiselectCode(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
       el('pre', { class: 'code-block' },
-        `<connex-multiselect
+        `<scout-multiselect
   label="Customer tags"
   placeholder="Select tags…"
   helper="Filter customer list by tag(s)"
@@ -6793,21 +6793,21 @@ function multiselectCode(): HTMLElement {
   show-clear-all
   name="tags"
 >
-  <connex-multiselect-option value="fraud">Fraud risk</connex-multiselect-option>
-  <connex-multiselect-option value="high-value">High value</connex-multiselect-option>
-  <connex-multiselect-option value="verified">Identity verified</connex-multiselect-option>
-  <connex-multiselect-option value="expiring">Card expiring soon</connex-multiselect-option>
-</connex-multiselect>
+  <scout-multiselect-option value="fraud">Fraud risk</scout-multiselect-option>
+  <scout-multiselect-option value="high-value">High value</scout-multiselect-option>
+  <scout-multiselect-option value="verified">Identity verified</scout-multiselect-option>
+  <scout-multiselect-option value="expiring">Card expiring soon</scout-multiselect-option>
+</scout-multiselect>
 
 <!-- Set selected values via JS -->
 <script>
-  document.querySelector('connex-multiselect').values = ['fraud', 'verified'];
-  document.querySelector('connex-multiselect')
-    .addEventListener('connex-multiselect-change', (e) => console.log(e.detail.values));
+  document.querySelector('scout-multiselect').values = ['fraud', 'verified'];
+  document.querySelector('scout-multiselect')
+    .addEventListener('scout-multiselect-change', (e) => console.log(e.detail.values));
 </script>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @connex/multiselect @connex/tokens lit\n\nimport '@connex/multiselect';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout/multiselect @scout/tokens lit\n\nimport '@scout/multiselect';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -6843,15 +6843,15 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Notification badge (real Lit component from @connex/notification-badge)
+// Notification badge (real Lit component from @scout/notification-badge)
 // =================================================================
-import '@connex/notification-badge';
+import '@scout/notification-badge';
 
 type NBSize = 'xx-small' | 'x-small' | 'small' | 'medium';
 
 function previewNotificationBadge(opts: { size?: NBSize; count?: string } = {}): HTMLElement {
   const { size = 'medium', count } = opts;
-  const b = document.createElement('connex-notification-badge');
+  const b = document.createElement('scout-notification-badge');
   b.setAttribute('size', size);
   if (count !== undefined) b.textContent = count;
   return b;
@@ -6894,7 +6894,7 @@ function notificationBadgePreview(): HTMLElement {
   // Show in context: paired with a button + avatar
   const btnWithBadge = (() => {
     const wrap = el('div', { style: 'position: relative; display: inline-block;' });
-    const btn = document.createElement('connex-button');
+    const btn = document.createElement('scout-button');
     btn.setAttribute('variant', 'secondary');
     btn.textContent = 'Inbox';
     wrap.appendChild(btn);
@@ -6905,7 +6905,7 @@ function notificationBadgePreview(): HTMLElement {
   })();
 
   const avatarWithBadge = (() => {
-    const a = document.createElement('connex-avatar');
+    const a = document.createElement('scout-avatar');
     a.setAttribute('initials', 'HM');
     a.setAttribute('size', 'large');
     a.setAttribute('color', 'blue');
@@ -6945,7 +6945,7 @@ function notificationBadgeControls(): HTMLElement {
     const count = isCountSize ? countInput.value : '';
     stage.replaceChildren(previewNotificationBadge({ size, count: count || undefined }));
     const slot = isCountSize && count ? count : '';
-    codePre.textContent = `<connex-notification-badge size="${size}">${slot}</connex-notification-badge>`;
+    codePre.textContent = `<scout-notification-badge size="${size}">${slot}</scout-notification-badge>`;
   }
   for (const c of [sizeSel, countInput]) {
     c.addEventListener('input', render);
@@ -7035,31 +7035,31 @@ function notificationBadgeCode(): HTMLElement {
       el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
       el('pre', { class: 'code-block' },
         `<!-- Dot only -->
-<connex-notification-badge size="x-small"></connex-notification-badge>
+<scout-notification-badge size="x-small"></scout-notification-badge>
 
 <!-- Numbered -->
-<connex-notification-badge size="medium">12</connex-notification-badge>
+<scout-notification-badge size="medium">12</scout-notification-badge>
 
 <!-- Overflow -->
-<connex-notification-badge size="medium">99+</connex-notification-badge>
+<scout-notification-badge size="medium">99+</scout-notification-badge>
 
 <!-- Inside another component (manual placement) -->
 <div style="position: relative;">
-  <connex-button>Inbox</connex-button>
-  <connex-notification-badge
+  <scout-button>Inbox</scout-button>
+  <scout-notification-badge
     size="small"
     style="position: absolute; top: -6px; right: -6px;"
-  >3</connex-notification-badge>
+  >3</scout-notification-badge>
 </div>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @connex/notification-badge @connex/tokens lit\n\nimport '@connex/notification-badge';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout/notification-badge @scout/tokens lit\n\nimport '@scout/notification-badge';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Custom properties'),
       el('p', { class: 'preview-block__lede' }, 'Override per-instance:'),
       el('pre', { class: 'code-block' },
-        `connex-notification-badge {
-  --cnx-notification-stroke-color: var(--connex-color-cool-gray-100);
+        `scout-notification-badge {
+  --cnx-notification-stroke-color: var(--scout-color-cool-gray-100);
 }`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
@@ -7086,27 +7086,27 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Overlay + Dialog + Disclosure dialog (real Lit from @connex/overlay + @connex/dialog)
+// Overlay + Dialog + Disclosure dialog (real Lit from @scout/overlay + @scout/dialog)
 // =================================================================
-import '@connex/overlay';
-import '@connex/dialog';
+import '@scout/overlay';
+import '@scout/dialog';
 
 // --- Overlay docs page ---
 
 function previewOverlayDemo(): HTMLElement {
-  const wrap = el('div', { style: 'position: relative; height: 200px; border: 1px dashed var(--connex-border-secondary); border-radius: 8px; overflow: hidden; padding: 16px;' });
+  const wrap = el('div', { style: 'position: relative; height: 200px; border: 1px dashed var(--scout-border-secondary); border-radius: 8px; overflow: hidden; padding: 16px;' });
   wrap.append(el('p', { style: 'margin: 0 0 12px; font-size: 14px;' }, 'Sample content. Click the button to render the overlay over this surface.'));
-  const trigger = document.createElement('connex-button');
+  const trigger = document.createElement('scout-button');
   trigger.setAttribute('variant', 'secondary');
   trigger.setAttribute('size', 'condensed');
   trigger.textContent = 'Show overlay (3s)';
-  const overlay = document.createElement('connex-overlay');
+  const overlay = document.createElement('scout-overlay');
   overlay.setAttribute('style', 'position: absolute;');
   trigger.addEventListener('click', () => {
     overlay.setAttribute('open', '');
     setTimeout(() => overlay.removeAttribute('open'), 3000);
   });
-  overlay.addEventListener('connex-overlay-click', () => overlay.removeAttribute('open'));
+  overlay.addEventListener('scout-overlay-click', () => overlay.removeAttribute('open'));
   wrap.append(trigger, overlay);
   return wrap;
 }
@@ -7115,7 +7115,7 @@ function overlayPreview(): HTMLElement {
   const wrap = el('div', { class: 'tab-content' });
   wrap.append(el('div', { class: 'preview-block' },
     el('h3', { class: 'preview-block__title' }, 'Default'),
-    el('p', { class: 'preview-block__lede' }, 'A semi-transparent scrim. The overlay covers its parent (or the viewport when fixed-positioned) and dims everything behind. Click triggers a `connex-overlay-click` event so the parent can close the dialog.'),
+    el('p', { class: 'preview-block__lede' }, 'A semi-transparent scrim. The overlay covers its parent (or the viewport when fixed-positioned) and dims everything behind. Click triggers a `scout-overlay-click` event so the parent can close the dialog.'),
     el('div', { class: 'preview-row preview-row--block' }, previewOverlayDemo()),
   ));
   return wrap;
@@ -7126,18 +7126,18 @@ function overlayCode(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
       el('pre', { class: 'code-block' },
-        `<connex-overlay open></connex-overlay>
+        `<scout-overlay open></scout-overlay>
 
 <!-- Listen for click to dismiss -->
 <script>
-  document.querySelector('connex-overlay')
-    .addEventListener('connex-overlay-click', (e) => {
+  document.querySelector('scout-overlay')
+    .addEventListener('scout-overlay-click', (e) => {
       e.target.removeAttribute('open');
     });
 </script>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @connex/overlay @connex/tokens lit\n\nimport '@connex/overlay';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout/overlay @scout/tokens lit\n\nimport '@scout/overlay';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Notes'),
       el('ul', { class: 'guideline-list' },
@@ -7183,13 +7183,13 @@ function previewDialogDemo(opts: DialogOpts = {}): HTMLElement {
   } = opts;
 
   const wrap = el('div', { style: 'min-height: 60px;' });
-  const trigger = document.createElement('connex-button');
+  const trigger = document.createElement('scout-button');
   trigger.setAttribute('variant', 'secondary');
   trigger.textContent = `Open dialog (${size})`;
   wrap.append(trigger);
 
   trigger.addEventListener('click', () => {
-    const dialog = document.createElement('connex-dialog');
+    const dialog = document.createElement('scout-dialog');
     dialog.setAttribute('open', '');
     dialog.setAttribute('size', size);
     if (!closable) dialog.removeAttribute('closable');
@@ -7200,7 +7200,7 @@ function previewDialogDemo(opts: DialogOpts = {}): HTMLElement {
     dialog.append(titleEl);
 
     if (alert) {
-      const al = document.createElement('connex-inline-alert');
+      const al = document.createElement('scout-inline-alert');
       al.setAttribute('slot', 'alert');
       al.setAttribute('status', alert.status);
       al.textContent = alert.message;
@@ -7213,10 +7213,10 @@ function previewDialogDemo(opts: DialogOpts = {}): HTMLElement {
     dialog.append(bodyEl);
 
     const close = () => dialog.remove();
-    dialog.addEventListener('connex-dialog-close', close);
+    dialog.addEventListener('scout-dialog-close', close);
 
     if (secondaryLabel) {
-      const sec = document.createElement('connex-button');
+      const sec = document.createElement('scout-button');
       sec.setAttribute('slot', 'actions');
       sec.setAttribute('variant', 'secondary');
       sec.textContent = secondaryLabel;
@@ -7224,7 +7224,7 @@ function previewDialogDemo(opts: DialogOpts = {}): HTMLElement {
       dialog.append(sec);
     }
     if (primaryLabel) {
-      const pri = document.createElement('connex-button');
+      const pri = document.createElement('scout-button');
       pri.setAttribute('slot', 'actions');
       pri.setAttribute('variant', primaryVariant);
       pri.textContent = primaryLabel;
@@ -7284,21 +7284,21 @@ function dialogCode(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
       el('pre', { class: 'code-block' },
-        `<connex-dialog open size="medium">
+        `<scout-dialog open size="medium">
   <span slot="title">Confirm deletion</span>
 
-  <connex-inline-alert slot="alert" status="warning">
+  <scout-inline-alert slot="alert" status="warning">
     This action cannot be undone.
-  </connex-inline-alert>
+  </scout-inline-alert>
 
   <p>Are you sure you want to delete this account?</p>
 
-  <connex-button slot="actions" variant="secondary">Cancel</connex-button>
-  <connex-button slot="actions" variant="critical">Delete account</connex-button>
-</connex-dialog>`)),
+  <scout-button slot="actions" variant="secondary">Cancel</scout-button>
+  <scout-button slot="actions" variant="critical">Delete account</scout-button>
+</scout-dialog>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @connex/dialog @connex/tokens lit\n\nimport '@connex/dialog';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout/dialog @scout/tokens lit\n\nimport '@scout/dialog';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -7326,13 +7326,13 @@ app.append(componentPage(
 function previewDisclosureDemo(opts: { type?: 'simple' | 'automated'; languages?: string; requireCheckbox?: boolean } = {}): HTMLElement {
   const { type = 'simple', languages = 'en,es', requireCheckbox = false } = opts;
   const wrap = el('div', { style: 'min-height: 60px;' });
-  const trigger = document.createElement('connex-button');
+  const trigger = document.createElement('scout-button');
   trigger.setAttribute('variant', 'secondary');
   trigger.textContent = `Open ${type} disclosure`;
   wrap.append(trigger);
 
   trigger.addEventListener('click', () => {
-    const dlg = document.createElement('connex-disclosure-dialog');
+    const dlg = document.createElement('scout-disclosure-dialog');
     dlg.setAttribute('open', '');
     dlg.setAttribute('type', type);
     dlg.setAttribute('languages', languages);
@@ -7367,16 +7367,16 @@ function previewDisclosureDemo(opts: { type?: 'simple' | 'automated'; languages?
     }
 
     const close = () => dlg.remove();
-    dlg.addEventListener('connex-disclosure-close', close);
+    dlg.addEventListener('scout-disclosure-close', close);
 
-    const cancel = document.createElement('connex-button');
+    const cancel = document.createElement('scout-button');
     cancel.setAttribute('slot', 'actions');
     cancel.setAttribute('variant', 'secondary');
     cancel.textContent = 'Cancel';
     cancel.addEventListener('click', close);
     dlg.append(cancel);
 
-    const confirm = document.createElement('connex-button');
+    const confirm = document.createElement('scout-button');
     confirm.setAttribute('slot', 'actions');
     confirm.setAttribute('variant', 'primary');
     confirm.textContent = 'Confirm';
@@ -7422,7 +7422,7 @@ function disclosureCode(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
       el('pre', { class: 'code-block' },
-        `<connex-disclosure-dialog
+        `<scout-disclosure-dialog
   open
   type="simple"
   languages="en,es,fr"
@@ -7446,12 +7446,12 @@ function disclosureCode(): HTMLElement {
     I confirm the customer has been read this disclosure verbatim.
   </span>
 
-  <connex-button slot="actions" variant="secondary">Cancel</connex-button>
-  <connex-button slot="actions" variant="primary">Confirm</connex-button>
-</connex-disclosure-dialog>`)),
+  <scout-button slot="actions" variant="secondary">Cancel</scout-button>
+  <scout-button slot="actions" variant="primary">Confirm</scout-button>
+</scout-disclosure-dialog>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @connex/dialog @connex/tokens lit\n\nimport '@connex/dialog';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout/dialog @scout/tokens lit\n\nimport '@scout/dialog';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -7479,15 +7479,15 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Snackbar (real Lit component from @connex/snackbar)
+// Snackbar (real Lit component from @scout/snackbar)
 // =================================================================
-import '@connex/snackbar';
+import '@scout/snackbar';
 
 type SBStatus = 'success' | 'warning' | 'critical';
 
 function previewSnackbar(opts: { status?: SBStatus; description?: string; duration?: number } = {}): HTMLElement {
   const { status = 'success', description = 'Account created.', duration = 0 } = opts;
-  const sb = document.createElement('connex-snackbar');
+  const sb = document.createElement('scout-snackbar');
   sb.setAttribute('status', status);
   sb.setAttribute('duration', String(duration));
   sb.textContent = description;
@@ -7517,7 +7517,7 @@ function snackbarPreview(): HTMLElement {
     'Snackbars auto-dismiss after `duration` ms. Default is 4000. Set duration="0" to disable. Click the button to trigger a real auto-dismissing snackbar.',
     el('div', { class: 'preview-stack' },
       (() => {
-        const trigger = document.createElement('connex-button');
+        const trigger = document.createElement('scout-button');
         trigger.setAttribute('variant', 'secondary');
         trigger.textContent = 'Trigger snackbar (4s)';
         const stage = el('div', { style: 'min-height: 60px;' });
@@ -7550,7 +7550,7 @@ function snackbarControls(): HTMLElement {
     const attrs: string[] = [];
     if (statusSel.value !== 'success') attrs.push(`status="${statusSel.value}"`);
     if (Number(durationInput.value) !== 4000) attrs.push(`duration="${Number(durationInput.value) || 0}"`);
-    codePre.textContent = `<connex-snackbar${attrs.length ? ' ' + attrs.join(' ') : ''}>\n  ${descInput.value}\n</connex-snackbar>`;
+    codePre.textContent = `<scout-snackbar${attrs.length ? ' ' + attrs.join(' ') : ''}>\n  ${descInput.value}\n</scout-snackbar>`;
   }
   for (const c of [statusSel, descInput, durationInput]) {
     c.addEventListener('input', render);
@@ -7634,19 +7634,19 @@ function snackbarCode(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
       el('pre', { class: 'code-block' },
-        `<connex-snackbar status="success" duration="4000">
+        `<scout-snackbar status="success" duration="4000">
   Account created successfully.
-</connex-snackbar>
+</scout-snackbar>
 
 // Programmatic
-const sb = document.createElement('connex-snackbar');
+const sb = document.createElement('scout-snackbar');
 sb.status = 'critical';
 sb.duration = 0;
 sb.textContent = 'Save failed — try again.';
 document.body.appendChild(sb);`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @connex/snackbar @connex/tokens lit\n\nimport '@connex/snackbar';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout/snackbar @scout/tokens lit\n\nimport '@scout/snackbar';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -7673,10 +7673,10 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Status dot (real Lit component from @connex/status-dot)
+// Status dot (real Lit component from @scout/status-dot)
 // =================================================================
-import '@connex/status-dot';
-import type { StatusDotType, StatusDotSize } from '@connex/status-dot';
+import '@scout/status-dot';
+import type { StatusDotType, StatusDotSize } from '@scout/status-dot';
 
 interface SDotOpts {
   type?: StatusDotType;
@@ -7685,7 +7685,7 @@ interface SDotOpts {
 }
 
 function previewStatusDot(opts: SDotOpts = {}): HTMLElement {
-  const d = document.createElement('connex-status-dot');
+  const d = document.createElement('scout-status-dot');
   if (opts.type) d.setAttribute('type', opts.type);
   if (opts.size) d.setAttribute('size', opts.size);
   d.appendChild(document.createTextNode(opts.label ?? 'Status'));
@@ -7768,7 +7768,7 @@ function statusDotControls(): HTMLElement {
     }));
     const attrs: string[] = [`type="${typeSel.value}"`];
     if (sizeSel.value !== 'default') attrs.push(`size="${sizeSel.value}"`);
-    codePre.textContent = `<connex-status-dot ${attrs.join(' ')}>${labelInput.value || 'Status'}</connex-status-dot>`;
+    codePre.textContent = `<scout-status-dot ${attrs.join(' ')}>${labelInput.value || 'Status'}</scout-status-dot>`;
   }
   for (const c of [typeSel, sizeSel, labelInput]) {
     c.addEventListener('input', render);
@@ -7867,15 +7867,15 @@ function statusDotCode(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
       el('pre', { class: 'code-block' },
-        `<connex-status-dot type="success">Active</connex-status-dot>
-<connex-status-dot type="warning">Pending review</connex-status-dot>
-<connex-status-dot type="critical">Past due</connex-status-dot>
+        `<scout-status-dot type="success">Active</scout-status-dot>
+<scout-status-dot type="warning">Pending review</scout-status-dot>
+<scout-status-dot type="critical">Past due</scout-status-dot>
 
 <!-- Condensed for table rows -->
-<connex-status-dot type="success" size="condensed">Active</connex-status-dot>`)),
+<scout-status-dot type="success" size="condensed">Active</scout-status-dot>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @connex/status-dot @connex/tokens lit\n\nimport '@connex/status-dot';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout/status-dot @scout/tokens lit\n\nimport '@scout/status-dot';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -7903,9 +7903,9 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// System outage (real Lit component from @connex/system-outage)
+// System outage (real Lit component from @scout/system-outage)
 // =================================================================
-import '@connex/system-outage';
+import '@scout/system-outage';
 
 type SOStatus = 'platform-wide-outage' | 'feature-outage' | 'outage-restored';
 
@@ -7917,7 +7917,7 @@ function previewSystemOutage(opts: { status?: SOStatus; title?: string; descript
     link,
     closable = true,
   } = opts;
-  const so = document.createElement('connex-system-outage');
+  const so = document.createElement('scout-system-outage');
   so.setAttribute('status', status);
   if (!closable) so.removeAttribute('closable');
   const t = document.createElement('span');
@@ -7976,7 +7976,7 @@ function systemOutageControls(): HTMLElement {
       closable: closableChk.checked,
     }));
     const linkSlot = linkInput.value ? `\n  <a slot="link" href="/status">${linkInput.value}</a>` : '';
-    codePre.textContent = `<connex-system-outage status="${statusSel.value}"${closableChk.checked ? '' : ' closable="false"'}>\n  <span slot="title">${titleInput.value}</span>\n  ${descInput.value}${linkSlot}\n</connex-system-outage>`;
+    codePre.textContent = `<scout-system-outage status="${statusSel.value}"${closableChk.checked ? '' : ' closable="false"'}>\n  <span slot="title">${titleInput.value}</span>\n  ${descInput.value}${linkSlot}\n</scout-system-outage>`;
   }
   for (const c of [statusSel, titleInput, descInput, linkInput, closableChk]) {
     c.addEventListener('input', render);
@@ -8075,24 +8075,24 @@ function systemOutageCode(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
       el('pre', { class: 'code-block' },
-        `<connex-system-outage status="platform-wide-outage">
+        `<scout-system-outage status="platform-wide-outage">
   <span slot="title">Empath is currently down</span>
   We're working to restore service. ETA: 15 minutes.
   <a slot="link" href="/status">Check status page</a>
-</connex-system-outage>
+</scout-system-outage>
 
-<connex-system-outage status="feature-outage">
+<scout-system-outage status="feature-outage">
   <span slot="title">Payments are temporarily unavailable</span>
   Other features are working normally.
-</connex-system-outage>
+</scout-system-outage>
 
-<connex-system-outage status="outage-restored">
+<scout-system-outage status="outage-restored">
   <span slot="title">Service restored</span>
   All systems are operational.
-</connex-system-outage>`)),
+</scout-system-outage>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @connex/system-outage @connex/tokens lit\n\nimport '@connex/system-outage';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout/system-outage @scout/tokens lit\n\nimport '@scout/system-outage';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -8119,9 +8119,9 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Tabs (real Lit components from @connex/tabs)
+// Tabs (real Lit components from @scout/tabs)
 // =================================================================
-import '@connex/tabs';
+import '@scout/tabs';
 
 interface TabSpec {
   value: string;
@@ -8131,10 +8131,10 @@ interface TabSpec {
 }
 
 function previewTabs(opts: { tabs: TabSpec[]; value?: string }): HTMLElement {
-  const tabs = document.createElement('connex-tabs');
+  const tabs = document.createElement('scout-tabs');
   if (opts.value) tabs.setAttribute('value', opts.value);
   for (const t of opts.tabs) {
-    const tab = document.createElement('connex-tab');
+    const tab = document.createElement('scout-tab');
     tab.setAttribute('value', t.value);
     if (t.disabled) tab.setAttribute('disabled', '');
     if (t.icon) {
@@ -8199,7 +8199,7 @@ function tabsPreview(): HTMLElement {
   // In-context demo: tabs swap a panel below
   block(
     'Wired to content panels',
-    'The component is purely the tab list — consumers wire the connex-tabs-change event to whatever content swap they need.',
+    'The component is purely the tab list — consumers wire the scout-tabs-change event to whatever content swap they need.',
     (() => {
       const tabsEl = previewTabs({
         tabs: [
@@ -8212,7 +8212,7 @@ function tabsPreview(): HTMLElement {
         el('h4', {}, 'Overview'),
         el('p', {}, 'High-level summary of the account: name, status, balance, and most-recent activity timestamp.'),
       );
-      tabsEl.addEventListener('connex-tabs-change', (e) => {
+      tabsEl.addEventListener('scout-tabs-change', (e) => {
         const v = (e as CustomEvent<{ value: string }>).detail.value;
         panel.replaceChildren();
         if (v === 'overview') panel.append(el('h4', {}, 'Overview'), el('p', {}, 'High-level summary of the account.'));
@@ -8249,7 +8249,7 @@ function tabsControls(): HTMLElement {
       disabled: disableLastChk.checked && i === count - 1,
     }));
     const node = previewTabs({ tabs, value: valueInput.value });
-    node.addEventListener('connex-tabs-change', (e) => {
+    node.addEventListener('scout-tabs-change', (e) => {
       valueInput.value = (e as CustomEvent<{ value: string }>).detail.value;
       updateCode(tabs);
     });
@@ -8258,9 +8258,9 @@ function tabsControls(): HTMLElement {
   }
   function updateCode(tabs: TabSpec[]) {
     const lines = tabs
-      .map((t) => `  <connex-tab value="${t.value}"${t.disabled ? ' disabled' : ''}>${t.label}</connex-tab>`)
+      .map((t) => `  <scout-tab value="${t.value}"${t.disabled ? ' disabled' : ''}>${t.label}</scout-tab>`)
       .join('\n');
-    codePre.textContent = `<connex-tabs value="${valueInput.value}">\n${lines}\n</connex-tabs>`;
+    codePre.textContent = `<scout-tabs value="${valueInput.value}">\n${lines}\n</scout-tabs>`;
   }
   for (const c of [countInput, valueInput, iconsChk, disableLastChk]) {
     c.addEventListener('input', render);
@@ -8327,7 +8327,7 @@ function tabsGuidelines(): HTMLElement {
             { value: 'b', label: 'Cancel' },
           ],
         }),
-          "Don't use tabs as buttons. Tabs swap a view; buttons trigger an action. \"Submit\" and \"Cancel\" belong in <connex-button>."),
+          "Don't use tabs as buttons. Tabs swap a view; buttons trigger an action. \"Submit\" and \"Cancel\" belong in <scout-button>."),
       )));
 }
 
@@ -8377,36 +8377,36 @@ function tabsCode(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
       el('pre', { class: 'code-block' },
-        `<connex-tabs value="overview">
-  <connex-tab value="overview">Overview</connex-tab>
-  <connex-tab value="activity">Activity</connex-tab>
-  <connex-tab value="documents">Documents</connex-tab>
-</connex-tabs>`)),
+        `<scout-tabs value="overview">
+  <scout-tab value="overview">Overview</scout-tab>
+  <scout-tab value="activity">Activity</scout-tab>
+  <scout-tab value="documents">Documents</scout-tab>
+</scout-tabs>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'With icons'),
       el('pre', { class: 'code-block' },
-        `<connex-tabs value="summary">
-  <connex-tab value="summary">
+        `<scout-tabs value="summary">
+  <scout-tab value="summary">
     <svg slot="icon">…</svg>
     Summary
-  </connex-tab>
-  <connex-tab value="payments">
+  </scout-tab>
+  <scout-tab value="payments">
     <svg slot="icon">…</svg>
     Payments
-  </connex-tab>
-</connex-tabs>`)),
+  </scout-tab>
+</scout-tabs>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Listening for change'),
       el('pre', { class: 'code-block' },
-        `el.addEventListener('connex-tabs-change', (e) => {
+        `el.addEventListener('scout-tabs-change', (e) => {
   const { value } = e.detail;
   // Render the matching panel
 });`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @connex/tabs @connex/tokens lit\n\nimport '@connex/tabs';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout/tabs @scout/tokens lit\n\nimport '@scout/tabs';`)),
     el('section', { class: 'guideline-section' },
-      el('h3', { class: 'guideline-heading' }, 'Props — connex-tabs'),
+      el('h3', { class: 'guideline-heading' }, 'Props — scout-tabs'),
       el('div', { class: 'props-table-wrap' },
         el('table', { class: 'props-table' },
           el('thead', {}, el('tr', {}, el('th', {}, 'Prop'), el('th', {}, 'Type'), el('th', {}, 'Default'), el('th', {}, 'Description'))),
@@ -8414,7 +8414,7 @@ function tabsCode(): HTMLElement {
             el('tr', {}, el('td', {}, 'value'), el('td', {}, 'string'), el('td', {}, '""'), el('td', {}, 'Selected tab\'s value.')),
           )))),
     el('section', { class: 'guideline-section' },
-      el('h3', { class: 'guideline-heading' }, 'Props — connex-tab'),
+      el('h3', { class: 'guideline-heading' }, 'Props — scout-tab'),
       el('div', { class: 'props-table-wrap' },
         el('table', { class: 'props-table' },
           el('thead', {}, el('tr', {}, el('th', {}, 'Prop'), el('th', {}, 'Type'), el('th', {}, 'Default'), el('th', {}, 'Description'))),
@@ -8441,10 +8441,10 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Text inputs (real Lit components from @connex/text-input)
+// Text inputs (real Lit components from @scout/text-input)
 // =================================================================
-import '@connex/text-input';
-import type { TextFieldVariant, TextInputSize } from '@connex/text-input';
+import '@scout/text-input';
+import type { TextFieldVariant, TextInputSize } from '@scout/text-input';
 
 interface TextFieldOpts {
   variant?: TextFieldVariant;
@@ -8461,7 +8461,7 @@ interface TextFieldOpts {
 }
 
 function previewTextField(opts: TextFieldOpts = {}): HTMLElement {
-  const f = document.createElement('connex-text-field');
+  const f = document.createElement('scout-text-field');
   if (opts.variant) f.setAttribute('variant', opts.variant);
   if (opts.size) f.setAttribute('size', opts.size);
   if (opts.label) f.setAttribute('label', opts.label);
@@ -8488,7 +8488,7 @@ interface TextAreaOpts {
   rows?: number;
 }
 function previewTextArea(opts: TextAreaOpts = {}): HTMLElement {
-  const t = document.createElement('connex-text-area');
+  const t = document.createElement('scout-text-area');
   if (opts.size) t.setAttribute('size', opts.size);
   if (opts.label) t.setAttribute('label', opts.label);
   if (opts.placeholder) t.setAttribute('placeholder', opts.placeholder);
@@ -8600,7 +8600,7 @@ function textInputPreview(): HTMLElement {
   const pickerVariants = el('div', { class: 'ti-stack' },
     variantPair(
       'Date picker',
-      'Trailing calendar icon. Click to fire connex-text-field-trigger so the consumer can open a connex-popover-date.',
+      'Trailing calendar icon. Click to fire scout-text-field-trigger so the consumer can open a scout-popover-date.',
       previewTextField({ variant: 'date-picker', label: 'Payment date', placeholder: 'MM / DD / YYYY' }),
       previewTextField({ variant: 'date-picker', size: 'condensed', label: 'Payment date', placeholder: 'MM / DD / YYYY' }),
     ),
@@ -8612,7 +8612,7 @@ function textInputPreview(): HTMLElement {
     ),
     variantPair(
       'Time picker',
-      'Trailing clock icon. Pair with connex-popover-time for a scroll-column time picker.',
+      'Trailing clock icon. Pair with scout-popover-time for a scroll-column time picker.',
       previewTextField({ variant: 'time-picker', label: 'Call time', placeholder: 'hh:mm AM' }),
       previewTextField({ variant: 'time-picker', size: 'condensed', label: 'Call time', placeholder: 'hh:mm AM' }),
     ),
@@ -8620,7 +8620,7 @@ function textInputPreview(): HTMLElement {
 
   block(
     'Plain text + selection variants',
-    'Pickers — the user can either type a value directly or open a popover to pick one. The trailing icon emits connex-text-field-trigger; consumers wire it to the corresponding popover.',
+    'Pickers — the user can either type a value directly or open a popover to pick one. The trailing icon emits scout-text-field-trigger; consumers wire it to the corresponding popover.',
     pickerVariants,
   );
 
@@ -8688,7 +8688,7 @@ function textInputControls(): HTMLElement {
     if (errorInput.value) attrs.push(`error="${errorInput.value}"`);
     if (disabledChk.checked) attrs.push('disabled');
     if (optionalChk.checked) attrs.push('optional');
-    codePre.textContent = `<connex-text-field\n  ${attrs.join('\n  ')}\n></connex-text-field>`;
+    codePre.textContent = `<scout-text-field\n  ${attrs.join('\n  ')}\n></scout-text-field>`;
   }
   for (const c of [variantSel, sizeSel, labelInput, placeholderInput, helperInput, errorInput, valueInput, disabledChk, optionalChk]) {
     c.addEventListener('input', render);
@@ -8803,47 +8803,47 @@ function textInputCode(): HTMLElement {
       el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
       el('pre', { class: 'code-block' },
         `<!-- Plain text -->
-<connex-text-field label="Account name" placeholder="Jane Doe"></connex-text-field>
+<scout-text-field label="Account name" placeholder="Jane Doe"></scout-text-field>
 
 <!-- Currency: auto-formats to 2 decimals on blur -->
-<connex-text-field variant="currency" label="Balance" placeholder="0.00"></connex-text-field>
+<scout-text-field variant="currency" label="Balance" placeholder="0.00"></scout-text-field>
 
 <!-- Phone: formats to 555-014-2237 as you type -->
-<connex-text-field variant="phone" label="Phone" placeholder="555-014-2237"></connex-text-field>
+<scout-text-field variant="phone" label="Phone" placeholder="555-014-2237"></scout-text-field>
 
 <!-- Password / Sensitive data: eye icon toggles visibility -->
-<connex-text-field variant="password" label="Password"></connex-text-field>
-<connex-text-field variant="sensitive-data" label="SSN"></connex-text-field>
+<scout-text-field variant="password" label="Password"></scout-text-field>
+<scout-text-field variant="sensitive-data" label="SSN"></scout-text-field>
 
 <!-- Search: leading icon + clear-x when populated -->
-<connex-text-field variant="search" label="Search" placeholder="Search…"></connex-text-field>
+<scout-text-field variant="search" label="Search" placeholder="Search…"></scout-text-field>
 
 <!-- Confirmation: points at another field; checkmark renders when matched -->
-<connex-text-field id="pw" variant="password" label="Password"></connex-text-field>
-<connex-text-field variant="confirmation" confirm-target="#pw" label="Confirm password"></connex-text-field>`)),
+<scout-text-field id="pw" variant="password" label="Password"></scout-text-field>
+<scout-text-field variant="confirmation" confirm-target="#pw" label="Confirm password"></scout-text-field>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Pickers — wire to a popover'),
       el('pre', { class: 'code-block' },
-        `<connex-text-field id="due" variant="date-picker" label="Payment date" placeholder="MM / DD / YYYY"></connex-text-field>
+        `<scout-text-field id="due" variant="date-picker" label="Payment date" placeholder="MM / DD / YYYY"></scout-text-field>
 
 <script type="module">
-  import '@connex/popover';
-  document.querySelector('#due').addEventListener('connex-text-field-trigger', (e) => {
+  import '@scout/popover';
+  document.querySelector('#due').addEventListener('scout-text-field-trigger', (e) => {
     // Open the matching popover-date positioned to the field.
   });
 </script>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Text area'),
       el('pre', { class: 'code-block' },
-        `<connex-text-area
+        `<scout-text-area
   label="Notes"
   rows="4"
   placeholder="What did the customer say on the call?"
   helper="Visible to all agents on this account."
-></connex-text-area>`)),
+></scout-text-area>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @connex/text-input @connex/tokens lit\n\nimport '@connex/text-input';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout/text-input @scout/tokens lit\n\nimport '@scout/text-input';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Variants'),
       el('div', { class: 'props-table-wrap' },
@@ -8858,9 +8858,9 @@ function textInputCode(): HTMLElement {
             el('tr', {}, el('td', {}, 'phone'),           el('td', {}, 'Formats as 555-014-2237.')),
             el('tr', {}, el('td', {}, 'search'),          el('td', {}, 'Leading search icon, trailing clear-x.')),
             el('tr', {}, el('td', {}, 'sensitive-data'),  el('td', {}, 'Masked; eye icon toggles visibility.')),
-            el('tr', {}, el('td', {}, 'date-picker'),     el('td', {}, 'Trailing calendar; emits connex-text-field-trigger.')),
+            el('tr', {}, el('td', {}, 'date-picker'),     el('td', {}, 'Trailing calendar; emits scout-text-field-trigger.')),
             el('tr', {}, el('td', {}, 'month-picker'),    el('td', {}, 'Trailing calendar; for month/year selection.')),
-            el('tr', {}, el('td', {}, 'time-picker'),     el('td', {}, 'Trailing clock; emits connex-text-field-trigger.')),
+            el('tr', {}, el('td', {}, 'time-picker'),     el('td', {}, 'Trailing clock; emits scout-text-field-trigger.')),
           )))),
   );
 }
@@ -8880,16 +8880,16 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Tile (real Lit components from @connex/tile)
+// Tile (real Lit components from @scout/tile)
 // =================================================================
-import '@connex/tile';
-import type { TileFunctionalState, TileFooter, WorkflowHeaderState } from '@connex/tile';
+import '@scout/tile';
+import type { TileFunctionalState, TileFooter, WorkflowHeaderState } from '@scout/tile';
 
 function makeTileButton(opts: {
   header?: string; subhead?: string; body?: string;
   state?: TileFunctionalState; disabled?: boolean;
 }): HTMLElement {
-  const t = document.createElement('connex-tile-button');
+  const t = document.createElement('scout-tile-button');
   t.setAttribute('header', opts.header ?? 'Header');
   if (opts.subhead) t.setAttribute('subhead', opts.subhead);
   if (opts.state) t.setAttribute('state', opts.state);
@@ -8906,7 +8906,7 @@ function makeTile(opts: {
   state?: TileFunctionalState;
   footer?: TileFooter;
 }): HTMLElement {
-  const t = document.createElement('connex-tile');
+  const t = document.createElement('scout-tile');
   t.setAttribute('header', opts.header ?? 'Tile header');
   if (opts.subhead) t.setAttribute('subhead', opts.subhead);
   if (opts.state) t.setAttribute('state', opts.state);
@@ -8918,7 +8918,7 @@ function makeTile(opts: {
     t.appendChild(eb);
   }
   if (opts.badge) {
-    const b = document.createElement('connex-badge');
+    const b = document.createElement('scout-badge');
     b.setAttribute('slot', 'badge');
     b.setAttribute('type', opts.badge.type ?? 'informational');
     b.setAttribute('emphasis', 'low');
@@ -8937,7 +8937,7 @@ function makeTile(opts: {
   }
   if (opts.body) t.appendChild(document.createTextNode(opts.body));
   if (opts.footer === 'button-tertiary') {
-    const cnxBtn = document.createElement('connex-button');
+    const cnxBtn = document.createElement('scout-button');
     cnxBtn.setAttribute('slot', 'footer');
     cnxBtn.setAttribute('variant', 'tertiary');
     cnxBtn.textContent = 'View all activity';
@@ -8954,7 +8954,7 @@ function makeTileWorkflow(opts: {
   body?: string;
   footer?: 'cancel-save' | 'cancel-submit' | 'cancel-continue' | 'done' | 'none';
 }): HTMLElement {
-  const t = document.createElement('connex-tile-workflow');
+  const t = document.createElement('scout-tile-workflow');
   t.setAttribute('step', String(opts.step ?? 1));
   t.setAttribute('header', opts.header ?? 'Step header');
   if (opts.subhead) t.setAttribute('subhead', opts.subhead);
@@ -8965,7 +8965,7 @@ function makeTileWorkflow(opts: {
   if (opts.body) t.appendChild(document.createTextNode(opts.body));
   // Footer button group
   const buildBtn = (label: string, variant: string) => {
-    const b = document.createElement('connex-button');
+    const b = document.createElement('scout-button');
     b.setAttribute('variant', variant);
     b.textContent = label;
     return b;
@@ -8974,7 +8974,7 @@ function makeTileWorkflow(opts: {
     const wrap = document.createElement('div');
     wrap.setAttribute('slot', 'footer');
     wrap.style.display = 'flex';
-    wrap.style.gap = 'var(--connex-space-8)';
+    wrap.style.gap = 'var(--scout-space-8)';
     if (opts.footer === 'cancel-save')      { wrap.append(buildBtn('Cancel', 'tertiary'), buildBtn('Save', 'primary')); }
     if (opts.footer === 'cancel-submit')    { wrap.append(buildBtn('Cancel', 'tertiary'), buildBtn('Submit', 'primary')); }
     if (opts.footer === 'cancel-continue')  { wrap.append(buildBtn('Cancel', 'tertiary'), buildBtn('Continue', 'primary')); }
@@ -9132,7 +9132,7 @@ function tileControls(): HTMLElement {
         body: 'Body content of the tile sits here.',
         state: stateSel.value as TileFunctionalState,
       });
-      codePre.textContent = `<connex-tile-button header="${headerInput.value}" subhead="${subheadInput.value}"${stateSel.value !== 'default' ? ` state="${stateSel.value}"` : ''}>\n  Body content\n</connex-tile-button>`;
+      codePre.textContent = `<scout-tile-button header="${headerInput.value}" subhead="${subheadInput.value}"${stateSel.value !== 'default' ? ` state="${stateSel.value}"` : ''}>\n  Body content\n</scout-tile-button>`;
     } else if (v === 'tile') {
       node = makeTile({
         header: headerInput.value,
@@ -9144,7 +9144,7 @@ function tileControls(): HTMLElement {
         state: stateSel.value as TileFunctionalState,
         footer: advFooterSel.value as TileFooter,
       });
-      codePre.textContent = `<connex-tile header="${headerInput.value}" subhead="${subheadInput.value}"${stateSel.value !== 'default' ? ` state="${stateSel.value}"` : ''}${advFooterSel.value !== 'none' ? ` footer="${advFooterSel.value}"` : ''}>\n  <span slot="eyebrow">Eyebrow</span>\n  <connex-badge slot="badge" type="informational" emphasis="low" size="condensed">New</connex-badge>\n  Body content\n</connex-tile>`;
+      codePre.textContent = `<scout-tile header="${headerInput.value}" subhead="${subheadInput.value}"${stateSel.value !== 'default' ? ` state="${stateSel.value}"` : ''}${advFooterSel.value !== 'none' ? ` footer="${advFooterSel.value}"` : ''}>\n  <span slot="eyebrow">Eyebrow</span>\n  <scout-badge slot="badge" type="informational" emphasis="low" size="condensed">New</scout-badge>\n  Body content\n</scout-tile>`;
     } else {
       node = makeTileWorkflow({
         step: 1,
@@ -9156,7 +9156,7 @@ function tileControls(): HTMLElement {
         footer: wfFooterSel.value as 'cancel-save' | 'cancel-submit' | 'cancel-continue' | 'done' | 'none',
         functional: stateSel.value as TileFunctionalState,
       });
-      codePre.textContent = `<connex-tile-workflow step="1" header="${headerInput.value}" subhead="${subheadInput.value}" state="${wfStateSel.value}" expanded>\n  Step body\n  <div slot="footer">…</div>\n</connex-tile-workflow>`;
+      codePre.textContent = `<scout-tile-workflow step="1" header="${headerInput.value}" subhead="${subheadInput.value}" state="${wfStateSel.value}" expanded>\n  Step body\n  <div slot="footer">…</div>\n</scout-tile-workflow>`;
     }
     stage.replaceChildren(node);
   }
@@ -9264,22 +9264,22 @@ function tileCode(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Tile button'),
       el('pre', { class: 'code-block' },
-        `<connex-tile-button header="Account summary" subhead="Balance · Activity">
+        `<scout-tile-button header="Account summary" subhead="Balance · Activity">
   Tap to drill in.
-</connex-tile-button>`)),
+</scout-tile-button>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Tile'),
       el('pre', { class: 'code-block' },
-        `<connex-tile header="Customer" subhead="Premium · Member since 2021" footer="show-more">
+        `<scout-tile header="Customer" subhead="Premium · Member since 2021" footer="show-more">
   <span slot="eyebrow">CUSTOMER</span>
-  <connex-badge slot="badge" type="informational" emphasis="low" size="condensed">New</connex-badge>
+  <scout-badge slot="badge" type="informational" emphasis="low" size="condensed">New</scout-badge>
   <button slot="header-button" aria-label="More options">⋯</button>
   Last contact: payment dispute on May 18. Sentiment: frustrated.
-</connex-tile>`)),
+</scout-tile>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Tile workflow'),
       el('pre', { class: 'code-block' },
-        `<connex-tile-workflow
+        `<scout-tile-workflow
   step="3"
   header="Select payment method"
   subhead="Required to continue"
@@ -9288,13 +9288,13 @@ function tileCode(): HTMLElement {
 >
   <!-- inputs, dropdowns, tables -->
   <div slot="footer">
-    <connex-button variant="tertiary">Cancel</connex-button>
-    <connex-button variant="primary">Continue</connex-button>
+    <scout-button variant="tertiary">Cancel</scout-button>
+    <scout-button variant="primary">Continue</scout-button>
   </div>
-</connex-tile-workflow>`)),
+</scout-tile-workflow>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @connex/tile @connex/tokens lit\n\nimport '@connex/tile';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout/tile @scout/tokens lit\n\nimport '@scout/tile';`)),
   );
 }
 
@@ -9313,10 +9313,10 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Toggle switch (real Lit component from @connex/toggle-switch)
+// Toggle switch (real Lit component from @scout/toggle-switch)
 // =================================================================
-import '@connex/toggle-switch';
-import type { ToggleSwitchSize, ToggleLabelPlacement } from '@connex/toggle-switch';
+import '@scout/toggle-switch';
+import type { ToggleSwitchSize, ToggleLabelPlacement } from '@scout/toggle-switch';
 
 interface ToggleOpts {
   checked?: boolean;
@@ -9328,7 +9328,7 @@ interface ToggleOpts {
 }
 
 function previewToggle(opts: ToggleOpts = {}): HTMLElement {
-  const t = document.createElement('connex-toggle-switch');
+  const t = document.createElement('scout-toggle-switch');
   if (opts.checked) t.setAttribute('checked', '');
   if (opts.size) t.setAttribute('size', opts.size);
   if (opts.labelPlacement) t.setAttribute('label-placement', opts.labelPlacement);
@@ -9423,7 +9423,7 @@ function toggleSwitchControls(): HTMLElement {
     if (placementSel.value !== 'right') attrs.push(`label-placement="${placementSel.value}"`);
     if (onSel.value !== 'on') attrs.push(`on-variant="${onSel.value}"`);
     if (disabledChk.checked) attrs.push('disabled');
-    codePre.textContent = `<connex-toggle-switch${attrs.length ? ' ' + attrs.join(' ') : ''}>${labelInput.value}</connex-toggle-switch>`;
+    codePre.textContent = `<scout-toggle-switch${attrs.length ? ' ' + attrs.join(' ') : ''}>${labelInput.value}</scout-toggle-switch>`;
   }
   for (const c of [sizeSel, placementSel, onSel, labelInput, checkedChk, disabledChk]) {
     c.addEventListener('input', render);
@@ -9530,15 +9530,15 @@ function toggleSwitchCode(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
       el('pre', { class: 'code-block' },
-        `<connex-toggle-switch>Notifications</connex-toggle-switch>
+        `<scout-toggle-switch>Notifications</scout-toggle-switch>
 
-<connex-toggle-switch checked size="condensed">Compact mode</connex-toggle-switch>
+<scout-toggle-switch checked size="condensed">Compact mode</scout-toggle-switch>
 
-<connex-toggle-switch checked on-variant="on-critical">
+<scout-toggle-switch checked on-variant="on-critical">
   Allow third-party access
-</connex-toggle-switch>
+</scout-toggle-switch>
 
-<connex-toggle-switch label-placement="left" checked>Allow analytics</connex-toggle-switch>`)),
+<scout-toggle-switch label-placement="left" checked>Allow analytics</scout-toggle-switch>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Listening for change'),
       el('pre', { class: 'code-block' },
@@ -9548,7 +9548,7 @@ function toggleSwitchCode(): HTMLElement {
 });`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @connex/toggle-switch @connex/tokens lit\n\nimport '@connex/toggle-switch';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout/toggle-switch @scout/tokens lit\n\nimport '@scout/toggle-switch';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -9581,9 +9581,9 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Pagination (real Lit component from @connex/pagination)
+// Pagination (real Lit component from @scout/pagination)
 // =================================================================
-import '@connex/pagination';
+import '@scout/pagination';
 
 type PgLayout = 'item-dropdown' | 'page-numbers' | 'both';
 type PgSize = 'default' | 'condensed';
@@ -9606,7 +9606,7 @@ function previewPagination(opts: PgOpts = {}): HTMLElement {
     size = 'default',
     disabled = false,
   } = opts;
-  const p = document.createElement('connex-pagination');
+  const p = document.createElement('scout-pagination');
   p.setAttribute('page', String(page));
   p.setAttribute('page-size', String(pageSize));
   p.setAttribute('total', String(total));
@@ -9687,7 +9687,7 @@ function paginationControls(): HTMLElement {
       disabled: disabledChk.checked,
     });
     // Keep the controls live as the user clicks within the preview
-    node.addEventListener('connex-pagination-change', (e) => {
+    node.addEventListener('scout-pagination-change', (e) => {
       const d = (e as CustomEvent<{ page: number; pageSize: number }>).detail;
       pageInput.value = String(d.page);
       pageSizeInput.value = String(d.pageSize);
@@ -9705,7 +9705,7 @@ function paginationControls(): HTMLElement {
       `total="${totalInput.value}"`,
     ];
     if (disabledChk.checked) attrs.push('disabled');
-    codePre.textContent = `<connex-pagination ${attrs.join(' ')}></connex-pagination>`;
+    codePre.textContent = `<scout-pagination ${attrs.join(' ')}></scout-pagination>`;
   }
   // Layout gates page-input (only meaningful when page numbers render) and
   // page-size (only meaningful when the items-per-page dropdown renders).
@@ -9821,24 +9821,24 @@ function paginationCode(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
       el('pre', { class: 'code-block' },
-        `<connex-pagination
+        `<scout-pagination
   layout="both"
   size="default"
   page="1"
   page-size="10"
   total="200"
   page-size-options="[10,25,50,100]"
-></connex-pagination>
+></scout-pagination>
 
-<connex-pagination layout="page-numbers" page="3" page-size="10" total="200"></connex-pagination>
-<connex-pagination layout="item-dropdown" page="1" page-size="25" total="200"></connex-pagination>`)),
+<scout-pagination layout="page-numbers" page="3" page-size="10" total="200"></scout-pagination>
+<scout-pagination layout="item-dropdown" page="1" page-size="25" total="200"></scout-pagination>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @connex/pagination @connex/dropdown @connex/tokens lit\n\nimport '@connex/pagination';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout/pagination @scout/dropdown @scout/tokens lit\n\nimport '@scout/pagination';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Events'),
       el('pre', { class: 'code-block' },
-        `el.addEventListener('connex-pagination-change', (e) => {
+        `el.addEventListener('scout-pagination-change', (e) => {
   const { page, pageSize } = e.detail;
   // refetch your data
 });`)),
@@ -9873,9 +9873,9 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Popover (real Lit family from @connex/popover)
+// Popover (real Lit family from @scout/popover)
 // =================================================================
-import '@connex/popover';
+import '@scout/popover';
 
 type PopPlacement = 'top' | 'bottom' | 'left' | 'right';
 type TtVariant = 'simple' | 'advanced';
@@ -9894,7 +9894,7 @@ function previewTooltip(opts: {
   body?: string;
   open?: boolean;
 } = {}): HTMLElement {
-  const tt = document.createElement('connex-tooltip');
+  const tt = document.createElement('scout-tooltip');
   tt.setAttribute('variant', opts.variant ?? 'simple');
   tt.setAttribute('trigger', opts.trigger ?? 'text');
   tt.setAttribute('placement', opts.placement ?? 'top');
@@ -9915,7 +9915,7 @@ function previewPopoverMenu(opts: {
   placement?: PopPlacement;
   open?: boolean;
 } = {}): HTMLElement {
-  const m = document.createElement('connex-popover-menu');
+  const m = document.createElement('scout-popover-menu');
   if (opts.label) m.setAttribute('label', opts.label);
   m.setAttribute('placement', opts.placement ?? 'bottom');
   if (opts.open) m.setAttribute('open', '');
@@ -9926,7 +9926,7 @@ function previewPopoverMenu(opts: {
     ['share',  'Share',    false],
     ['delete', 'Delete',   false],
   ] as const) {
-    const item = document.createElement('connex-popover-menu-item');
+    const item = document.createElement('scout-popover-menu-item');
     item.setAttribute('value', val);
     if (sel) item.setAttribute('selected', '');
     item.textContent = lab;
@@ -9943,7 +9943,7 @@ function previewPopoverDate(opts: {
   marks?: { date: string; state: string }[];
   value?: string;
 } = {}): HTMLElement {
-  const d = document.createElement('connex-popover-date') as HTMLElement & {
+  const d = document.createElement('scout-popover-date') as HTMLElement & {
     marks: { date: string; state: string }[];
   };
   d.setAttribute('type', opts.type ?? 'single');
@@ -9957,7 +9957,7 @@ function previewPopoverDate(opts: {
 }
 
 function previewPopoverTime(opts: { label?: string; value?: string; open?: boolean } = {}): HTMLElement {
-  const t = document.createElement('connex-popover-time');
+  const t = document.createElement('scout-popover-time');
   if (opts.label) t.setAttribute('label', opts.label);
   if (opts.value) t.setAttribute('value', opts.value);
   if (opts.open) t.setAttribute('open', '');
@@ -10098,7 +10098,7 @@ function popoverControls(): HTMLElement {
         open: openChk.checked,
       });
       codePre.textContent =
-        `<connex-tooltip variant="${variantSel.value}" trigger="${triggerSel.value}" placement="${placementSel.value}"${labelInput.value ? ` title-text="${labelInput.value}"` : ''}${openChk.checked ? ' open' : ''}>\n  ${triggerSel.value === 'text' ? `<span slot="trigger">Hover me</span>\n  ` : ''}${bodyInput.value}\n</connex-tooltip>`;
+        `<scout-tooltip variant="${variantSel.value}" trigger="${triggerSel.value}" placement="${placementSel.value}"${labelInput.value ? ` title-text="${labelInput.value}"` : ''}${openChk.checked ? ' open' : ''}>\n  ${triggerSel.value === 'text' ? `<span slot="trigger">Hover me</span>\n  ` : ''}${bodyInput.value}\n</scout-tooltip>`;
     } else if (sub === 'menu') {
       node = previewPopoverMenu({
         label: labelInput.value || undefined,
@@ -10106,7 +10106,7 @@ function popoverControls(): HTMLElement {
         open: openChk.checked,
       });
       codePre.textContent =
-        `<connex-popover-menu placement="${placementSel.value}"${labelInput.value ? ` label="${labelInput.value}"` : ''}${openChk.checked ? ' open' : ''}>\n  <button slot="trigger">Open menu</button>\n  <connex-popover-menu-item value="view" selected>View</connex-popover-menu-item>\n  <connex-popover-menu-item value="edit">Edit</connex-popover-menu-item>\n  <connex-popover-menu-item value="share">Share</connex-popover-menu-item>\n  <connex-popover-menu-item value="delete">Delete</connex-popover-menu-item>\n</connex-popover-menu>`;
+        `<scout-popover-menu placement="${placementSel.value}"${labelInput.value ? ` label="${labelInput.value}"` : ''}${openChk.checked ? ' open' : ''}>\n  <button slot="trigger">Open menu</button>\n  <scout-popover-menu-item value="view" selected>View</scout-popover-menu-item>\n  <scout-popover-menu-item value="edit">Edit</scout-popover-menu-item>\n  <scout-popover-menu-item value="share">Share</scout-popover-menu-item>\n  <scout-popover-menu-item value="delete">Delete</scout-popover-menu-item>\n</scout-popover-menu>`;
     } else if (sub === 'date') {
       node = previewPopoverDate({
         type: typeSel.value as DateMode,
@@ -10115,14 +10115,14 @@ function popoverControls(): HTMLElement {
         open: openChk.checked,
       });
       codePre.textContent =
-        `<connex-popover-date type="${typeSel.value}"${labelInput.value ? ` label="${labelInput.value}"` : ''}${extendedChk.checked ? ' extended' : ''}${openChk.checked ? ' open' : ''}>\n  <button slot="trigger">Pick a date</button>\n</connex-popover-date>`;
+        `<scout-popover-date type="${typeSel.value}"${labelInput.value ? ` label="${labelInput.value}"` : ''}${extendedChk.checked ? ' extended' : ''}${openChk.checked ? ' open' : ''}>\n  <button slot="trigger">Pick a date</button>\n</scout-popover-date>`;
     } else {
       node = previewPopoverTime({
         label: labelInput.value || undefined,
         open: openChk.checked,
       });
       codePre.textContent =
-        `<connex-popover-time${labelInput.value ? ` label="${labelInput.value}"` : ''}${openChk.checked ? ' open' : ''}>\n  <button slot="trigger">Pick a time</button>\n</connex-popover-time>`;
+        `<scout-popover-time${labelInput.value ? ` label="${labelInput.value}"` : ''}${openChk.checked ? ' open' : ''}>\n  <button slot="trigger">Pick a time</button>\n</scout-popover-time>`;
     }
     stage.replaceChildren(node);
   }
@@ -10246,32 +10246,32 @@ function popoverCode(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Tooltip'),
       el('pre', { class: 'code-block' },
-        `<connex-tooltip placement="top" trigger="info-icon" title-text="APR">
+        `<scout-tooltip placement="top" trigger="info-icon" title-text="APR">
   The annual cost of borrowing, expressed as a percentage.
-</connex-tooltip>
+</scout-tooltip>
 
-<connex-tooltip variant="advanced" placement="bottom" title-text="Statement balance">
+<scout-tooltip variant="advanced" placement="bottom" title-text="Statement balance">
   The amount owed at the close of the most recent billing cycle.
-</connex-tooltip>`)),
+</scout-tooltip>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Menu'),
       el('pre', { class: 'code-block' },
-        `<connex-popover-menu label="Actions" placement="bottom">
+        `<scout-popover-menu label="Actions" placement="bottom">
   <button slot="trigger">Open menu</button>
-  <connex-popover-menu-item value="view" selected>View</connex-popover-menu-item>
-  <connex-popover-menu-item value="edit">Edit</connex-popover-menu-item>
-  <connex-popover-menu-item value="delete">Delete</connex-popover-menu-item>
-</connex-popover-menu>`)),
+  <scout-popover-menu-item value="view" selected>View</scout-popover-menu-item>
+  <scout-popover-menu-item value="edit">Edit</scout-popover-menu-item>
+  <scout-popover-menu-item value="delete">Delete</scout-popover-menu-item>
+</scout-popover-menu>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Date'),
       el('pre', { class: 'code-block' },
-        `<connex-popover-date type="single" label="Payment date" extended>
+        `<scout-popover-date type="single" label="Payment date" extended>
   <button slot="trigger">Pick a date</button>
-</connex-popover-date>
+</scout-popover-date>
 
 <!-- Apply functional state classes via the marks property -->
 <script>
-  const el = document.querySelector('connex-popover-date');
+  const el = document.querySelector('scout-popover-date');
   el.marks = [
     { date: '2026-04-15', state: 'due' },
     { date: '2026-04-22', state: 'statement' },
@@ -10281,12 +10281,12 @@ function popoverCode(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Time'),
       el('pre', { class: 'code-block' },
-        `<connex-popover-time label="Call time" value="10:00 AM">
+        `<scout-popover-time label="Call time" value="10:00 AM">
   <button slot="trigger">Pick a time</button>
-</connex-popover-time>`)),
+</scout-popover-time>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @connex/popover @connex/tokens lit\n\nimport '@connex/popover';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout/popover @scout/tokens lit\n\nimport '@scout/popover';`)),
   );
 }
 
@@ -10305,16 +10305,16 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Progress (real Lit family from @connex/progress)
+// Progress (real Lit family from @scout/progress)
 // =================================================================
-import '@connex/progress';
-import type { StepperStep, ProgressGaugeSize, ProgressBarDisplay } from '@connex/progress';
+import '@scout/progress';
+import type { StepperStep, ProgressGaugeSize, ProgressBarDisplay } from '@scout/progress';
 
 function makeProgressBar(opts: {
   title?: string; value?: number; max?: number;
   display?: ProgressBarDisplay; left?: string; right?: string;
 }): HTMLElement {
-  const b = document.createElement('connex-progress-bar');
+  const b = document.createElement('scout-progress-bar');
   if (opts.title) b.setAttribute('title-text', opts.title);
   b.setAttribute('value', String(opts.value ?? 60));
   b.setAttribute('max', String(opts.max ?? 100));
@@ -10327,7 +10327,7 @@ function makeProgressBar(opts: {
 function makeProgressGauge(opts: {
   value?: number; max?: number; size?: ProgressGaugeSize; label?: string;
 }): HTMLElement {
-  const g = document.createElement('connex-progress-gauge');
+  const g = document.createElement('scout-progress-gauge');
   g.setAttribute('value', String(opts.value ?? 60));
   g.setAttribute('max', String(opts.max ?? 100));
   if (opts.size) g.setAttribute('size', opts.size);
@@ -10336,16 +10336,16 @@ function makeProgressGauge(opts: {
 }
 
 function makeStepper(opts: { orientation?: 'horizontal' | 'vertical'; steps: StepperStep[] }): HTMLElement {
-  const s = document.createElement('connex-progress-stepper') as HTMLElement & { steps: StepperStep[] };
+  const s = document.createElement('scout-progress-stepper') as HTMLElement & { steps: StepperStep[] };
   s.setAttribute('orientation', opts.orientation ?? 'horizontal');
   s.steps = opts.steps;
   return s;
 }
 
 function makeTimeline(items: Array<{ title: string; subtitle?: string; body: string; expanded?: boolean }>): HTMLElement {
-  const tl = document.createElement('connex-progress-timeline');
+  const tl = document.createElement('scout-progress-timeline');
   for (const it of items) {
-    const item = document.createElement('connex-progress-timeline-item');
+    const item = document.createElement('scout-progress-timeline-item');
     item.setAttribute('title-text', it.title);
     if (it.subtitle) item.setAttribute('subtitle', it.subtitle);
     if (it.expanded) item.setAttribute('expanded', '');
@@ -10497,7 +10497,7 @@ function progressControls(): HTMLElement {
         display: displaySel.value as ProgressBarDisplay,
       });
       codePre.textContent =
-        `<connex-progress-bar value="${valueInput.value}" max="100" display="${displaySel.value}"${labelInput.value ? ` title-text="${labelInput.value}"` : ''}></connex-progress-bar>`;
+        `<scout-progress-bar value="${valueInput.value}" max="100" display="${displaySel.value}"${labelInput.value ? ` title-text="${labelInput.value}"` : ''}></scout-progress-bar>`;
     } else if (sub === 'gauge') {
       node = makeProgressGauge({
         size: sizeSel.value as ProgressGaugeSize,
@@ -10505,7 +10505,7 @@ function progressControls(): HTMLElement {
         label: labelInput.value || undefined,
       });
       codePre.textContent =
-        `<connex-progress-gauge size="${sizeSel.value}" value="${valueInput.value}" max="100"${labelInput.value ? ` label="${labelInput.value}"` : ''}></connex-progress-gauge>`;
+        `<scout-progress-gauge size="${sizeSel.value}" value="${valueInput.value}" max="100"${labelInput.value ? ` label="${labelInput.value}"` : ''}></scout-progress-gauge>`;
     } else if (sub === 'horizontal-stepper' || sub === 'vertical-stepper') {
       const orientation = sub === 'horizontal-stepper' ? 'horizontal' : 'vertical';
       const steps: StepperStep[] = [
@@ -10516,14 +10516,14 @@ function progressControls(): HTMLElement {
       ];
       node = makeStepper({ orientation, steps });
       codePre.textContent =
-        `<connex-progress-stepper orientation="${orientation}"></connex-progress-stepper>\n\n<script>\n  const el = document.querySelector('connex-progress-stepper');\n  el.steps = [\n    { label: 'Apply',  state: 'completed' },\n    { label: 'Verify', state: 'in-progress' },\n    { label: 'Sign',   state: 'action-needed' },\n    { label: 'Funded', state: 'not-started' },\n  ];\n</script>`;
+        `<scout-progress-stepper orientation="${orientation}"></scout-progress-stepper>\n\n<script>\n  const el = document.querySelector('scout-progress-stepper');\n  el.steps = [\n    { label: 'Apply',  state: 'completed' },\n    { label: 'Verify', state: 'in-progress' },\n    { label: 'Sign',   state: 'action-needed' },\n    { label: 'Funded', state: 'not-started' },\n  ];\n</script>`;
     } else {
       node = makeTimeline([
         { title: 'Account opened', subtitle: 'Apr 2', body: 'Customer completed self-service application.', expanded: true },
         { title: 'First payment',  subtitle: 'May 18', body: 'Payment posted; account brought current.' },
       ]);
       codePre.textContent =
-        `<connex-progress-timeline>\n  <connex-progress-timeline-item title-text="Account opened" subtitle="Apr 2" expanded>\n    Customer completed self-service application.\n  </connex-progress-timeline-item>\n  <connex-progress-timeline-item title-text="First payment" subtitle="May 18">\n    Payment posted; account brought current.\n  </connex-progress-timeline-item>\n</connex-progress-timeline>`;
+        `<scout-progress-timeline>\n  <scout-progress-timeline-item title-text="Account opened" subtitle="Apr 2" expanded>\n    Customer completed self-service application.\n  </scout-progress-timeline-item>\n  <scout-progress-timeline-item title-text="First payment" subtitle="May 18">\n    Payment posted; account brought current.\n  </scout-progress-timeline-item>\n</scout-progress-timeline>`;
     }
     stage.replaceChildren(node);
   }
@@ -10644,31 +10644,31 @@ function progressCode(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Bar'),
       el('pre', { class: 'code-block' },
-        `<connex-progress-bar
+        `<scout-progress-bar
   title-text="Onboarding"
   value="60"
   max="100"
   display="percentage"
-></connex-progress-bar>
+></scout-progress-bar>
 
-<connex-progress-bar
+<scout-progress-bar
   title-text="Payment plan"
   value="1250"
   max="5000"
   left-label="$1,250 paid"
   right-label="of $5,000"
-></connex-progress-bar>`)),
+></scout-progress-bar>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Gauge'),
       el('pre', { class: 'code-block' },
-        `<connex-progress-gauge size="medium" value="60" max="100" label="Storage"></connex-progress-gauge>`)),
+        `<scout-progress-gauge size="medium" value="60" max="100" label="Storage"></scout-progress-gauge>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Stepper'),
       el('pre', { class: 'code-block' },
-        `<connex-progress-stepper id="flow" orientation="horizontal"></connex-progress-stepper>
+        `<scout-progress-stepper id="flow" orientation="horizontal"></scout-progress-stepper>
 
 <script type="module">
-  import '@connex/progress';
+  import '@scout/progress';
   document.querySelector('#flow').steps = [
     { label: 'Apply',  state: 'completed' },
     { label: 'Verify', state: 'in-progress', tooltip: 'In review with underwriting.' },
@@ -10679,17 +10679,17 @@ function progressCode(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Timeline'),
       el('pre', { class: 'code-block' },
-        `<connex-progress-timeline>
-  <connex-progress-timeline-item title-text="Account opened" subtitle="Apr 2 · 9:14 AM" expanded>
+        `<scout-progress-timeline>
+  <scout-progress-timeline-item title-text="Account opened" subtitle="Apr 2 · 9:14 AM" expanded>
     Customer completed self-service application.
-  </connex-progress-timeline-item>
-  <connex-progress-timeline-item title-text="Identity verified" subtitle="Apr 2 · 9:21 AM">
+  </scout-progress-timeline-item>
+  <scout-progress-timeline-item title-text="Identity verified" subtitle="Apr 2 · 9:21 AM">
     KBA passed on first attempt.
-  </connex-progress-timeline-item>
-</connex-progress-timeline>`)),
+  </scout-progress-timeline-item>
+</scout-progress-timeline>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @connex/progress @connex/tokens lit\n\nimport '@connex/progress';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout/progress @scout/tokens lit\n\nimport '@scout/progress';`)),
   );
 }
 
@@ -10708,10 +10708,10 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Radio (real Lit components from @connex/radio)
+// Radio (real Lit components from @scout/radio)
 // =================================================================
-import '@connex/radio';
-import '@connex/badge';
+import '@scout/radio';
+import '@scout/badge';
 
 interface RadioOpts {
   label?: string;
@@ -10726,7 +10726,7 @@ interface RadioOpts {
 
 function previewRadio(opts: RadioOpts = {}): HTMLElement {
   const { label = 'Option', value = 'a', checked, disabled, invalid, secondary, warning, badge } = opts;
-  const r = document.createElement('connex-radio');
+  const r = document.createElement('scout-radio');
   if (checked) r.setAttribute('checked', '');
   if (disabled) r.setAttribute('disabled', '');
   if (invalid) r.setAttribute('invalid', '');
@@ -10735,7 +10735,7 @@ function previewRadio(opts: RadioOpts = {}): HTMLElement {
   if (warning) r.setAttribute('warning', warning);
   r.appendChild(document.createTextNode(label));
   if (badge) {
-    const b = document.createElement('connex-badge');
+    const b = document.createElement('scout-badge');
     b.setAttribute('slot', 'badge');
     b.setAttribute('type', badge.type ?? 'informational');
     b.setAttribute('emphasis', 'low');
@@ -10758,7 +10758,7 @@ interface RadioGroupOpts {
 }
 
 function previewRadioGroup(opts: RadioGroupOpts): HTMLElement {
-  const g = document.createElement('connex-radio-group');
+  const g = document.createElement('scout-radio-group');
   if (opts.label) g.setAttribute('label', opts.label);
   if (opts.helper) g.setAttribute('helper', opts.helper);
   if (opts.error) g.setAttribute('error', opts.error);
@@ -10812,7 +10812,7 @@ function radioPreview(): HTMLElement {
 
   block(
     'With badges',
-    'Use a slotted `<connex-badge>` to highlight a recommended option, an early-access feature, or a status. Place the badge to the right of the label via slot="badge".',
+    'Use a slotted `<scout-badge>` to highlight a recommended option, an early-access feature, or a status. Place the badge to the right of the label via slot="badge".',
     previewRadioGroup({
       label: 'Plan',
       helper: 'You can change your plan at any time.',
@@ -10907,14 +10907,14 @@ function radioControls(): HTMLElement {
     if (disabledChk.checked) attrs.push('disabled');
     if (valueInput.value)  attrs.push(`value="${valueInput.value}"`);
     codePre.textContent =
-      `<connex-radio-group ${attrs.join(' ')}>\n  <connex-radio value="email">Email</connex-radio>\n  <connex-radio value="sms">SMS</connex-radio>\n  <connex-radio value="paper">Paper</connex-radio>\n</connex-radio-group>`;
+      `<scout-radio-group ${attrs.join(' ')}>\n  <scout-radio value="email">Email</scout-radio>\n  <scout-radio value="sms">SMS</scout-radio>\n  <scout-radio value="paper">Paper</scout-radio>\n</scout-radio-group>`;
   }
   for (const c of [orientationSel, labelInput, helperInput, errorInput, valueInput, disabledChk]) {
     c.addEventListener('input', render);
     c.addEventListener('change', render);
   }
   // Wire change events on the live preview so editing the radio updates the value field
-  stage.addEventListener('connex-radio-change', (e) => {
+  stage.addEventListener('scout-radio-change', (e) => {
     valueInput.value = (e as CustomEvent<{ value: string }>).detail.value;
     render();
   });
@@ -11050,36 +11050,36 @@ function radioCode(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
       el('pre', { class: 'code-block' },
-        `<connex-radio-group
+        `<scout-radio-group
   label="Notification preference"
   helper="How should we contact you?"
   value="email"
 >
-  <connex-radio value="email" secondary="jamie@empath.com">Email</connex-radio>
-  <connex-radio value="sms"   secondary="(555) 014-2237">SMS</connex-radio>
-  <connex-radio value="paper" warning="Mailed statements take 5 business days">
+  <scout-radio value="email" secondary="jamie@empath.com">Email</scout-radio>
+  <scout-radio value="sms"   secondary="(555) 014-2237">SMS</scout-radio>
+  <scout-radio value="paper" warning="Mailed statements take 5 business days">
     Paper statement
-  </connex-radio>
-</connex-radio-group>`)),
+  </scout-radio>
+</scout-radio-group>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'With a badge'),
       el('pre', { class: 'code-block' },
-        `<connex-radio value="standard">
+        `<scout-radio value="standard">
   Standard
-  <connex-badge slot="badge" type="informational" emphasis="low" size="condensed">Recommended</connex-badge>
-</connex-radio>`)),
+  <scout-badge slot="badge" type="informational" emphasis="low" size="condensed">Recommended</scout-badge>
+</scout-radio>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Listening for changes'),
       el('pre', { class: 'code-block' },
-        `el.addEventListener('connex-radio-change', (e) => {
+        `el.addEventListener('scout-radio-change', (e) => {
   const { value } = e.detail;
   // value === selected radio's value attribute
 });`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @connex/radio @connex/tokens lit\n\nimport '@connex/radio';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout/radio @scout/tokens lit\n\nimport '@scout/radio';`)),
     el('section', { class: 'guideline-section' },
-      el('h3', { class: 'guideline-heading' }, 'Props — connex-radio'),
+      el('h3', { class: 'guideline-heading' }, 'Props — scout-radio'),
       el('div', { class: 'props-table-wrap' },
         el('table', { class: 'props-table' },
           el('thead', {}, el('tr', {}, el('th', {}, 'Prop'), el('th', {}, 'Type'), el('th', {}, 'Default'), el('th', {}, 'Description'))),
@@ -11092,7 +11092,7 @@ function radioCode(): HTMLElement {
             el('tr', {}, el('td', {}, 'warning'),    el('td', {}, 'string'),  el('td', {}, '""'),    el('td', {}, 'Per-item warning message.')),
           )))),
     el('section', { class: 'guideline-section' },
-      el('h3', { class: 'guideline-heading' }, 'Props — connex-radio-group'),
+      el('h3', { class: 'guideline-heading' }, 'Props — scout-radio-group'),
       el('div', { class: 'props-table-wrap' },
         el('table', { class: 'props-table' },
           el('thead', {}, el('tr', {}, el('th', {}, 'Prop'), el('th', {}, 'Type'), el('th', {}, 'Default'), el('th', {}, 'Description'))),
@@ -11123,9 +11123,9 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Segmented control (real Lit components from @connex/segmented-control)
+// Segmented control (real Lit components from @scout/segmented-control)
 // =================================================================
-import '@connex/segmented-control';
+import '@scout/segmented-control';
 
 interface SegSpec { value: string; label: string; disabled?: boolean }
 
@@ -11135,12 +11135,12 @@ function previewSegmented(opts: {
   size?: 'default' | 'condensed';
   disabled?: boolean;
 }): HTMLElement {
-  const sc = document.createElement('connex-segmented-control');
+  const sc = document.createElement('scout-segmented-control');
   if (opts.value) sc.setAttribute('value', opts.value);
   if (opts.size) sc.setAttribute('size', opts.size);
   if (opts.disabled) sc.setAttribute('disabled', '');
   for (const s of opts.segments) {
-    const seg = document.createElement('connex-segment');
+    const seg = document.createElement('scout-segment');
     seg.setAttribute('value', s.value);
     if (s.disabled) seg.setAttribute('disabled', '');
     seg.textContent = s.label;
@@ -11224,7 +11224,7 @@ function segmentedPreview(): HTMLElement {
   // with a trailing divider. Used inside share-with-customer surfaces so the
   // agent can preview each translation before sending.
   const languageTabs = (langs: Array<{ value: string; label: string; disabled?: boolean }>, value: string) => {
-    const lt = document.createElement('connex-language-tabs') as HTMLElement & {
+    const lt = document.createElement('scout-language-tabs') as HTMLElement & {
       languages: typeof langs; value: string;
     };
     lt.languages = langs;
@@ -11280,7 +11280,7 @@ function segmentedControls(): HTMLElement {
       disabled: disabledChk.checked,
       segments,
     });
-    node.addEventListener('connex-segmented-change', (e) => {
+    node.addEventListener('scout-segmented-change', (e) => {
       valueInput.value = (e as CustomEvent<{ value: string }>).detail.value;
       updateCode(segments);
     });
@@ -11289,10 +11289,10 @@ function segmentedControls(): HTMLElement {
   }
   function updateCode(segments: SegSpec[]) {
     const lines = segments
-      .map((s) => `  <connex-segment value="${s.value}">${s.label}</connex-segment>`)
+      .map((s) => `  <scout-segment value="${s.value}">${s.label}</scout-segment>`)
       .join('\n');
     codePre.textContent =
-      `<connex-segmented-control value="${valueInput.value}"${sizeSel.value !== 'default' ? ` size="${sizeSel.value}"` : ''}${disabledChk.checked ? ' disabled' : ''}>\n${lines}\n</connex-segmented-control>`;
+      `<scout-segmented-control value="${valueInput.value}"${sizeSel.value !== 'default' ? ` size="${sizeSel.value}"` : ''}${disabledChk.checked ? ' disabled' : ''}>\n${lines}\n</scout-segmented-control>`;
   }
   for (const c of [sizeSel, valueInput, countInput, disabledChk]) {
     c.addEventListener('input', render);
@@ -11391,28 +11391,28 @@ function segmentedCode(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
       el('pre', { class: 'code-block' },
-        `<connex-segmented-control value="list">
-  <connex-segment value="list">List</connex-segment>
-  <connex-segment value="grid">Grid</connex-segment>
-  <connex-segment value="kanban">Kanban</connex-segment>
-</connex-segmented-control>`)),
+        `<scout-segmented-control value="list">
+  <scout-segment value="list">List</scout-segment>
+  <scout-segment value="grid">Grid</scout-segment>
+  <scout-segment value="kanban">Kanban</scout-segment>
+</scout-segmented-control>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Listening for change'),
       el('pre', { class: 'code-block' },
-        `el.addEventListener('connex-segmented-change', (e) => {
+        `el.addEventListener('scout-segmented-change', (e) => {
   const { value } = e.detail;
   // value === selected segment's value attribute
 });`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Language tabs'),
       el('pre', { class: 'code-block' },
-        `<!-- Connex language tabs only support English, Spanish, and French.
+        `<!-- Scout language tabs only support English, Spanish, and French.
      The default \`languages\` list is all three; pass a subset to limit the
      picker. Other ISO tags are stripped with a console warning. -->
-<connex-language-tabs id="lang" label="Language"></connex-language-tabs>
+<scout-language-tabs id="lang" label="Language"></scout-language-tabs>
 
 <script type="module">
-  import '@connex/segmented-control';
+  import '@scout/segmented-control';
   const el = document.querySelector('#lang');
   el.languages = [
     { value: 'en', label: 'English' },
@@ -11420,16 +11420,16 @@ function segmentedCode(): HTMLElement {
     { value: 'fr', label: 'French' },
   ];
   el.value = 'en';
-  el.addEventListener('connex-language-change', (e) => {
+  el.addEventListener('scout-language-change', (e) => {
     const { value } = e.detail;  // 'en' | 'es' | 'fr'
     // Swap the translation displayed below the picker.
   });
 </script>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @connex/segmented-control @connex/tokens lit\n\nimport '@connex/segmented-control';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout/segmented-control @scout/tokens lit\n\nimport '@scout/segmented-control';`)),
     el('section', { class: 'guideline-section' },
-      el('h3', { class: 'guideline-heading' }, 'Props — connex-segmented-control'),
+      el('h3', { class: 'guideline-heading' }, 'Props — scout-segmented-control'),
       el('div', { class: 'props-table-wrap' },
         el('table', { class: 'props-table' },
           el('thead', {}, el('tr', {}, el('th', {}, 'Prop'), el('th', {}, 'Type'), el('th', {}, 'Default'), el('th', {}, 'Description'))),
@@ -11439,7 +11439,7 @@ function segmentedCode(): HTMLElement {
             el('tr', {}, el('td', {}, 'disabled'), el('td', {}, 'boolean'), el('td', {}, 'false'), el('td', {}, 'Disables every child segment.')),
           )))),
     el('section', { class: 'guideline-section' },
-      el('h3', { class: 'guideline-heading' }, 'Props — connex-segment'),
+      el('h3', { class: 'guideline-heading' }, 'Props — scout-segment'),
       el('div', { class: 'props-table-wrap' },
         el('table', { class: 'props-table' },
           el('thead', {}, el('tr', {}, el('th', {}, 'Prop'), el('th', {}, 'Type'), el('th', {}, 'Default'), el('th', {}, 'Description'))),
@@ -11449,7 +11449,7 @@ function segmentedCode(): HTMLElement {
             el('tr', {}, el('td', {}, 'selected'), el('td', {}, 'boolean'), el('td', {}, 'false'), el('td', {}, 'Selection state. Set by the parent.')),
           )))),
     el('section', { class: 'guideline-section' },
-      el('h3', { class: 'guideline-heading' }, 'Props — connex-language-tabs'),
+      el('h3', { class: 'guideline-heading' }, 'Props — scout-language-tabs'),
       el('div', { class: 'props-table-wrap' },
         el('table', { class: 'props-table' },
           el('thead', {}, el('tr', {}, el('th', {}, 'Prop'), el('th', {}, 'Type'), el('th', {}, 'Default'), el('th', {}, 'Description'))),
@@ -11478,10 +11478,10 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Sensitive data (real Lit component from @connex/sensitive-data)
+// Sensitive data (real Lit component from @scout/sensitive-data)
 // =================================================================
-import '@connex/sensitive-data';
-import type { SensitiveDataLayout } from '@connex/sensitive-data';
+import '@scout/sensitive-data';
+import type { SensitiveDataLayout } from '@scout/sensitive-data';
 
 interface SDOpts {
   value?: string;
@@ -11493,7 +11493,7 @@ interface SDOpts {
 
 function previewSensitive(opts: SDOpts = {}): HTMLElement {
   const { value = '123-45-6789', layout = 'icon-label', revealed, disabled, maskVisibleTail } = opts;
-  const sd = document.createElement('connex-sensitive-data');
+  const sd = document.createElement('scout-sensitive-data');
   if (layout) sd.setAttribute('layout', layout);
   if (revealed) sd.setAttribute('revealed', '');
   if (disabled) sd.setAttribute('disabled', '');
@@ -11573,10 +11573,10 @@ function sensitiveControls(): HTMLElement {
     if (disabledChk.checked) attrs.push('disabled');
     if (Number(tailInput.value) > 0) attrs.push(`mask-visible-tail="${tailInput.value}"`);
     codePre.textContent =
-      `<connex-sensitive-data ${attrs.join(' ')}>\n  ${valueInput.value}\n</connex-sensitive-data>`;
+      `<scout-sensitive-data ${attrs.join(' ')}>\n  ${valueInput.value}\n</scout-sensitive-data>`;
   }
   // Reflect user clicks back into the controls so the checkbox stays accurate
-  stage.addEventListener('connex-sensitive-data-toggle', (e) => {
+  stage.addEventListener('scout-sensitive-data-toggle', (e) => {
     revealedChk.checked = (e as CustomEvent<{ revealed: boolean }>).detail.revealed;
     render();
   });
@@ -11691,29 +11691,29 @@ function sensitiveCode(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
       el('pre', { class: 'code-block' },
-        `<connex-sensitive-data layout="icon-label">
+        `<scout-sensitive-data layout="icon-label">
   123-45-6789
-</connex-sensitive-data>
+</scout-sensitive-data>
 
 <!-- Reveal only the last four characters -->
-<connex-sensitive-data layout="icon-label" mask-visible-tail="4">
+<scout-sensitive-data layout="icon-label" mask-visible-tail="4">
   4242 4242 4242 4242
-</connex-sensitive-data>
+</scout-sensitive-data>
 
 <!-- Icon-only for table cells -->
-<connex-sensitive-data layout="icon-only">
+<scout-sensitive-data layout="icon-only">
   123-45-6789
-</connex-sensitive-data>`)),
+</scout-sensitive-data>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Listening for toggle'),
       el('pre', { class: 'code-block' },
-        `el.addEventListener('connex-sensitive-data-toggle', (e) => {
+        `el.addEventListener('scout-sensitive-data-toggle', (e) => {
   const { revealed } = e.detail;
   // Audit-log the reveal in apps that require it
 });`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @connex/sensitive-data @connex/tokens lit\n\nimport '@connex/sensitive-data';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout/sensitive-data @scout/tokens lit\n\nimport '@scout/sensitive-data';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -11744,17 +11744,17 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Share with customer (real Lit component from @connex/share-with-customer)
+// Share with customer (real Lit component from @scout/share-with-customer)
 // =================================================================
-import '@connex/share-with-customer';
-import type { ShareLanguageSpec } from '@connex/share-with-customer';
+import '@scout/share-with-customer';
+import type { ShareLanguageSpec } from '@scout/share-with-customer';
 
 function previewShareWithCustomer(opts: {
   label?: string;
   languages?: ShareLanguageSpec[];
   body?: string;
 }): HTMLElement {
-  const sw = document.createElement('connex-share-with-customer') as HTMLElement & {
+  const sw = document.createElement('scout-share-with-customer') as HTMLElement & {
     languages: ShareLanguageSpec[];
   };
   if (opts.label) sw.setAttribute('label', opts.label);
@@ -11835,10 +11835,10 @@ function shareWithCustomerControls(): HTMLElement {
           { value: 'es', label: 'Spanish', body: 'Hola, ¿puede confirmar los últimos cuatro dígitos de su tarjeta y su código postal?' },
         ],
       }));
-      codePre.textContent = `<connex-share-with-customer id="msg" label="${labelInput.value}"></connex-share-with-customer>\n\n<script type="module">\n  import '@connex/share-with-customer';\n  document.querySelector('#msg').languages = [\n    { value: 'en', label: 'English', body: '${bodyInput.value}' },\n    { value: 'es', label: 'Spanish', body: 'Hola, …' },\n  ];\n</script>`;
+      codePre.textContent = `<scout-share-with-customer id="msg" label="${labelInput.value}"></scout-share-with-customer>\n\n<script type="module">\n  import '@scout/share-with-customer';\n  document.querySelector('#msg').languages = [\n    { value: 'en', label: 'English', body: '${bodyInput.value}' },\n    { value: 'es', label: 'Spanish', body: 'Hola, …' },\n  ];\n</script>`;
     } else {
       stage.replaceChildren(previewShareWithCustomer({ label: labelInput.value, body: bodyInput.value }));
-      codePre.textContent = `<connex-share-with-customer label="${labelInput.value}">\n  ${bodyInput.value}\n</connex-share-with-customer>`;
+      codePre.textContent = `<scout-share-with-customer label="${labelInput.value}">\n  ${bodyInput.value}\n</scout-share-with-customer>`;
     }
   }
   for (const c of [labelInput, bodyInput, langsChk]) {
@@ -11899,7 +11899,7 @@ function shareWithCustomerGuidelines(): HTMLElement {
         dontCard(previewShareWithCustomer({
           body: 'Type the customer\'s confirmation number here:',
         }),
-          "Don't use the body as a prompt for input. Use connex-text-field for capture; share-with-customer is read-only."),
+          "Don't use the body as a prompt for input. Use scout-text-field for capture; share-with-customer is read-only."),
       )));
 }
 
@@ -11932,7 +11932,7 @@ function shareWithCustomerAccessibility(): HTMLElement {
       el('h3', { class: 'guideline-heading' }, 'Roles & labelling'),
       el('ul', { class: 'guideline-list' },
         el('li', {}, 'The surface uses role="note" with the label as its accessible name; screen readers announce the moment first, then the body.'),
-        el('li', {}, 'When language tabs are present, the inner connex-language-tabs preserves its radiogroup semantics — the active language is announced.'),
+        el('li', {}, 'When language tabs are present, the inner scout-language-tabs preserves its radiogroup semantics — the active language is announced.'),
         el('li', {}, 'The icon is decorative and aria-hidden.'),
       )),
     el('section', { class: 'guideline-section' },
@@ -11949,15 +11949,15 @@ function shareWithCustomerCode(): HTMLElement {
       el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
       el('pre', { class: 'code-block' },
         `<!-- Single-language: slot the body directly -->
-<connex-share-with-customer label="Verify identity">
+<scout-share-with-customer label="Verify identity">
   Can you confirm the full address on file and the last payment amount?
-</connex-share-with-customer>
+</scout-share-with-customer>
 
 <!-- With language tabs: pass the languages array -->
-<connex-share-with-customer id="opener"></connex-share-with-customer>
+<scout-share-with-customer id="opener"></scout-share-with-customer>
 
 <script type="module">
-  import '@connex/share-with-customer';
+  import '@scout/share-with-customer';
   document.querySelector('#opener').languages = [
     { value: 'en', label: 'English', body: 'Hi, how can I help today?' },
     { value: 'es', label: 'Spanish', body: 'Hola, ¿en qué puedo ayudarle hoy?' },
@@ -11967,13 +11967,13 @@ function shareWithCustomerCode(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Listening for language change'),
       el('pre', { class: 'code-block' },
-        `el.addEventListener('connex-share-language-change', (e) => {
+        `el.addEventListener('scout-share-language-change', (e) => {
   const { value } = e.detail;  // 'en' | 'es' | 'zh' | …
   // log which translation the agent read to the customer
 });`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @connex/share-with-customer @connex/segmented-control @connex/tokens lit\n\nimport '@connex/share-with-customer';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout/share-with-customer @scout/segmented-control @scout/tokens lit\n\nimport '@scout/share-with-customer';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -12002,10 +12002,10 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Show more (real Lit component from @connex/show-more)
+// Show more (real Lit component from @scout/show-more)
 // =================================================================
-import '@connex/show-more';
-import type { ShowMoreSize } from '@connex/show-more';
+import '@scout/show-more';
+import type { ShowMoreSize } from '@scout/show-more';
 
 interface ShowMoreOpts {
   expanded?: boolean;
@@ -12016,7 +12016,7 @@ interface ShowMoreOpts {
 }
 
 function previewShowMore(opts: ShowMoreOpts = {}): HTMLElement {
-  const sm = document.createElement('connex-show-more');
+  const sm = document.createElement('scout-show-more');
   if (opts.expanded) sm.setAttribute('expanded', '');
   if (opts.size) sm.setAttribute('size', opts.size);
   if (opts.showLabel) sm.setAttribute('show-label', opts.showLabel);
@@ -12030,7 +12030,7 @@ function showMoreDemoBody(text: string): HTMLElement {
   const wrap = el('div', { class: 'show-more-demo' });
   const body = el('div', { class: 'show-more-demo__body' }, text);
   const toggle = previewShowMore({});
-  toggle.addEventListener('connex-show-more-toggle', (e) => {
+  toggle.addEventListener('scout-show-more-toggle', (e) => {
     const { expanded } = (e as CustomEvent<{ expanded: boolean }>).detail;
     body.classList.toggle('show-more-demo__body--expanded', expanded);
   });
@@ -12068,9 +12068,9 @@ function showMorePreview(): HTMLElement {
 
   block(
     'In a card',
-    'The Card component composes connex-show-more under the hood when its show-more attribute is set. Click "Show more" to see the truncated body expand.',
+    'The Card component composes scout-show-more under the hood when its show-more attribute is set. Click "Show more" to see the truncated body expand.',
     (() => {
-      const c = document.createElement('connex-card');
+      const c = document.createElement('scout-card');
       c.setAttribute('background', 'cool-gray-100');
       c.setAttribute('ai-callout', '');
       c.setAttribute('show-more', '');
@@ -12086,9 +12086,9 @@ function showMorePreview(): HTMLElement {
 
   block(
     'Standalone — clamped paragraph',
-    'Outside of Card, you can wire the toggle to your own height-clamped body. The component manages its own state and emits connex-show-more-toggle so consumers can toggle their layout.',
+    'Outside of Card, you can wire the toggle to your own height-clamped body. The component manages its own state and emits scout-show-more-toggle so consumers can toggle their layout.',
     showMoreDemoBody(
-      'Connex is the design system that powers Empath, Sage, and several internal tools at the company. It ' +
+      'Scout is the design system that powers Empath, Sage, and several internal tools at the company. It ' +
       'standardizes color, type, spacing, motion, and z-index — and ships a small library of web components ' +
       'that consume those tokens. Components live in their own packages so product teams can pull only what ' +
       'they need; the core is published privately to npm. Density and theme are scoped via data-attributes ' +
@@ -12138,10 +12138,10 @@ function showMoreControls(): HTMLElement {
     if (hideInput.value !== 'Show less') attrs.push(`hide-label="${hideInput.value}"`);
     if (expandedChk.checked) attrs.push('expanded');
     if (disabledChk.checked) attrs.push('disabled');
-    codePre.textContent = `<connex-show-more${attrs.length ? ' ' + attrs.join(' ') : ''}></connex-show-more>`;
+    codePre.textContent = `<scout-show-more${attrs.length ? ' ' + attrs.join(' ') : ''}></scout-show-more>`;
   }
   // Sync the live preview clicks back into the controls
-  stage.addEventListener('connex-show-more-toggle', (e) => {
+  stage.addEventListener('scout-show-more-toggle', (e) => {
     expandedChk.checked = (e as CustomEvent<{ expanded: boolean }>).detail.expanded;
     render();
   });
@@ -12247,30 +12247,30 @@ function showMoreCode(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
       el('pre', { class: 'code-block' },
-        `<connex-show-more></connex-show-more>
+        `<scout-show-more></scout-show-more>
 
 <!-- Condensed for tables -->
-<connex-show-more size="condensed"></connex-show-more>
+<scout-show-more size="condensed"></scout-show-more>
 
 <!-- Custom labels -->
-<connex-show-more show-label="Show all 12" hide-label="Show fewer"></connex-show-more>`)),
+<scout-show-more show-label="Show all 12" hide-label="Show fewer"></scout-show-more>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Listening for toggle'),
       el('pre', { class: 'code-block' },
-        `el.addEventListener('connex-show-more-toggle', (e) => {
+        `el.addEventListener('scout-show-more-toggle', (e) => {
   const { expanded } = e.detail;
   // Toggle the height clamp on your body element
 });`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Used inside Card'),
       el('pre', { class: 'code-block' },
-        `<!-- Card composes connex-show-more under the hood -->
-<connex-card background="cool-gray-100" ai-callout show-more>
+        `<!-- Card composes scout-show-more under the hood -->
+<scout-card background="cool-gray-100" ai-callout show-more>
   Long-form summary text that gets clamped to ~3 lines.
-</connex-card>`)),
+</scout-card>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @connex/show-more @connex/tokens lit\n\nimport '@connex/show-more';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout/show-more @scout/tokens lit\n\nimport '@scout/show-more';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -12301,10 +12301,10 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Skeleton loader (real Lit component from @connex/skeleton)
+// Skeleton loader (real Lit component from @scout/skeleton)
 // =================================================================
-import '@connex/skeleton';
-import type { SkeletonShape } from '@connex/skeleton';
+import '@scout/skeleton';
+import type { SkeletonShape } from '@scout/skeleton';
 
 interface SkOpts {
   shape?: SkeletonShape;
@@ -12315,7 +12315,7 @@ interface SkOpts {
 }
 
 function previewSkeleton(opts: SkOpts = {}): HTMLElement {
-  const sk = document.createElement('connex-skeleton');
+  const sk = document.createElement('scout-skeleton');
   if (opts.shape) sk.setAttribute('shape', opts.shape);
   if (opts.width) sk.setAttribute('width', opts.width);
   if (opts.height) sk.setAttribute('height', opts.height);
@@ -12349,8 +12349,8 @@ function skeletonPreview(): HTMLElement {
     'Override width / height / radius via attributes for any custom shape — a thumbnail strip, a tag chip, a button placeholder.',
     el('div', { class: 'preview-stack' },
       previewSkeleton({ width: '60%', height: '24px' }),
-      previewSkeleton({ width: '120px', height: '32px', radius: 'var(--connex-radius-4)' }),
-      previewSkeleton({ width: '320px', height: '180px', radius: 'var(--connex-radius-8)' }),
+      previewSkeleton({ width: '120px', height: '32px', radius: 'var(--scout-radius-4)' }),
+      previewSkeleton({ width: '320px', height: '180px', radius: 'var(--scout-radius-8)' }),
     ),
   );
 
@@ -12407,7 +12407,7 @@ function skeletonControls(): HTMLElement {
     if (widthInput.value) attrs.push(`width="${widthInput.value}"`);
     if (heightInput.value) attrs.push(`height="${heightInput.value}"`);
     if (radiusInput.value) attrs.push(`radius="${radiusInput.value}"`);
-    codePre.textContent = `<connex-skeleton ${attrs.join(' ')}></connex-skeleton>`;
+    codePre.textContent = `<scout-skeleton ${attrs.join(' ')}></scout-skeleton>`;
   }
   for (const c of [shapeSel, widthInput, heightInput, radiusInput]) {
     c.addEventListener('input', render);
@@ -12516,7 +12516,7 @@ function skeletonAccessibility(): HTMLElement {
       el('h3', { class: 'guideline-heading' }, 'Color'),
       el('ul', { class: 'guideline-list' },
         el('li', {}, 'Resting fill is cool-gray.100; the shimmer pass is cool-gray.200 — both meet WCAG decorative-content criteria.'),
-        el('li', {}, 'On dark surfaces, override --connex-skeleton-base and --connex-skeleton-shimmer to a darker pair.'),
+        el('li', {}, 'On dark surfaces, override --scout-skeleton-base and --scout-skeleton-shimmer to a darker pair.'),
       )));
 }
 
@@ -12525,35 +12525,35 @@ function skeletonCode(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Shape presets'),
       el('pre', { class: 'code-block' },
-        `<connex-skeleton shape="line"></connex-skeleton>
-<connex-skeleton shape="block"></connex-skeleton>
-<connex-skeleton shape="circle"></connex-skeleton>`)),
+        `<scout-skeleton shape="line"></scout-skeleton>
+<scout-skeleton shape="block"></scout-skeleton>
+<scout-skeleton shape="circle"></scout-skeleton>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Custom dimensions'),
       el('pre', { class: 'code-block' },
-        `<connex-skeleton width="60%" height="24px"></connex-skeleton>
-<connex-skeleton width="120px" height="32px" radius="var(--connex-radius-4)"></connex-skeleton>`)),
+        `<scout-skeleton width="60%" height="24px"></scout-skeleton>
+<scout-skeleton width="120px" height="32px" radius="var(--scout-radius-4)"></scout-skeleton>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Composing a list row'),
       el('pre', { class: 'code-block' },
         `<div style="display: flex; gap: 12px; align-items: flex-start;">
-  <connex-skeleton shape="circle"></connex-skeleton>
+  <scout-skeleton shape="circle"></scout-skeleton>
   <div style="flex: 1; display: flex; flex-direction: column; gap: 8px;">
-    <connex-skeleton shape="line" width="40%"></connex-skeleton>
-    <connex-skeleton shape="line" width="65%" height="12px"></connex-skeleton>
+    <scout-skeleton shape="line" width="40%"></scout-skeleton>
+    <scout-skeleton shape="line" width="65%" height="12px"></scout-skeleton>
   </div>
 </div>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Theming'),
       el('pre', { class: 'code-block' },
         `/* Tint the skeleton on a dark surface */
-.dark-card connex-skeleton {
-  --connex-skeleton-base: var(--connex-color-cool-gray-700);
-  --connex-skeleton-shimmer: var(--connex-color-cool-gray-600);
+.dark-card scout-skeleton {
+  --scout-skeleton-base: var(--scout-color-cool-gray-700);
+  --scout-skeleton-shimmer: var(--scout-color-cool-gray-600);
 }`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @connex/skeleton @connex/tokens lit\n\nimport '@connex/skeleton';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout/skeleton @scout/tokens lit\n\nimport '@scout/skeleton';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -12585,7 +12585,7 @@ app.append(componentPage(
 // =================================================================
 // PATTERNS
 // =================================================================
-import '@connex/anchor-links';
+import '@scout/anchor-links';
 
 {
   const grid = el(
@@ -12635,7 +12635,7 @@ import '@connex/anchor-links';
     active?: string;
     scrollRoot?: string;
   }): HTMLElement {
-    const al = document.createElement('connex-anchor-links') as HTMLElement & {
+    const al = document.createElement('scout-anchor-links') as HTMLElement & {
       mode: string;
       items: AnchorItem[];
       active: string;
@@ -12793,8 +12793,8 @@ import '@connex/anchor-links';
         .map((it) => `    { id: '${it.id}', label: '${it.label}'${it.disabled ? ', disabled: true' : ''} },`)
         .join('\n');
       codePre.textContent =
-        `<connex-anchor-links id="links" mode="${modeSel.value}"${modeSel.value === 'manual' ? ' prevent-scroll' : ''}></connex-anchor-links>\n\n` +
-        `<script type="module">\n  import '@connex/anchor-links';\n  const el = document.querySelector('#links');\n  el.items = [\n${itemsLines}\n  ];\n  el.active = '${items[activeIdx - 1]?.id ?? ''}';\n</script>`;
+        `<scout-anchor-links id="links" mode="${modeSel.value}"${modeSel.value === 'manual' ? ' prevent-scroll' : ''}></scout-anchor-links>\n\n` +
+        `<script type="module">\n  import '@scout/anchor-links';\n  const el = document.querySelector('#links');\n  el.items = [\n${itemsLines}\n  ];\n  el.active = '${items[activeIdx - 1]?.id ?? ''}';\n</script>`;
     }
     for (const c of [modeSel, countInput, activeInput, disableLastChk]) {
       c.addEventListener('input', render);
@@ -12911,10 +12911,10 @@ import '@connex/anchor-links';
       el('section', { class: 'guideline-section' },
         el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
         el('pre', { class: 'code-block' },
-          `<connex-anchor-links id="links" mode="auto-scroll"></connex-anchor-links>
+          `<scout-anchor-links id="links" mode="auto-scroll"></scout-anchor-links>
 
 <script type="module">
-  import '@connex/anchor-links';
+  import '@scout/anchor-links';
   const el = document.querySelector('#links');
   el.items = [
     { id: 'overview',     label: 'Overview' },
@@ -12923,7 +12923,7 @@ import '@connex/anchor-links';
     { id: 'disputes',     label: 'Disputes' },
     { id: 'preferences',  label: 'Preferences' },
   ];
-  el.addEventListener('connex-anchor-change', (e) => {
+  el.addEventListener('scout-anchor-change', (e) => {
     console.log('active section:', e.detail.id);
   });
 </script>`)),
@@ -12931,11 +12931,11 @@ import '@connex/anchor-links';
         el('h3', { class: 'guideline-heading' }, 'Manual mode (page-router)'),
         el('pre', { class: 'code-block' },
           `<!-- Manual mode + prevent-scroll lets the native <a href="#id"> handle hash navigation;
-     the consumer subscribes to connex-anchor-change for click handling. -->
-<connex-anchor-links id="sidebar-nav" mode="manual" prevent-scroll></connex-anchor-links>`)),
+     the consumer subscribes to scout-anchor-change for click handling. -->
+<scout-anchor-links id="sidebar-nav" mode="manual" prevent-scroll></scout-anchor-links>`)),
       el('section', { class: 'guideline-section' },
         el('h3', { class: 'guideline-heading' }, 'Install / register'),
-        el('pre', { class: 'code-block' }, `pnpm add @connex/anchor-links @connex/badge @connex/tokens lit\n\nimport '@connex/anchor-links';`)),
+        el('pre', { class: 'code-block' }, `pnpm add @scout/anchor-links @scout/badge @scout/tokens lit\n\nimport '@scout/anchor-links';`)),
       el('section', { class: 'guideline-section' },
         el('h3', { class: 'guideline-heading' }, 'Props'),
         el('div', { class: 'props-table-wrap' },
@@ -12968,7 +12968,7 @@ import '@connex/anchor-links';
 }
 
 // -----------------------------------------------------------------
-// Data table pattern — composed from existing Connex components rather
+// Data table pattern — composed from existing Scout components rather
 // than a standalone Lit element, so the docs assemble the markup directly.
 // Each variant (display-only, selectable, expandable, paginated, show-more)
 // is rendered as a real <table> styled by tokens, with checkboxes,
@@ -13011,7 +13011,7 @@ import '@connex/anchor-links';
   ];
 
   // === Helpers ====================================================
-  /** Render a status cell as a low-emphasis Connex badge so the docs
+  /** Render a status cell as a low-emphasis Scout badge so the docs
    *  dogfood the prescriptive enrollment-lifecycle variants we just
    *  added (Enrolled / Pending / Unenrolled / Canceled). */
   function statusBadge(value: string): HTMLElement {
@@ -13022,7 +13022,7 @@ import '@connex/anchor-links';
       canceled:   { type: 'critical', label: 'Canceled'   },
     };
     const meta = map[value] ?? { type: 'neutral', label: value };
-    const b = document.createElement('connex-badge');
+    const b = document.createElement('scout-badge');
     b.setAttribute('type', meta.type);
     b.setAttribute('emphasis', 'low');
     b.setAttribute('size', 'condensed');
@@ -13045,10 +13045,10 @@ import '@connex/anchor-links';
     const tr = el('tr', { class: 'dt-row dt-row--header' });
     if (opts.selectable) {
       const cell = el('th', { class: 'dt-cell dt-cell--select', scope: 'col' });
-      const cb = document.createElement('connex-checkbox') as HTMLElement & { checked: boolean };
+      const cb = document.createElement('scout-checkbox') as HTMLElement & { checked: boolean };
       cb.setAttribute('aria-label', 'Select all rows');
       if (opts.allSelected) cb.setAttribute('checked', '');
-      cb.addEventListener('connex-checkbox-change', () => {
+      cb.addEventListener('scout-checkbox-change', () => {
         opts.onToggleAll?.(cb.checked);
       });
       cell.append(cb);
@@ -13098,10 +13098,10 @@ import '@connex/anchor-links';
 
     if (opts.selectable) {
       const cell = el('td', { class: 'dt-cell dt-cell--select' });
-      const cb = document.createElement('connex-checkbox') as HTMLElement & { checked: boolean };
+      const cb = document.createElement('scout-checkbox') as HTMLElement & { checked: boolean };
       cb.setAttribute('aria-label', `Select ${row.cells[opts.columns[0]?.id ?? ''] ?? row.id}`);
       if (opts.selected?.has(row.id)) cb.setAttribute('checked', '');
-      cb.addEventListener('connex-checkbox-change', () => {
+      cb.addEventListener('scout-checkbox-change', () => {
         opts.onToggle?.(row.id, cb.checked);
       });
       cell.append(cb);
@@ -13182,7 +13182,7 @@ import '@connex/anchor-links';
       ),
     );
     if (opts.action) {
-      const btn = document.createElement('connex-button');
+      const btn = document.createElement('scout-button');
       btn.setAttribute('variant', 'tertiary');
       btn.setAttribute('size', 'condensed');
       btn.textContent = opts.action.label;
@@ -13308,12 +13308,12 @@ import '@connex/anchor-links';
 
       const parts: (Node | string)[] = [table];
 
-      // Footer: pagination uses connex-pagination; show-more uses
-      // connex-show-more. Either is rendered as a sibling block below
+      // Footer: pagination uses scout-pagination; show-more uses
+      // scout-show-more. Either is rendered as a sibling block below
       // the <table> so it has room to breathe and isn't constrained by
       // a colspan cell.
       if (opts.footer === 'pagination') {
-        const p = document.createElement('connex-pagination') as HTMLElement & {
+        const p = document.createElement('scout-pagination') as HTMLElement & {
           page: number; pageSize: number; total: number;
         };
         p.setAttribute('total', String(opts.rows.length * 8));
@@ -13322,9 +13322,9 @@ import '@connex/anchor-links';
         p.setAttribute('layout', 'both');
         parts.push(el('div', { class: 'dt-footer' }, p));
       } else if (opts.footer === 'show-more') {
-        const sm = document.createElement('connex-show-more') as HTMLElement & { expanded: boolean };
+        const sm = document.createElement('scout-show-more') as HTMLElement & { expanded: boolean };
         if (showMoreCount >= opts.rows.length) sm.setAttribute('expanded', '');
-        sm.addEventListener('connex-show-more-toggle', (e: Event) => {
+        sm.addEventListener('scout-show-more-toggle', (e: Event) => {
           const detail = (e as CustomEvent<{ expanded: boolean }>).detail;
           showMoreCount = detail.expanded ? opts.rows.length : 3;
           rerender();
@@ -13504,8 +13504,8 @@ import '@connex/anchor-links';
         el('p', { class: 'preview-block__lede' },
           'Rows can be display-only, expandable, or selectable. Each row mode brings its own affordances and states.'),
         el('ul', { class: 'guideline-list' },
-          el('li', {}, el('strong', {}, 'Expandable rows'), ' — use the connex-accordion component. Lets the user expand and collapse a row to reveal more information. Interactive states: default, hover, focus, pressed, disabled. Functional states: expanded, collapsed. Layout: chevron on left or right.'),
-          el('li', {}, el('strong', {}, 'Selectable rows'), ' — use the connex-checkbox component. Lets the user select a row, multiple rows, or all rows via the parent checkbox at the top of the table. Interactive states: default, hover, focus, pressed, disabled. Functional states: selected, not selected. Layout: left-only.'),
+          el('li', {}, el('strong', {}, 'Expandable rows'), ' — use the scout-accordion component. Lets the user expand and collapse a row to reveal more information. Interactive states: default, hover, focus, pressed, disabled. Functional states: expanded, collapsed. Layout: chevron on left or right.'),
+          el('li', {}, el('strong', {}, 'Selectable rows'), ' — use the scout-checkbox component. Lets the user select a row, multiple rows, or all rows via the parent checkbox at the top of the table. Interactive states: default, hover, focus, pressed, disabled. Functional states: selected, not selected. Layout: left-only.'),
         ),
       ),
       el('section', { class: 'guideline-section' },
@@ -13536,7 +13536,7 @@ import '@connex/anchor-links';
         el('h3', { class: 'guideline-heading' }, 'Cell types'),
         el('ul', { class: 'guideline-list' },
           el('li', {}, 'Text — primary value, optional secondary line for context (account number, timestamp).'),
-          el('li', {}, 'Link — for navigable values (a name that opens the customer record). Use connex-link.'),
+          el('li', {}, 'Link — for navigable values (a name that opens the customer record). Use scout-link.'),
           el('li', {}, 'Checkbox — selection only; never use a checkbox cell for editable boolean data.'),
           el('li', {}, 'Icon — for status icons paired with a badge or used as a low-emphasis affordance.'),
           el('li', {}, 'Button — small, in-row actions. Reserve for truly per-row actions; bulk actions belong in the table header.'),
@@ -13545,8 +13545,8 @@ import '@connex/anchor-links';
       el('section', { class: 'guideline-section' },
         el('h3', { class: 'guideline-heading' }, 'Footer'),
         el('ul', { class: 'guideline-list' },
-          el('li', {}, el('strong', {}, 'Show more'), ' — inherits the connex-show-more component. When clicked, shows the rest of the data.'),
-          el('li', {}, el('strong', {}, 'Pagination'), " — inherits connex-pagination. Lets users page individually via arrows, jump to first/last via double arrows, choose items-per-page via the inherited dropdown, and reads “first–last of total” inline."),
+          el('li', {}, el('strong', {}, 'Show more'), ' — inherits the scout-show-more component. When clicked, shows the rest of the data.'),
+          el('li', {}, el('strong', {}, 'Pagination'), " — inherits scout-pagination. Lets users page individually via arrows, jump to first/last via double arrows, choose items-per-page via the inherited dropdown, and reads “first–last of total” inline."),
         ),
       ),
       el('section', { class: 'guideline-section' },
@@ -13555,7 +13555,7 @@ import '@connex/anchor-links';
           el('li', {}, 'Display only — the default. Read-only data with optional sorting.'),
           el('li', {}, 'Selectable — leading checkbox column for row selection (single or multi).'),
           el('li', {}, 'Expandable — leading chevron column that reveals an inline detail row.'),
-          el('li', {}, 'Accordion — uses the connex-accordion component for the expand/collapse mechanism.'),
+          el('li', {}, 'Accordion — uses the scout-accordion component for the expand/collapse mechanism.'),
         ),
       ),
     );
@@ -13597,11 +13597,11 @@ import '@connex/anchor-links';
       el('section', { class: 'guideline-section' },
         el('h3', { class: 'guideline-heading' }, 'Install / register'),
         el('pre', { class: 'code-block' },
-          `pnpm add @connex/checkbox @connex/badge @connex/pagination @connex/show-more @connex/accordion @connex/tokens lit\n\nimport '@connex/checkbox';\nimport '@connex/badge';\nimport '@connex/pagination';\nimport '@connex/show-more';\nimport '@connex/accordion';`)),
+          `pnpm add @scout/checkbox @scout/badge @scout/pagination @scout/show-more @scout/accordion @scout/tokens lit\n\nimport '@scout/checkbox';\nimport '@scout/badge';\nimport '@scout/pagination';\nimport '@scout/show-more';\nimport '@scout/accordion';`)),
       el('section', { class: 'guideline-section' },
         el('h3', { class: 'guideline-heading' }, 'Markup'),
         el('pre', { class: 'code-block' },
-          `<table class="dt-table">\n  <thead>\n    <!-- Optional table header -->\n    <tr class="dt-row--table-header">\n      <th colspan="4">Customer accounts</th>\n    </tr>\n    <!-- Column headers -->\n    <tr>\n      <th scope="col">\n        <connex-checkbox aria-label="Select all rows"></connex-checkbox>\n      </th>\n      <th scope="col" aria-sort="ascending">Account</th>\n      <th scope="col">Status</th>\n      <th scope="col">Balance</th>\n    </tr>\n  </thead>\n  <tbody>\n    <!-- Optional section header -->\n    <tr class="dt-row--section">\n      <th colspan="4" scope="colgroup">Active</th>\n    </tr>\n    <tr>\n      <td><connex-checkbox aria-label="Select Hannah Mezzadri"></connex-checkbox></td>\n      <td>Hannah Mezzadri</td>\n      <td><connex-badge type="success" emphasis="low" size="condensed">Enrolled</connex-badge></td>\n      <td>$0.00</td>\n    </tr>\n  </tbody>\n</table>\n\n<!-- Footer: pagination OR show-more -->\n<connex-pagination total="240" page="1" page-size="10" layout="both"></connex-pagination>`)),
+          `<table class="dt-table">\n  <thead>\n    <!-- Optional table header -->\n    <tr class="dt-row--table-header">\n      <th colspan="4">Customer accounts</th>\n    </tr>\n    <!-- Column headers -->\n    <tr>\n      <th scope="col">\n        <scout-checkbox aria-label="Select all rows"></scout-checkbox>\n      </th>\n      <th scope="col" aria-sort="ascending">Account</th>\n      <th scope="col">Status</th>\n      <th scope="col">Balance</th>\n    </tr>\n  </thead>\n  <tbody>\n    <!-- Optional section header -->\n    <tr class="dt-row--section">\n      <th colspan="4" scope="colgroup">Active</th>\n    </tr>\n    <tr>\n      <td><scout-checkbox aria-label="Select Hannah Mezzadri"></scout-checkbox></td>\n      <td>Hannah Mezzadri</td>\n      <td><scout-badge type="success" emphasis="low" size="condensed">Enrolled</scout-badge></td>\n      <td>$0.00</td>\n    </tr>\n  </tbody>\n</table>\n\n<!-- Footer: pagination OR show-more -->\n<scout-pagination total="240" page="1" page-size="10" layout="both"></scout-pagination>`)),
       el('section', { class: 'guideline-section' },
         el('h3', { class: 'guideline-heading' }, 'Anatomy'),
         el('div', { class: 'props-table-wrap' },
@@ -13620,7 +13620,7 @@ import '@connex/anchor-links';
   app.append(componentPage(
     'patterns-data-table',
     'Data table',
-    'Rows and columns of structured data composed from smaller Connex parts — table header, section header, column headers, cells, and an optional footer — that work together to keep content clear and organized.',
+    'Rows and columns of structured data composed from smaller Scout parts — table header, section header, column headers, cells, and an optional footer — that work together to keep content clear and organized.',
     [
       { id: 'preview', label: 'Preview', content: dataTablePreview() },
       { id: 'controls', label: 'Controls', content: dataTableControls() },
@@ -13659,7 +13659,7 @@ import '@connex/anchor-links';
 }
 
 // =================================================================
-// ROUTER — sidebar <connex-anchor-links> instances drive page switching
+// ROUTER — sidebar <scout-anchor-links> instances drive page switching
 // =================================================================
 
 type NavSection = {
@@ -13804,13 +13804,13 @@ function idFromHash(): string {
   return (location.hash || `#${defaultId}`).slice(1);
 }
 
-// Listen for clicks bubbled up from each connex-anchor-links instance. The
+// Listen for clicks bubbled up from each scout-anchor-links instance. The
 // component's `prevent-scroll` mode lets the native `<a href="#id">` push the
 // hash; we hook the bubbled event for mobile-drawer-close + redundant page
 // swap (in case hashchange races on first paint).
 for (const s of navSections) {
   if (!s.el) continue;
-  s.el.addEventListener('connex-anchor-change', (e) => {
+  s.el.addEventListener('scout-anchor-change', (e) => {
     const id = (e as CustomEvent<{ id: string }>).detail.id;
     if (id !== idFromHash()) {
       // The native <a href> will update the hash, but we update eagerly so the

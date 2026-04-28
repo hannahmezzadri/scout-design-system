@@ -1,7 +1,7 @@
 {
-  "name": "@connex/badge",
+  "name": "@scout/badge",
   "version": "0.1.0",
-  "description": "Connex Badge — small label conveying status, category, or count",
+  "description": "Scout Badge — small label conveying status, category, or count",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -9,8 +9,8 @@
   "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" } },
   "files": ["dist"],
   "scripts": { "build": "tsup", "dev": "tsup --watch", "clean": "rm -rf dist .turbo" },
-  "peerDependencies": { "lit": "^3.2.0", "@connex/tokens": "workspace:*" },
-  "dependencies": { "lit": "^3.2.0", "@connex/tokens": "workspace:*" },
+  "peerDependencies": { "lit": "^3.2.0", "@scout/tokens": "workspace:*" },
+  "dependencies": { "lit": "^3.2.0", "@scout/tokens": "workspace:*" },
   "devDependencies": { "tsup": "^8.3.0", "typescript": "^5.6.3" },
   "publishConfig": { "access": "restricted" },
   "sideEffects": ["./dist/**/*.js"]

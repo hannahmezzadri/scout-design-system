@@ -61,7 +61,7 @@
       "999": { "$value": "#060f13", "$type": "color" }
     },
     "blue": {
-      "$description": "Anchored at 500 = #029DD4 (Connex brand primary).",
+      "$description": "Anchored at 500 = #029DD4 (Scout brand primary).",
       "50":  { "$value": "#eefcff", "$type": "color" },
       "100": { "$value": "#e7f8fe", "$type": "color" },
       "200": { "$value": "#c4eefd", "$type": "color" },

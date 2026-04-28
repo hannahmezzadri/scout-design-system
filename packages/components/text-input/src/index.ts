@@ -1,6 +1,6 @@
-export { ConnexTextField } from './connex-text-field.js';
-export { ConnexTextArea } from './connex-text-area.js';
+export { ScoutTextField } from './scout-text-field.js';
+export { ScoutTextArea } from './scout-text-area.js';
 export type { TextFieldVariant, TextInputSize } from './types.js';
 
-import './connex-text-field.js';
-import './connex-text-area.js';
+import './scout-text-field.js';
+import './scout-text-area.js';

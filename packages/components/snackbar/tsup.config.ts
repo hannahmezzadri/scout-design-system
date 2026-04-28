@@ -6,6 +6,6 @@ export default defineConfig({
   dts: true,
   sourcemap: true,
   clean: true,
-  external: ['lit', 'lit/decorators.js', '@connex/tokens', '@connex/control'],
+  external: ['lit', 'lit/decorators.js', '@scout/tokens', '@scout/control'],
   target: 'es2022',
 });

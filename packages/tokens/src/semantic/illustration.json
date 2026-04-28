@@ -1,6 +1,6 @@
 {
   "illustration": {
-    "$description": "Color slots used by every Connex illustration. Defaults shown here resolve to the Connex brand palette; per-brand JSON files in `src/brand/*.json` override these slots so flipping `data-brand` re-tints every illustration on screen.",
+    "$description": "Color slots used by every Scout illustration. Defaults shown here resolve to the Scout brand palette; per-brand JSON files in `src/brand/*.json` override these slots so flipping `data-brand` re-tints every illustration on screen.",
     "primary":   { "$value": "{color.blue.500}",       "$type": "color", "$description": "Main brand color in the illustration (figure outline, primary stroke)." },
     "secondary": { "$value": "{color.cool-gray.300}",  "$type": "color", "$description": "Neutral support color (background shapes, dividers)." },
     "accent":    { "$value": "{color.blue.100}",       "$type": "color", "$description": "Soft brand-tinted highlight (gradient stops, subtle fills)." },

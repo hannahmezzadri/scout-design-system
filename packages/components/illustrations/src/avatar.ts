@@ -1,9 +1,9 @@
 import { svg } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { ConnexIllustrationBase } from './base.js';
+import { ScoutIllustrationBase } from './base.js';
 
 /**
- * `<connex-illustration-avatar>` — abstract shoulders-up figure with a
+ * `<scout-illustration-avatar>` — abstract shoulders-up figure with a
  * small notification dot. Featureless head (no eyes / mouth) keeps the
  * representation generic; the silhouette reads as "user" without implying
  * a specific gender, age, or identity.
@@ -14,8 +14,8 @@ import { ConnexIllustrationBase } from './base.js';
  *   - Shoulder + torso shape (primary, slightly darker via opacity)
  *   - Tiny notification dot at top-right (accent slot, primary outline)
  */
-@customElement('connex-illustration-avatar')
-export class ConnexIllustrationAvatar extends ConnexIllustrationBase {
+@customElement('scout-illustration-avatar')
+export class ScoutIllustrationAvatar extends ScoutIllustrationBase {
   protected renderArtwork() {
     return svg`
       <!-- Backdrop halo -->
@@ -49,6 +49,6 @@ export class ConnexIllustrationAvatar extends ConnexIllustrationBase {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'connex-illustration-avatar': ConnexIllustrationAvatar;
+    'scout-illustration-avatar': ScoutIllustrationAvatar;
   }
 }

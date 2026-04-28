@@ -9,11 +9,11 @@ export default defineConfig({
   external: [
     'lit',
     'lit/decorators.js',
-    '@connex/tokens',
-    '@connex/badge',
-    '@connex/button',
-    '@connex/show-more',
-    '@connex/skeleton',
+    '@scout/tokens',
+    '@scout/badge',
+    '@scout/button',
+    '@scout/show-more',
+    '@scout/skeleton',
   ],
   target: 'es2022',
 });

@@ -1,4 +1,4 @@
-export { ConnexBadge } from './connex-badge.js';
+export { ScoutBadge } from './scout-badge.js';
 export type { BadgeType, BadgeEmphasis, BadgeSize } from './types.js';
 
-import './connex-badge.js';
+import './scout-badge.js';

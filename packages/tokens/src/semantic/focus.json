@@ -1,6 +1,6 @@
 {
   "focus": {
-    "$description": "Tokens for the keyboard focus indicator. The default ring is 2px solid interactive primary, offset 2px from the focused element. Components reference these via `outline: var(--connex-focus-ring-width) solid var(--connex-focus-ring-color); outline-offset: var(--connex-focus-ring-offset);` so theming a focus ring (high-contrast, brand-tinted) becomes a one-token change.",
+    "$description": "Tokens for the keyboard focus indicator. The default ring is 2px solid interactive primary, offset 2px from the focused element. Components reference these via `outline: var(--scout-focus-ring-width) solid var(--scout-focus-ring-color); outline-offset: var(--scout-focus-ring-offset);` so theming a focus ring (high-contrast, brand-tinted) becomes a one-token change.",
     "ring": {
       "color":   { "$value": "{color.blue.500}", "$type": "color" },
       "width":   { "$value": "2px",              "$type": "dimension" },

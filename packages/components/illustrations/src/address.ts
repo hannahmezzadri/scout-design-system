@@ -1,9 +1,9 @@
 import { svg } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { ConnexIllustrationBase } from './base.js';
+import { ScoutIllustrationBase } from './base.js';
 
 /**
- * `<connex-illustration-address>` — an envelope with a pin marker hovering
+ * `<scout-illustration-address>` — an envelope with a pin marker hovering
  * above and three address-line strokes peeking out the top. Visual metaphor
  * for the postal-address surface: location + correspondence.
  *
@@ -14,8 +14,8 @@ import { ConnexIllustrationBase } from './base.js';
  *   - A pin marker floating above (accent + primary) — the location pin
  *     pattern is well-recognized for "address" without showing a map.
  */
-@customElement('connex-illustration-address')
-export class ConnexIllustrationAddress extends ConnexIllustrationBase {
+@customElement('scout-illustration-address')
+export class ScoutIllustrationAddress extends ScoutIllustrationBase {
   protected renderArtwork() {
     return svg`
       <!-- Backdrop halo -->
@@ -62,6 +62,6 @@ export class ConnexIllustrationAddress extends ConnexIllustrationBase {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'connex-illustration-address': ConnexIllustrationAddress;
+    'scout-illustration-address': ScoutIllustrationAddress;
   }
 }

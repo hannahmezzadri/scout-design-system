@@ -1,4 +1,4 @@
-export { ConnexSkeleton } from './connex-skeleton.js';
+export { ScoutSkeleton } from './scout-skeleton.js';
 export type { SkeletonShape } from './types.js';
 
-import './connex-skeleton.js';
+import './scout-skeleton.js';

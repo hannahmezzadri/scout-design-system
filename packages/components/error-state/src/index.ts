@@ -1,3 +1,3 @@
-export { ConnexErrorState } from './connex-error-state.js';
+export { ScoutErrorState } from './scout-error-state.js';
 
-import './connex-error-state.js';
+import './scout-error-state.js';

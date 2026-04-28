@@ -1,4 +1,4 @@
-export { ConnexSensitiveData } from './connex-sensitive-data.js';
+export { ScoutSensitiveData } from './scout-sensitive-data.js';
 export type { SensitiveDataLayout } from './types.js';
 
-import './connex-sensitive-data.js';
+import './scout-sensitive-data.js';

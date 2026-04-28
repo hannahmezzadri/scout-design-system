@@ -1,4 +1,4 @@
-# Connex
+# Scout
 
 Enterprise design system powering 8+ internal tools.
 
@@ -20,7 +20,7 @@ Enterprise design system powering 8+ internal tools.
 
 ## Packages
 
-- `@connex/tokens` — design tokens (CSS, TS, JSON, Tailwind preset)
+- `@scout/tokens` — design tokens (CSS, TS, JSON, Tailwind preset)
 
 ## Development
 

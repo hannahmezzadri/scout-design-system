@@ -1,6 +1,6 @@
-export { ConnexMultiselect } from './connex-multiselect.js';
-export { ConnexMultiselectOption } from './connex-multiselect-option.js';
+export { ScoutMultiselect } from './scout-multiselect.js';
+export { ScoutMultiselectOption } from './scout-multiselect-option.js';
 export type { MultiselectSize } from './types.js';
 
-import './connex-multiselect-option.js';
-import './connex-multiselect.js';
+import './scout-multiselect-option.js';
+import './scout-multiselect.js';

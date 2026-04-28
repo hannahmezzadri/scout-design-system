@@ -1,0 +1,15 @@
+{
+  "brand": {
+    "scout": {
+      "$description": "Scout brand colors. Light = 97D4EB, Primary = 029DD4, Dark = 336D92.",
+      "light":   { "$value": "#97D4EB", "$type": "color" },
+      "primary": { "$value": "#029DD4", "$type": "color" },
+      "dark":    { "$value": "#336D92", "$type": "color" }
+    }
+  },
+  "illustration": {
+    "$description": "Per-brand illustration overrides. Activated when [data-brand=\"scout\"]. Other slots (secondary, surface) inherit the global semantic defaults so they stay neutral across brands.",
+    "primary": { "$value": "#029DD4", "$type": "color" },
+    "accent":  { "$value": "#97D4EB", "$type": "color" }
+  }
+}

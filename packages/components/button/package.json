@@ -1,7 +1,7 @@
 {
-  "name": "@connex/button",
+  "name": "@scout/button",
   "version": "0.1.0",
-  "description": "Connex Button — clickable element that triggers an action or event",
+  "description": "Scout Button — clickable element that triggers an action or event",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -21,11 +21,11 @@
   },
   "peerDependencies": {
     "lit": "^3.2.0",
-    "@connex/tokens": "workspace:*"
+    "@scout/tokens": "workspace:*"
   },
   "dependencies": {
     "lit": "^3.2.0",
-    "@connex/tokens": "workspace:*"
+    "@scout/tokens": "workspace:*"
   },
   "devDependencies": {
     "tsup": "^8.3.0",

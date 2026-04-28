@@ -1,12 +1,12 @@
 {
   "brand": {
     "$description": "Stubbed brand color slots. Replace TBD values with real hex codes when finalized.",
-    "onecomm":  { "primary": { "$value": "#000000", "$type": "color", "$extensions": { "connex.tbd": true } } },
-    "athena":   { "primary": { "$value": "#000000", "$type": "color", "$extensions": { "connex.tbd": true } } },
-    "graffiti": { "primary": { "$value": "#000000", "$type": "color", "$extensions": { "connex.tbd": true } } },
-    "hubble":   { "primary": { "$value": "#000000", "$type": "color", "$extensions": { "connex.tbd": true } } },
-    "voyant":   { "primary": { "$value": "#000000", "$type": "color", "$extensions": { "connex.tbd": true } } },
-    "echo":     { "primary": { "$value": "#000000", "$type": "color", "$extensions": { "connex.tbd": true } } },
-    "e4a":      { "primary": { "$value": "#000000", "$type": "color", "$extensions": { "connex.tbd": true } } }
+    "onecomm":  { "primary": { "$value": "#000000", "$type": "color", "$extensions": { "scout.tbd": true } } },
+    "athena":   { "primary": { "$value": "#000000", "$type": "color", "$extensions": { "scout.tbd": true } } },
+    "graffiti": { "primary": { "$value": "#000000", "$type": "color", "$extensions": { "scout.tbd": true } } },
+    "hubble":   { "primary": { "$value": "#000000", "$type": "color", "$extensions": { "scout.tbd": true } } },
+    "voyant":   { "primary": { "$value": "#000000", "$type": "color", "$extensions": { "scout.tbd": true } } },
+    "echo":     { "primary": { "$value": "#000000", "$type": "color", "$extensions": { "scout.tbd": true } } },
+    "e4a":      { "primary": { "$value": "#000000", "$type": "color", "$extensions": { "scout.tbd": true } } }
   }
 }
