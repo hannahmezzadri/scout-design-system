@@ -40,13 +40,16 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
-      - name: Build tokens
-        run: pnpm --filter @connex/tokens build
-
-      - name: Build docs site
+      # Build the docs site through turbo so every workspace dependency
+      # (`@connex/tokens`, `@connex/dropdown`, `@connex/button`, …) is
+      # compiled to its `dist/` first. Without this, vite tries to resolve
+      # `import '@connex/dropdown'` against a package whose dist has never
+      # been generated on a fresh CI checkout, and the build fails with
+      # "Failed to resolve entry for package".
+      - name: Build docs site (with workspace deps)
         env:
           BASE_PATH: /${{ github.event.repository.name }}/
-        run: pnpm --filter @connex/docs build
+        run: pnpm turbo run build --filter @connex/docs...
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
