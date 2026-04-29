@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import '@scout/link';
 
 /**
  * `<scout-breadcrumb-item>` — a single crumb in a breadcrumb chain.
@@ -55,29 +56,8 @@ export class ScoutBreadcrumbItem extends LitElement {
       display: none;
     }
 
-    /* Link */
-    .link {
-      color: var(--scout-text-interactive-primary);
-      text-decoration: none;
-      padding: var(--scout-space-4);
-      margin: calc(-1 * var(--scout-space-4));
-      border-radius: var(--scout-radius-2);
-      transition:
-        background var(--scout-motion-duration-fast)
-          var(--scout-motion-easing-standard),
-        color var(--scout-motion-duration-fast) var(--scout-motion-easing-standard);
-    }
-    .link:hover {
-      background: var(--scout-interactive-background-hover);
-      text-decoration: underline;
-    }
-    .link:active {
-      background: var(--scout-interactive-background-pressed);
-    }
-    .link:focus-visible {
-      outline: var(--scout-focus-ring-width) solid var(--scout-focus-ring-color);
-      outline-offset: var(--scout-focus-ring-offset);
-    }
+    /* The crumb link defers to <scout-link> for color, hover, and focus —
+       no visual styling is needed here. */
 
     /* Current page (last crumb) */
     .current {
@@ -93,9 +73,6 @@ export class ScoutBreadcrumbItem extends LitElement {
       margin: calc(-1 * var(--scout-space-4));
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      .link { transition: none; }
-    }
   `;
 
   @property() href = '';
@@ -109,7 +86,7 @@ export class ScoutBreadcrumbItem extends LitElement {
     if (this.disabled) {
       return html`<span class="disabled" aria-disabled="true"><slot></slot></span>`;
     }
-    return html`<a class="link" href=${this.href || '#'}><slot></slot></a>`;
+    return html`<scout-link type="standalone" href=${this.href || '#'}><slot></slot></scout-link>`;
   }
 }
 

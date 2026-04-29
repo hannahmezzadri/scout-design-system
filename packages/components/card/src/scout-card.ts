@@ -34,16 +34,14 @@ export class ScoutCard extends LitElement {
       --_card-bg: var(--scout-color-warm-gray-100);
     }
 
-    /* Dark theme — primitive backgrounds (white / cool-gray-100 / warm-gray-100)
-       don't theme-shift on their own, so remap each variant to a semantic
-       surface token when the document opts into dark. :host-context pierces
-       the shadow boundary to read the theme attribute set on <html>. */
+    /* Dark theme — promote each variant to a clearly elevated cool-gray
+       surface so the card reads as raised against the darker page chrome. */
     :host-context([data-theme='dark']) {
-      --_card-bg: var(--scout-surface-primary);
+      --_card-bg: var(--scout-color-cool-gray-700);
     }
     :host-context([data-theme='dark'])[background='cool-gray-100'],
     :host-context([data-theme='dark'])[background='warm-gray-100'] {
-      --_card-bg: var(--scout-surface-page);
+      --_card-bg: var(--scout-color-cool-gray-800);
     }
 
     .card {
@@ -78,14 +76,14 @@ export class ScoutCard extends LitElement {
     /* Body */
     .body {
       position: relative;
-      font-size: var(--scout-font-size-14);
-      line-height: var(--scout-font-line-height-21);
+      font-size: var(--scout-typography-body-font-size);
+      line-height: var(--scout-typography-body-line-height);
       color: var(--scout-text-display-primary);
     }
 
     /* Show-more truncation */
     :host([show-more]:not([expanded])) .body {
-      max-height: calc(var(--scout-font-line-height-21) * 3);
+      max-height: calc(var(--scout-typography-body-line-height) * 3);
       overflow: hidden;
     }
     :host([show-more]:not([expanded])) .body::after {

@@ -193,6 +193,11 @@ function overviewTile(opts: {
   tile.setAttribute('header', opts.title);
   if (opts.comingSoon) tile.setAttribute('disabled', '');
 
+  // Spot illustration slot — placeholder rectangle that designers can
+  // replace per category. Sits above the header inside the tile-button.
+  const illustration = el('div', { class: 'overview-tile-illustration', slot: 'illustration' });
+  tile.appendChild(illustration);
+
   // Body slot — when a tile is "coming soon" we prepend a yellow warning
   // badge so the state is communicated by both the disabled styling AND a
   // textual marker.
@@ -215,6 +220,24 @@ function overviewTile(opts: {
     });
   }
   return tile;
+}
+
+/** Search toolbar used by every overview page (Tokens / Components /
+ *  Patterns / Templates). Renders a `<scout-text-field>` and a "match
+ *  count" pill in the same flex row, returning both so the caller can
+ *  wire its own filter logic. */
+function overviewSearchToolbar(opts: { placeholder: string; ariaLabel: string }): {
+  field: HTMLElement & { value: string };
+  count: HTMLElement;
+  toolbar: HTMLElement;
+} {
+  const field = document.createElement('scout-text-field') as HTMLElement & { value: string };
+  field.setAttribute('placeholder', opts.placeholder);
+  field.setAttribute('aria-label', opts.ariaLabel);
+  field.setAttribute('size', 'default');
+  const count = el('span', { class: 'component-search-count' });
+  const toolbar = el('div', { class: 'component-search-toolbar' }, field, count);
+  return { field, count, toolbar };
 }
 
 function emptyPanel(title: string, body: string): HTMLElement {
@@ -704,22 +727,16 @@ const app = document.getElementById('app')!;
   const tokenLinkCard = (t: TokenEntry): HTMLElement =>
     overviewTile({ title: t.name, summary: t.summary, href: t.id });
 
-  // Search input + count — same styling as the components overview.
-  const searchInput = el('input', {
-    type: 'search',
-    class: 'component-search',
+  // Search input + count — uses the shared scout-text-field-driven toolbar.
+  const { field: searchInput, count, toolbar: searchToolbar } = overviewSearchToolbar({
     placeholder: 'Search tokens by name or description (e.g. "color", "spacing")',
-    'aria-label': 'Search tokens',
-    autocomplete: 'off',
-  }) as HTMLInputElement;
-
-  const count = el('span', { class: 'component-search-count' });
-  const searchToolbar = el('div', { class: 'component-search-toolbar' }, searchInput, count);
+    ariaLabel: 'Search tokens',
+  });
 
   const grid = el('div', { class: 'foundation-grid' });
 
   function rerender() {
-    const q = searchInput.value.trim().toLowerCase();
+    const q = (searchInput.value || '').trim().toLowerCase();
     const matches = q
       ? tokenEntries.filter(
           (t) => t.name.toLowerCase().includes(q) || t.summary.toLowerCase().includes(q),
@@ -735,6 +752,7 @@ const app = document.getElementById('app')!;
     }
   }
   searchInput.addEventListener('input', rerender);
+  searchInput.addEventListener('change', rerender);
   rerender();
 
   app.append(
@@ -1052,33 +1070,53 @@ const app = document.getElementById('app')!;
   densitySel.addEventListener('scout-dropdown-change', () => requestAnimationFrame(refreshTypographyMetrics));
 
   // === Weights ===================================================
-  // Atomic font-weight tokens (extra-light → bold). Each specimen reads
-  // its numeric value from the resolved CSS variable so the right column
-  // stays accurate if a brand or theme remaps it.
-  const weights: Array<[string, string]> = [
-    ['extra-light', 'Scout is the best'],
-    ['light',       'Scout is the best'],
-    ['regular',     'Scout is the best'],
-    ['medium',      'Scout is the best'],
-    ['semibold',    'Scout is the best'],
-    ['bold',        'Scout is the best'],
+  // Atomic font-weight tokens (extra-light → bold). For each weight, we
+  // render the body→caption type ramp so designers can scan how a weight
+  // reads at every size at a glance.
+  const weights: Array<string> = [
+    'extra-light',
+    'light',
+    'regular',
+    'medium',
+    'semibold',
+    'bold',
+  ];
+  const weightSizes: Array<{ name: string; cls: string }> = [
+    { name: 'body-large', cls: 't-body-large' },
+    { name: 'body',       cls: 't-body' },
+    { name: 'body-small', cls: 't-body-small' },
+    { name: 'label',      cls: 't-label' },
+    { name: 'caption',    cls: 't-caption' },
   ];
   wrap.append(el('h2', { class: 'typography-section-heading' }, 'Weights'));
-  for (const [name, sample] of weights) {
+  wrap.append(el('p', { class: 'typography-section-lede' },
+    'Each weight token applied across the body → caption ramp. Inter is the base family for every row.',
+  ));
+  const weightsGrid = el('div', { class: 'typography-weights-grid' });
+  for (const name of weights) {
     const value = getComputedStyle(html).getPropertyValue(`${PREFIX}-font-weight-${name}`).trim();
-    wrap.append(el(
-      'div',
-      { class: 'specimen' },
-      el(
-        'div',
-        { class: 'meta' },
-        el('span', { class: 'key' }, name),
-        el('span', { class: 'value' }, value),
-        el('span', { class: 'key' }, `var(${PREFIX}-font-weight-${name})`),
+    const card = el('div', { class: 'typography-weight-card' });
+    card.append(
+      el('div', { class: 'typography-weight-card__head' },
+        el('span', { class: 'typography-weight-card__name' }, name),
+        el('span', { class: 'typography-weight-card__value' }, value),
       ),
-      el('div', { class: 't-body-large', style: `font-weight: var(${PREFIX}-font-weight-${name});` }, sample),
-    ));
+      el('span', { class: 'typography-weight-card__token' }, `var(${PREFIX}-font-weight-${name})`),
+    );
+    const samples = el('div', { class: 'typography-weight-card__samples' });
+    for (const size of weightSizes) {
+      samples.append(el('div', { class: 'typography-weight-sample' },
+        el('span', { class: 'typography-weight-sample__label' }, size.name),
+        el('span', {
+          class: size.cls,
+          style: `font-weight: var(${PREFIX}-font-weight-${name});`,
+        }, 'Scout is the best'),
+      ));
+    }
+    card.append(samples);
+    weightsGrid.append(card);
   }
+  wrap.append(weightsGrid);
 
   app.append(wrap);
 }
@@ -1638,16 +1676,30 @@ function buttonPreview(): HTMLElement {
     'Default · Disabled · Loading. Hover, focus, and pressed are all live — interact with the buttons to see them.',
     previewButton({ label: 'Default' }),
     previewButton({ label: 'Disabled', disabled: true }),
-    previewButton({ label: 'Loading…', loading: true }),
+    previewButton({ label: 'Loading', loading: true }),
   );
 
   block(
-    'With icons',
-    'Icons can sit before or after the label. Icon-only buttons require an aria-label-override and use a separate IconButton component (forthcoming).',
-    previewButton({ label: 'Add account', leadingIcon: '+' }),
-    previewButton({ label: 'Continue',    trailingIcon: '→' }),
-    previewButton({ variant: 'secondary', label: 'Filter', leadingIcon: '⚲' }),
-    previewButton({ variant: 'action',    label: 'Approve', leadingIcon: '✓' }),
+    'Prescriptive usage',
+    'Pair labels with the right variant per role. Icons can optionally sit before or after the label when the action benefits from a visual cue. Icon-only buttons require an aria-label-override and use a separate IconButton component (forthcoming).',
+    el('div', { class: 'btn-prescriptive' },
+      el('div', { class: 'btn-prescriptive__group' },
+        el('h4', { class: 'btn-prescriptive__heading' }, 'Without icons'),
+        el('div', { class: 'btn-prescriptive__row' },
+          previewButton({ label: 'View all addresses' }),
+          previewButton({ label: 'Continue' }),
+          previewButton({ variant: 'action',    label: 'Approve' }),
+          previewButton({ variant: 'critical',  label: 'Delete' }),
+        ),
+      ),
+      el('div', { class: 'btn-prescriptive__group' },
+        el('h4', { class: 'btn-prescriptive__heading' }, 'With icons'),
+        el('div', { class: 'btn-prescriptive__row' },
+          previewButton({ label: 'Add address', leadingIcon: '+' }),
+          previewButton({ variant: 'secondary', label: 'Filter', leadingIcon: '⚲' }),
+        ),
+      ),
+    ),
   );
 
   return wrap;
@@ -1984,22 +2036,16 @@ import '@scout/button';`,
   const componentLinkCard = (c: ComponentEntry): HTMLElement =>
     overviewTile({ title: c.name, summary: c.summary, href: c.id });
 
-  // Search input + count
-  const searchInput = el('input', {
-    type: 'search',
-    class: 'component-search',
+  // Search input + count — uses the shared scout-text-field-driven toolbar.
+  const { field: searchInput, count, toolbar: searchToolbar } = overviewSearchToolbar({
     placeholder: 'Search components by name or description (e.g. "alert", "button")',
-    'aria-label': 'Search components',
-    autocomplete: 'off',
-  }) as HTMLInputElement;
-
-  const count = el('span', { class: 'component-search-count' });
-  const searchToolbar = el('div', { class: 'component-search-toolbar' }, searchInput, count);
+    ariaLabel: 'Search components',
+  });
 
   const grid = el('div', { class: 'foundation-grid' });
 
   function rerender() {
-    const q = searchInput.value.trim().toLowerCase();
+    const q = (searchInput.value || '').trim().toLowerCase();
     const matches = q
       ? components.filter(
           (c) => c.name.toLowerCase().includes(q) || c.summary.toLowerCase().includes(q),
@@ -2015,6 +2061,7 @@ import '@scout/button';`,
     }
   }
   searchInput.addEventListener('input', rerender);
+  searchInput.addEventListener('change', rerender);
   rerender();
 
   app.append(
@@ -2495,17 +2542,16 @@ function addressPreview(): HTMLElement {
 
   block(
     'Sizes',
-    'Full for detail views. Condensed for data-dense surfaces (lists, tables). Single-line for compact rows where the address must fit on one line.',
+    'Full for detail views. Condensed for data-dense surfaces (lists, tables).',
     el('div', { class: 'preview-stack' },
       previewAddress({ size: 'full', label: 'Full' }),
       previewAddress({ size: 'condensed', label: 'Condensed' }),
-      previewAddress({ size: 'single-line', label: 'Single-line' }),
     ),
   );
 
   block(
     'Select tools',
-    'Add a selector when the user is interacting with addresses. Use scout-checkbox to select one or many for a bulk action (delete, mail to, export). Wrap the address in scout-accordion when only the most recently used address should be visible by default and the rest collapsed.',
+    'Add a selector when the user is interacting with addresses. Use scout-checkbox to select one or many for a bulk action (delete, mail to, export).',
     el('div', { class: 'preview-stack' },
       // Checkbox composition — pairs <scout-checkbox> with the address.
       // The checkbox is the actual Scout component (not the native input
@@ -2520,34 +2566,15 @@ function addressPreview(): HTMLElement {
         row.append(cb, previewAddress({ label: 'Home address', meta: 'Last verified Mar 2024 · Primary' }));
         return row;
       })(),
-      // Accordion composition — wraps the address in a <scout-accordion>
-      // so it can collapse to its label when other priorities take focus.
-      (() => {
-        const acc = document.createElement('scout-accordion');
-        acc.setAttribute('mode', 'single');
-        acc.setAttribute('size', 'md');
-        acc.setAttribute('icon-position', 'right');
-        acc.setAttribute('divider', '');
-        const item = document.createElement('scout-accordion-item');
-        item.setAttribute('label', 'Home address');
-        item.setAttribute('expanded', '');
-        item.append(previewAddress({ lines: ['1234 Maple Street', 'Apt 5B', 'Anywhere, USA 12345'] }));
-        acc.append(item);
-        const item2 = document.createElement('scout-accordion-item');
-        item2.setAttribute('label', 'Work address');
-        item2.append(previewAddress({ lines: ['450 Industrial Blvd', 'Suite 200', 'Anywhere, USA 12346'] }));
-        acc.append(item2);
-        return acc;
-      })(),
     ),
   );
 
   block(
     'Orientation',
-    'Stacked is the default. Inline puts the label on the same row as the body — useful when vertical real estate is tight.',
+    'Stacked is the default. Inline collapses the address onto a single row alongside the label — useful when vertical real estate is tight.',
     el('div', { class: 'preview-stack' },
       previewAddress({ label: 'Stacked', orientation: 'stacked' }),
-      previewAddress({ label: 'Inline',  orientation: 'inline'  }),
+      previewAddress({ label: 'Inline',  orientation: 'inline', lines: ['123 Main St, Apt 4B, Brooklyn, NY 11201'] }),
     ),
   );
 
@@ -2555,16 +2582,6 @@ function addressPreview(): HTMLElement {
     'Do not disclose',
     'When the customer has flagged an address as private, render the privacy banner. The address remains visible — agents need to see it — but the banner is a clear reminder.',
     previewAddress({ label: 'Backup address', doNotDisclose: true, lines: ['PO Box 4421', 'Anywhere, USA 12345'] }),
-  );
-
-  block(
-    'States',
-    'Default · Selected · Disabled.',
-    el('div', { class: 'preview-stack' },
-      previewAddress({ label: 'Default' }),
-      previewAddress({ label: 'Selected', selectTool: 'checkbox', selected: true }),
-      previewAddress({ label: 'Disabled', disabled: true }),
-    ),
   );
 
   return wrap;
@@ -3182,25 +3199,45 @@ function badgePreview(): HTMLElement {
   block(
     'Types — low emphasis (default)',
     'Seven types cover the badge\'s semantic meaning. Low emphasis is the default — use it for status chips that sit alongside data without competing for attention.',
-    previewBadge({ type: 'informational', label: 'New' }),
-    previewBadge({ type: 'neutral', label: 'Draft' }),
-    previewBadge({ type: 'neutral-knockout', label: 'Default' }),
-    previewBadge({ type: 'success', label: 'Active' }),
-    previewBadge({ type: 'warning', label: 'Pending' }),
-    previewBadge({ type: 'critical', label: 'Blocked' }),
-    previewBadge({ type: 'ai-summary', label: 'AI summary' }),
+    previewBadge({ type: 'informational', label: 'Blue' }),
+    previewBadge({ type: 'neutral', label: 'Gray' }),
+    previewBadge({ type: 'neutral-knockout', label: 'White' }),
+    previewBadge({ type: 'success', label: 'Green' }),
+    previewBadge({ type: 'warning', label: 'Yellow' }),
+    previewBadge({ type: 'critical', label: 'Red' }),
+    previewBadge({ type: 'ai-summary', label: 'Purple' }),
+  );
+
+  block(
+    'With icons — low emphasis',
+    'Set the icon attribute to render the prescribed status icon on the left of the label. Neutral types stay icon-less by design.',
+    previewBadge({ type: 'informational', icon: true, label: 'Blue' }),
+    previewBadge({ type: 'success', icon: true, label: 'Green' }),
+    previewBadge({ type: 'warning', icon: true, label: 'Yellow' }),
+    previewBadge({ type: 'critical', icon: true, label: 'Red' }),
+    previewBadge({ type: 'ai-summary', label: 'Purple' }),
   );
 
   block(
     'Types — high emphasis',
     'High emphasis fills the badge with the type\'s color. Reserve for badges that need stronger visual presence (active rows, urgent statuses).',
-    previewBadge({ type: 'informational', emphasis: 'high', label: 'New' }),
-    previewBadge({ type: 'neutral', emphasis: 'high', label: 'Draft' }),
-    previewBadge({ type: 'neutral-knockout', emphasis: 'high', label: 'Default' }),
-    previewBadge({ type: 'success', emphasis: 'high', label: 'Active' }),
-    previewBadge({ type: 'warning', emphasis: 'high', label: 'Pending' }),
-    previewBadge({ type: 'critical', emphasis: 'high', label: 'Blocked' }),
-    previewBadge({ type: 'ai-summary', emphasis: 'high', label: 'AI summary' }),
+    previewBadge({ type: 'informational', emphasis: 'high', label: 'Blue' }),
+    previewBadge({ type: 'neutral', emphasis: 'high', label: 'Gray' }),
+    previewBadge({ type: 'neutral-knockout', emphasis: 'high', label: 'White' }),
+    previewBadge({ type: 'success', emphasis: 'high', label: 'Green' }),
+    previewBadge({ type: 'warning', emphasis: 'high', label: 'Yellow' }),
+    previewBadge({ type: 'critical', emphasis: 'high', label: 'Red' }),
+    previewBadge({ type: 'ai-summary', emphasis: 'high', label: 'Purple' }),
+  );
+
+  block(
+    'With icons — high emphasis',
+    'Same prescribed status icons, paired with the high-emphasis fill for badges that need stronger visual presence.',
+    previewBadge({ type: 'informational', emphasis: 'high', icon: true, label: 'Blue' }),
+    previewBadge({ type: 'success',       emphasis: 'high', icon: true, label: 'Green' }),
+    previewBadge({ type: 'warning',       emphasis: 'high', icon: true, label: 'Yellow' }),
+    previewBadge({ type: 'critical',      emphasis: 'high', icon: true, label: 'Red' }),
+    previewBadge({ type: 'ai-summary',    emphasis: 'high', icon: true, label: 'Purple' }),
   );
 
   block(
@@ -3211,44 +3248,74 @@ function badgePreview(): HTMLElement {
   );
 
   // ----- Prescriptive usage -----
-  // A two-column table: badge example on the left, plain-language usage note on
-  // the right. Rendered as a real <table> so it scans like reference material.
-  const usageRows: Array<{ badge: HTMLElement; note: string }> = [
+  // A two-column table grouped into three sections (Status / Enrollment /
+  // Other) so designers can scan by category. Each group is its own
+  // <tbody> with a leading section-header row.
+  type UsageRow = { badge: HTMLElement; note: string };
+  const dndBadge = (() => {
+    const b = document.createElement('scout-badge');
+    b.setAttribute('type', 'critical');
+    b.setAttribute('emphasis', 'low');
+    const icon = heroIconSvg('chat-bubble-left', 14);
+    icon.setAttribute('slot', 'icon-custom');
+    b.append(icon, document.createTextNode('Do not disclose'));
+    return b;
+  })();
+  const usageSections: Array<{ heading: string; rows: UsageRow[] }> = [
     {
-      badge: previewBadge({ type: 'informational', label: 'New' }),
-      note: 'Use for new content such as features or questions in a form.',
+      heading: 'Status',
+      rows: [
+        {
+          badge: previewBadge({ type: 'success', icon: true, label: 'Active' }),
+          note: 'Use to confirm a positive, healthy, or completed state — e.g. an active account, a successful payment, or a verified record.',
+        },
+        {
+          badge: previewBadge({ type: 'warning', icon: true, label: 'Pending' }),
+          note: 'Use for in-progress or attention-worthy states that aren\'t errors — e.g. pending review, processing, awaiting confirmation.',
+        },
+        {
+          badge: previewBadge({ type: 'critical', icon: true, label: 'Failed' }),
+          note: 'Use for error, blocked, or destructive states — e.g. a failed payment, a closed account, or a flagged dispute.',
+        },
+      ],
     },
     {
-      badge: previewBadge({ type: 'ai-summary', icon: true, label: 'AI summary' }),
-      note: 'Use when content is being extracted or generated from AI.',
+      heading: 'Enrollment',
+      rows: [
+        {
+          badge: previewBadge({ type: 'success', label: 'Enrolled' }),
+          note: 'Use to confirm a customer or account is enrolled in a program, plan, or service.',
+        },
+        {
+          badge: previewBadge({ type: 'warning', label: 'Enrollment pending' }),
+          note: 'Use for enrollments that are submitted but not yet confirmed — awaiting verification, processing, or approval.',
+        },
+        {
+          badge: previewBadge({ type: 'neutral', label: 'Unenrolled' }),
+          note: 'Use to mark a customer or account that is not currently enrolled — never enrolled, opted out, or cancelled.',
+        },
+        {
+          badge: previewBadge({ type: 'critical', label: 'Canceled' }),
+          note: 'Use for terminated or revoked enrollments — accounts, plans, or subscriptions that were active and have since been cancelled.',
+        },
+      ],
     },
     {
-      badge: previewBadge({ type: 'success', icon: true, label: 'Active' }),
-      note: 'Use to confirm a positive, healthy, or completed state — e.g. an active account, a successful payment, or a verified record.',
-    },
-    {
-      badge: previewBadge({ type: 'warning', icon: true, label: 'Pending' }),
-      note: 'Use for in-progress or attention-worthy states that aren\'t errors — e.g. pending review, processing, awaiting confirmation.',
-    },
-    {
-      badge: previewBadge({ type: 'critical', icon: true, label: 'Failed' }),
-      note: 'Use for error, blocked, or destructive states — e.g. a failed payment, a closed account, or a flagged dispute.',
-    },
-    {
-      badge: previewBadge({ type: 'success', label: 'Enrolled' }),
-      note: 'Use to confirm a customer or account is enrolled in a program, plan, or service.',
-    },
-    {
-      badge: previewBadge({ type: 'warning', label: 'Pending' }),
-      note: 'Use for enrollments that are submitted but not yet confirmed — awaiting verification, processing, or approval.',
-    },
-    {
-      badge: previewBadge({ type: 'neutral', label: 'Unenrolled' }),
-      note: 'Use to mark a customer or account that is not currently enrolled — never enrolled, opted out, or cancelled.',
-    },
-    {
-      badge: previewBadge({ type: 'critical', label: 'Canceled' }),
-      note: 'Use for terminated or revoked enrollments — accounts, plans, or subscriptions that were active and have since been cancelled.',
+      heading: 'Other',
+      rows: [
+        {
+          badge: previewBadge({ type: 'informational', label: 'New' }),
+          note: 'Use for new content such as features or questions in a form.',
+        },
+        {
+          badge: previewBadge({ type: 'ai-summary', icon: true, label: 'AI summary' }),
+          note: 'Use when content is being extracted or generated from AI.',
+        },
+        {
+          badge: dndBadge,
+          note: 'Flag content the agent must not read aloud or share with the customer — e.g. internal notes, sensitive PII, or regulatory disclosures the customer is already aware of.',
+        },
+      ],
     },
   ];
 
@@ -3259,14 +3326,17 @@ function badgePreview(): HTMLElement {
         el('th', {}, 'Use for'),
       ),
     ),
-    el('tbody', {},
-      ...usageRows.map((row) =>
+    ...usageSections.map((section) => el('tbody', {},
+      el('tr', { class: 'badge-usage-table__section-row' },
+        el('th', { colspan: '2', class: 'badge-usage-table__section', scope: 'colgroup' }, section.heading),
+      ),
+      ...section.rows.map((row) =>
         el('tr', {},
           el('td', { class: 'badge-usage-table__badge' }, row.badge),
           el('td', { class: 'badge-usage-table__note' }, row.note),
         ),
       ),
-    ),
+    )),
   );
 
   wrap.append(el('div', { class: 'preview-block' },
@@ -4156,6 +4226,8 @@ function checkboxControls(): HTMLElement {
   const stage = el('div', { class: 'preview-stage preview-stage--block' });
   const codePre = el('pre', { class: 'code-block' }) as HTMLPreElement;
 
+  const viewSel = ddSelect('cb-view', ['single', 'group'] as const);
+  const groupLabelInput = ctrlText('cb-group-label', 'Notification preferences');
   const labelInput = ctrlText('cb-label', 'Subscribe to email updates');
   const secondaryInput = ctrlText('cb-secondary', '');
   const checkedChk = ctrlCheck('cb-checked', 'Checked');
@@ -4163,31 +4235,67 @@ function checkboxControls(): HTMLElement {
   const disabledChk = ctrlCheck('cb-disabled', 'Disabled');
   const invalidChk = ctrlCheck('cb-invalid', 'Invalid');
 
+  // Wrap the group-label field so it can be shown/hidden per view.
+  const ctrlField = (l: string, f: string, c: HTMLElement) =>
+    el('div', { class: 'ctrl-field' }, el('label', { for: f }, l), c);
+  const groupLabelField = ctrlField('Group label', 'cb-group-label', groupLabelInput);
+
   function render() {
-    stage.replaceChildren(previewCheckbox({
-      label: labelInput.value || 'Checkbox',
-      secondary: secondaryInput.value || undefined,
-      checked: checkedChk.checked,
-      indeterminate: indeterminateChk.checked,
-      disabled: disabledChk.checked,
-      invalid: invalidChk.checked,
-    }));
-    const attrs: string[] = [];
-    if (checkedChk.checked) attrs.push('checked');
-    if (indeterminateChk.checked) attrs.push('indeterminate');
-    if (disabledChk.checked) attrs.push('disabled');
-    if (invalidChk.checked) attrs.push('invalid');
-    if (secondaryInput.value) attrs.push(`secondary="${secondaryInput.value}"`);
-    codePre.textContent = `<scout-checkbox${attrs.length ? ' ' + attrs.join(' ') : ''}>\n  ${labelInput.value || 'Checkbox'}\n</scout-checkbox>`;
+    const isGroup = viewSel.value === 'group';
+    setFieldDisabled(groupLabelField, groupLabelInput, !isGroup);
+
+    if (isGroup) {
+      const groupLabel = groupLabelInput.value.trim();
+      stage.replaceChildren(previewCheckboxGroup({
+        label: groupLabel || undefined,
+        orientation: 'vertical',
+        items: [
+          {
+            label: labelInput.value || 'Checkbox',
+            secondary: secondaryInput.value || undefined,
+            checked: checkedChk.checked,
+            indeterminate: indeterminateChk.checked,
+            disabled: disabledChk.checked,
+            invalid: invalidChk.checked,
+          },
+          { label: 'Save card on file' },
+          { label: 'Auto-pay (managed by admin)' },
+        ],
+      }));
+      const attrs: string[] = [];
+      if (checkedChk.checked) attrs.push('checked');
+      if (indeterminateChk.checked) attrs.push('indeterminate');
+      if (disabledChk.checked) attrs.push('disabled');
+      if (invalidChk.checked) attrs.push('invalid');
+      if (secondaryInput.value) attrs.push(`secondary="${secondaryInput.value}"`);
+      const groupAttr = groupLabel ? ` label="${groupLabel}"` : '';
+      codePre.textContent = `<scout-checkbox-group${groupAttr}>\n  <scout-checkbox${attrs.length ? ' ' + attrs.join(' ') : ''}>${labelInput.value || 'Checkbox'}</scout-checkbox>\n  <scout-checkbox>Save card on file</scout-checkbox>\n  <scout-checkbox>Auto-pay (managed by admin)</scout-checkbox>\n</scout-checkbox-group>`;
+    } else {
+      stage.replaceChildren(previewCheckbox({
+        label: labelInput.value || 'Checkbox',
+        secondary: secondaryInput.value || undefined,
+        checked: checkedChk.checked,
+        indeterminate: indeterminateChk.checked,
+        disabled: disabledChk.checked,
+        invalid: invalidChk.checked,
+      }));
+      const attrs: string[] = [];
+      if (checkedChk.checked) attrs.push('checked');
+      if (indeterminateChk.checked) attrs.push('indeterminate');
+      if (disabledChk.checked) attrs.push('disabled');
+      if (invalidChk.checked) attrs.push('invalid');
+      if (secondaryInput.value) attrs.push(`secondary="${secondaryInput.value}"`);
+      codePre.textContent = `<scout-checkbox${attrs.length ? ' ' + attrs.join(' ') : ''}>\n  ${labelInput.value || 'Checkbox'}\n</scout-checkbox>`;
+    }
   }
-  for (const c of [labelInput, secondaryInput, checkedChk, indeterminateChk, disabledChk, invalidChk]) {
+  for (const c of [viewSel, groupLabelInput, labelInput, secondaryInput, checkedChk, indeterminateChk, disabledChk, invalidChk]) {
     c.addEventListener('input', render);
     c.addEventListener('change', render);
   }
-  const ctrlField = (l: string, f: string, c: HTMLElement) =>
-    el('div', { class: 'ctrl-field' }, el('label', { for: f }, l), c);
   const panel = el('div', { class: 'ctrl-panel' },
     el('h3', { class: 'preview-block__title' }, 'Properties'),
+    ctrlField('View', 'cb-view', viewSel),
+    groupLabelField,
     ctrlField('Label', 'cb-label', labelInput),
     ctrlField('Secondary text', 'cb-secondary', secondaryInput),
     el('div', { class: 'ctrl-checks' },
@@ -9091,10 +9199,10 @@ function tilePreview(): HTMLElement {
     'Four header states: not-started (collapsed), active (expanded — exactly one per flow), completed-editable (collapsed, with Edit button), completed-locked (collapsed). State drives expansion, so only the active step shows its body and footer.',
     el('div', { class: 'tile-stack' },
       makeTileWorkflow({ step: 1, header: 'Not started', state: 'not-started' }),
-      makeTileWorkflow({ step: 2, header: 'Select payment method', state: 'active',
+      makeTileWorkflow({ step: 2, header: 'Active', state: 'active',
         body: 'Choose how the customer wants to pay. Selection saves automatically.',
         footer: 'cancel-continue' }),
-      makeTileWorkflow({ step: 3, header: 'Confirm address', subhead: 'On-file address', state: 'completed-editable' }),
+      makeTileWorkflow({ step: 3, header: 'Completed - editable', subhead: 'On-file address', state: 'completed-editable' }),
       makeTileWorkflow({ step: 4, header: 'Completed - locked', state: 'completed-locked' }),
     ),
   );
@@ -12623,25 +12731,48 @@ app.append(componentPage(
 import '@scout/anchor-links';
 
 {
-  const grid = el(
-    'div',
-    { class: 'foundation-grid' },
-    overviewTile({
+  type PatternEntry = { title: string; summary: string; href?: string; comingSoon?: boolean };
+  const patternEntries: PatternEntry[] = [
+    {
       title: 'Anchor links',
       summary: 'Vertical menu that links to in-page sections. Auto-scroll mode highlights the active section as the user scrolls; manual mode is click-only.',
       href: 'patterns-anchor-links',
-    }),
-    overviewTile({ title: 'Data display',      summary: 'Lists, tables, and grids for showing structured records at scale. Sorting, density, empty + loading states.', comingSoon: true }),
-    overviewTile({
+    },
+    { title: 'Data display', summary: 'Lists, tables, and grids for showing structured records at scale. Sorting, density, empty + loading states.', comingSoon: true },
+    {
       title: 'Data table',
       summary: 'Rows and columns of structured data. Optional table / section / column headers, expandable rows, selectable rows, and a paginated or show-more footer.',
       href: 'patterns-data-table',
-    }),
-    overviewTile({ title: 'Data viz',         summary: 'Charts and visualizations for trends, comparisons, and distributions. Tokenized colors, accessible legends, responsive sizing.', comingSoon: true }),
-    overviewTile({ title: 'Filter',           summary: 'Faceted filter rail + chip summary. Multi-select, date ranges, clear-all.', comingSoon: true }),
-    overviewTile({ title: 'Form',             summary: 'Field grouping, inline validation, submission states, error summaries.', comingSoon: true }),
-    overviewTile({ title: 'Search',           summary: 'Global search input + result list. Type-ahead, keyboard navigation, recent queries.', comingSoon: true }),
-  );
+    },
+    { title: 'Data viz', summary: 'Charts and visualizations for trends, comparisons, and distributions. Tokenized colors, accessible legends, responsive sizing.', comingSoon: true },
+    { title: 'Filter',   summary: 'Faceted filter rail + chip summary. Multi-select, date ranges, clear-all.', comingSoon: true },
+    { title: 'Form',     summary: 'Field grouping, inline validation, submission states, error summaries.', comingSoon: true },
+    { title: 'Search',   summary: 'Global search input + result list. Type-ahead, keyboard navigation, recent queries.', comingSoon: true },
+  ];
+  const { field: searchInput, count, toolbar: searchToolbar } = overviewSearchToolbar({
+    placeholder: 'Search patterns by name or description (e.g. "table", "filter")',
+    ariaLabel: 'Search patterns',
+  });
+  const grid = el('div', { class: 'foundation-grid' });
+  function rerender() {
+    const q = (searchInput.value || '').trim().toLowerCase();
+    const matches = q
+      ? patternEntries.filter(
+          (p) => p.title.toLowerCase().includes(q) || p.summary.toLowerCase().includes(q),
+        )
+      : patternEntries;
+    count.textContent = `${matches.length} of ${patternEntries.length}`;
+    if (matches.length === 0) {
+      grid.replaceChildren(
+        el('div', { class: 'component-search-empty' }, `No patterns match "${searchInput.value}".`),
+      );
+    } else {
+      grid.replaceChildren(...matches.map((p) => overviewTile(p)));
+    }
+  }
+  searchInput.addEventListener('input', rerender);
+  searchInput.addEventListener('change', rerender);
+  rerender();
   app.append(
     page(
       'patterns-overview',
@@ -12649,6 +12780,7 @@ import '@scout/anchor-links';
         'Patterns',
         'Combinations of components that solve recurring UX problems. Cross-product patterns live in core; product-specific patterns live in product repos and can be promoted upward.',
       ),
+      searchToolbar,
       grid,
     ),
   );
@@ -13731,15 +13863,38 @@ import '@scout/anchor-links';
 // TEMPLATES
 // =================================================================
 {
-  const grid = el(
-    'div',
-    { class: 'foundation-grid' },
-    overviewTile({
+  type TemplateEntry = { title: string; summary: string; href?: string; comingSoon?: boolean };
+  const templateEntries: TemplateEntry[] = [
+    {
       title: 'Dashboard',
       summary: 'Header + stat cards + chart row + activity table. The default landing for product home views.',
       comingSoon: true,
-    }),
-  );
+    },
+  ];
+  const { field: searchInput, count, toolbar: searchToolbar } = overviewSearchToolbar({
+    placeholder: 'Search templates by name or description (e.g. "dashboard")',
+    ariaLabel: 'Search templates',
+  });
+  const grid = el('div', { class: 'foundation-grid' });
+  function rerender() {
+    const q = (searchInput.value || '').trim().toLowerCase();
+    const matches = q
+      ? templateEntries.filter(
+          (t) => t.title.toLowerCase().includes(q) || t.summary.toLowerCase().includes(q),
+        )
+      : templateEntries;
+    count.textContent = `${matches.length} of ${templateEntries.length}`;
+    if (matches.length === 0) {
+      grid.replaceChildren(
+        el('div', { class: 'component-search-empty' }, `No templates match "${searchInput.value}".`),
+      );
+    } else {
+      grid.replaceChildren(...matches.map((t) => overviewTile(t)));
+    }
+  }
+  searchInput.addEventListener('input', rerender);
+  searchInput.addEventListener('change', rerender);
+  rerender();
   app.append(
     page(
       'templates-overview',
@@ -13747,6 +13902,7 @@ import '@scout/anchor-links';
         'Templates',
         'Page-level layouts that combine patterns and components. Templates standardize the high-level shape of pages across products.',
       ),
+      searchToolbar,
       grid,
     ),
   );

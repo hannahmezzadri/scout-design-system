@@ -96,8 +96,8 @@ export class ScoutAccordionItem extends LitElement {
       overflow: hidden;
       padding: 0 var(--_cnx-accordion-padding-inline, 16px);
       color: var(--scout-text-display-secondary);
-      font-size: var(--scout-font-size-14);
-      line-height: var(--scout-font-line-height-21);
+      font-size: var(--scout-typography-body-font-size);
+      line-height: var(--scout-typography-body-line-height);
     }
     :host([expanded]) .content-inner {
       padding-bottom: var(--_cnx-accordion-padding-block, 12px);

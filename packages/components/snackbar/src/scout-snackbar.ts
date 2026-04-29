@@ -45,39 +45,41 @@ export class ScoutSnackbar extends LitElement {
       align-items: center;
       gap: var(--scout-space-12);
       padding: var(--scout-space-12) var(--scout-space-16);
-      background: var(--scout-color-cool-gray-800);
+      /* Status-driven colored fill — defaults to success-bold; warning and
+         critical override below. The fill-*-bold tokens auto-flip in dark
+         mode so the snackbar stays readable in both themes. */
+      background: var(--_snackbar-bg, var(--scout-fill-success-bold));
       color: var(--scout-color-white);
       border-radius: var(--scout-radius-8);
       box-shadow: var(--scout-elevation-3);
       font-family: var(--scout-font-family-inter);
-      font-size: var(--scout-font-size-14);
-      line-height: var(--scout-font-line-height-21);
+      font-size: var(--scout-typography-body-font-size);
+      line-height: var(--scout-typography-body-line-height);
     }
+
+    :host([status='success'])  { --_snackbar-bg: var(--scout-fill-success-bold); }
+    :host([status='warning'])  { --_snackbar-bg: var(--scout-fill-warning-bold); }
+    :host([status='critical']) { --_snackbar-bg: var(--scout-fill-critical-bold); }
 
     .status-icon {
       width: 20px;
       height: 20px;
       flex-shrink: 0;
+      /* Icon inherits the snackbar's white text so it sits cleanly on the
+         colored fill. */
+      color: var(--scout-color-white);
     }
-
-    /* Status colors only on the icon — bg stays neutral for max contrast in any context */
-    :host([status='success']) .status-icon { color: var(--scout-color-green-400); }
-    :host([status='warning']) .status-icon { color: var(--scout-color-yellow-400); }
-    :host([status='critical']) .status-icon { color: var(--scout-color-red-400); }
 
     .description {
       flex: 1;
       min-width: 0;
     }
 
-    /* X dismiss control — shown for success/warning, hidden for critical.
-       The scout-control component is light-surface by default; we override
-       its --_control-fg / --_control-fg-hover so the icon stays legible on
-       the dark cool-gray-800 fill, and tweak the hover background to a
-       white alpha so it reads on the dark surface. */
+    /* X dismiss control — sits on the colored fill, so the icon and hover
+       background use white tokens that read in both themes. */
     .dismiss {
       flex-shrink: 0;
-      --_control-fg: var(--scout-color-cool-gray-200);
+      --_control-fg: var(--scout-color-alpha-white-80);
       --_control-fg-hover: var(--scout-color-white);
     }
     .dismiss::part(button):hover {

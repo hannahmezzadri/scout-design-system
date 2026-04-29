@@ -100,8 +100,8 @@ export class ScoutInlineAlert extends LitElement {
     }
     .title[hidden] { display: none; }
     .message {
-      font-size: var(--scout-font-size-14);
-      line-height: var(--scout-font-line-height-21);
+      font-size: var(--scout-typography-body-font-size);
+      line-height: var(--scout-typography-body-line-height);
     }
     .action {
       margin-top: var(--scout-space-8);

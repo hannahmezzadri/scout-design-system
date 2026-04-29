@@ -166,6 +166,12 @@ importers:
 
   packages/components/address:
     dependencies:
+      '@scout/checkbox':
+        specifier: workspace:*
+        version: link:../checkbox
+      '@scout/radio':
+        specifier: workspace:*
+        version: link:../radio
       '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens
@@ -236,6 +242,9 @@ importers:
 
   packages/components/breadcrumb:
     dependencies:
+      '@scout/link':
+        specifier: workspace:*
+        version: link:../link
       '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens

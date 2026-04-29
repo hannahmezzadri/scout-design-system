@@ -40,6 +40,10 @@ export class ScoutCheckbox extends LitElement {
 
     .row {
       display: inline-flex;
+      /* Align the control to the label's first line — when secondary text
+         is present, we don't want the control to drop to the vertical
+         midpoint of the whole text stack. The 24px control matches the
+         body line-height so flex-start lines them up flush. */
       align-items: flex-start;
       gap: var(--scout-space-8);
       cursor: pointer;
@@ -52,10 +56,9 @@ export class ScoutCheckbox extends LitElement {
     .control {
       position: relative;
       display: inline-flex;
-      width: 16px;
-      height: 16px;
+      width: var(--scout-font-size-20);
+      height: var(--scout-font-size-20);
       flex-shrink: 0;
-      margin-top: 2px;
     }
 
     input {
@@ -76,7 +79,7 @@ export class ScoutCheckbox extends LitElement {
           var(--scout-motion-easing-standard);
     }
     input:hover:not(:disabled) {
-      border-color: var(--scout-text-interactive-primary);
+      border-color: var(--scout-color-blue-700);
     }
     input:focus-visible {
       outline: var(--scout-focus-ring-width) solid var(--scout-focus-ring-color);
@@ -87,8 +90,8 @@ export class ScoutCheckbox extends LitElement {
     }
     input:checked,
     input:indeterminate {
-      background: var(--scout-text-interactive-primary);
-      border-color: var(--scout-text-interactive-primary);
+      background: var(--scout-color-blue-700);
+      border-color: var(--scout-color-blue-700);
     }
     input:checked:active,
     input:indeterminate:active {
@@ -124,8 +127,8 @@ export class ScoutCheckbox extends LitElement {
       min-width: 0;
     }
     .label {
-      font-size: var(--scout-font-size-14);
-      line-height: var(--scout-font-line-height-21);
+      font-size: var(--scout-typography-body-font-size);
+      line-height: var(--scout-typography-body-line-height);
       color: var(--scout-text-display-primary);
     }
     .secondary {

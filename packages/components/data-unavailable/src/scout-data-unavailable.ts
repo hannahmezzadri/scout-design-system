@@ -39,8 +39,8 @@ export class ScoutDataUnavailable extends LitElement {
 
       /* Sizing tokens — overridden per [size] below. */
       --_du-icon: 20px;
-      --_du-fs: var(--scout-font-size-14);
-      --_du-lh: var(--scout-font-line-height-21);
+      --_du-fs: var(--scout-typography-body-font-size);
+      --_du-lh: var(--scout-typography-body-line-height);
     }
 
     :host([size='small']) {

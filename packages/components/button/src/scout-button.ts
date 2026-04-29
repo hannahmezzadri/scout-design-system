@@ -100,7 +100,7 @@ export class ScoutButton extends LitElement {
     :host([variant='secondary']) .button {
       background: var(--scout-surface-primary);
       color: var(--scout-text-interactive-primary);
-      border-color: var(--scout-border-primary);
+      border-color: var(--scout-text-interactive-primary);
     }
     :host([variant='secondary']) .button:hover:not(:disabled):not([aria-busy='true']) {
       background: var(--scout-interactive-background-hover);

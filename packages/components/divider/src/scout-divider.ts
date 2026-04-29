@@ -28,8 +28,20 @@ export class ScoutDivider extends LitElement {
       --_div-weight: var(--scout-border-width-1);
     }
     :host([color='light'])    { --_div-color: var(--scout-color-cool-gray-100); }
-    :host([color='knockout']) { --_div-color: var(--scout-color-alpha-white-20); }
+    /* Knockout reads against the opposite end of the page palette: closer
+       to white in the light theme, closer to black in the dark theme. */
+    :host([color='knockout']) { --_div-color: var(--scout-color-alpha-white-80); }
     :host([weight='2'])       { --_div-weight: var(--scout-border-width-2); }
+
+    /* Dark theme — border-secondary collapses into surface-primary in dark
+       and border-primary collapses into the dark card surface (cool-gray.700),
+       so we promote the default divider to cool-gray.500. That keeps it
+       readable on both the page chrome and inside raised surfaces. */
+    :host-context([data-theme='dark']) {
+      --_div-color: var(--scout-color-cool-gray-500);
+    }
+    :host-context([data-theme='dark']):host([color='light'])    { --_div-color: var(--scout-color-cool-gray-700); }
+    :host-context([data-theme='dark']):host([color='knockout']) { --_div-color: var(--scout-color-alpha-80); }
 
     /* Horizontal — full-width rule that takes its own line in flow. */
     :host(:not([orientation='vertical'])) {

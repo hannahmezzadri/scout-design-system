@@ -57,8 +57,8 @@ export class ScoutErrorState extends LitElement {
     }
     .header[hidden] { display: none; }
     .message {
-      font-size: var(--scout-font-size-16);
-      line-height: var(--scout-font-line-height-24);
+      font-size: var(--scout-typography-body-font-size);
+      line-height: var(--scout-typography-body-line-height);
       color: var(--scout-text-display-secondary);
       max-width: 48ch;
     }

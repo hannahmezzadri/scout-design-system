@@ -720,8 +720,71 @@ section > p.lede {
   font-weight: var(--scout-typography-heading-3-font-weight);
   font-size: var(--scout-typography-heading-3-font-size);
   line-height: var(--scout-typography-heading-3-line-height);
-  margin: var(--scout-space-32) 0 var(--scout-space-8);
+  margin: var(--scout-space-48) 0 var(--scout-space-4);
   color: var(--scout-text-display-primary);
+}
+.typography-section-lede {
+  margin: 0 0 var(--scout-space-24);
+  font-size: var(--scout-typography-body-small-font-size);
+  line-height: var(--scout-typography-body-small-line-height);
+  color: var(--scout-text-display-secondary);
+}
+
+/* Weights grid — one card per weight, each showing the body → caption ramp. */
+.typography-weights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--scout-space-16);
+}
+.typography-weight-card {
+  background: var(--scout-surface-primary);
+  border: var(--scout-border-width-1) solid var(--scout-border-secondary);
+  border-radius: var(--scout-radius-8);
+  padding: var(--scout-space-16);
+  display: flex;
+  flex-direction: column;
+  gap: var(--scout-space-12);
+}
+.typography-weight-card__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--scout-space-8);
+}
+.typography-weight-card__name {
+  font-size: var(--scout-typography-body-font-size);
+  font-weight: var(--scout-font-weight-semibold);
+  color: var(--scout-text-display-primary);
+  text-transform: capitalize;
+}
+.typography-weight-card__value {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: var(--scout-font-size-12);
+  color: var(--scout-text-display-secondary);
+}
+.typography-weight-card__token {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: var(--scout-font-size-12);
+  color: var(--scout-text-display-secondary);
+}
+.typography-weight-card__samples {
+  display: flex;
+  flex-direction: column;
+  gap: var(--scout-space-12);
+  border-top: var(--scout-border-width-1) solid var(--scout-border-secondary);
+  padding-top: var(--scout-space-12);
+}
+.typography-weight-sample {
+  display: flex;
+  flex-direction: column;
+  gap: var(--scout-space-2, 2px);
+}
+.typography-weight-sample__label {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: var(--scout-font-size-10);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--scout-text-display-secondary);
 }
 .specimen .meta {
   font-size: var(--scout-font-size-12);
@@ -1063,6 +1126,29 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   padding: var(--scout-space-12);
 }
 .preview-row--block > * { width: 100%; }
+
+/* Prescriptive usage block for the Button preview — two labelled rows
+   (without icons / with icons) stacked inside a single preview-block. */
+.btn-prescriptive {
+  display: flex;
+  flex-direction: column;
+  gap: var(--scout-space-24);
+  width: 100%;
+}
+.btn-prescriptive__heading {
+  margin: 0 0 var(--scout-space-8);
+  font-size: var(--scout-font-size-12);
+  font-weight: var(--scout-font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--scout-text-display-secondary);
+}
+.btn-prescriptive__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--scout-space-12);
+  align-items: center;
+}
 .preview-stack {
   display: flex;
   flex-direction: column;
@@ -1179,6 +1265,28 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   color: var(--scout-text-display-secondary);
   font-size: var(--scout-font-size-14);
   line-height: var(--scout-font-line-height-21);
+}
+/* Placeholder spot illustration above the tile title. Slot consumers can
+   drop in their own SVG / IMG; the empty <div> renders a labelled box so
+   designers see where to place artwork. */
+.overview-tile-illustration {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--scout-radius-8);
+  background: var(--scout-fill-secondary);
+  border: var(--scout-border-width-1) dashed var(--scout-border-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--scout-font-size-10);
+  font-weight: var(--scout-font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--scout-text-display-secondary);
+  margin-bottom: var(--scout-space-12);
+}
+.overview-tile-illustration::before {
+  content: 'Spot illo';
 }
 
 /* === Data pair preview === */
@@ -1471,7 +1579,7 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   border-bottom: var(--scout-border-width-1) solid var(--scout-border-secondary);
   color: var(--scout-text-display-primary);
 }
-.badge-usage-table tbody tr:last-child td {
+.badge-usage-table tbody:last-child tr:last-child td {
   border-bottom: none;
 }
 .badge-usage-table__badge {
@@ -1480,6 +1588,18 @@ body.nav-open .sidebar-scrim { opacity: 1; }
 }
 .badge-usage-table__note {
   color: var(--scout-text-display-secondary);
+}
+/* Section header rows that group the table by category. */
+.badge-usage-table__section {
+  text-align: left;
+  font-size: var(--scout-font-size-12);
+  font-weight: var(--scout-font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--scout-text-display-secondary);
+  padding: var(--scout-space-12) var(--scout-space-12) var(--scout-space-8);
+  background: var(--scout-fill-secondary);
+  border-bottom: var(--scout-border-width-1) solid var(--scout-border-secondary);
 }
 
 /* === Anchor links pattern demo === */
@@ -1984,10 +2104,9 @@ body.nav-open .sidebar-scrim { opacity: 1; }
 .address-select-row {
   display: flex;
   align-items: flex-start;
-  gap: var(--scout-space-12);
+  gap: var(--scout-space-8);
 }
 .address-select-row > scout-address { flex: 1; min-width: 0; }
-.address-select-row > scout-checkbox { margin-top: var(--scout-space-12); }
 
 /* === Data table pattern (Patterns > Data table) ===
    Composed from existing components, styled with semantic tokens so it

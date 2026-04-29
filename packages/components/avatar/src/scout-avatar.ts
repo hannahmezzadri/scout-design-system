@@ -65,9 +65,11 @@ export class ScoutAvatar extends LitElement {
     }
 
     /* Color variants — all token-driven */
+    /* Blue mirrors the low-emphasis "informational" badge — light blue
+       fill with the info text color so initials stay legible. */
     :host([color='blue']) .badge {
-      background: var(--scout-text-interactive-primary);
-      color: var(--scout-color-white);
+      background: var(--scout-color-blue-100);
+      color: var(--scout-text-display-info);
     }
     :host([color='gray']) .badge {
       background: var(--scout-color-cool-gray-200);

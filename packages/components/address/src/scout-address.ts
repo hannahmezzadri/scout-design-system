@@ -1,5 +1,7 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import '@scout/checkbox';
+import '@scout/radio';
 import type { AddressOrientation, AddressSelectTool, AddressSize } from './types.js';
 
 /**
@@ -31,38 +33,24 @@ export class ScoutAddress extends LitElement {
   static styles = css`
     :host {
       display: block;
-      --_cnx-address-padding-block: var(--scout-space-12);
-      --_cnx-address-padding-inline: var(--scout-space-16);
-      --_cnx-address-body-font-size: var(--scout-font-size-14);
-      --_cnx-address-body-line-height: var(--scout-font-line-height-21);
+      --_cnx-address-body-font-size: var(--scout-typography-body-font-size);
+      --_cnx-address-body-line-height: var(--scout-typography-body-line-height);
     }
     :host([size='condensed']) {
-      --_cnx-address-padding-block: var(--scout-space-8);
-      --_cnx-address-padding-inline: var(--scout-space-12);
-      --_cnx-address-body-font-size: var(--scout-font-size-12);
-      --_cnx-address-body-line-height: var(--scout-font-line-height-18);
+      --_cnx-address-body-font-size: var(--scout-typography-body-small-font-size);
+      --_cnx-address-body-line-height: var(--scout-typography-body-small-line-height);
     }
     :host([size='single-line']) {
-      --_cnx-address-padding-block: var(--scout-space-8);
-      --_cnx-address-padding-inline: var(--scout-space-12);
-      --_cnx-address-body-font-size: var(--scout-font-size-14);
-      --_cnx-address-body-line-height: var(--scout-font-line-height-21);
+      --_cnx-address-body-font-size: var(--scout-typography-body-font-size);
+      --_cnx-address-body-line-height: var(--scout-typography-body-line-height);
     }
 
     .container {
       display: flex;
       flex-direction: column;
       gap: var(--scout-space-8);
-      padding: var(--_cnx-address-padding-block) var(--_cnx-address-padding-inline);
       background: var(--scout-surface-primary);
-      border: var(--scout-border-width-1) solid var(--scout-border-secondary);
-      border-radius: var(--scout-radius-8);
-      transition: border-color var(--scout-motion-duration-fast)
-        var(--scout-motion-easing-standard);
-    }
-    :host([selected]) .container {
-      border-color: var(--scout-text-interactive-primary);
-      box-shadow: 0 0 0 1px var(--scout-text-interactive-primary);
+      border-radius: var(--scout-radius-0);
     }
     :host([disabled]) .container {
       opacity: 0.5;
@@ -92,7 +80,7 @@ export class ScoutAddress extends LitElement {
     /* Row holds optional select tool + content */
     .row {
       display: flex;
-      gap: var(--scout-space-12);
+      gap: var(--scout-space-8);
       align-items: flex-start;
     }
     :host([select-tool='none']) .select-cell {
@@ -101,14 +89,6 @@ export class ScoutAddress extends LitElement {
     .select-cell {
       display: flex;
       align-items: flex-start;
-      padding-top: 2px;
-    }
-    .select-cell input {
-      width: 16px;
-      height: 16px;
-      margin: 0;
-      cursor: pointer;
-      accent-color: var(--scout-text-interactive-primary);
     }
 
     .content {
@@ -137,8 +117,7 @@ export class ScoutAddress extends LitElement {
       font-family: var(--scout-font-family-inter);
       font-size: var(--scout-font-size-12);
       font-weight: var(--scout-font-weight-semibold);
-
-      color: var(--scout-text-display-secondary);
+      color: var(--scout-text-display-primary);
     }
     .favorite-icon {
       width: 14px;
@@ -179,11 +158,6 @@ export class ScoutAddress extends LitElement {
       display: none;
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      .container {
-        transition: none;
-      }
-    }
   `;
 
   /** Optional label (e.g. "Home address"). */
@@ -222,8 +196,8 @@ export class ScoutAddress extends LitElement {
   @state() private _hasMeta = false;
 
   private _onSelect = (e: Event) => {
-    const input = e.currentTarget as HTMLInputElement;
-    this.selected = input.checked;
+    const target = e.currentTarget as HTMLElement & { checked: boolean };
+    this.selected = !!target.checked;
     this.dispatchEvent(
       new CustomEvent<{ selected: boolean; value: string }>('scout-address-change', {
         bubbles: true,
@@ -263,17 +237,31 @@ export class ScoutAddress extends LitElement {
 
   private _renderSelectTool() {
     if (this.selectTool === 'none') return nothing;
+    const ariaLabel = this.label ? `Select ${this.label}` : 'Select address';
+    if (this.selectTool === 'radio') {
+      return html`
+        <div class="select-cell">
+          <scout-radio
+            name=${this.name || nothing}
+            value=${this.value || nothing}
+            ?checked=${this.selected}
+            ?disabled=${this.disabled}
+            aria-label=${ariaLabel}
+            @change=${this._onSelect}
+          ></scout-radio>
+        </div>
+      `;
+    }
     return html`
       <div class="select-cell">
-        <input
-          type=${this.selectTool === 'radio' ? 'radio' : 'checkbox'}
+        <scout-checkbox
           name=${this.name || nothing}
           value=${this.value || nothing}
           ?checked=${this.selected}
           ?disabled=${this.disabled}
-          aria-label=${this.label ? `Select ${this.label}` : 'Select address'}
+          aria-label=${ariaLabel}
           @change=${this._onSelect}
-        />
+        ></scout-checkbox>
       </div>
     `;
   }

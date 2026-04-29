@@ -19,7 +19,8 @@ import type { TileFunctionalState } from './types.js';
  * @attr disabled - Disables the click target.
  * @attr {"default"|"loading"|"error"} state - Functional state.
  *
- * @slot - Body content.
+ * @slot              - Body content.
+ * @slot illustration - Optional spot illustration rendered above the header.
  *
  * @fires scout-tile-click - Bubbles, composed; fired when a non-disabled tile is clicked.
  */
@@ -152,6 +153,7 @@ export class ScoutTileButton extends LitElement {
   render() {
     return html`
       <button type="button" ?disabled=${this.disabled} @click=${this._onClick}>
+        <slot name="illustration"></slot>
         <div class="header">${this.header}</div>
         ${this.subhead ? html`<div class="subhead">${this.subhead}</div>` : nothing}
         ${this._renderBody()}

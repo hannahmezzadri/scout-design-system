@@ -76,8 +76,8 @@ export class ScoutSystemOutage extends LitElement {
     .title[hidden] { display: none; }
 
     .description {
-      font-size: var(--scout-font-size-14);
-      line-height: var(--scout-font-line-height-21);
+      font-size: var(--scout-typography-body-font-size);
+      line-height: var(--scout-typography-body-line-height);
     }
 
     .link {
