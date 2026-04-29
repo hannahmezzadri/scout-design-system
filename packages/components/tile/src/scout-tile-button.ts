@@ -46,11 +46,10 @@ export class ScoutTileButton extends LitElement {
       display: flex;
       flex-direction: column;
       text-align: left;
-      /* Per spec: fill.white background + 1px solid cool-gray.200 border.
-         The fill.white semantic stays white across themes (including dark). */
-      background: var(--scout-fill-always-white);
+      /* Theme-aware surface + border (auto-flip in dark mode). */
+      background: var(--scout-surface-primary);
       border: var(--scout-border-width-1) var(--scout-stroke-solid)
-        var(--scout-color-cool-gray-200);
+        var(--scout-border-primary);
       border-radius: var(--scout-radius-8);
       padding: var(--scout-space-16);
       font: inherit;
@@ -77,22 +76,11 @@ export class ScoutTileButton extends LitElement {
       box-shadow: var(--scout-elevation-2);
     }
     button:active:not(:disabled) {
-      background: var(--scout-color-cool-gray-100);
+      background: var(--scout-interactive-background-pressed);
     }
     button:disabled {
       cursor: not-allowed;
       opacity: 0.5;
-    }
-
-    /* Dark theme — swap the always-white fill for a semantic dark surface
-       so the tile reads on a dark page. The active-press fill also remaps
-       to the interactive-pressed token so it stays in-system. */
-    :host-context([data-theme='dark']) button {
-      background: var(--scout-surface-primary);
-      border-color: var(--scout-border-primary);
-    }
-    :host-context([data-theme='dark']) button:active:not(:disabled) {
-      background: var(--scout-interactive-background-pressed);
     }
 
     .header {

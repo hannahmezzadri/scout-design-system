@@ -1,0 +1,14 @@
+{
+  "brand": {
+    "ember": {
+      "$description": "Ember (agent desktop) brand colors. Primary = A1CC3C (green), Accent = 019ED5 (blue).",
+      "primary": { "$value": "#A1CC3C", "$type": "color" },
+      "accent":  { "$value": "#019ED5", "$type": "color" }
+    }
+  },
+  "illustration": {
+    "$description": "Per-brand illustration overrides. Activated when [data-brand=\"ember\"]. Ember illustrations take the green primary; the blue accent doubles as the highlight stop.",
+    "primary": { "$value": "#A1CC3C", "$type": "color" },
+    "accent":  { "$value": "#019ED5", "$type": "color" }
+  }
+}

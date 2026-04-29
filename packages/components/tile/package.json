@@ -15,6 +15,7 @@
     "@scout/tokens": "workspace:*",
     "@scout/badge": "workspace:*",
     "@scout/button": "workspace:*",
+    "@scout/divider": "workspace:*",
     "@scout/show-more": "workspace:*",
     "@scout/skeleton": "workspace:*"
   },

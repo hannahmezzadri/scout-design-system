@@ -351,11 +351,11 @@ const app = document.getElementById('app')!;
 
   // Hero — full-width intro stating what Scout is and which products it
   // empowers. Pill-style product chips render directly inline with the copy.
-  const products = ['Empath', 'Sage', 'OneComm', 'Athena', 'Graffiti', 'Hubble', 'Voyant', 'ECHO', 'E4A', 'Eno'];
+  const products = ['Ember', 'Snag', 'Onward', 'Acorn', 'Grub', 'Huddle', 'Venture', 'Embark', 'Etch', 'Owt'];
   const hero = el('section', { class: 'overview-hero' },
     el('div', { class: 'overview-hero__copy' },
       el('div', { class: 'overview-hero__eyebrow' }, 'Scout'),
-      el('h2', { class: 'overview-hero__title' }, "Capital One's design system for internal products within Card Servicing"),
+      el('h2', { class: 'overview-hero__title' }, "Capital Two's design system for internal products within Card Servicing"),
       el('p', { class: 'overview-hero__body' },
         'Scout empowers a family of products with a single, cohesive visual and interaction language. It is built on atomic design methodology and follows a tokens → components → patterns → templates structure. Tokens and components are specific to Scout and form the building blocks of the system. Patterns and templates ship in both core/shared form and product-specific form.'),
       el('div', { class: 'overview-hero__products' },
@@ -543,11 +543,11 @@ const app = document.getElementById('app')!;
     el('pre', { class: 'code-block' },
 `<html
   lang="es"
-  data-product="empath"
+  data-product="ember"
   data-theme="dark"
   data-density="condensed"
 >
-  <!-- Empath, dark mode, condensed density, Spanish -->
+  <!-- Ember, dark mode, condensed density, Spanish -->
 </html>`,
     ),
     el(
@@ -593,15 +593,15 @@ const app = document.getElementById('app')!;
   function renderProducts(): HTMLElement {
     const products: Array<[string, string]> = [
       ['Scout',   'data-product="scout"'],
-      ['Empath',   'data-product="empath"'],
-      ['Sage',     'data-product="sage"'],
-      ['OneComm',  'data-product="onecomm"'],
-      ['Athena',   'data-product="athena"'],
-      ['Graffiti', 'data-product="graffiti"'],
-      ['Hubble',   'data-product="hubble"'],
-      ['Voyant',   'data-product="voyant"'],
-      ['ECHO',     'data-product="echo"'],
-      ['E4A',      'data-product="e4a"'],
+      ['Ember',   'data-product="ember"'],
+      ['Snag',     'data-product="snag"'],
+      ['Onward',  'data-product="onward"'],
+      ['Acorn',   'data-product="acorn"'],
+      ['Grub', 'data-product="grub"'],
+      ['Huddle',   'data-product="huddle"'],
+      ['Venture',   'data-product="venture"'],
+      ['Embark',     'data-product="embark"'],
+      ['Etch',      'data-product="etch"'],
     ];
     return el('div', { class: 'tab-content' },
       el('section', { class: 'theme-section' },
@@ -897,8 +897,8 @@ const app = document.getElementById('app')!;
       'Per-product brand colors, scoped via [data-brand]. Switch the Brand control above to see the active set update.'));
     const brands: Array<[string, string[]]> = [
       ['scout', ['light', 'primary', 'dark']],
-      ['empath', ['primary', 'accent']],
-      ['sage', ['primary', 'cream']],
+      ['ember', ['primary', 'accent']],
+      ['snag', ['primary', 'cream']],
     ];
     for (const [b, keys] of brands) {
       wrap.append(subhead(b.charAt(0).toUpperCase() + b.slice(1)));
@@ -1050,6 +1050,36 @@ const app = document.getElementById('app')!;
     }
   };
   densitySel.addEventListener('scout-dropdown-change', () => requestAnimationFrame(refreshTypographyMetrics));
+
+  // === Weights ===================================================
+  // Atomic font-weight tokens (extra-light → bold). Each specimen reads
+  // its numeric value from the resolved CSS variable so the right column
+  // stays accurate if a brand or theme remaps it.
+  const weights: Array<[string, string]> = [
+    ['extra-light', 'Scout is the best'],
+    ['light',       'Scout is the best'],
+    ['regular',     'Scout is the best'],
+    ['medium',      'Scout is the best'],
+    ['semibold',    'Scout is the best'],
+    ['bold',        'Scout is the best'],
+  ];
+  wrap.append(el('h2', { class: 'typography-section-heading' }, 'Weights'));
+  for (const [name, sample] of weights) {
+    const value = getComputedStyle(html).getPropertyValue(`${PREFIX}-font-weight-${name}`).trim();
+    wrap.append(el(
+      'div',
+      { class: 'specimen' },
+      el(
+        'div',
+        { class: 'meta' },
+        el('span', { class: 'key' }, name),
+        el('span', { class: 'value' }, value),
+        el('span', { class: 'key' }, `var(${PREFIX}-font-weight-${name})`),
+      ),
+      el('div', { class: 't-body-large', style: `font-weight: var(${PREFIX}-font-weight-${name});` }, sample),
+    ));
+  }
+
   app.append(wrap);
 }
 
@@ -2022,7 +2052,7 @@ function previewAccordion(opts: AccOpts = {}): HTMLElement {
     iconPosition = 'right',
     divider = false,
     items = [
-      { label: 'What is Scout?', content: 'Scout is the enterprise design system powering Empath and 7+ other internal tools. It ships tokens, components, and patterns built on Lit Web Components.', expanded: true },
+      { label: 'What is Scout?', content: 'Scout is the enterprise design system powering Ember and 7+ other internal tools. It ships tokens, components, and patterns built on Lit Web Components.', expanded: true },
       { label: 'How is the system structured?', content: 'Three tiers: Core (tokens + primitives), Shared (cross-product patterns), and Product (product-scoped patterns that can be promoted to Shared or Core).' },
       { label: 'Can I theme components?', content: 'Yes. Scout uses CSS custom properties for every visual value, so theme, density, language, and product brand all swap via data attributes on the root element with no rebuild.' },
     ],
@@ -3458,7 +3488,7 @@ function breadcrumbPreview(): HTMLElement {
         { label: 'Account details', current: true },
       ]}),
       previewBreadcrumb({ items: [
-        { label: 'Empath', href: '#' },
+        { label: 'Ember', href: '#' },
         { label: 'Settings', href: '#' },
         { label: 'Notifications', current: true },
       ]}),
@@ -4622,7 +4652,7 @@ function dataPairPreview(): HTMLElement {
     el('div', { class: 'preview-stack' },
       previewDataPair({ orientation: 'horizontal', label: 'Account name', description: 'Jamie Tran' }),
       previewDataPair({ orientation: 'horizontal', label: 'Phone', description: '555-014-2237' }),
-      previewDataPair({ orientation: 'horizontal', label: 'Email', description: 'jamie@empath.com', meta: 'Verified' }),
+      previewDataPair({ orientation: 'horizontal', label: 'Email', description: 'jamie@ember.com', meta: 'Verified' }),
       previewDataPair({ orientation: 'horizontal', label: 'Status', description: 'Active', link: 'Manage' }),
     ),
   );
@@ -5585,7 +5615,7 @@ function errorStatePreview(): HTMLElement {
   block('Custom copy',
     'Any combination of header and message. Keep the message under three short sentences.',
     previewErrorState({
-      header: 'Empath is unavailable',
+      header: 'Ember is unavailable',
       message: 'Our service is currently down. We\'re working to restore it as quickly as possible.',
       link: 'Check status page',
     }),
@@ -5648,7 +5678,7 @@ function errorStateGuidelines(): HTMLElement {
       el('div', { class: 'do-dont-grid' },
         doCard(previewErrorState({ link: 'Try again', linkHref: '#' }),
           'Always provide a recovery path — a retry, a way to contact support, or a link back to a working state.'),
-        doCard(previewErrorState({ header: 'Empath is unavailable', message: "We're working to restore service. Estimated time to recovery: 15 minutes." }),
+        doCard(previewErrorState({ header: 'Ember is unavailable', message: "We're working to restore service. Estimated time to recovery: 15 minutes." }),
           'When the cause is known (outage, maintenance), name it and give an ETA. Vague errors erode trust.'),
       )),
     el('section', { class: 'guideline-section' },
@@ -5668,7 +5698,7 @@ function errorStateContent(): HTMLElement {
       el('h3', { class: 'guideline-heading' }, 'Header'),
       el('ul', { class: 'guideline-list' },
         el('li', {}, 'Use sentence case ("Something went wrong", not "Something Went Wrong").'),
-        el('li', {}, 'Be human. "Empath is unavailable" beats "HTTP 503".'),
+        el('li', {}, 'Be human. "Ember is unavailable" beats "HTTP 503".'),
         el('li', {}, 'Don\'t blame the user. "Couldn\'t load" beats "Your request failed".'),
       )),
     el('section', { class: 'guideline-section' },
@@ -5721,7 +5751,7 @@ function errorStateCode(): HTMLElement {
 <!-- Custom illustration -->
 <scout-error-state>
   <svg slot="illustration" viewBox="0 0 200 160">…</svg>
-  <span slot="header">Empath is unavailable</span>
+  <span slot="header">Ember is unavailable</span>
   We're working to restore service.
   <a slot="link" href="/status">Check status page</a>
 </scout-error-state>`)),
@@ -6072,7 +6102,7 @@ function inlineAlertPreview(): HTMLElement {
     'Add a tertiary button or link in the action slot. Add closable for a dismiss button. Combine for full functionality.',
     el('div', { class: 'preview-stack' },
       previewInlineAlert({ status: 'warning', title: 'Update your payment method', message: 'Your card ending in 4242 expires next month.', action: 'Update card' }),
-      previewInlineAlert({ status: 'informational', message: 'A new build of Empath is available.', closable: true }),
+      previewInlineAlert({ status: 'informational', message: 'A new build of Ember is available.', closable: true }),
       previewInlineAlert({ status: 'critical', title: 'Connection lost', message: 'Reconnect to continue.', action: 'Retry', closable: true }),
     ),
   );
@@ -7597,7 +7627,7 @@ function snackbarGuidelines(): HTMLElement {
       el('div', { class: 'do-dont-grid' },
         dontCard(previewSnackbar({ status: 'critical', description: 'Account permanently deleted. This cannot be undone.' }),
           "Don't use snackbars for irreversible or critical actions. The user might miss the auto-dismiss. Use a confirmation dialog or inline alert."),
-        dontCard(previewSnackbar({ status: 'success', description: 'Welcome to Empath! Here are 5 tips to get started…' }),
+        dontCard(previewSnackbar({ status: 'success', description: 'Welcome to Ember! Here are 5 tips to get started…' }),
           "Don't put long content in snackbars. Keep it under one short sentence. Use Inline alert for anything longer."),
       )));
 }
@@ -7912,7 +7942,7 @@ type SOStatus = 'platform-wide-outage' | 'feature-outage' | 'outage-restored';
 function previewSystemOutage(opts: { status?: SOStatus; title?: string; description?: string; link?: string; closable?: boolean } = {}): HTMLElement {
   const {
     status = 'platform-wide-outage',
-    title = 'Empath is currently down',
+    title = 'Ember is currently down',
     description = 'We\'re working to restore service. Estimated time to recovery: 15 minutes.',
     link,
     closable = true,
@@ -7948,8 +7978,8 @@ function systemOutagePreview(): HTMLElement {
     'Statuses',
     'Three statuses cover the lifecycle of a system event: full outage (red), partial degradation (yellow), and recovery (green).',
     el('div', { class: 'preview-stack' },
-      previewSystemOutage({ status: 'platform-wide-outage', title: 'Empath is currently down', description: 'We\'re working to restore service. Estimated time to recovery: 15 minutes.', link: 'Check status page' }),
-      previewSystemOutage({ status: 'feature-outage', title: 'Payments are temporarily unavailable', description: 'Other Empath features are working normally. Payment processing will resume shortly.', link: 'View affected features' }),
+      previewSystemOutage({ status: 'platform-wide-outage', title: 'Ember is currently down', description: 'We\'re working to restore service. Estimated time to recovery: 15 minutes.', link: 'Check status page' }),
+      previewSystemOutage({ status: 'feature-outage', title: 'Payments are temporarily unavailable', description: 'Other Ember features are working normally. Payment processing will resume shortly.', link: 'View affected features' }),
       previewSystemOutage({ status: 'outage-restored', title: 'Service restored', description: 'All systems are operational. Past incident details available on the status page.', link: 'Read incident report' }),
     ),
   );
@@ -7962,7 +7992,7 @@ function systemOutageControls(): HTMLElement {
   const codePre = el('pre', { class: 'code-block' }) as HTMLPreElement;
 
   const statusSel = ddSelect('so-status', ['platform-wide-outage', 'feature-outage', 'outage-restored'] as const);
-  const titleInput = ctrlText('so-title', 'Empath is currently down');
+  const titleInput = ctrlText('so-title', 'Ember is currently down');
   const descInput = ctrlText('so-desc', 'Estimated time to recovery: 15 minutes.');
   const linkInput = ctrlText('so-link', 'Check status page');
   const closableChk = ctrlCheck('so-closable', 'Closable', { checked: true });
@@ -8014,7 +8044,7 @@ function systemOutageGuidelines(): HTMLElement {
       el('h3', { class: 'guideline-heading do-heading' }, heroIconSvg('check-circle', 20), ' Do'),
       el('p', { class: 'preview-block__lede' }, 'Use system outage banners to give users a clear, system-wide view of what\'s happening.'),
       el('div', { class: 'do-dont-grid' },
-        doCard(previewSystemOutage({ status: 'platform-wide-outage', title: 'Empath is currently down', description: 'Estimated time to recovery: 15 minutes.', link: 'Check status page' }),
+        doCard(previewSystemOutage({ status: 'platform-wide-outage', title: 'Ember is currently down', description: 'Estimated time to recovery: 15 minutes.', link: 'Check status page' }),
           'Anchor the banner at the very top of the application — above all other UI — so it\'s the first thing users see.'),
         doCard(previewSystemOutage({ status: 'outage-restored', title: 'Service restored', description: 'All systems operational.', closable: true }),
           'Confirm recovery so users know they can resume normal work. Restored banners can be dismissed.'),
@@ -8035,7 +8065,7 @@ function systemOutageContent(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Title'),
       el('ul', { class: 'guideline-list' },
-        el('li', {}, 'Lead with the affected system or feature: "Empath is currently down", "Payments are temporarily unavailable".'),
+        el('li', {}, 'Lead with the affected system or feature: "Ember is currently down", "Payments are temporarily unavailable".'),
         el('li', {}, 'Use sentence case.'),
         el('li', {}, 'Avoid jargon. Users want to know what they can\'t do, not internal service names.'),
       )),
@@ -8076,7 +8106,7 @@ function systemOutageCode(): HTMLElement {
       el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
       el('pre', { class: 'code-block' },
         `<scout-system-outage status="platform-wide-outage">
-  <span slot="title">Empath is currently down</span>
+  <span slot="title">Ember is currently down</span>
   We're working to restore service. ETA: 15 minutes.
   <a slot="link" href="/status">Check status page</a>
 </scout-system-outage>
@@ -8946,16 +8976,37 @@ function makeTile(opts: {
   return t;
 }
 
+/** Lightweight footer-only preview used in the "footer types" stack.
+ *  Renders just the horizontal divider + button row that sits at the
+ *  bottom of a workflow tile, without the dot / header / body. */
+function makeFooterPreview(buttons: Array<[label: string, variant: string]>): HTMLElement {
+  const card = el('div', { class: 'wf-footer-preview' });
+  card.append(document.createElement('scout-divider'));
+  const row = el('div', { class: 'wf-footer-preview__row' });
+  for (const [label, variant] of buttons) {
+    const b = document.createElement('scout-button');
+    b.setAttribute('variant', variant);
+    b.textContent = label;
+    row.append(b);
+  }
+  card.append(row);
+  return card;
+}
+
 function makeTileWorkflow(opts: {
   step?: number; header?: string; subhead?: string;
   state?: WorkflowHeaderState; expanded?: boolean;
   functional?: TileFunctionalState;
   disabled?: boolean;
+  noStep?: boolean;
+  noEdit?: boolean;
   body?: string;
   footer?: 'cancel-save' | 'cancel-submit' | 'cancel-continue' | 'done' | 'none';
 }): HTMLElement {
   const t = document.createElement('scout-tile-workflow');
   t.setAttribute('step', String(opts.step ?? 1));
+  if (opts.noStep) t.setAttribute('no-step', '');
+  if (opts.noEdit) t.setAttribute('no-edit', '');
   t.setAttribute('header', opts.header ?? 'Step header');
   if (opts.subhead) t.setAttribute('subhead', opts.subhead);
   if (opts.state) t.setAttribute('state', opts.state);
@@ -8976,7 +9027,7 @@ function makeTileWorkflow(opts: {
     wrap.style.display = 'flex';
     wrap.style.gap = 'var(--scout-space-8)';
     if (opts.footer === 'cancel-save')      { wrap.append(buildBtn('Cancel', 'tertiary'), buildBtn('Save', 'primary')); }
-    if (opts.footer === 'cancel-submit')    { wrap.append(buildBtn('Cancel', 'tertiary'), buildBtn('Submit', 'primary')); }
+    if (opts.footer === 'cancel-submit')    { wrap.append(buildBtn('Cancel', 'tertiary'), buildBtn('Submit', 'action')); }
     if (opts.footer === 'cancel-continue')  { wrap.append(buildBtn('Cancel', 'tertiary'), buildBtn('Continue', 'primary')); }
     if (opts.footer === 'done')             { wrap.append(buildBtn('Done', 'primary')); }
     t.appendChild(wrap);
@@ -9037,29 +9088,14 @@ function tilePreview(): HTMLElement {
   // === Tile workflow ===
   block(
     'Tile workflow — header states',
-    'Five header states: not-started, active, in-progress, completed-editable (with edit button), completed-locked.',
+    'Four header states: not-started (collapsed), active (expanded — exactly one per flow), completed-editable (collapsed, with Edit button), completed-locked (collapsed). State drives expansion, so only the active step shows its body and footer.',
     el('div', { class: 'tile-stack' },
-      makeTileWorkflow({ step: 1, header: 'Verify identity', subhead: 'KBA + last 4 of SSN', state: 'completed-locked' }),
-      makeTileWorkflow({ step: 2, header: 'Confirm address', subhead: 'On-file address', state: 'completed-editable' }),
-      makeTileWorkflow({ step: 3, header: 'Select payment method', state: 'in-progress' }),
-      makeTileWorkflow({ step: 4, header: 'Review and submit', state: 'active', expanded: true,
-        body: 'Review the request before submitting. Once submitted, the underwriting queue takes over.',
-        footer: 'cancel-submit' }),
-      makeTileWorkflow({ step: 5, header: 'Confirmation', state: 'not-started' }),
-    ),
-  );
-
-  block(
-    'Tile workflow — collapsed vs expanded',
-    'Click the chevron or the header to expand. Each tile keeps its own state.',
-    el('div', { class: 'tile-stack' },
-      makeTileWorkflow({ step: 1, header: 'Collapsed', state: 'in-progress', subhead: 'Tap to expand' }),
-      makeTileWorkflow({
-        step: 2, header: 'Expanded', state: 'in-progress', subhead: 'Footer renders only when expanded',
-        expanded: true,
-        body: 'Body content goes here — text inputs, dropdowns, tables. The agent fills it in step by step.',
-        footer: 'cancel-continue',
-      }),
+      makeTileWorkflow({ step: 1, header: 'Not started', state: 'not-started' }),
+      makeTileWorkflow({ step: 2, header: 'Select payment method', state: 'active',
+        body: 'Choose how the customer wants to pay. Selection saves automatically.',
+        footer: 'cancel-continue' }),
+      makeTileWorkflow({ step: 3, header: 'Confirm address', subhead: 'On-file address', state: 'completed-editable' }),
+      makeTileWorkflow({ step: 4, header: 'Completed - locked', state: 'completed-locked' }),
     ),
   );
 
@@ -9067,14 +9103,10 @@ function tilePreview(): HTMLElement {
     'Tile workflow — footer types',
     'Four canonical footer combinations cover most flows. Slot any other layout via slot="footer".',
     el('div', { class: 'tile-stack' },
-      makeTileWorkflow({ step: 1, header: 'Cancel / Save', state: 'in-progress', expanded: true,
-        body: 'Reversible step.', footer: 'cancel-save' }),
-      makeTileWorkflow({ step: 2, header: 'Cancel / Submit', state: 'in-progress', expanded: true,
-        body: 'Final step before underwriting.', footer: 'cancel-submit' }),
-      makeTileWorkflow({ step: 3, header: 'Cancel / Continue', state: 'in-progress', expanded: true,
-        body: 'Move to the next step.', footer: 'cancel-continue' }),
-      makeTileWorkflow({ step: 4, header: 'Done', state: 'in-progress', expanded: true,
-        body: 'No back action.', footer: 'done' }),
+      makeFooterPreview([['Cancel', 'tertiary'], ['Save', 'primary']]),
+      makeFooterPreview([['Cancel', 'tertiary'], ['Submit', 'action']]),
+      makeFooterPreview([['Cancel', 'tertiary'], ['Continue', 'primary']]),
+      makeFooterPreview([['Done', 'primary']]),
     ),
   );
 
@@ -9082,10 +9114,10 @@ function tilePreview(): HTMLElement {
     'Tile workflow — functional states',
     'Default and disabled cover the resting interaction states; loading and error replace the body content while the header keeps its state.',
     el('div', { class: 'tile-stack' },
-      makeTileWorkflow({ step: 1, header: 'Default', subhead: 'Tap to expand', state: 'in-progress' }),
-      makeTileWorkflow({ step: 2, header: 'Disabled', subhead: 'Locked while underwriting reviews', state: 'not-started', disabled: true }),
-      makeTileWorkflow({ step: 3, header: 'Loading data', state: 'in-progress', expanded: true, functional: 'loading' }),
-      makeTileWorkflow({ step: 4, header: 'Couldn\'t load', state: 'in-progress', expanded: true, functional: 'error' }),
+      makeTileWorkflow({ noStep: true, header: 'Default', subhead: 'Tap to expand', state: 'active' }),
+      makeTileWorkflow({ noStep: true, header: 'Disabled', subhead: 'Locked while underwriting reviews', state: 'not-started', disabled: true }),
+      makeTileWorkflow({ noStep: true, header: 'Loading data', state: 'active', expanded: true, functional: 'loading' }),
+      makeTileWorkflow({ noStep: true, header: 'Couldn\'t load', state: 'active', expanded: true, functional: 'error' }),
     ),
   );
 
@@ -9101,7 +9133,7 @@ function tileControls(): HTMLElement {
   const stateSel = ddSelect('tl-state', ['default', 'loading', 'error']);
   const headerInput = ctrlText('tl-header', 'Tile header');
   const subheadInput = ctrlText('tl-subhead', 'Subhead text');
-  const wfStateSel = ddSelect('tl-wf-state', ['not-started', 'active', 'in-progress', 'completed-editable', 'completed-locked']);
+  const wfStateSel = ddSelect('tl-wf-state', ['not-started', 'active', 'completed-editable', 'completed-locked']);
   const wfFooterSel = ddSelect('tl-wf-footer', ['cancel-save', 'cancel-submit', 'cancel-continue', 'done', 'none']);
   const advFooterSel = ddSelect('tl-adv-footer', ['none', 'button-tertiary', 'show-more']);
 
@@ -9109,7 +9141,7 @@ function tileControls(): HTMLElement {
   // tells the full story of every prop the component accepts. Fields whose
   // underlying property doesn't apply to the active variant are disabled
   // via the shared setFieldDisabled helper.
-  const wfStateField   = ctrlField('Workflow header state', 'tl-wf-state',  wfStateSel);
+  const wfStateField   = ctrlField('Workflow state', 'tl-wf-state',  wfStateSel);
   const wfFooterField  = ctrlField('Workflow footer',       'tl-wf-footer', wfFooterSel);
   const advFooterField = ctrlField('Advanced footer',       'tl-adv-footer', advFooterSel);
 
@@ -9117,11 +9149,14 @@ function tileControls(): HTMLElement {
     const v = variantSel.value;
 
     // Variant-gated enablement — workflow header state + footer only apply
-    // to tile-workflow; advanced footer only applies to tile.
+    // to tile-workflow; advanced footer only applies to tile. Workflow footer
+    // is also disabled when the step is "not-started" since the body/footer
+    // are hidden in that state.
     const workflowApplies = v === 'tile-workflow';
     const advFooterApplies = v === 'tile';
+    const notStarted = workflowApplies && wfStateSel.value === 'not-started';
     setFieldDisabled(wfStateField,   wfStateSel,   !workflowApplies);
-    setFieldDisabled(wfFooterField,  wfFooterSel,  !workflowApplies);
+    setFieldDisabled(wfFooterField,  wfFooterSel,  !workflowApplies || notStarted);
     setFieldDisabled(advFooterField, advFooterSel, !advFooterApplies);
 
     let node: HTMLElement;
@@ -9198,7 +9233,7 @@ function tileGuidelines(): HTMLElement {
       el('div', { class: 'do-dont-grid' },
         doCard(makeTileButton({ header: 'Account summary', subhead: 'Balance · Activity', body: 'Whole tile is one click target.' }),
           'Use tile-button on dashboards when the tile is itself the action — drill in to a record, jump to a screen.'),
-        doCard(makeTileWorkflow({ step: 2, header: 'Confirm address', state: 'in-progress', expanded: true,
+        doCard(makeTileWorkflow({ step: 2, header: 'Confirm address', state: 'active', expanded: true,
           body: 'Use the workflow tile when the surface is part of a multi-step flow.', footer: 'cancel-continue' }),
           'Use tile-workflow inside multi-step flows. Stack several to walk the agent through a customer interaction.'),
       )),
@@ -9283,7 +9318,7 @@ function tileCode(): HTMLElement {
   step="3"
   header="Select payment method"
   subhead="Required to continue"
-  state="in-progress"
+  state="active"
   expanded
 >
   <!-- inputs, dropdowns, tables -->
@@ -10465,7 +10500,7 @@ function progressPreview(): HTMLElement {
     'Timeline',
     'Ordered events on a vertical rail. Each item has a title, optional subtitle, and a chevron control that toggles the body. Content is fully customizable per item.',
     makeTimeline([
-      { title: 'Account opened',       subtitle: 'Apr 2 · 9:14 AM', body: 'Customer completed self-service application via the Empath portal.', expanded: true },
+      { title: 'Account opened',       subtitle: 'Apr 2 · 9:14 AM', body: 'Customer completed self-service application via the Ember portal.', expanded: true },
       { title: 'Identity verified',    subtitle: 'Apr 2 · 9:21 AM', body: 'KBA passed on first attempt.' },
       { title: 'Statement generated',  subtitle: 'May 1',           body: 'First statement available — total balance $345.18.' },
       { title: 'Payment scheduled',    subtitle: 'May 12',          body: 'Customer scheduled $345.18 payment for May 18 via autopay.' },
@@ -10788,7 +10823,7 @@ function radioPreview(): HTMLElement {
       helper: 'How should we contact you when a payment posts?',
       value: 'email',
       items: [
-        { label: 'Email', value: 'email', secondary: 'jamie@empath.com' },
+        { label: 'Email', value: 'email', secondary: 'jamie@ember.com' },
         { label: 'SMS',   value: 'sms',   secondary: '(555) 014-2237' },
         { label: 'Paper statement', value: 'paper', secondary: 'Mailed within 5 business days' },
       ],
@@ -10820,7 +10855,7 @@ function radioPreview(): HTMLElement {
       items: [
         { label: 'Standard',   value: 'standard',   secondary: 'For everyday accounts.', badge: { label: 'Recommended', type: 'informational' } },
         { label: 'Plus',       value: 'plus',       secondary: 'Adds dispute insurance and priority support.' },
-        { label: 'AI assist',  value: 'ai',         secondary: 'Includes the AI summarizer in Empath.', badge: { label: 'Beta', type: 'ai-summary' } },
+        { label: 'AI assist',  value: 'ai',         secondary: 'Includes the AI summarizer in Ember.', badge: { label: 'Beta', type: 'ai-summary' } },
       ],
     }),
   );
@@ -11055,7 +11090,7 @@ function radioCode(): HTMLElement {
   helper="How should we contact you?"
   value="email"
 >
-  <scout-radio value="email" secondary="jamie@empath.com">Email</scout-radio>
+  <scout-radio value="email" secondary="jamie@ember.com">Email</scout-radio>
   <scout-radio value="sms"   secondary="(555) 014-2237">SMS</scout-radio>
   <scout-radio value="paper" warning="Mailed statements take 5 business days">
     Paper statement
@@ -12088,7 +12123,7 @@ function showMorePreview(): HTMLElement {
     'Standalone — clamped paragraph',
     'Outside of Card, you can wire the toggle to your own height-clamped body. The component manages its own state and emits scout-show-more-toggle so consumers can toggle their layout.',
     showMoreDemoBody(
-      'Scout is the design system that powers Empath, Sage, and several internal tools at the company. It ' +
+      'Scout is the design system that powers Ember, Snag, and several internal tools at the company. It ' +
       'standardizes color, type, spacing, motion, and z-index — and ships a small library of web components ' +
       'that consume those tokens. Components live in their own packages so product teams can pull only what ' +
       'they need; the core is published privately to npm. Density and theme are scoped via data-attributes ' +
@@ -13025,7 +13060,6 @@ import '@scout/anchor-links';
     const b = document.createElement('scout-badge');
     b.setAttribute('type', meta.type);
     b.setAttribute('emphasis', 'low');
-    b.setAttribute('size', 'condensed');
     b.textContent = meta.label;
     return b;
   }
@@ -13037,19 +13071,24 @@ import '@scout/anchor-links';
     columns: DTColumn[];
     selectable?: boolean;
     expandable?: boolean;
-    sortKey?: string;
+    sortKey?: string | null;
     sortDir?: 'asc' | 'desc';
+    onSort?: (key: string) => void;
     onToggleAll?: (selected: boolean) => void;
     allSelected?: boolean;
+    someSelected?: boolean;
   }): HTMLElement {
     const tr = el('tr', { class: 'dt-row dt-row--header' });
     if (opts.selectable) {
       const cell = el('th', { class: 'dt-cell dt-cell--select', scope: 'col' });
-      const cb = document.createElement('scout-checkbox') as HTMLElement & { checked: boolean };
+      const cb = document.createElement('scout-checkbox') as HTMLElement & { checked: boolean; indeterminate: boolean };
       cb.setAttribute('aria-label', 'Select all rows');
       if (opts.allSelected) cb.setAttribute('checked', '');
-      cb.addEventListener('scout-checkbox-change', () => {
-        opts.onToggleAll?.(cb.checked);
+      else if (opts.someSelected) cb.setAttribute('indeterminate', '');
+      // Treat a click while partially-selected as "clear all".
+      cb.addEventListener('change', () => {
+        const next = opts.someSelected ? false : cb.checked;
+        opts.onToggleAll?.(next);
       });
       cell.append(cb);
       tr.append(cell);
@@ -13068,11 +13107,14 @@ import '@scout/anchor-links';
           : '',
       });
       if (col.sortable) {
+        const isActive = opts.sortKey === col.id;
+        const iconName = isActive && opts.sortDir === 'desc' ? 'arrow-down' : 'arrow-up';
         const btn = el('button', { class: 'dt-sort', type: 'button' },
           el('span', {}, col.label),
-          el('span', { class: 'dt-sort__icon', 'aria-hidden': 'true' },
-            opts.sortKey === col.id && opts.sortDir === 'desc' ? '↓' : '↑'),
+          el('span', { class: `dt-sort__icon${isActive ? '' : ' dt-sort__icon--inactive'}`, 'aria-hidden': 'true' },
+            heroIconSvg(iconName, 14)),
         );
+        btn.addEventListener('click', () => opts.onSort?.(col.id));
         cell.append(btn);
       } else {
         cell.append(document.createTextNode(col.label));
@@ -13091,6 +13133,7 @@ import '@scout/anchor-links';
     expandable?: boolean;
     expanded?: Set<string>;
     onExpand?: (id: string, open: boolean) => void;
+    secondaryText?: boolean;
   }): HTMLElement[] {
     const tr = el('tr', {
       class: `dt-row dt-row--body${opts.selected?.has(row.id) ? ' dt-row--selected' : ''}`,
@@ -13101,7 +13144,7 @@ import '@scout/anchor-links';
       const cb = document.createElement('scout-checkbox') as HTMLElement & { checked: boolean };
       cb.setAttribute('aria-label', `Select ${row.cells[opts.columns[0]?.id ?? ''] ?? row.id}`);
       if (opts.selected?.has(row.id)) cb.setAttribute('checked', '');
-      cb.addEventListener('scout-checkbox-change', () => {
+      cb.addEventListener('change', () => {
         opts.onToggle?.(row.id, cb.checked);
       });
       cell.append(cb);
@@ -13116,7 +13159,10 @@ import '@scout/anchor-links';
         class: `dt-expand-btn${isOpen ? ' dt-expand-btn--open' : ''}`,
         'aria-expanded': String(isOpen),
         'aria-label': isOpen ? 'Collapse row' : 'Expand row',
-      }, '›');
+      });
+      const chevron = heroIconSvg('chevron-right', 20);
+      chevron.classList.add('dt-expand-icon');
+      btn.append(chevron);
       btn.addEventListener('click', () => opts.onExpand?.(row.id, !isOpen));
       cell.append(btn);
       tr.append(cell);
@@ -13129,7 +13175,7 @@ import '@scout/anchor-links';
       const value = row.cells[col.id] ?? '';
       if (col.id === 'status') {
         cell.append(statusBadge(value));
-      } else if (i === 0 && row.secondary) {
+      } else if (i === 0 && row.secondary && opts.secondaryText !== false) {
         cell.append(
           el('div', { class: 'dt-cell__primary' }, value),
           el('div', { class: 'dt-cell__secondary' }, row.secondary),
@@ -13173,7 +13219,7 @@ import '@scout/anchor-links';
   }): HTMLElement {
     const tr = el('tr', { class: 'dt-row dt-row--table-header' });
     const cell = el('th', { class: 'dt-cell dt-cell--table-header', colspan: String(opts.columnSpan), scope: 'colgroup' });
-    cell.append(
+    const row = el('div', { class: 'dt-table-header__row' },
       el('div', { class: 'dt-table-header__copy' },
         el('div', { class: 'dt-table-header__title' }, opts.title),
         ...(opts.description
@@ -13187,8 +13233,9 @@ import '@scout/anchor-links';
       btn.setAttribute('size', 'condensed');
       btn.textContent = opts.action.label;
       if (opts.action.onClick) btn.addEventListener('click', opts.action.onClick);
-      cell.append(el('div', { class: 'dt-table-header__action' }, btn));
+      row.append(el('div', { class: 'dt-table-header__action' }, btn));
     }
+    cell.append(row);
     tr.append(cell);
     return tr;
   }
@@ -13212,18 +13259,35 @@ import '@scout/anchor-links';
     selectable?: boolean;
     expandable?: boolean;
     footer?: 'none' | 'pagination' | 'show-more';
+    secondaryText?: boolean;
   }): HTMLElement {
     const size = opts.size ?? 'default';
     const selected = new Set<string>();
     const expanded = new Set<string>();
     let allSelected = false;
     let showMoreCount = 3;
+    let sortKey: string | null = null;
+    let sortDir: 'asc' | 'desc' = 'asc';
 
     const wrap = el('div', {
       class: `dt-pattern dt-pattern--${size}`,
       role: 'region',
       'aria-label': opts.header?.title ?? 'Data table',
     });
+
+    /** Sort comparator that handles currency / numeric / em-dash cells.
+     *  Em-dashes ("—") sort to the bottom regardless of direction. */
+    function compareCells(a: string, b: string): number {
+      const aDash = a === '—' || a === '';
+      const bDash = b === '—' || b === '';
+      if (aDash && bDash) return 0;
+      if (aDash) return 1;
+      if (bDash) return -1;
+      const an = Number(a.replace(/[^0-9.\-]/g, ''));
+      const bn = Number(b.replace(/[^0-9.\-]/g, ''));
+      if (!isNaN(an) && !isNaN(bn) && a.match(/\d/) && b.match(/\d/)) return an - bn;
+      return a.localeCompare(b);
+    }
 
     function rerender() {
       const totalCols = opts.columns.length + (opts.selectable ? 1 : 0) + (opts.expandable ? 1 : 0);
@@ -13243,21 +13307,41 @@ import '@scout/anchor-links';
         columns: opts.columns,
         selectable: opts.selectable,
         expandable: opts.expandable,
-        allSelected,
+        sortKey,
+        sortDir,
+        allSelected: selected.size > 0 && selected.size === opts.rows.length,
+        someSelected: selected.size > 0 && selected.size < opts.rows.length,
         onToggleAll: (sel) => {
           allSelected = sel;
           if (sel) for (const r of opts.rows) selected.add(r.id);
           else selected.clear();
           rerender();
         },
+        onSort: (key) => {
+          if (sortKey === key) {
+            sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+          } else {
+            sortKey = key;
+            sortDir = 'asc';
+          }
+          rerender();
+        },
       }));
 
       const body = el('tbody', {});
 
-      // Footer = show-more clamps the visible row count.
-      const visibleRows = opts.footer === 'show-more'
-        ? opts.rows.slice(0, showMoreCount)
+      // Apply sort first, then any show-more row clamp.
+      const sortedRows = sortKey
+        ? [...opts.rows].sort((a, b) => {
+            const av = a.cells[sortKey!] ?? '';
+            const bv = b.cells[sortKey!] ?? '';
+            const cmp = compareCells(av, bv);
+            return sortDir === 'asc' ? cmp : -cmp;
+          })
         : opts.rows;
+      const visibleRows = opts.footer === 'show-more'
+        ? sortedRows.slice(0, showMoreCount)
+        : sortedRows;
 
       if (opts.sections && opts.sections.length) {
         for (const sec of opts.sections) {
@@ -13280,6 +13364,7 @@ import '@scout/anchor-links';
                 if (open) expanded.add(rid); else expanded.delete(rid);
                 rerender();
               },
+              secondaryText: opts.secondaryText,
             })) body.append(node);
           }
         }
@@ -13300,13 +13385,15 @@ import '@scout/anchor-links';
               if (open) expanded.add(rid); else expanded.delete(rid);
               rerender();
             },
+            secondaryText: opts.secondaryText,
           })) body.append(node);
         }
       }
 
       table.append(head, body);
 
-      const parts: (Node | string)[] = [table];
+      const scroll = el('div', { class: 'dt-scroll' }, table);
+      const parts: (Node | string)[] = [scroll];
 
       // Footer: pagination uses scout-pagination; show-more uses
       // scout-show-more. Either is rendered as a sibling block below
@@ -13428,10 +13515,13 @@ import '@scout/anchor-links';
 
     const sizeSel       = ddSelect('dt-size',   ['default', 'condensed'] as const);
     const footerSel     = ddSelect('dt-footer', ['none', 'pagination', 'show-more'] as const);
-    const headerChk     = ctrlCheck('dt-header',     'Table header',     { checked: true });
-    const selectableChk = ctrlCheck('dt-selectable', 'Selectable rows');
-    const expandableChk = ctrlCheck('dt-expandable', 'Expandable rows');
-    const sectionedChk  = ctrlCheck('dt-sectioned',  'Sectioned rows');
+    const titleInput    = ctrlText('dt-title',    'Customer accounts');
+    const subtitleInput = ctrlText('dt-subtitle', 'All active and recent enrollments for this household.');
+    const headerChk     = ctrlCheck('dt-header',        'Table header',           { checked: true });
+    const selectableChk = ctrlCheck('dt-selectable',    'Selectable rows');
+    const expandableChk = ctrlCheck('dt-expandable',    'Expandable rows');
+    const sectionedChk  = ctrlCheck('dt-sectioned',     'Sectioned rows');
+    const secondaryChk  = ctrlCheck('dt-secondary-txt', 'Show secondary text in cells', { checked: true });
 
     function rerender() {
       stage.replaceChildren(buildDataTable({
@@ -13439,7 +13529,7 @@ import '@scout/anchor-links';
         rows: accountRows,
         size: sizeSel.value as DTSize,
         header: headerChk.checked
-          ? { title: 'Customer accounts', description: 'All active and recent enrollments for this household.' }
+          ? { title: titleInput.value, description: subtitleInput.value || undefined }
           : undefined,
         selectable: selectableChk.checked,
         expandable: expandableChk.checked,
@@ -13450,9 +13540,10 @@ import '@scout/anchor-links';
             ]
           : undefined,
         footer: footerSel.value === 'none' ? 'none' : (footerSel.value as 'pagination' | 'show-more'),
+        secondaryText: secondaryChk.checked,
       }));
     }
-    for (const c of [sizeSel, footerSel, headerChk, selectableChk, expandableChk, sectionedChk]) {
+    for (const c of [sizeSel, footerSel, titleInput, subtitleInput, headerChk, selectableChk, expandableChk, sectionedChk, secondaryChk]) {
       c.addEventListener('input', rerender);
       c.addEventListener('change', rerender);
     }
@@ -13460,13 +13551,16 @@ import '@scout/anchor-links';
       el('div', { class: 'ctrl-field' }, el('label', { for: f }, l), c);
     const panel = el('div', { class: 'ctrl-panel' },
       el('h3', { class: 'preview-block__title' }, 'Properties'),
-      ctrlField('Size',   'dt-size',   sizeSel),
-      ctrlField('Footer', 'dt-footer', footerSel),
+      ctrlField('Size',     'dt-size',     sizeSel),
+      ctrlField('Footer',   'dt-footer',   footerSel),
+      ctrlField('Title',    'dt-title',    titleInput),
+      ctrlField('Subtitle', 'dt-subtitle', subtitleInput),
       el('div', { class: 'ctrl-checks' },
         headerChk,
         selectableChk,
         expandableChk,
         sectionedChk,
+        secondaryChk,
       ),
     );
     wrap.append(panel, el('div', { class: 'ctrl-stage-wrap' }, stage));

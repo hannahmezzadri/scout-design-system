@@ -781,6 +781,9 @@ importers:
       '@scout/button':
         specifier: workspace:*
         version: link:../button
+      '@scout/divider':
+        specifier: workspace:*
+        version: link:../divider
       '@scout/show-more':
         specifier: workspace:*
         version: link:../show-more

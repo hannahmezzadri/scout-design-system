@@ -20,7 +20,7 @@ const STATUS_ICONS: Record<SystemOutageStatus, ReturnType<typeof svg>> = {
  *
  * @attr {"platform-wide-outage"|"feature-outage"|"outage-restored"} status - Status of the system event.
  *
- * @slot title - Title text (e.g. "Empath is currently down").
+ * @slot title - Title text (e.g. "Ember is currently down").
  * @slot       - Description text (default slot).
  * @slot link  - Optional anchor or button to a status page or details.
  *

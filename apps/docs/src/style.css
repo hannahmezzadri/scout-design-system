@@ -3,8 +3,8 @@
 @import "@scout/tokens/css/dark";
 @import "@scout/tokens/css/density-condensed";
 @import "@scout/tokens/css/brand/scout";
-@import "@scout/tokens/css/brand/empath";
-@import "@scout/tokens/css/brand/sage";
+@import "@scout/tokens/css/brand/ember";
+@import "@scout/tokens/css/brand/snag";
 
 /* Reset-ish */
 *, *::before, *::after { box-sizing: border-box; }
@@ -61,8 +61,8 @@ body {
   color: var(--scout-brand-scout-primary, #029dd4);
   transition: color var(--scout-motion-duration-base) var(--scout-motion-easing-standard);
 }
-[data-brand="empath"] .brand .logo { color: var(--scout-brand-empath-primary); }
-[data-brand="sage"]   .brand .logo { color: var(--scout-brand-sage-primary); }
+[data-brand="ember"] .brand .logo { color: var(--scout-brand-ember-primary); }
+[data-brand="snag"]   .brand .logo { color: var(--scout-brand-snag-primary); }
 [data-brand="scout"] .brand .logo { color: var(--scout-brand-scout-primary); }
 
 .brand .title {
@@ -715,6 +715,14 @@ section > p.lede {
   align-items: baseline;
 }
 .specimen:last-child { border-bottom: none; }
+.typography-section-heading {
+  font-family: var(--scout-typography-heading-3-font-family);
+  font-weight: var(--scout-typography-heading-3-font-weight);
+  font-size: var(--scout-typography-heading-3-font-size);
+  line-height: var(--scout-typography-heading-3-line-height);
+  margin: var(--scout-space-32) 0 var(--scout-space-8);
+  color: var(--scout-text-display-primary);
+}
 .specimen .meta {
   font-size: var(--scout-font-size-12);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -1233,6 +1241,18 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   flex-direction: column;
   gap: var(--scout-space-12);
   width: 100%;
+}
+.wf-footer-preview {
+  background: var(--scout-surface-primary);
+  border: var(--scout-border-width-1) solid var(--scout-border-primary);
+  border-radius: var(--scout-radius-8);
+  padding: var(--scout-space-16);
+}
+.wf-footer-preview__row {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--scout-space-8);
+  margin-top: var(--scout-space-16);
 }
 /* All three tile variants now ship fill.white + 1px cool-gray-200 borders
    from the components themselves — no docs-level surface overrides needed. */
@@ -1982,24 +2002,28 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   gap: var(--scout-space-12);
   --_dt-row-pad-y: var(--scout-space-12);
   --_dt-row-pad-x: var(--scout-space-16);
-  --_dt-fs: var(--scout-font-size-14);
-  --_dt-lh: var(--scout-font-line-height-21);
+  --_dt-fs: var(--scout-typography-body-font-size);
+  --_dt-lh: var(--scout-typography-body-line-height);
 }
 .dt-pattern--condensed {
   --_dt-row-pad-y: var(--scout-space-4);
   --_dt-row-pad-x: var(--scout-space-12);
-  --_dt-fs: var(--scout-font-size-12);
-  --_dt-lh: var(--scout-font-line-height-18);
+  --_dt-fs: var(--scout-typography-body-small-font-size);
+  --_dt-lh: var(--scout-typography-body-small-line-height);
+}
+
+.dt-scroll {
+  overflow: auto;
+  max-height: 480px;
 }
 
 .dt-table {
   width: 100%;
+  min-width: max-content;
   border-collapse: separate;
   border-spacing: 0;
   background: var(--scout-surface-primary);
-  border: var(--scout-border-width-1) solid var(--scout-border-secondary);
-  border-radius: var(--scout-radius-8);
-  overflow: hidden;
+  border-radius: var(--scout-radius-0);
   font-size: var(--_dt-fs);
   line-height: var(--_dt-lh);
   color: var(--scout-text-display-primary);
@@ -2014,7 +2038,6 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   border-bottom: var(--scout-border-width-1) solid var(--scout-border-secondary);
 }
 .dt-cell--right { text-align: right; }
-.dt-row:last-child .dt-cell { border-bottom: none; }
 .dt-row--section + .dt-row .dt-cell,
 .dt-row--table-header + .dt-row .dt-cell { /* keep separator after grouping rows */ }
 
@@ -2023,23 +2046,28 @@ body.nav-open .sidebar-scrim { opacity: 1; }
 .dt-cell--table-header {
   background: var(--scout-surface-primary);
   padding: var(--scout-space-16) var(--scout-space-16);
+  width: 100%;
+  border-bottom: none;
+}
+.dt-table-header__row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--scout-space-16);
-}
-.dt-row--table-header .dt-cell--table-header {
-  border-bottom: var(--scout-border-width-1) solid var(--scout-border-secondary);
+  width: 100%;
 }
 .dt-table-header__copy { display: flex; flex-direction: column; gap: 2px; }
 .dt-table-header__title {
-  font-family: var(--scout-font-family-literata);
-  font-weight: var(--scout-font-weight-semibold);
-  font-size: var(--scout-font-size-16);
+  font-family: var(--scout-typography-heading-3-font-family);
+  font-weight: var(--scout-typography-heading-3-font-weight);
+  font-size: var(--scout-typography-heading-3-font-size);
+  line-height: var(--scout-typography-heading-3-line-height);
   color: var(--scout-text-display-primary);
 }
 .dt-table-header__description {
-  font-size: var(--scout-font-size-14);
+  font-size: var(--scout-typography-body-small-font-size);
+  line-height: var(--scout-typography-body-small-line-height);
+  font-weight: var(--scout-typography-body-small-font-weight);
   color: var(--scout-text-display-secondary);
 }
 .dt-table-header__action { flex-shrink: 0; }
@@ -2053,17 +2081,14 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   letter-spacing: 0.06em;
   color: var(--scout-text-display-secondary);
   padding: var(--scout-space-8) var(--scout-space-16);
-  border-top: var(--scout-border-width-1) solid var(--scout-border-secondary);
 }
 
 /* Column headers */
 .dt-cell--header {
-  font-size: var(--scout-font-size-12);
+  font-size: var(--scout-typography-body-small-font-size);
+  line-height: var(--scout-typography-body-small-line-height);
   font-weight: var(--scout-font-weight-semibold);
-  color: var(--scout-text-display-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  background: var(--scout-surface-page);
+  color: var(--scout-text-display-primary);
 }
 .dt-sort {
   appearance: none;
@@ -2086,7 +2111,24 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   outline-offset: 2px;
   border-radius: var(--scout-radius-2);
 }
-.dt-sort__icon { font-size: 10px; opacity: 0.7; }
+.dt-sort__icon {
+  display: inline-flex;
+  align-items: center;
+  color: var(--scout-text-display-primary);
+}
+.dt-sort__icon svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+.dt-sort__icon--inactive {
+  color: var(--scout-text-display-secondary);
+  opacity: 0;
+}
+.dt-sort:hover .dt-sort__icon--inactive,
+.dt-sort:focus-visible .dt-sort__icon--inactive {
+  opacity: 1;
+}
 
 /* Body cells */
 .dt-cell--body { color: var(--scout-text-display-primary); }
@@ -2094,21 +2136,35 @@ body.nav-open .sidebar-scrim { opacity: 1; }
 .dt-cell__secondary {
   font-size: var(--scout-font-size-12);
   color: var(--scout-text-display-secondary);
-  margin-top: 2px;
+  margin-top: var(--scout-space-0);
 }
 
-/* Selectable rows */
+/* Selectable rows — checkbox stays flush-left at the table's space.16 padding,
+   and the cell hugs its content so the next column sits exactly space.16 to
+   the right of the checkbox (provided by the next cell's padding-left). */
 .dt-cell--select {
-  width: 36px;
+  width: 40px;
+  text-align: left;
+  padding-left: var(--scout-space-16);
   padding-right: 0;
 }
-.dt-row--selected .dt-cell--body {
-  background: var(--scout-interactive-background-selected);
+
+/* Row hover — applies to body cells; selected state below wins via order. */
+.dt-row--body:hover .dt-cell {
+  background: var(--scout-color-cool-gray-50);
 }
 
-/* Expandable rows */
+.dt-row--selected .dt-cell {
+  background: var(--scout-interactive-background-brand-hover);
+}
+
+/* Expandable rows — chevron stays flush-left at the table's space.16 padding,
+   and the cell hugs its content so the next column sits exactly space.16 to
+   the right of the chevron (provided by the next cell's padding-left). */
 .dt-cell--expand {
-  width: 36px;
+  width: 40px;
+  text-align: left;
+  padding-left: var(--scout-space-16);
   padding-right: 0;
 }
 .dt-expand-btn {
@@ -2139,6 +2195,11 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   outline-offset: 1px;
 }
 .dt-expand-btn--open { transform: rotate(90deg); }
+.dt-expand-icon {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
 @media (prefers-reduced-motion: reduce) {
   .dt-expand-btn { transition: none; }
 }
@@ -2162,4 +2223,10 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   justify-content: space-between;
   gap: var(--scout-space-16);
 }
-.dt-footer--show-more { justify-content: flex-start; }
+.dt-footer--show-more { justify-content: center; }
+.dt-footer scout-pagination {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  padding-left: var(--scout-space-16);
+}

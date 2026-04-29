@@ -2,6 +2,7 @@ import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import '@scout/skeleton';
 import '@scout/show-more';
+import '@scout/divider';
 import type { TileFooter, TileFunctionalState } from './types.js';
 
 /**
@@ -50,30 +51,23 @@ export class ScoutTile extends LitElement {
     }
 
     .tile {
-      /* Per spec: fill.white background + 1px solid cool-gray.200 border.
-         The fill.white semantic stays white across themes (including dark). */
-      background: var(--scout-fill-always-white);
+      /* Theme-aware surface + border. Both tokens flip in dark mode so we
+         don't need a separate :host-context override. */
+      background: var(--scout-surface-primary);
       border: var(--scout-border-width-1) var(--scout-stroke-solid)
-        var(--scout-color-cool-gray-200);
+        var(--scout-border-primary);
       border-radius: var(--scout-radius-8);
       padding: var(--scout-space-16);
       display: flex;
       flex-direction: column;
       gap: var(--scout-space-12);
     }
-    /* Dark theme — swap the white fill for a semantic dark surface so the
-       tile reads on a dark page. :host-context pierces the shadow boundary
-       to read the theme attribute set on <html>. */
-    :host-context([data-theme='dark']) .tile {
-      background: var(--scout-surface-primary);
-      border-color: var(--scout-border-primary);
-    }
 
     /* Header --------------------------------------------------------- */
     .eyebrow {
-      font-size: var(--scout-font-size-10);
+      font-size: var(--scout-typography-caption-font-size);
+      line-height: var(--scout-typography-caption-line-height);
       font-weight: var(--scout-font-weight-semibold);
-
       color: var(--scout-text-display-secondary);
     }
     .title-row {
@@ -119,7 +113,14 @@ export class ScoutTile extends LitElement {
     }
 
     /* Footer --------------------------------------------------------- */
-    .footer { display: flex; align-items: center; }
+    /* Divider above the footer extends past the tile's 16px padding so it
+       runs flush from edge to edge of the tile container. */
+    .footer-divider {
+      margin-left: calc(-1 * var(--scout-space-16));
+      margin-right: calc(-1 * var(--scout-space-16));
+      width: calc(100% + (2 * var(--scout-space-16)));
+    }
+    .footer { display: flex; align-items: center; justify-content: center; }
 
     /* Loading -------------------------------------------------------- */
     .loading {
@@ -179,15 +180,21 @@ export class ScoutTile extends LitElement {
     if (this.state !== 'default') return nothing;
     if (this.footer === 'none') return nothing;
     if (this.footer === 'show-more') {
-      return html`<div class="footer">
-        <scout-show-more
-          ?expanded=${this.expanded}
-          @scout-show-more-toggle=${this._onShowMoreToggle}
-        ></scout-show-more>
-      </div>`;
+      return html`
+        <scout-divider class="footer-divider"></scout-divider>
+        <div class="footer">
+          <scout-show-more
+            ?expanded=${this.expanded}
+            @scout-show-more-toggle=${this._onShowMoreToggle}
+          ></scout-show-more>
+        </div>
+      `;
     }
     // button-tertiary — consumer slots their own button
-    return html`<div class="footer"><slot name="footer"></slot></div>`;
+    return html`
+      <scout-divider class="footer-divider"></scout-divider>
+      <div class="footer"><slot name="footer"></slot></div>
+    `;
   }
 
   render() {

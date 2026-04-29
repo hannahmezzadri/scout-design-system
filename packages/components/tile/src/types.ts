@@ -9,13 +9,11 @@ export type TileFooter = 'none' | 'button-tertiary' | 'show-more';
  * affordance:
  *   - not-started        — empty circle with the step number
  *   - active             — focused / current step (blue ring)
- *   - in-progress        — half-filled circle
  *   - completed-editable — blue check + edit button
  *   - completed-locked   — gray check, no edit button
  */
 export type WorkflowHeaderState =
   | 'not-started'
   | 'active'
-  | 'in-progress'
   | 'completed-editable'
   | 'completed-locked';

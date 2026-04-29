@@ -16,7 +16,7 @@ pnpm add @scout/accordion @scout/tokens lit
 
 <scout-accordion mode="single" size="md" icon-position="right" divider>
   <scout-accordion-item label="What is Scout?" expanded>
-    Scout is the enterprise design system powering Empath and 7+ other products.
+    Scout is the enterprise design system powering Ember and 7+ other products.
   </scout-accordion-item>
   <scout-accordion-item label="How do I install?">
     Components ship to a private npm registry. See the docs site for setup.

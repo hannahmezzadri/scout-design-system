@@ -5,7 +5,7 @@ import './scout-segment.js';
 
 /**
  * Scout language tabs are intentionally limited to the three languages
- * Empath supports out of the box: English, Spanish, and French. Adding more
+ * Ember supports out of the box: English, Spanish, and French. Adding more
  * is a deliberate platform decision (translation cost, agent training,
  * compliance review) — the component enforces the contract by typing
  * `value` and filtering unrecognized entries from the `languages` prop

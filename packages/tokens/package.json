@@ -16,8 +16,8 @@
     "./css/density-default": "./dist/css/density-default.css",
     "./css/density-condensed": "./dist/css/density-condensed.css",
     "./css/brand/scout": "./dist/css/brand-scout.css",
-    "./css/brand/empath": "./dist/css/brand-empath.css",
-    "./css/brand/sage": "./dist/css/brand-sage.css",
+    "./css/brand/ember": "./dist/css/brand-ember.css",
+    "./css/brand/snag": "./dist/css/brand-snag.css",
     "./json": "./dist/json/tokens.json",
     "./tailwind": {
       "types": "./dist/tailwind/preset.d.ts",

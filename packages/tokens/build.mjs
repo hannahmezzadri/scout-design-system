@@ -5,7 +5,7 @@
  *   dist/css/tokens.css            — primitives + light semantic + default density (`:root`)
  *   dist/css/dark.css              — dark overrides (`[data-theme="dark"]`)
  *   dist/css/density-condensed.css — condensed typography (`[data-density="condensed"]`)
- *   dist/css/brand-{scout,empath,sage}.css — brand colors (`[data-brand="..."]`)
+ *   dist/css/brand-{scout,ember,snag}.css — brand colors (`[data-brand="..."]`)
  *   dist/json/tokens.json          — flat JSON of all base tokens
  *   dist/ts/tokens.js + .d.ts      — typed JS/TS exports
  *   dist/tailwind/preset.js + .d.ts — Tailwind v4 preset wired to CSS vars
@@ -294,14 +294,14 @@ await buildOverlay({
   fileName: 'brand-scout.css',
 });
 await buildOverlay({
-  sourceFile: 'src/brand/empath.json',
-  selector: '[data-brand="empath"]',
-  fileName: 'brand-empath.css',
+  sourceFile: 'src/brand/ember.json',
+  selector: '[data-brand="ember"]',
+  fileName: 'brand-ember.css',
 });
 await buildOverlay({
-  sourceFile: 'src/brand/sage.json',
-  selector: '[data-brand="sage"]',
-  fileName: 'brand-sage.css',
+  sourceFile: 'src/brand/snag.json',
+  selector: '[data-brand="snag"]',
+  fileName: 'brand-snag.css',
 });
 
 generateTailwindPreset();

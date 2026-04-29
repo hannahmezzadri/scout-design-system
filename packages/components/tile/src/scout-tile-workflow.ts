@@ -1,11 +1,16 @@
-import { LitElement, html, css, svg, nothing } from 'lit';
+import { LitElement, html, css, svg, nothing, type PropertyValues } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import '@scout/skeleton';
 import '@scout/button';
+import '@scout/divider';
 import type { TileFunctionalState, WorkflowHeaderState } from './types.js';
 
 const CHECK   = svg`<path d="M5 10.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`;
 const EDIT    = svg`<path d="M16.475 5.408 14.592 3.525a1.875 1.875 0 0 0-2.652 0L4 11.466V14h2.535l7.94-7.94a1.875 1.875 0 0 0 0-2.652Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>`;
+/** Filled inner dot — marks the active step inside its ringed circle. */
+const ACTIVE_DOT = svg`<circle cx="10" cy="10" r="3" fill="currentColor"/>`;
+/** Short horizontal dash — marks a not-yet-started step inside its empty circle. */
+const PENDING_DASH = svg`<path d="M6 10h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>`;
 
 /**
  * `<scout-tile-workflow>` — collapsible workflow step.
@@ -20,7 +25,7 @@ const EDIT    = svg`<path d="M16.475 5.408 14.592 3.525a1.875 1.875 0 0 0-2.652 
  *
  * @element scout-tile-workflow
  *
- * @attr {number} step                                  - Step number rendered inside the status icon for not-started / active / in-progress.
+ * @attr {number} step                                  - Step number rendered inside the status icon for not-started / active states.
  * @attr header                                          - Step title.
  * @attr subhead                                         - Optional subhead under the title.
  * @attr {WorkflowHeaderState} state                     - Header state. Default `not-started`.
@@ -40,54 +45,28 @@ export class ScoutTileWorkflow extends LitElement {
     :host {
       display: block;
       font-family: var(--scout-font-family-inter);
-      --_dot: 28px;
+      --_dot: var(--scout-space-24);
     }
 
     .tile {
-      /* Per spec: fill.white background + 1px solid cool-gray.200 border —
-         matches scout-tile-button and scout-tile so the entire tile family
-         shares one surface treatment. */
-      background: var(--scout-fill-always-white);
+      /* Theme-aware surface + border (auto-flip in dark mode). Matches
+         scout-tile-button and scout-tile so the entire tile family shares
+         one surface treatment. */
+      background: var(--scout-surface-primary);
       border: var(--scout-border-width-1) var(--scout-stroke-solid)
-        var(--scout-color-cool-gray-200);
+        var(--scout-border-primary);
       border-radius: var(--scout-radius-8);
       padding: var(--scout-space-16);
     }
-    /* Dark theme — swap the white fill for a semantic dark surface so the
-       workflow tile reads on a dark page. The completed-locked dot also
-       remaps from cool-gray.700 (which sits between primary and secondary
-       on light) to cool-gray.500 so it still reads against the darker
-       container. */
-    :host-context([data-theme='dark']) .tile {
-      background: var(--scout-surface-primary);
-      border-color: var(--scout-border-primary);
-    }
-    :host-context([data-theme='dark'])[state='completed-locked'] .dot {
-      background: var(--scout-color-cool-gray-500);
-      border-color: var(--scout-color-cool-gray-500);
-    }
-
     /* Header row ----------------------------------------------------- */
     .head {
       display: flex;
       align-items: center;
       gap: var(--scout-space-12);
-      cursor: pointer;
-      user-select: none;
       width: 100%;
       text-align: left;
-      background: transparent;
-      border: 0;
-      font: inherit;
-      color: inherit;
-      padding: 0;
     }
-    :host([disabled]) .head { cursor: not-allowed; opacity: 0.5; }
-    .head:focus-visible {
-      outline: var(--scout-focus-ring-width) solid var(--scout-focus-ring-color);
-      outline-offset: 4px;
-      border-radius: var(--scout-radius-4);
-    }
+    :host([disabled]) .head { opacity: 0.5; }
 
     /* Status icon — varies by state */
     .dot {
@@ -112,22 +91,15 @@ export class ScoutTileWorkflow extends LitElement {
       color: var(--scout-text-interactive-primary);
       box-shadow: 0 0 0 4px var(--scout-color-blue-100);
     }
-    :host([state='in-progress']) .dot {
-      background: var(--scout-text-interactive-primary);
-      border-color: var(--scout-text-interactive-primary);
-      color: var(--scout-color-white);
-    }
-    :host([state='completed-editable']) .dot,
-    :host([state='completed-locked']) .dot {
-      color: var(--scout-color-white);
-    }
     :host([state='completed-editable']) .dot {
-      background: var(--scout-text-interactive-primary);
-      border-color: var(--scout-text-interactive-primary);
+      background: var(--scout-fill-success-bold);
+      border-color: var(--scout-fill-success-bold);
+      color: var(--scout-color-white);
     }
     :host([state='completed-locked']) .dot {
-      background: var(--scout-color-cool-gray-700);
-      border-color: var(--scout-color-cool-gray-700);
+      background: var(--scout-color-green-200);
+      border-color: var(--scout-color-green-200);
+      color: var(--scout-color-green-500);
     }
 
     .text {
@@ -183,13 +155,28 @@ export class ScoutTileWorkflow extends LitElement {
     :host(:not([expanded])) .body-inner { padding-top: 0; }
 
     /* Footer --------------------------------------------------------- */
+    .footer-divider {
+      margin-top: var(--scout-space-16);
+    }
     .footer {
       display: flex;
       justify-content: flex-end;
       gap: var(--scout-space-8);
       margin-top: var(--scout-space-16);
     }
-    :host(:not([expanded])) .footer { display: none; }
+    :host(:not([expanded])) .footer,
+    :host(:not([expanded])) .footer-divider { display: none; }
+
+    /* "not-started" state hides the body and footer entirely so the row
+       reads as a placeholder waiting to become active. */
+    :host([state='not-started']) .body,
+    :host([state='not-started']) .footer,
+    :host([state='not-started']) .footer-divider { display: none; }
+
+    /* Error / loading functional states replace the body content; the
+       divider would only stack a stray rule under the message, so hide it. */
+    :host([functional='error']) .footer-divider,
+    :host([functional='loading']) .footer-divider { display: none; }
 
     /* Loading / Error ------------------------------------------------ */
     .loading {
@@ -212,6 +199,8 @@ export class ScoutTileWorkflow extends LitElement {
   `;
 
   @property({ type: Number }) step = 1;
+  @property({ type: Boolean, attribute: 'no-step', reflect: true }) noStep = false;
+  @property({ type: Boolean, attribute: 'no-edit', reflect: true }) noEdit = false;
   @property() header = '';
   @property() subhead = '';
   @property({ reflect: true }) state: WorkflowHeaderState = 'not-started';
@@ -219,21 +208,25 @@ export class ScoutTileWorkflow extends LitElement {
   @property({ type: Boolean, reflect: true }) expanded = false;
   @property({ type: Boolean, reflect: true }) disabled = false;
 
-  private _toggle = () => {
-    if (this.disabled) return;
-    this.expanded = !this.expanded;
-    this.dispatchEvent(
-      new CustomEvent<{ expanded: boolean }>('scout-workflow-toggle', {
-        bubbles: true,
-        composed: true,
-        detail: { expanded: this.expanded },
-      }),
-    );
-  };
+  /** State drives expansion per spec: only `active` is expanded; every
+   *  other state collapses. We sync `expanded` whenever `state` changes
+   *  so consumers can't render an inconsistent (state, expanded) pair. */
+  willUpdate(changed: PropertyValues<this>) {
+    if (changed.has('state')) {
+      this.expanded = this.state === 'active';
+    }
+  }
 
   private _onEdit = (e: Event) => {
     e.stopPropagation();
     if (this.disabled) return;
+    // Per spec: clicking Edit on a completed-editable tile transitions it
+    // to active. The owning app is responsible for moving the previously-
+    // active tile back to completed-editable (only one tile may be active
+    // at a time) — it can listen for `scout-workflow-edit` to coordinate.
+    if (this.state === 'completed-editable') {
+      this.state = 'active';
+    }
     this.dispatchEvent(new CustomEvent('scout-workflow-edit', { bubbles: true, composed: true }));
   };
 
@@ -242,11 +235,11 @@ export class ScoutTileWorkflow extends LitElement {
       case 'completed-editable':
       case 'completed-locked':
         return html`<svg viewBox="0 0 20 20">${CHECK}</svg>`;
-      case 'not-started':
       case 'active':
-      case 'in-progress':
+        return html`<svg viewBox="0 0 20 20">${ACTIVE_DOT}</svg>`;
+      case 'not-started':
       default:
-        return html`${this.step}`;
+        return html`<svg viewBox="0 0 20 20">${PENDING_DASH}</svg>`;
     }
   }
 
@@ -270,17 +263,17 @@ export class ScoutTileWorkflow extends LitElement {
   }
 
   render() {
-    const showEdit = this.state === 'completed-editable';
+    // Per spec the Edit button appears only in completed-editable. The
+    // `no-edit` attribute suppresses the affordance for static / preview
+    // tiles, and disabled hides it across the board.
+    const showEdit = this.state === 'completed-editable' && !this.disabled && !this.noEdit;
     return html`
       <div class="tile">
-        <button
+        <div
           class="head"
-          type="button"
-          ?disabled=${this.disabled}
           aria-expanded=${String(this.expanded)}
-          @click=${this._toggle}
         >
-          <span class="dot" aria-hidden="true">${this._renderDotContents()}</span>
+          ${this.noStep ? nothing : html`<span class="dot" aria-hidden="true">${this._renderDotContents()}</span>`}
           <span class="text">
             <span class="header-line">${this.header}</span>
             ${this.subhead ? html`<span class="subhead">${this.subhead}</span>` : nothing}
@@ -299,10 +292,11 @@ export class ScoutTileWorkflow extends LitElement {
                 </scout-button>`
               : nothing}
           </span>
-        </button>
+        </div>
         <div class="body" aria-hidden=${String(!this.expanded)}>
           <div class="body-inner">
             ${this._renderBody()}
+            <scout-divider class="footer-divider"></scout-divider>
             <div class="footer"><slot name="footer"></slot></div>
           </div>
         </div>

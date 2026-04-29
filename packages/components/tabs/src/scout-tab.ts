@@ -42,6 +42,7 @@ export class ScoutTab extends LitElement {
       color: var(--scout-text-display-secondary);
       cursor: pointer;
       position: relative;
+      white-space: nowrap;
       /* Transparent bottom border that becomes the selection indicator */
       border-bottom: 2px solid transparent;
       transition:

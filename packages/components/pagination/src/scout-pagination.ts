@@ -52,6 +52,7 @@ export class ScoutPagination extends LitElement {
       gap: var(--scout-space-8);
       font-size: var(--_pg-fs);
       color: var(--scout-text-display-secondary);
+      white-space: nowrap;
     }
     .items scout-dropdown-select {
       min-width: 72px;

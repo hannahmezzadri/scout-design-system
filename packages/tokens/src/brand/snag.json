@@ -1,13 +1,13 @@
 {
   "brand": {
-    "sage": {
-      "$description": "Sage brand colors. Primary = A8B383 (sage green), Cream = F5F5F1.",
+    "snag": {
+      "$description": "Snag brand colors. Primary = A8B383 (snag green), Cream = F5F5F1.",
       "primary": { "$value": "#A8B383", "$type": "color" },
       "cream":   { "$value": "#F5F5F1", "$type": "color" }
     }
   },
   "illustration": {
-    "$description": "Per-brand illustration overrides. Activated when [data-brand=\"sage\"]. Sage illustrations take the muted green primary; cream becomes the surface so the scene reads warm.",
+    "$description": "Per-brand illustration overrides. Activated when [data-brand=\"snag\"]. Snag illustrations take the muted green primary; cream becomes the surface so the scene reads warm.",
     "primary": { "$value": "#A8B383", "$type": "color" },
     "accent":  { "$value": "#A8B383", "$type": "color" },
     "surface": { "$value": "#F5F5F1", "$type": "color" }
