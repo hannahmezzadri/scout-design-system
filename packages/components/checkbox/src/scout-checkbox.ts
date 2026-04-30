@@ -59,6 +59,11 @@ export class ScoutCheckbox extends LitElement {
       width: var(--scout-font-size-20);
       height: var(--scout-font-size-20);
       flex-shrink: 0;
+      /* Body line-height (~22-24px) is taller than the 20px control;
+         flex-start would leave the control sitting above the text's
+         cap height. A 2px margin-top centers the visible square on the
+         label's first-line cap so they read as visually flush. */
+      margin-top: 2px;
     }
 
     input {

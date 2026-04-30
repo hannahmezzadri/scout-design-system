@@ -5,6 +5,7 @@ import '@scout/control';
 import '@scout/segmented-control';
 import '@scout/progress';
 import '@scout/button';
+import '@scout/checkbox';
 import type { DisclosureDialogType } from './types.js';
 
 interface LangDef {
@@ -104,8 +105,8 @@ export class ScoutDisclosureDialog extends LitElement {
       margin: 0;
       font-family: var(--scout-font-family-literata);
       font-weight: var(--scout-font-weight-semibold);
-      font-size: var(--scout-font-size-20);
-      line-height: var(--scout-font-line-height-30);
+      font-size: var(--scout-font-size-24);
+      line-height: var(--scout-font-line-height-32);
     }
     .header-controls {
       display: flex;
@@ -136,8 +137,8 @@ export class ScoutDisclosureDialog extends LitElement {
       padding: var(--scout-space-16) var(--scout-space-24);
       /* Extra space.8 below the main content before the actions row. */
       padding-bottom: calc(var(--scout-space-16) + var(--scout-space-8));
-      font-size: var(--scout-font-size-14);
-      line-height: var(--scout-font-line-height-21);
+      font-size: var(--scout-typography-body-font-size);
+      line-height: var(--scout-typography-body-line-height);
       overflow-y: auto;
       flex: 1;
     }
@@ -165,12 +166,6 @@ export class ScoutDisclosureDialog extends LitElement {
       margin-top: calc(0px - var(--scout-space-8));
     }
     .ack[hidden] { display: none; }
-    .ack input[type='checkbox'] {
-      width: 16px;
-      height: 16px;
-      margin: 2px 0 0;
-      accent-color: var(--scout-text-interactive-primary);
-    }
 
     .actions {
       display: flex;
@@ -370,9 +365,13 @@ export class ScoutDisclosureDialog extends LitElement {
 
           <div class="ack" ?hidden=${!this._hasAck && !this.requireCheckbox}>
             ${this.requireCheckbox
-              ? html`<input type="checkbox" .checked=${this.acknowledged} @change=${this._onCheckboxChange} />`
-              : nothing}
-            <span><slot name="acknowledgement" @slotchange=${this._onAckSlot}></slot></span>
+              ? html`<scout-checkbox
+                  .checked=${this.acknowledged}
+                  @change=${this._onCheckboxChange}
+                >
+                  <slot name="acknowledgement" @slotchange=${this._onAckSlot}></slot>
+                </scout-checkbox>`
+              : html`<span><slot name="acknowledgement" @slotchange=${this._onAckSlot}></slot></span>`}
           </div>
 
           <div class="actions" ?hidden=${!this._hasActions}>

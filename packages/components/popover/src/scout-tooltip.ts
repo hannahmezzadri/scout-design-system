@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import '@scout/control';
 import type { TipAlignment, TipPlacement, TooltipTrigger, TooltipVariant } from './types.js';
 
 const INFO_ICON = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="16" height="16"><path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.732 2.923.305-.158a.75.75 0 0 1 .67 1.34l-.32.165c-1.146.573-2.437-.463-2.126-1.706l.732-2.923-.305.158a.75.75 0 1 1-.67-1.34l.32-.165ZM12 8.25a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Z" clip-rule="evenodd"/></svg>`;
@@ -65,7 +66,8 @@ export class ScoutTooltip extends LitElement {
       pointer-events: none;
     }
 
-    /* Popover surface */
+    /* Popover surface — width hugs the content (max-content) and only
+       wraps once it would otherwise exceed the max-width cap. */
     .popover {
       position: absolute;
       z-index: 1000;
@@ -73,10 +75,12 @@ export class ScoutTooltip extends LitElement {
       color: var(--scout-color-white);
       border-radius: var(--scout-radius-4);
       padding: var(--scout-space-8) var(--scout-space-12);
-      font-size: var(--scout-font-size-12);
-      line-height: var(--scout-font-line-height-15);
+      font-size: var(--scout-typography-body-small-font-size);
+      line-height: var(--scout-typography-body-small-line-height);
       box-shadow: var(--scout-elevation-2);
-      max-width: 240px;
+      width: max-content;
+      min-width: 0;
+      max-width: 320px;
       pointer-events: none;
       opacity: 0;
       transform: translateY(2px);
@@ -95,9 +99,11 @@ export class ScoutTooltip extends LitElement {
       padding: var(--scout-space-12) var(--scout-space-16);
     }
 
+    /* Simple tooltips reveal on hover/focus (or when forced open).
+       Advanced tooltips reveal only on explicit open (click toggle). */
     :host([open]) .popover,
-    :host(:hover) .popover,
-    :host(:focus-within) .popover {
+    :host([variant='simple']:hover) .popover,
+    :host([variant='simple']:focus-within) .popover {
       opacity: 1;
       transform: translateY(0);
       pointer-events: auto;
@@ -122,10 +128,10 @@ export class ScoutTooltip extends LitElement {
 
     :host([open][placement='top']) .popover,
     :host([open][placement='bottom']) .popover,
-    :host(:hover[placement='top']) .popover,
-    :host(:hover[placement='bottom']) .popover,
-    :host(:focus-within[placement='top']) .popover,
-    :host(:focus-within[placement='bottom']) .popover {
+    :host([variant='simple']:hover[placement='top']) .popover,
+    :host([variant='simple']:hover[placement='bottom']) .popover,
+    :host([variant='simple']:focus-within[placement='top']) .popover,
+    :host([variant='simple']:focus-within[placement='bottom']) .popover {
       transform: translateX(-50%) translateY(0);
     }
     :host([open][placement='top'][alignment='start']) .popover,
@@ -135,20 +141,6 @@ export class ScoutTooltip extends LitElement {
       transform: translateY(0);
     }
 
-    /* Tip — drawn as a rotated square anchored to the popover edge */
-    .tip {
-      position: absolute;
-      width: var(--_tip-size);
-      height: var(--_tip-size);
-      background: inherit;
-      transform: rotate(45deg);
-      border: inherit;
-      border-color: inherit;
-    }
-    :host([placement='top']) .tip    { bottom: calc(var(--_tip-size) / -2); left: 50%; margin-left: calc(var(--_tip-size) / -2); border-top: 0; border-left: 0; }
-    :host([placement='bottom']) .tip { top:    calc(var(--_tip-size) / -2); left: 50%; margin-left: calc(var(--_tip-size) / -2); border-bottom: 0; border-right: 0; }
-    :host([placement='left']) .tip   { right:  calc(var(--_tip-size) / -2); top:  50%; margin-top:  calc(var(--_tip-size) / -2); border-bottom: 0; border-left: 0; }
-    :host([placement='right']) .tip  { left:   calc(var(--_tip-size) / -2); top:  50%; margin-top:  calc(var(--_tip-size) / -2); border-top: 0; border-right: 0; }
 
     .title {
       font-weight: var(--scout-font-weight-semibold);
@@ -160,6 +152,16 @@ export class ScoutTooltip extends LitElement {
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
+    /* Advanced-variant slot wrappers — alert sits above the title/body,
+       link sits below. Each is hidden when its slot is empty. */
+    .alert {
+      margin-bottom: var(--scout-space-12);
+    }
+    .alert[hidden] { display: none; }
+    .link {
+      margin-top: var(--scout-space-8);
+    }
+    .link[hidden] { display: none; }
   `;
 
   @property() variant: TooltipVariant = 'simple';
@@ -171,6 +173,36 @@ export class ScoutTooltip extends LitElement {
   @property({ type: Boolean, reflect: true }) disabled = false;
 
   @state() private _id = `tt-${Math.random().toString(36).slice(2, 9)}`;
+  @state() private _hasAlert = false;
+  @state() private _hasLink = false;
+
+  private _onAlertSlot = (e: Event) => {
+    this._hasAlert = (e.target as HTMLSlotElement).assignedNodes({ flatten: true }).length > 0;
+  };
+  private _onLinkSlot = (e: Event) => {
+    this._hasLink = (e.target as HTMLSlotElement).assignedNodes({ flatten: true }).length > 0;
+  };
+
+  private _onTriggerClick = () => {
+    if (this.disabled) return;
+    if (this.variant !== 'advanced') return;
+    this.open = !this.open;
+  };
+
+  private _onDocumentClick = (e: MouseEvent) => {
+    if (this.variant !== 'advanced' || !this.open) return;
+    const path = e.composedPath();
+    if (!path.includes(this)) this.open = false;
+  };
+
+  connectedCallback(): void {
+    super.connectedCallback();
+    document.addEventListener('click', this._onDocumentClick);
+  }
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    document.removeEventListener('click', this._onDocumentClick);
+  }
 
   private _emit(name: 'open' | 'close') {
     this.dispatchEvent(
@@ -187,24 +219,38 @@ export class ScoutTooltip extends LitElement {
   }
 
   render() {
-    const triggerContent =
+    const trigger =
       this.trigger === 'info-icon'
-        ? html`<span class="icon" .innerHTML=${INFO_ICON}></span>`
-        : html`<slot name="trigger">Trigger</slot>`;
+        ? html`<scout-control
+            class="trigger"
+            type="tooltip"
+            size="condensed"
+            aria-label-override="More info"
+            aria-describedby=${this._id}
+            ?disabled=${this.disabled}
+            @click=${this._onTriggerClick}
+          ></scout-control>`
+        : html`<button
+            class="trigger"
+            type="button"
+            aria-describedby=${this._id}
+            ?disabled=${this.disabled}
+            @click=${this._onTriggerClick}
+          >
+            <slot name="trigger">Trigger</slot>
+          </button>`;
 
     return html`
-      <button
-        class="trigger"
-        type="button"
-        aria-describedby=${this._id}
-        ?disabled=${this.disabled}
-      >
-        ${triggerContent}
-      </button>
+      ${trigger}
       <div class="popover" role="tooltip" id=${this._id}>
-        <span class="tip" aria-hidden="true"></span>
+        <div class="alert" ?hidden=${!this._hasAlert}>
+          <slot name="alert" @slotchange=${this._onAlertSlot}></slot>
+        </div>
         ${this.titleText ? html`<div class="title">${this.titleText}</div>` : nothing}
         <div class="body"><slot></slot></div>
+        <div class="link" ?hidden=${!this._hasLink}>
+          <slot name="link" @slotchange=${this._onLinkSlot}></slot>
+        </div>
       </div>
     `;
   }

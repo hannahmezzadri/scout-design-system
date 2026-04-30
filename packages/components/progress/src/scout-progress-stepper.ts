@@ -93,8 +93,12 @@ export class ScoutProgressStepper extends LitElement {
       background: var(--_line-fill);
     }
 
-    /* Dot / circle — shared across orientations */
+    /* Dot / circle — shared across orientations. border-box keeps the
+       rendered diameter exactly --_dot-size so the connecting line is
+       centered on the visual circle (otherwise the border adds 2px to
+       each side and shifts the dot's center off the line). */
     .dot {
+      box-sizing: border-box;
       width: var(--_dot-size);
       height: var(--_dot-size);
       border-radius: 50%;
@@ -172,7 +176,24 @@ export class ScoutProgressStepper extends LitElement {
       gap: 2px;
       padding-top: 2px;
     }
-    .v-text .label { text-align: left; font-size: var(--scout-font-size-14); }
+    .v-text .label {
+      text-align: left;
+      font-size: var(--scout-font-size-14);
+      font-weight: var(--scout-font-weight-semibold);
+    }
+    .v-text .secondary { font-size: var(--scout-font-size-12); }
+
+    /* Horizontal-step text block — keeps the label and secondary text
+       tight together (timeline-style 2px gap) so secondary reads as a
+       caption directly under the label. */
+    .h-text {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+    .h-text .label { font-size: var(--scout-font-size-14); }
+    .h-text .secondary { font-size: var(--scout-font-size-12); }
 
     /* Per-state label tints */
     .not-started .label { color: var(--scout-text-display-secondary); }
@@ -230,8 +251,10 @@ export class ScoutProgressStepper extends LitElement {
               <span class="dot" data-tooltip=${s.tooltip || nothing}>
                 ${this._glyph(s.state, i)}
               </span>
-              <span class="label">${s.label}</span>
-              ${s.secondary ? html`<span class="secondary">${s.secondary}</span>` : nothing}
+              <div class="h-text">
+                <span class="label">${s.label}</span>
+                ${s.secondary ? html`<span class="secondary">${s.secondary}</span>` : nothing}
+              </div>
             </div>
           `,
         )}

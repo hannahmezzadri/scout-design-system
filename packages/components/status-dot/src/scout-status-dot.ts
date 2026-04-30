@@ -26,14 +26,14 @@ export class ScoutStatusDot extends LitElement {
       align-items: center;
       gap: var(--scout-space-8);
       font-family: var(--scout-font-family-inter);
-      --_sd-dot-size: 8px;
+      --_sd-dot-size: 10px;
       --_sd-fs: var(--scout-font-size-14);
       --_sd-lh: var(--scout-font-line-height-21);
       --_sd-fill: var(--scout-color-cool-gray-700);
     }
     :host([size='condensed']),
     :host-context([data-density='condensed']) {
-      --_sd-dot-size: 6px;
+      --_sd-dot-size: 8px;
       --_sd-fs: var(--scout-font-size-12);
       --_sd-lh: var(--scout-font-line-height-18);
       gap: var(--scout-space-4);

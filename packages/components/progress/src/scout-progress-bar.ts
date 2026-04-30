@@ -28,7 +28,8 @@ export class ScoutProgressBar extends LitElement {
       font-family: var(--scout-font-family-inter);
       --_pb-track-h: 8px;
     }
-    .title {
+    .title,
+    .title-only {
       display: block;
       font-size: var(--scout-font-size-14);
       font-weight: var(--scout-font-weight-medium);
@@ -38,19 +39,31 @@ export class ScoutProgressBar extends LitElement {
     .labels {
       display: flex;
       justify-content: space-between;
-      align-items: baseline;
+      align-items: end;
       gap: var(--scout-space-12);
       margin-bottom: var(--scout-space-4);
       font-size: var(--scout-font-size-12);
+      line-height: 1;
       color: var(--scout-text-display-secondary);
+    }
+    .labels .left,
+    .labels .right {
+      line-height: 1;
+      display: inline-flex;
+      align-items: baseline;
     }
     /* When the title moves into the labels row (secondary text is present),
        the left side becomes the primary label — bump it back to the title's
-       size and weight so it reads as the label, not as caption. */
+       size and weight so it reads as the label, not as caption. The right
+       side matches the same font-size so left and right read on the same
+       visual line. */
     .labels .left.is-title {
       font-size: var(--scout-font-size-14);
       font-weight: var(--scout-font-weight-medium);
       color: var(--scout-text-display-primary);
+    }
+    .labels:has(.left.is-title) .right {
+      font-size: var(--scout-font-size-14);
     }
     .labels .right { font-variant-numeric: tabular-nums; }
     .secondary {
@@ -59,6 +72,13 @@ export class ScoutProgressBar extends LitElement {
       line-height: var(--scout-font-line-height-18);
       color: var(--scout-text-display-secondary);
       margin-bottom: var(--scout-space-4);
+    }
+    /* When secondary text shares a row with the right readout, match its
+       line metrics exactly so both texts sit on the same baseline. */
+    .secondary.inline {
+      display: inline;
+      line-height: 1;
+      margin-bottom: 0;
     }
 
     .track {
@@ -70,7 +90,7 @@ export class ScoutProgressBar extends LitElement {
     }
     .fill {
       height: 100%;
-      background: var(--scout-text-interactive-primary);
+      background: var(--scout-color-teal-500);
       border-radius: 999px;
       transition: width var(--scout-motion-duration-base, 240ms)
         var(--scout-motion-easing-standard, ease);
@@ -111,24 +131,27 @@ export class ScoutProgressBar extends LitElement {
     const auto = this._autoReadout();
     const right = this.rightLabel || auto?.right || '';
     const secondary = this.leftLabel; // "secondary text" beneath the label
-    // When there's secondary text, promote the title into the labels row so
-    // it sits inline with the percentage; secondary text drops below.
-    const titleInLabels = !!this.titleText && !!secondary;
-    const labelLeft = titleInLabels ? this.titleText : (auto?.left || '');
-    const showLabels = labelLeft || right;
+    // When there's secondary text, the title takes its own row and the
+    // right readout drops down to share a row with the secondary text —
+    // keeping the right readout close to the bar. Otherwise the title and
+    // right readout share a single labels row.
     return html`
-      ${this.titleText && !titleInLabels
-        ? html`<span class="title">${this.titleText}</span>`
-        : nothing}
-      ${showLabels
-        ? html`<div class="labels">
-            <span class="left ${titleInLabels ? 'is-title' : ''}">${labelLeft}</span>
-            <span class="right">${right}</span>
-          </div>`
-        : nothing}
       ${secondary
-        ? html`<span class="secondary">${secondary}</span>`
-        : nothing}
+        ? html`
+            ${this.titleText
+              ? html`<span class="title-only">${this.titleText}</span>`
+              : nothing}
+            <div class="labels">
+              <span class="secondary inline">${secondary}</span>
+              <span class="right">${right}</span>
+            </div>
+          `
+        : (this.titleText || right
+          ? html`<div class="labels">
+              <span class="left ${this.titleText ? 'is-title' : ''}">${this.titleText || (auto?.left || '')}</span>
+              <span class="right">${right}</span>
+            </div>`
+          : nothing)}
       <div
         class="track"
         role="progressbar"

@@ -108,8 +108,8 @@ export class ScoutDialog extends LitElement {
       margin: 0;
       font-family: var(--scout-font-family-literata);
       font-weight: var(--scout-font-weight-semibold);
-      font-size: var(--scout-font-size-20);
-      line-height: var(--scout-font-line-height-30);
+      font-size: var(--scout-font-size-24);
+      line-height: var(--scout-font-line-height-32);
     }
     .subtext {
       /* Zero browser default p margin and set the title→subtext gap

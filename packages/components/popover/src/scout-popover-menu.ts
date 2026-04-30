@@ -78,19 +78,6 @@ export class ScoutPopoverMenu extends LitElement {
     :host([open][placement='bottom'][alignment='start']) .surface,
     :host([open][placement='bottom'][alignment='end']) .surface { transform: translateY(0); }
 
-    /* Tip */
-    .tip {
-      position: absolute;
-      width: var(--_tip-size);
-      height: var(--_tip-size);
-      background: var(--scout-surface-primary);
-      border: var(--scout-border-width-1) solid var(--scout-border-secondary);
-      transform: rotate(45deg);
-    }
-    :host([placement='top']) .tip    { bottom: calc(var(--_tip-size) / -2); left: 50%; margin-left: calc(var(--_tip-size) / -2); border-top: 0; border-left: 0; }
-    :host([placement='bottom']) .tip { top:    calc(var(--_tip-size) / -2); left: 50%; margin-left: calc(var(--_tip-size) / -2); border-bottom: 0; border-right: 0; }
-    :host([placement='left']) .tip   { right:  calc(var(--_tip-size) / -2); top: 18px; margin-top: calc(var(--_tip-size) / -2); border-bottom: 0; border-left: 0; }
-    :host([placement='right']) .tip  { left:   calc(var(--_tip-size) / -2); top: 18px; margin-top: calc(var(--_tip-size) / -2); border-top: 0; border-right: 0; }
 
     .header {
       padding: var(--scout-space-8) var(--scout-space-12);
@@ -176,7 +163,6 @@ export class ScoutPopoverMenu extends LitElement {
         <slot name="trigger" @slotchange=${this._onTriggerSlotChange}></slot>
       </div>
       <div class="surface" role="menu">
-        <span class="tip" aria-hidden="true"></span>
         ${this.label ? html`<div class="header">${this.label}</div>` : nothing}
         <slot @click=${this._onItemSelect}></slot>
       </div>
@@ -232,8 +218,8 @@ export class ScoutPopoverMenuItem extends LitElement {
       font-weight: var(--scout-font-weight-semibold);
     }
     ::slotted([slot='icon']) {
-      width: 16px;
-      height: 16px;
+      width: var(--scout-font-size-20);
+      height: var(--scout-font-size-20);
       flex-shrink: 0;
     }
   `;

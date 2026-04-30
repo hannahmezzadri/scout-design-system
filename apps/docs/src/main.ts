@@ -10228,6 +10228,8 @@ function previewTooltip(opts: {
   title?: string;
   body?: string;
   open?: boolean;
+  link?: string;
+  alert?: string;
 } = {}): HTMLElement {
   const tt = document.createElement('scout-tooltip');
   tt.setAttribute('variant', opts.variant ?? 'simple');
@@ -10241,7 +10243,23 @@ function previewTooltip(opts: {
     span.textContent = opts.title ? `What is ${opts.title}?` : 'Hover or focus me';
     tt.appendChild(span);
   }
+  if (opts.alert) {
+    const alert = document.createElement('scout-inline-alert');
+    alert.setAttribute('slot', 'alert');
+    alert.setAttribute('status', 'informational');
+    alert.setAttribute('size', 'condensed');
+    alert.textContent = opts.alert;
+    tt.appendChild(alert);
+  }
   tt.appendChild(document.createTextNode(opts.body ?? 'A short, helpful explanation. Maximum three lines for the simple variant.'));
+  if (opts.link) {
+    const a = document.createElement('scout-link');
+    a.setAttribute('slot', 'link');
+    a.setAttribute('href', '#');
+    a.setAttribute('type', 'standalone');
+    a.textContent = opts.link;
+    tt.appendChild(a);
+  }
   return tt;
 }
 
@@ -10249,22 +10267,28 @@ function previewPopoverMenu(opts: {
   label?: string;
   placement?: PopPlacement;
   open?: boolean;
+  icons?: boolean;
 } = {}): HTMLElement {
   const m = document.createElement('scout-popover-menu');
   if (opts.label) m.setAttribute('label', opts.label);
   m.setAttribute('placement', opts.placement ?? 'bottom');
   if (opts.open) m.setAttribute('open', '');
   m.appendChild(makeTriggerButton('Open menu'));
-  for (const [val, lab, sel] of [
-    ['view',   'View',     true],
-    ['edit',   'Edit',     false],
-    ['share',  'Share',    false],
-    ['delete', 'Delete',   false],
+  for (const [val, lab, sel, icon] of [
+    ['view',   'View',   true,  'eye'],
+    ['edit',   'Edit',   false, 'pencil-square'],
+    ['share',  'Share',  false, 'share'],
+    ['delete', 'Delete', false, 'trash'],
   ] as const) {
     const item = document.createElement('scout-popover-menu-item');
     item.setAttribute('value', val);
     if (sel) item.setAttribute('selected', '');
-    item.textContent = lab;
+    if (opts.icons) {
+      const iconEl = heroIconSvg(icon, 20);
+      iconEl.setAttribute('slot', 'icon');
+      item.appendChild(iconEl);
+    }
+    item.appendChild(document.createTextNode(lab));
     m.appendChild(item);
   }
   return m;
@@ -10315,40 +10339,54 @@ function popoverPreview(): HTMLElement {
     'Plain-text helper attached to a text or info-icon trigger. Maximum three lines. Hover or focus to reveal.',
     el('div', { class: 'preview-stack preview-stack--inline' },
       previewTooltip({ variant: 'simple', trigger: 'text',     placement: 'top',    body: 'APR — the annual percentage rate is the yearly cost of borrowing.' }),
-      previewTooltip({ variant: 'simple', trigger: 'info-icon', placement: 'right', body: 'CVV is the 3-digit code on the back of the card.' }),
+      previewTooltip({ variant: 'simple', trigger: 'info-icon', placement: 'top', body: 'CVV is the 3-digit code on the back of the card.' }),
     ),
   );
 
   block(
     'Tooltip — advanced',
-    'Rich content; supports a title, paragraphs, inline alerts, and other elements. Larger surface, lighter background.',
-    previewTooltip({
-      variant: 'advanced',
-      trigger: 'info-icon',
-      placement: 'bottom',
-      title: 'Statement balance',
-      body: 'The amount you owe at the close of the most recent billing cycle. Pay this in full to avoid interest charges.',
-      open: true,
-    }),
+    'Rich content; supports a title, paragraphs, an optional informational alert, and an optional link. Click the trigger to open. Available with both text and info-icon triggers.',
+    el('div', { class: 'preview-stack preview-stack--inline' },
+      previewTooltip({
+        variant: 'advanced',
+        trigger: 'text',
+        placement: 'top',
+        title: 'Statement balance',
+        body: 'The amount you owe at the close of the most recent billing cycle. Pay this in full to avoid interest charges.',
+        alert: 'New billing cycle starts May 18.',
+        link: 'Learn more',
+        open: true,
+      }),
+      previewTooltip({
+        variant: 'advanced',
+        trigger: 'info-icon',
+        placement: 'top',
+        title: 'Statement balance',
+        body: 'The amount you owe at the close of the most recent billing cycle. Pay this in full to avoid interest charges.',
+        alert: 'New billing cycle starts May 18.',
+        link: 'Learn more',
+        open: true,
+      }),
+    ),
   );
 
   block(
     'Tooltip — tip placement',
-    'Four sides: top, bottom, left, right. Each opens with a 2px translate; tip points back to the trigger.',
+    'Four sides: top, bottom, left, right. Hover or focus the trigger to reveal the tooltip.',
     el('div', { class: 'preview-grid--tooltips' },
-      previewTooltip({ placement: 'top',    body: 'Top placement.',    open: true, title: 'Top' }),
-      previewTooltip({ placement: 'bottom', body: 'Bottom placement.', open: true, title: 'Bottom' }),
-      previewTooltip({ placement: 'left',   body: 'Left placement.',   open: true, title: 'Left' }),
-      previewTooltip({ placement: 'right',  body: 'Right placement.',  open: true, title: 'Right' }),
+      previewTooltip({ placement: 'top',    body: 'Top placement.' }),
+      previewTooltip({ placement: 'bottom', body: 'Bottom placement.' }),
+      previewTooltip({ placement: 'left',   body: 'Left placement.' }),
+      previewTooltip({ placement: 'right',  body: 'Right placement.' }),
     ),
   );
 
   block(
     'Menu',
-    'Single-select list anchored to a trigger. Use for quick actions on a row, file, or card. Closes on selection or click-outside.',
+    'Single-select list anchored to a trigger. Each item supports an optional 20px leading icon. Closes on selection or click-outside.',
     el('div', { class: 'preview-stack preview-stack--inline' },
-      previewPopoverMenu({ label: 'Actions', placement: 'bottom', open: true }),
-      previewPopoverMenu({ placement: 'right' }),
+      previewPopoverMenu({ label: 'Actions', placement: 'bottom', open: true, icons: true }),
+      previewPopoverMenu({ placement: 'right', icons: true }),
     ),
   );
 
@@ -10875,7 +10913,7 @@ function progressControls(): HTMLElement {
     ctrlField('Value (bar / gauge)', 'pr-value', valueInput),
     ctrlField('Display (bar)', 'pr-display', displaySel),
     ctrlField('Size (gauge)', 'pr-size', sizeSel),
-    ctrlField('Label / title', 'pr-label', labelInput),
+    ctrlField('Label', 'pr-label', labelInput),
   );
   wrap.append(panel, el('div', { class: 'ctrl-stage-wrap' }, stage,
     el('div', { class: 'code-wrap' }, el('h3', { class: 'preview-block__title' }, 'Code'), codePre)));

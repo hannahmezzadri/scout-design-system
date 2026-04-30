@@ -372,6 +372,9 @@ importers:
       '@scout/button':
         specifier: workspace:*
         version: link:../button
+      '@scout/checkbox':
+        specifier: workspace:*
+        version: link:../checkbox
       '@scout/control':
         specifier: workspace:*
         version: link:../control
@@ -582,6 +585,9 @@ importers:
 
   packages/components/popover:
     dependencies:
+      '@scout/control':
+        specifier: workspace:*
+        version: link:../control
       '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens

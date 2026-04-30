@@ -53,7 +53,7 @@ export class ScoutProgressGauge extends LitElement {
     }
     .fill {
       fill: none;
-      stroke: var(--scout-text-interactive-primary);
+      stroke: var(--scout-color-teal-500);
       stroke-width: var(--_pg-stroke);
       stroke-linecap: round;
       transition: stroke-dashoffset var(--scout-motion-duration-base, 240ms)

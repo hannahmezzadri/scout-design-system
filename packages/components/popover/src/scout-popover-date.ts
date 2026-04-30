@@ -81,11 +81,14 @@ export class ScoutPopoverDate extends LitElement {
 
     .label {
       display: block;
-      font-size: var(--scout-font-size-12);
+      /* Indented by space.8 so the label's text edge aligns with the
+         month/year dropdown's text edge below (.header-label has 8px
+         horizontal padding). Bumped one level up to 14px. */
+      padding-left: var(--scout-space-8);
+      font-size: var(--scout-font-size-14);
       font-weight: var(--scout-font-weight-semibold);
-      color: var(--scout-text-display-secondary);
+      color: var(--scout-text-display-primary);
       margin-bottom: var(--scout-space-8);
-
     }
 
     /* Header: month-year dropdown + nav chevrons */
@@ -112,6 +115,13 @@ export class ScoutPopoverDate extends LitElement {
       border-radius: var(--scout-radius-4);
     }
     .header-label:hover { background: var(--scout-interactive-background-hover); }
+    /* SVG chevron sits as inline-baseline by default, which floats it
+       above the cap height of the month/year label. Drop it 2px and
+       render as block so it visually centers with the text. */
+    .header-label svg {
+      display: block;
+      margin-top: 2px;
+    }
     .nav-buttons { display: inline-flex; gap: 2px; }
     .nav-btn {
       appearance: none;
@@ -135,6 +145,13 @@ export class ScoutPopoverDate extends LitElement {
     .nav-btn:disabled {
       color: var(--scout-text-display-disabled, var(--scout-color-cool-gray-400));
       cursor: not-allowed;
+    }
+    /* Inline SVGs default to baseline-aligned, which floats them above
+       the button's vertical center. Render as block + nudge down 2px so
+       they sit centered inside the 28px button and the hover background. */
+    .nav-btn svg {
+      display: block;
+      margin-top: 2px;
     }
 
     /* Day-of-week row */

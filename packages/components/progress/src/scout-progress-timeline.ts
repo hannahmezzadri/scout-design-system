@@ -55,21 +55,32 @@ export class ScoutProgressTimelineItem extends LitElement {
       padding: 0 0 var(--scout-space-16) var(--scout-space-32);
       font-family: var(--scout-font-family-inter);
     }
-    /* Left rail — drawn for every item; the parent timeline doesn't draw. */
+    /* Left rail — runs the full height of every item so it visually
+       touches each notch from above and below. The dot covers the rail
+       where it intersects, so the eye reads a continuous gray bar. The
+       first item starts the rail at the dot (no rail above the first
+       notch); the last item ends the rail at the dot (no rail below). */
     :host::before {
       content: '';
       position: absolute;
-      left: 5px;
-      top: 12px;
+      box-sizing: border-box;
+      left: calc(var(--_dot-size, 12px) / 2 - var(--_rail-thickness, 2px) / 2);
+      top: 0;
       bottom: 0;
       width: var(--_rail-thickness, 2px);
       background: var(--_rail-color, var(--scout-color-cool-gray-200));
     }
-    :host(:last-of-type)::before { display: none; }
+    :host(:first-of-type)::before { top: 12px; }
+    :host(:last-of-type)::before {
+      bottom: auto;
+      height: 12px;
+    }
+    :host(:only-of-type)::before { display: none; }
     /* Dot */
     :host::after {
       content: '';
       position: absolute;
+      box-sizing: border-box;
       left: 0;
       top: 6px;
       width: var(--_dot-size, 12px);

@@ -44,13 +44,13 @@ export class ScoutSystemOutage extends LitElement {
 
     /* Status backgrounds */
     :host([status='platform-wide-outage']) .banner {
-      background: var(--scout-color-red-700);
+      background: var(--scout-color-red-600);
     }
     :host([status='feature-outage']) .banner {
-      background: var(--scout-color-yellow-700);
+      background: var(--scout-color-yellow-600);
     }
     :host([status='outage-restored']) .banner {
-      background: var(--scout-color-green-700);
+      background: var(--scout-color-green-600);
     }
 
     .status-icon {
@@ -69,9 +69,9 @@ export class ScoutSystemOutage extends LitElement {
     }
 
     .title {
-      font-size: var(--scout-font-size-16);
-      line-height: var(--scout-font-line-height-24);
-      font-weight: var(--scout-font-weight-semibold);
+      font-size: var(--scout-typography-body-small-font-size);
+      line-height: var(--scout-typography-body-small-line-height);
+      font-weight: var(--scout-font-weight-bold);
     }
     .title[hidden] { display: none; }
 

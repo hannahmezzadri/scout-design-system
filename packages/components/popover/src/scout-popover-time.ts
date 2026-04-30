@@ -52,11 +52,13 @@ export class ScoutPopoverTime extends LitElement {
 
     .label {
       display: block;
-      font-size: var(--scout-font-size-12);
+      /* Indented so the text edge lines up with the column dropdowns
+         below. Bumped one level up to 14px. */
+      padding-left: var(--scout-space-8);
+      font-size: var(--scout-font-size-14);
       font-weight: var(--scout-font-weight-semibold);
-      color: var(--scout-text-display-secondary);
-      margin-bottom: var(--scout-space-8);
-
+      color: var(--scout-text-display-primary);
+      margin-bottom: 0;
     }
 
     .columns {
@@ -66,20 +68,17 @@ export class ScoutPopoverTime extends LitElement {
       position: relative;
     }
     .columns::before {
-      /* Highlight band for the selected row across all columns */
-      content: '';
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 50%;
-      height: 32px;
-      transform: translateY(-50%);
-      background: var(--scout-color-cool-gray-100);
-      border-radius: var(--scout-radius-4);
-      pointer-events: none;
+      /* Highlight band removed — the selected row's color/weight already
+         signals selection without needing a backdrop fill. */
+      content: none;
     }
 
     .col {
+      position: relative;
+      /* Sit above the highlight band so the selected row's text isn't
+         covered by the cool-gray-100 fill — the band reads as a backdrop,
+         not as a mask. */
+      z-index: 1;
       width: 56px;
       height: 160px;
       overflow-y: scroll;
