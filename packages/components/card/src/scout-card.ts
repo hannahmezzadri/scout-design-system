@@ -9,7 +9,7 @@ import type { CardBackground } from './types.js';
  *
  * @element scout-card
  *
- * @attr {"white"|"cool-gray-100"|"warm-gray-100"} background - Card background color.
+ * @attr {"white"|"cool-gray-100"} background - Card background color.
  * @attr accent-bar - When set, renders a 4px brand-colored bar along the card's left edge.
  * @attr ai-callout - When set, renders an "AI summary" callout banner above the body.
  * @attr show-more - When set, truncates the body and reveals a Show more / Show less toggle.
@@ -30,17 +30,13 @@ export class ScoutCard extends LitElement {
     :host([background='cool-gray-100']) {
       --_card-bg: var(--scout-color-cool-gray-100);
     }
-    :host([background='warm-gray-100']) {
-      --_card-bg: var(--scout-color-warm-gray-100);
-    }
 
     /* Dark theme — promote each variant to a clearly elevated cool-gray
        surface so the card reads as raised against the darker page chrome. */
     :host-context([data-theme='dark']) {
       --_card-bg: var(--scout-color-cool-gray-700);
     }
-    :host-context([data-theme='dark'])[background='cool-gray-100'],
-    :host-context([data-theme='dark'])[background='warm-gray-100'] {
+    :host-context([data-theme='dark'])[background='cool-gray-100'] {
       --_card-bg: var(--scout-color-cool-gray-800);
     }
 
@@ -58,7 +54,7 @@ export class ScoutCard extends LitElement {
     .left-bar {
       width: 4px;
       flex-shrink: 0;
-      background: var(--scout-text-interactive-primary);
+      background: var(--scout-color-cool-gray-400);
     }
 
     .body-wrap {

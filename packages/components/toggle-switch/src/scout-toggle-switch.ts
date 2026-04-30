@@ -43,7 +43,8 @@ export class ScoutToggleSwitch extends LitElement {
       --_track-critical: var(--scout-color-red-600);
       --_track-critical-pressed: var(--scout-color-red-700);
     }
-    :host([size='condensed']) {
+    :host([size='condensed']),
+    :host-context([data-density='condensed']) {
       --_track-w: 28px;
       --_track-h: 16px;
       --_knob-size: 12px;

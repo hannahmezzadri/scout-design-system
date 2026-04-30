@@ -1857,17 +1857,6 @@ body.nav-open .sidebar-scrim { opacity: 1; }
 .icon-search {
   flex: 1 1 240px;
   min-width: 200px;
-  font-family: inherit;
-  font-size: var(--scout-font-size-14);
-  padding: var(--scout-space-8) var(--scout-space-12);
-  border: var(--scout-border-width-1) solid var(--scout-border-primary);
-  border-radius: var(--scout-radius-4);
-  background: var(--scout-surface-page);
-  color: var(--scout-text-display-primary);
-}
-.icon-search:focus-visible {
-  outline: var(--scout-focus-ring-width) solid var(--scout-focus-ring-color);
-  outline-offset: 1px;
 }
 /* Icon-style switcher uses <scout-segmented-control> directly — no extra
    styling needed. */
@@ -2009,6 +1998,11 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   background: var(--scout-surface-primary);
   border: var(--scout-border-width-1) solid var(--scout-border-secondary);
   border-radius: var(--scout-radius-8);
+  width: 100%;
+}
+.component-search-toolbar > scout-text-field {
+  flex: 1;
+  min-width: 0;
 }
 .component-search {
   flex: 1;

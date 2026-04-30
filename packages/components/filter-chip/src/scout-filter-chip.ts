@@ -39,7 +39,8 @@ export class ScoutFilterChip extends LitElement {
       --_chip-icon-size: 14px;
       --_chip-gap: var(--scout-space-4);
     }
-    :host([size='condensed']) {
+    :host([size='condensed']),
+    :host-context([data-density='condensed']) {
       --_chip-padding-block: 2px;
       --_chip-padding-inline: var(--scout-space-8);
       --_chip-fs: var(--scout-font-size-12);

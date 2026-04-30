@@ -57,7 +57,7 @@ export class ScoutCheckboxGroup extends LitElement {
       display: flex;
       flex-direction: column;
       gap: var(--scout-space-8);
-      margin-top: var(--scout-space-4);
+      margin-top: var(--scout-space-12);
     }
     :host([orientation='horizontal']) .items {
       flex-direction: row;
@@ -71,7 +71,7 @@ export class ScoutCheckboxGroup extends LitElement {
       gap: var(--scout-space-4);
       font-size: var(--scout-font-size-12);
       line-height: var(--scout-font-line-height-18);
-      margin-top: var(--scout-space-4);
+      margin-top: var(--scout-space-0);
     }
     .message[hidden] { display: none; }
     .message svg {

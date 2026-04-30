@@ -41,7 +41,8 @@ export class ScoutMultiselect extends LitElement {
       --_ms-min-h: 36px;
       --_ms-fs: var(--scout-font-size-14);
     }
-    :host([size='condensed']) {
+    :host([size='condensed']),
+    :host-context([data-density='condensed']) {
       --_ms-min-h: 28px;
       --_ms-fs: var(--scout-font-size-12);
     }

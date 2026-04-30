@@ -7,7 +7,9 @@ import type { DataUnavailableSize } from './types.js';
  * Distinct from a generic error icon: this signals "the service is the
  * problem, not your input".
  */
-const ICON = svg`<path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm15.59-5.59a.75.75 0 0 0-1.06-1.06L5.59 16.84a.75.75 0 1 0 1.06 1.06l11.19-11.19ZM7.5 12a4.5 4.5 0 0 1 7.348-3.488l-1.07 1.07A3 3 0 0 0 9 12h-1.5Zm5.652 2.418A3 3 0 0 1 9.582 11.4l-1.07 1.07A4.5 4.5 0 0 0 14.91 15.34l-1.758-.922Z" clip-rule="evenodd"/>`;
+/* Heroicons solid `exclamation-triangle` — flags the surface as having a
+   data fetch problem the user should notice. */
+const ICON = svg`<path fill-rule="evenodd" d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd"/>`;
 
 /**
  * `<scout-data-unavailable>` — inline placeholder for surfaces whose data
@@ -15,7 +17,7 @@ const ICON = svg`<path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9
  * states (use the empty-state pattern instead) or for input errors (use
  * scout-inline-alert / scout-text-field error).
  *
- * Anatomy: cloud-with-slash icon + label. The label defaults to
+ * Anatomy: exclamation-triangle icon + label. The label defaults to
  * `"Data unavailable"`; override per surface ("Couldn't load statements",
  * "Activity unavailable") so the agent knows what's missing.
  *

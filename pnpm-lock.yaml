@@ -166,6 +166,9 @@ importers:
 
   packages/components/address:
     dependencies:
+      '@scout/badge':
+        specifier: workspace:*
+        version: link:../badge
       '@scout/checkbox':
         specifier: workspace:*
         version: link:../checkbox
@@ -331,6 +334,9 @@ importers:
 
   packages/components/data-pair:
     dependencies:
+      '@scout/link':
+        specifier: workspace:*
+        version: link:../link
       '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens

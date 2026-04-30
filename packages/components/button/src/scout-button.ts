@@ -37,7 +37,8 @@ export class ScoutButton extends LitElement {
       --_cnx-button-min-height: 36px;
       --_cnx-button-icon-size: 16px;
     }
-    :host([size='condensed']) {
+    :host([size='condensed']),
+    :host-context([data-density='condensed']) {
       --_cnx-button-padding-block: var(--scout-space-4);
       --_cnx-button-padding-inline: var(--scout-space-12);
       --_cnx-button-font-size: var(--scout-font-size-12);

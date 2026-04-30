@@ -56,16 +56,23 @@ export class ScoutControl extends LitElement {
       --_control-icon-size: 20px;
       --_control-fg: var(--scout-icon-interactive-primary);
       --_control-fg-hover: var(--scout-color-cool-gray-900);
+      /* Hover background for the default treatment — semantic interactive
+         hover token (theme-aware). */
+      --_control-bg-hover: var(--scout-interactive-background-hover);
     }
-    :host([size='condensed']) {
+    :host([size='condensed']),
+    :host-context([data-density='condensed']) {
       --_control-size: 24px;
       --_control-icon-size: 16px;
     }
 
-    /* Critical variant — for type="trash" and other destructive triggers */
+    /* Critical variant — for type="trash" and other destructive triggers.
+       Hover only changes the background; the icon color stays put so the
+       trash glyph reads the same in resting and hovered states. */
     :host([color='critical']) {
       --_control-fg: var(--scout-icon-interactive-delete);
-      --_control-fg-hover: var(--scout-color-red-700);
+      --_control-fg-hover: var(--scout-icon-interactive-delete);
+      --_control-bg-hover: var(--scout-interactive-background-critical-hover);
     }
 
     .control {
@@ -89,7 +96,7 @@ export class ScoutControl extends LitElement {
       flex-shrink: 0;
     }
     .control:hover:not(:disabled) {
-      background: var(--scout-color-alpha-20);
+      background: var(--_control-bg-hover);
       color: var(--_control-fg-hover);
     }
     .control:active:not(:disabled) {

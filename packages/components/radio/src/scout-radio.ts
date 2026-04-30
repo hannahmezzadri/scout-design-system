@@ -129,7 +129,7 @@ export class ScoutRadio extends LitElement {
     }
     .secondary {
       font-size: var(--scout-font-size-12);
-      line-height: var(--scout-font-line-height-18);
+      line-height: var(--scout-font-line-height-15);
       color: var(--scout-text-display-secondary);
     }
     .warning {

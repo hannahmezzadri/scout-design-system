@@ -1,6 +1,7 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import type { DataPairOrientation } from './types.js';
+import '@scout/link';
+import type { DataPairOrientation, DataPairVariant } from './types.js';
 
 /**
  * `<scout-data-pair>` — display a label paired with its value, with optional
@@ -14,9 +15,9 @@ import type { DataPairOrientation } from './types.js';
  * @element scout-data-pair
  *
  * @attr label                                       - Field label.
- * @attr {"vertical"|"horizontal"} orientation        - Layout direction. `vertical` (default) stacks label
- *                                                     above description; `horizontal` puts the label inline to
- *                                                     the left.
+ * @attr {"vertical"} orientation                      - Layout direction. Always stacks label above description.
+ * @attr {"default"|"stat"} variant                    - `default` renders the description at body size; `stat`
+ *                                                       promotes it to heading-2 typography for prominent metrics.
  *
  * @slot      - Default slot: the description / value.
  * @slot meta - Optional meta data (e.g., timestamp, secondary detail).
@@ -30,29 +31,19 @@ export class ScoutDataPair extends LitElement {
       font-family: var(--scout-font-family-inter);
     }
 
-    /* Vertical (default): label stacked above the description. */
+    /* Label stacked above the description. */
     .pair {
       display: flex;
       flex-direction: column;
       gap: 2px;
       min-width: 0;
     }
-    /* Horizontal: label sits to the left, description to the right. */
-    :host([orientation='horizontal']) .pair {
-      flex-direction: row;
-      align-items: baseline;
-      gap: var(--scout-space-12);
-    }
-    :host([orientation='horizontal']) .label {
-      flex-shrink: 0;
-      min-width: 140px;
-    }
 
     .label {
-      font-size: var(--scout-font-size-12);
+      font-size: var(--scout-typography-body-small-font-size);
+      line-height: var(--scout-typography-body-small-line-height);
       font-weight: var(--scout-font-weight-semibold);
-      color: var(--scout-text-display-secondary);
-      line-height: var(--scout-font-line-height-18);
+      color: var(--scout-text-display-primary);
     }
 
     .body {
@@ -61,17 +52,28 @@ export class ScoutDataPair extends LitElement {
       gap: 2px;
       min-width: 0;
     }
-    :host([orientation='horizontal']) .body { flex: 1; }
-
     .description {
-      font-size: var(--scout-font-size-14);
-      line-height: var(--scout-font-line-height-21);
+      font-size: var(--scout-typography-body-font-size);
+      line-height: var(--scout-typography-body-line-height);
       color: var(--scout-text-display-primary);
       word-break: break-word;
     }
+    /* Stat variant — promote the description to heading-2 typography so a
+       data-pair can stand in as a labelled metric (count, balance, KPI).
+       Tighten the label → description gap to space.0 so the metric reads
+       as a single unit. */
+    :host([variant='stat']) .pair {
+      gap: var(--scout-space-0);
+    }
+    :host([variant='stat']) .description {
+      font-family: var(--scout-typography-heading-2-font-family);
+      font-weight: var(--scout-typography-heading-2-font-weight);
+      font-size: var(--scout-typography-heading-2-font-size);
+      line-height: var(--scout-typography-heading-2-line-height);
+    }
     .meta {
-      font-size: var(--scout-font-size-12);
-      line-height: var(--scout-font-line-height-18);
+      font-size: var(--scout-typography-body-small-font-size);
+      line-height: var(--scout-typography-body-small-line-height);
       color: var(--scout-text-display-secondary);
     }
     .meta[hidden],
@@ -85,6 +87,7 @@ export class ScoutDataPair extends LitElement {
 
   @property() label = '';
   @property({ reflect: true }) orientation: DataPairOrientation = 'vertical';
+  @property({ reflect: true }) variant: DataPairVariant = 'default';
 
   /** Slot-presence flags for `meta` / `link` so empty slots don't render gaps. */
   private _hasMeta = false;

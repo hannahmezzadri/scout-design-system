@@ -37,7 +37,8 @@ export class ScoutBadge extends LitElement {
       --_badge-icon-size: 12px;
       --_badge-gap: var(--scout-space-4);
     }
-    :host([size='condensed']) {
+    :host([size='condensed']),
+    :host-context([data-density='condensed']) {
       --_badge-padding-block: 1px;
       --_badge-padding-inline: var(--scout-space-4);
       --_badge-font-size: var(--scout-font-size-10);
@@ -163,17 +164,14 @@ export class ScoutBadge extends LitElement {
   render() {
     // Render the prescribed icon when:
     //   - size is default (icons are disallowed at condensed)
-    //   - the consumer set the `icon` boolean attribute
+    //   - the consumer set the `icon` boolean attribute (opt-in for every type)
     //   - the consumer hasn't slotted a custom icon
-    //   - the type has a prescribed icon (informational, success, warning, critical)
-    // AI summary always renders its sparkle icon — it's the brand convention
-    // for AI-generated content. Other status types render the prescribed icon
-    // only when the consumer opts in via the `icon` attribute.
+    //   - the type has a prescribed icon (informational, success, warning, critical, ai-summary)
     const showPrescribed =
       this.size !== 'condensed' &&
       !this._hasCustomIcon &&
       this.type in PRESCRIBED_ICON &&
-      (this.icon || this.type === 'ai-summary');
+      this.icon;
 
     const showCustomSlot = this.size !== 'condensed';
 

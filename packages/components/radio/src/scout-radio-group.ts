@@ -64,7 +64,7 @@ export class ScoutRadioGroup extends LitElement {
       display: flex;
       flex-direction: column;
       gap: var(--scout-space-12);
-      margin-top: var(--scout-space-4);
+      margin-top: var(--scout-space-12);
     }
     :host([orientation='horizontal']) .items {
       flex-direction: row;
@@ -78,7 +78,7 @@ export class ScoutRadioGroup extends LitElement {
       gap: var(--scout-space-4);
       font-size: var(--scout-font-size-12);
       line-height: var(--scout-font-line-height-18);
-      margin-top: var(--scout-space-4);
+      margin-top: var(--scout-space-0);
       color: var(--scout-text-display-error);
     }
     .message[hidden] { display: none; }

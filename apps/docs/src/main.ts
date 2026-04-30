@@ -58,7 +58,7 @@ function el(tag: string, attrs: Record<string, string> = {}, ...children: (Node 
 }
 
 /**
- * Controls-panel dropdown helper. Returns a `<scout-dropdown-select size="condensed">`
+ * Controls-panel dropdown helper. Returns a `<scout-dropdown-select size="default">`
  * with the supplied options, and bridges its `scout-dropdown-change` event to a
  * native `change` event so existing render() loops in each control panel keep working.
  */
@@ -70,7 +70,7 @@ function ddSelect(
 ): HTMLElement & { value: string } {
   const dd = document.createElement('scout-dropdown-select') as HTMLElement & { value: string };
   dd.id = id;
-  dd.setAttribute('size', 'condensed');
+  dd.setAttribute('size', 'default');
   const norm = options.map((o) => (typeof o === 'string' ? { value: o, label: o } : o));
   // Default to first option to mirror native <select> behavior used previously
   dd.setAttribute('value', value ?? norm[0]?.value ?? '');
@@ -87,7 +87,7 @@ function ddSelect(
 }
 
 /**
- * Controls-panel text field. Returns a `<scout-text-field size="condensed">`
+ * Controls-panel text field. Returns a `<scout-text-field size="default">`
  * with the same `.value` getter and native `input`/`change` events that the
  * docs' render() loops expect, so existing wiring keeps working unchanged.
  */
@@ -98,7 +98,7 @@ function ctrlText(
 ): HTMLElement & { value: string } {
   const t = document.createElement('scout-text-field') as HTMLElement & { value: string };
   t.id = id;
-  t.setAttribute('size', 'condensed');
+  t.setAttribute('size', 'default');
   // The `number` variant strips non-digits as the user types; bounds
   // (min/max) are enforced by the consuming render() function.
   if (opts.type === 'number') t.setAttribute('variant', 'number');
@@ -1230,12 +1230,11 @@ const app = document.getElementById('app')!;
     ['micro', 'Micro · 16'],
   ];
 
-  const search = el('input', {
-    type: 'search',
-    class: 'icon-search',
-    placeholder: 'Search icons (e.g. "arrow", "user", "chart")',
-    'aria-label': 'Search icons',
-  }) as HTMLInputElement;
+  const search = document.createElement('scout-text-field') as HTMLElement & { value: string };
+  search.classList.add('icon-search');
+  search.setAttribute('variant', 'search');
+  search.setAttribute('placeholder', 'Search icons (e.g. "arrow", "user", "chart")');
+  search.setAttribute('aria-label', 'Search icons');
 
   // Style switcher uses the scout-segmented-control component so the
   // iconography page dogfoods the same primitive used in product UIs.
@@ -1255,7 +1254,7 @@ const app = document.getElementById('app')!;
   let activeStyle: IconStyle = 'outline';
 
   function rerender() {
-    const q = search.value.trim().toLowerCase();
+    const q = (search.value || '').trim().toLowerCase();
     const matches = q ? allNames.filter((n) => n.includes(q)) : allNames;
     count.textContent = `${matches.length} of ${allNames.length} icons`;
     grid.replaceChildren(...matches.map((n) => iconCell(n, activeStyle)));
@@ -1265,6 +1264,7 @@ const app = document.getElementById('app')!;
   }
 
   search.addEventListener('input', rerender);
+  search.addEventListener('change', rerender);
   styleSel.addEventListener('scout-segmented-change', (e) => {
     activeStyle = (e as CustomEvent<{ value: string }>).detail.value as IconStyle;
     rerender();
@@ -2002,7 +2002,7 @@ import '@scout/button';`,
     { id: 'components-card',          name: 'Card',          summary: 'Stylized container for AI summaries and extracted plain-text content. Three background colors, optional AI call-out and show-more toggle.' },
     { id: 'components-checkbox',      name: 'Checkbox',      summary: 'Single and multi-select form input. Selected, not selected, and indeterminate states. Group orientation, helper, error, and warning messages.' },
     { id: 'components-control',       name: 'Control',       summary: 'Icon-only interactive control for triggering single actions. 11 built-in types (close, clear, navigation arrows, tooltip, trash, kebab) with primary and critical colors.' },
-    { id: 'components-data-pair',     name: 'Data pair',     summary: 'Label + description display with optional meta and link. Vertical (stacked) or horizontal (inline) orientation.' },
+    { id: 'components-data-pair',     name: 'Data pair',     summary: 'Label + description display with optional meta and link. Vertical (stacked) layout.' },
     { id: 'components-data-unavailable', name: 'Data unavailable', summary: 'Inline placeholder for surfaces whose data couldn\'t be fetched. Cloud-with-slash icon + label. Three sizes: small, medium, large.' },
     { id: 'components-dialog',        name: 'Dialog',        summary: 'Modal surface that disables the page behind it. Confirms actions, displays simple flows, surfaces important system messages.' },
     { id: 'components-disclosure-dialog', name: 'Disclosure dialog', summary: 'Specialized dialog for legal/compliance disclosures. Language tabs, optional acknowledgement checkbox. Simple and Automated types.' },
@@ -3215,7 +3215,7 @@ function badgePreview(): HTMLElement {
     previewBadge({ type: 'success', icon: true, label: 'Green' }),
     previewBadge({ type: 'warning', icon: true, label: 'Yellow' }),
     previewBadge({ type: 'critical', icon: true, label: 'Red' }),
-    previewBadge({ type: 'ai-summary', label: 'Purple' }),
+    previewBadge({ type: 'ai-summary', icon: true, label: 'Purple' }),
   );
 
   block(
@@ -3256,7 +3256,7 @@ function badgePreview(): HTMLElement {
     const b = document.createElement('scout-badge');
     b.setAttribute('type', 'critical');
     b.setAttribute('emphasis', 'low');
-    const icon = heroIconSvg('chat-bubble-left', 14);
+    const icon = heroIconSvg('chat-bubble-oval-left', 14);
     icon.setAttribute('slot', 'icon-custom');
     b.append(icon, document.createTextNode('Do not disclose'));
     return b;
@@ -3308,7 +3308,7 @@ function badgePreview(): HTMLElement {
           note: 'Use for new content such as features or questions in a form.',
         },
         {
-          badge: previewBadge({ type: 'ai-summary', icon: true, label: 'AI summary' }),
+          badge: previewBadge({ type: 'ai-summary', label: 'AI summary' }),
           note: 'Use when content is being extracted or generated from AI.',
         },
         {
@@ -3793,7 +3793,7 @@ app.append(
 // =================================================================
 import '@scout/card';
 
-type CardBg = 'white' | 'cool-gray-100' | 'warm-gray-100';
+type CardBg = 'white' | 'cool-gray-100';
 
 interface CardOpts {
   background?: CardBg;
@@ -3860,11 +3860,10 @@ function cardPreview(): HTMLElement {
 
   block(
     'Background colors',
-    'Three options. White is the default. Cool-gray.100 sits well on white surfaces; warm-gray.100 is used for editorial / reading contexts.',
+    'Two options. White is the default. Cool-gray.100 sits well on white surfaces.',
     el('div', { class: 'preview-stack' },
       previewCard({ background: 'white', aiCallout: true, body: 'Background: white (default).' }),
       previewCard({ background: 'cool-gray-100', aiCallout: true, body: 'Background: cool-gray.100.' }),
-      previewCard({ background: 'warm-gray-100', aiCallout: true, body: 'Background: warm-gray.100.' }),
     ),
   );
 
@@ -3895,7 +3894,7 @@ function cardControls(): HTMLElement {
   const stage = el('div', { class: 'preview-stage preview-stage--block' });
   const codePre = el('pre', { class: 'code-block' }) as HTMLPreElement;
 
-  const bgSel = ddSelect('card-bg', ['white', 'cool-gray-100', 'warm-gray-100'] as const);
+  const bgSel = ddSelect('card-bg', ['white', 'cool-gray-100'] as const);
   const bodyInput = ctrlText('card-body', 'Customer mentioned a recurring charge issue. Last call was 2 days ago.');
   const aiLabelInput = ctrlText('card-ailabel', 'AI summary');
   const accentBarChk = ctrlCheck('card-accent', 'Accent bar');
@@ -4039,7 +4038,7 @@ function cardCode(): HTMLElement {
         el('table', { class: 'props-table' },
           el('thead', {}, el('tr', {}, el('th', {}, 'Prop'), el('th', {}, 'Type'), el('th', {}, 'Default'), el('th', {}, 'Description'))),
           el('tbody', {},
-            el('tr', {}, el('td', {}, 'background'), el('td', {}, '"white" | "cool-gray-100" | "warm-gray-100"'), el('td', {}, '"white"'), el('td', {}, 'Card background color.')),
+            el('tr', {}, el('td', {}, 'background'), el('td', {}, '"white" | "cool-gray-100"'), el('td', {}, '"white"'), el('td', {}, 'Card background color.')),
             el('tr', {}, el('td', {}, 'accent-bar'), el('td', {}, 'boolean'), el('td', {}, 'false'), el('td', {}, 'Renders a 4px brand-colored bar along the card’s left edge.')),
             el('tr', {}, el('td', {}, 'ai-callout'), el('td', {}, 'boolean'), el('td', {}, 'false'), el('td', {}, 'Renders the AI callout banner.')),
             el('tr', {}, el('td', {}, 'show-more'), el('td', {}, 'boolean'), el('td', {}, 'false'), el('td', {}, 'Truncates body and reveals expand/collapse toggle.')),
@@ -4716,20 +4715,26 @@ interface DataPairOpts {
   meta?: string;
   link?: string;
   orientation?: 'vertical' | 'horizontal';
+  variant?: 'default' | 'stat';
 }
 
 function previewDataPair(opts: DataPairOpts = {}): HTMLElement {
   const dp = document.createElement('scout-data-pair');
   if (opts.label) dp.setAttribute('label', opts.label);
   if (opts.orientation) dp.setAttribute('orientation', opts.orientation);
+  if (opts.variant && opts.variant !== 'default') dp.setAttribute('variant', opts.variant);
   dp.appendChild(document.createTextNode(opts.description ?? ''));
   if (opts.meta) {
     const m = el('span', { slot: 'meta' }, opts.meta);
     dp.appendChild(m);
   }
   if (opts.link) {
-    const a = el('a', { slot: 'link', href: '#' }, opts.link);
-    dp.appendChild(a);
+    const link = document.createElement('scout-link');
+    link.setAttribute('slot', 'link');
+    link.setAttribute('href', '#');
+    link.setAttribute('type', 'standalone');
+    link.textContent = opts.link;
+    dp.appendChild(link);
   }
   return dp;
 }
@@ -4745,7 +4750,7 @@ function dataPairPreview(): HTMLElement {
   };
 
   block(
-    'Vertical (stacked) — default',
+    'Default',
     'Label sits on its own line above the description. Use for forms, detail views, and any surface where vertical real-estate is plentiful.',
     el('div', { class: 'data-pair-grid' },
       previewDataPair({ label: 'Account name', description: 'Jamie Tran' }),
@@ -4755,13 +4760,12 @@ function dataPairPreview(): HTMLElement {
   );
 
   block(
-    'Horizontal (inline)',
-    'Label sits inline with the description. Use in dense detail rails, summary headers, and any place a stacked layout would feel chatty.',
-    el('div', { class: 'preview-stack' },
-      previewDataPair({ orientation: 'horizontal', label: 'Account name', description: 'Jamie Tran' }),
-      previewDataPair({ orientation: 'horizontal', label: 'Phone', description: '555-014-2237' }),
-      previewDataPair({ orientation: 'horizontal', label: 'Email', description: 'jamie@ember.com', meta: 'Verified' }),
-      previewDataPair({ orientation: 'horizontal', label: 'Status', description: 'Active', link: 'Manage' }),
+    'Stat',
+    'Promotes the description to heading-2 typography. Use when the data-pair stands in as a labelled metric (count, balance, KPI).',
+    el('div', { class: 'data-pair-grid' },
+      previewDataPair({ variant: 'stat', label: 'Open disputes', description: '7' }),
+      previewDataPair({ variant: 'stat', label: 'Statement balance', description: '$1,250.18', meta: 'As of May 18' }),
+      previewDataPair({ variant: 'stat', label: 'New customers', description: '1,284', meta: '+12% vs last month' }),
     ),
   );
 
@@ -4784,7 +4788,6 @@ function dataPairControls(): HTMLElement {
   const stage = el('div', { class: 'preview-stage preview-stage--block' });
   const codePre = el('pre', { class: 'code-block' }) as HTMLPreElement;
 
-  const orientationSel = ddSelect('dp-orient', ['vertical', 'horizontal']);
   const labelInput = ctrlText('dp-label', 'Account name');
   const descInput = ctrlText('dp-desc', 'Jamie Tran');
   const metaInput = ctrlText('dp-meta', '');
@@ -4792,7 +4795,6 @@ function dataPairControls(): HTMLElement {
 
   function render() {
     stage.replaceChildren(previewDataPair({
-      orientation: orientationSel.value as 'vertical' | 'horizontal',
       label: labelInput.value,
       description: descInput.value,
       meta: metaInput.value || undefined,
@@ -4801,11 +4803,11 @@ function dataPairControls(): HTMLElement {
     const slots: string[] = [];
     if (descInput.value) slots.push(`  ${descInput.value}`);
     if (metaInput.value) slots.push(`  <span slot="meta">${metaInput.value}</span>`);
-    if (linkInput.value) slots.push(`  <a slot="link" href="#">${linkInput.value}</a>`);
+    if (linkInput.value) slots.push(`  <scout-link slot="link" href="#" type="standalone">${linkInput.value}</scout-link>`);
     codePre.textContent =
-      `<scout-data-pair label="${labelInput.value}"${orientationSel.value !== 'vertical' ? ` orientation="${orientationSel.value}"` : ''}>\n${slots.join('\n')}\n</scout-data-pair>`;
+      `<scout-data-pair label="${labelInput.value}">\n${slots.join('\n')}\n</scout-data-pair>`;
   }
-  for (const c of [orientationSel, labelInput, descInput, metaInput, linkInput]) {
+  for (const c of [labelInput, descInput, metaInput, linkInput]) {
     c.addEventListener('input', render);
     c.addEventListener('change', render);
   }
@@ -4813,7 +4815,6 @@ function dataPairControls(): HTMLElement {
     el('div', { class: 'ctrl-field' }, el('label', { for: f }, l), c);
   const panel = el('div', { class: 'ctrl-panel' },
     el('h3', { class: 'preview-block__title' }, 'Properties'),
-    ctrlField('Orientation', 'dp-orient', orientationSel),
     ctrlField('Label', 'dp-label', labelInput),
     ctrlField('Description', 'dp-desc', descInput),
     ctrlField('Meta (optional)', 'dp-meta', metaInput),
@@ -4901,19 +4902,14 @@ function dataPairCode(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'HTML / Web Component'),
       el('pre', { class: 'code-block' },
-        `<!-- Vertical (default) -->
+        `<!-- Default -->
 <scout-data-pair label="Account name">Jamie Tran</scout-data-pair>
-
-<!-- Horizontal -->
-<scout-data-pair orientation="horizontal" label="Phone">
-  555-014-2237
-</scout-data-pair>
 
 <!-- With meta + link -->
 <scout-data-pair label="Auto-pay">
   Enrolled · Wells Fargo ····2204
   <span slot="meta">Will draft on the statement due date.</span>
-  <a slot="link" href="/funding">Change funding source</a>
+  <scout-link slot="link" href="/funding" type="standalone">Change funding source</scout-link>
 </scout-data-pair>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
@@ -4933,7 +4929,7 @@ function dataPairCode(): HTMLElement {
 app.append(componentPage(
   'components-data-pair',
   'Data pair',
-  'Label + description display with optional meta and link. Vertical (stacked) or horizontal (inline) orientation.',
+  'Label + description display with optional meta and link.',
   [
     { id: 'preview', label: 'Preview', content: dataPairPreview() },
     { id: 'controls', label: 'Controls', content: dataPairControls() },
@@ -7299,6 +7295,7 @@ app.append(componentPage(
 
 interface DialogOpts {
   title?: string;
+  subtext?: string;
   body?: string;
   size?: 'small' | 'medium' | 'large';
   closable?: boolean;
@@ -7311,6 +7308,7 @@ interface DialogOpts {
 function previewDialogDemo(opts: DialogOpts = {}): HTMLElement {
   const {
     title = 'Confirm deletion',
+    subtext,
     body = 'Are you sure you want to delete this account? This cannot be undone.',
     size = 'medium',
     closable = true,
@@ -7336,6 +7334,13 @@ function previewDialogDemo(opts: DialogOpts = {}): HTMLElement {
     titleEl.setAttribute('slot', 'title');
     titleEl.textContent = title;
     dialog.append(titleEl);
+
+    if (subtext) {
+      const sub = document.createElement('span');
+      sub.setAttribute('slot', 'subtext');
+      sub.textContent = subtext;
+      dialog.append(sub);
+    }
 
     if (alert) {
       const al = document.createElement('scout-inline-alert');
@@ -7449,12 +7454,106 @@ function dialogCode(): HTMLElement {
           )))));
 }
 
+function dialogControls(): HTMLElement {
+  const wrap = el('div', { class: 'tab-content controls-layout' });
+  const stage = el('div', { class: 'preview-stage preview-stage--block' });
+  const codePre = el('pre', { class: 'code-block' }) as HTMLPreElement;
+
+  const sizeSel = ddSelect('dlg-size', ['small', 'medium', 'large'], 'medium');
+  const titleInput = ctrlText('dlg-title', 'Confirm deletion');
+  const subtextInput = ctrlText('dlg-subtext', '');
+  const bodyInput = ctrlText('dlg-body', 'Are you sure you want to delete this account?');
+  const closableChk = ctrlCheck('dlg-closable', 'Closable', { checked: true });
+
+  function render() {
+    stage.replaceChildren(previewDialogDemo({
+      size: sizeSel.value as 'small' | 'medium' | 'large',
+      title: titleInput.value,
+      subtext: subtextInput.value || undefined,
+      body: bodyInput.value,
+      closable: closableChk.checked,
+      primaryLabel: 'Delete account',
+      primaryVariant: 'critical',
+    }));
+    const attrs: string[] = [`size="${sizeSel.value}"`, 'open'];
+    if (!closableChk.checked) attrs.push('closable="false"');
+    codePre.textContent = `<scout-dialog ${attrs.join(' ')}>\n  <span slot="title">${titleInput.value}</span>\n${subtextInput.value ? `  <span slot="subtext">${subtextInput.value}</span>\n` : ''}  ${bodyInput.value}\n  <scout-button slot="actions" variant="critical">Delete account</scout-button>\n</scout-dialog>`;
+  }
+  for (const c of [sizeSel, titleInput, subtextInput, bodyInput, closableChk]) {
+    c.addEventListener('input', render);
+    c.addEventListener('change', render);
+  }
+  const ctrlField = (l: string, f: string, c: HTMLElement) =>
+    el('div', { class: 'ctrl-field' }, el('label', { for: f }, l), c);
+  const panel = el('div', { class: 'ctrl-panel' },
+    el('h3', { class: 'preview-block__title' }, 'Properties'),
+    ctrlField('Size', 'dlg-size', sizeSel),
+    ctrlField('Title', 'dlg-title', titleInput),
+    ctrlField('Subtext (optional)', 'dlg-subtext', subtextInput),
+    ctrlField('Body', 'dlg-body', bodyInput),
+    el('div', { class: 'ctrl-checks' }, closableChk),
+  );
+  wrap.append(panel, el('div', { class: 'ctrl-stage-wrap' }, stage,
+    el('div', { class: 'code-wrap' }, el('h3', { class: 'preview-block__title' }, 'Code'), codePre)));
+  queueMicrotask(render);
+  return wrap;
+}
+
+function dialogGuidelines(): HTMLElement {
+  return el('div', { class: 'tab-content guidelines-layout' },
+    el('section', { class: 'guideline-section' },
+      el('h3', { class: 'guideline-heading do-heading' }, heroIconSvg('check-circle', 20), ' Do'),
+      el('ul', { class: 'guideline-list' },
+        el('li', {}, 'Use a dialog for confirmations, important state changes, and decisions that require focused attention.'),
+        el('li', {}, 'Pair a critical action (Delete, Cancel subscription) with a clear secondary "back out" button.'),
+        el('li', {}, 'Slot a scout-inline-alert when the action has timing- or compliance-sensitive context.'),
+      ),
+    ),
+    el('section', { class: 'guideline-section' },
+      el('h3', { class: 'guideline-heading dont-heading' }, heroIconSvg('x-circle', 20), " Don't"),
+      el('ul', { class: 'guideline-list' },
+        el('li', {}, "Don't stack dialogs. If a dialog leads to another decision, use the body to host that flow."),
+        el('li', {}, "Don't use a dialog for non-blocking notifications — use scout-snackbar or scout-inline-alert."),
+        el('li', {}, "Don't disable the X close button unless the user truly cannot opt out (forced disclosures use scout-disclosure-dialog)."),
+      ),
+    ),
+  );
+}
+
+function dialogContent(): HTMLElement {
+  return el('div', { class: 'tab-content guidelines-layout' },
+    el('section', { class: 'guideline-section' },
+      el('h3', { class: 'guideline-heading' }, 'Title'),
+      el('ul', { class: 'guideline-list' },
+        el('li', {}, 'Sentence case. Frame as a question when the dialog asks for a decision ("Cancel subscription?") or a statement when announcing a change ("Account closed").'),
+        el('li', {}, 'Keep titles under one line at the medium size — let supporting copy live in the subtext or body.'),
+      ),
+    ),
+    el('section', { class: 'guideline-section' },
+      el('h3', { class: 'guideline-heading' }, 'Subtext'),
+      el('ul', { class: 'guideline-list' },
+        el('li', {}, 'Optional supporting line directly below the title. Use to preview the consequence ("Auto-pay will stop on May 18").'),
+      ),
+    ),
+    el('section', { class: 'guideline-section' },
+      el('h3', { class: 'guideline-heading' }, 'Action labels'),
+      el('ul', { class: 'guideline-list' },
+        el('li', {}, 'Primary action is a verb-noun pair that confirms what happens ("Delete account", "Cancel subscription"). Avoid "OK".'),
+        el('li', {}, 'Cancel button keeps the literal label "Cancel" — it returns to the prior state.'),
+      ),
+    ),
+  );
+}
+
 app.append(componentPage(
   'components-dialog',
   'Dialog',
   'Modal surface that disables the page behind it. Use for confirmations, simple flows, important actions, and timeout warnings.',
   [
     { id: 'preview', label: 'Preview', content: dialogPreview() },
+    { id: 'controls', label: 'Controls', content: dialogControls() },
+    { id: 'guidelines', label: 'Usage guidelines', content: dialogGuidelines() },
+    { id: 'content', label: 'Content', content: dialogContent() },
     { id: 'code', label: 'Code', content: dialogCode() },
   ],
 ));
@@ -7606,12 +7705,62 @@ function disclosureCode(): HTMLElement {
           )))));
 }
 
+function disclosureControls(): HTMLElement {
+  return el('div', { class: 'tab-content guidelines-layout' },
+    el('section', { class: 'guideline-section' },
+      el('p', { class: 'preview-block__lede' }, 'Disclosure dialogs are configured per legal/compliance flow rather than parameterized at runtime. See the Preview tab to compare Simple and Automated variants and the supported language sets.'),
+    ),
+  );
+}
+
+function disclosureGuidelines(): HTMLElement {
+  return el('div', { class: 'tab-content guidelines-layout' },
+    el('section', { class: 'guideline-section' },
+      el('h3', { class: 'guideline-heading do-heading' }, heroIconSvg('check-circle', 20), ' Do'),
+      el('ul', { class: 'guideline-list' },
+        el('li', {}, 'Use a disclosure dialog when legal or compliance requires the agent to read verbatim text before proceeding.'),
+        el('li', {}, 'Pair the dialog with the optional acknowledgement checkbox when the customer must opt in explicitly.'),
+        el('li', {}, 'Surface the agent-facing translations supported by the flow (English, Spanish, French) via the language tabs.'),
+      ),
+    ),
+    el('section', { class: 'guideline-section' },
+      el('h3', { class: 'guideline-heading dont-heading' }, heroIconSvg('x-circle', 20), " Don't"),
+      el('ul', { class: 'guideline-list' },
+        el('li', {}, "Don't use a disclosure dialog for general confirmations — use scout-dialog instead."),
+        el('li', {}, "Don't paraphrase or summarize the disclosure copy. Render the legal text exactly as approved."),
+      ),
+    ),
+  );
+}
+
+function disclosureContent(): HTMLElement {
+  return el('div', { class: 'tab-content guidelines-layout' },
+    el('section', { class: 'guideline-section' },
+      el('h3', { class: 'guideline-heading' }, 'Disclosure copy'),
+      el('ul', { class: 'guideline-list' },
+        el('li', {}, 'Disclosure copy is not editable in product code. It comes from the approved legal source and is rendered verbatim.'),
+        el('li', {}, 'When translations are available, every supported language must contain the same disclosure content.'),
+      ),
+    ),
+    el('section', { class: 'guideline-section' },
+      el('h3', { class: 'guideline-heading' }, 'Acknowledgement'),
+      el('ul', { class: 'guideline-list' },
+        el('li', {}, 'Acknowledgement label is sentence case ("I confirm the customer has heard and accepted this disclosure").'),
+        el('li', {}, 'The Continue button stays disabled until the acknowledgement is checked. Cancel always remains available.'),
+      ),
+    ),
+  );
+}
+
 app.append(componentPage(
   'components-disclosure-dialog',
   'Disclosure dialog',
   'Specialized modal that forces agents to read legal/compliance content verbatim before continuing. Adds language tabs, optional acknowledgement, and Simple vs. Automated types.',
   [
     { id: 'preview', label: 'Preview', content: disclosurePreview() },
+    { id: 'controls', label: 'Controls', content: disclosureControls() },
+    { id: 'guidelines', label: 'Usage guidelines', content: disclosureGuidelines() },
+    { id: 'content', label: 'Content', content: disclosureContent() },
     { id: 'code', label: 'Code', content: disclosureCode() },
   ],
 ));

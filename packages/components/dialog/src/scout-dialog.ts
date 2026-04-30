@@ -20,6 +20,7 @@ import type { DialogSize } from './types.js';
  *
  * @slot icon              - Optional decorative icon next to the title.
  * @slot title             - Title bar text.
+ * @slot subtext           - Optional supporting text rendered directly below the title.
  * @slot alert             - Optional inline alert (e.g. <scout-inline-alert>).
  * @slot                   - Default slot: body copy.
  * @slot actions           - Buttons at the bottom of the dialog.
@@ -74,10 +75,9 @@ export class ScoutDialog extends LitElement {
 
     .header {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: var(--scout-space-12);
       padding: var(--scout-space-16) var(--scout-space-24);
-      border-bottom: var(--scout-border-width-1) solid var(--scout-border-secondary);
     }
     .icon[hidden] { display: none; }
     .icon {
@@ -86,14 +86,36 @@ export class ScoutDialog extends LitElement {
       height: 24px;
       color: var(--scout-icon-display-primary);
     }
+    .title-stack {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--scout-space-0);
+    }
+    /* Title row holds the title + X close button so the X stays vertically
+       centered with the title text only — independent of any subtext that
+       sits below it in the title-stack. */
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: var(--scout-space-12);
+    }
     .title {
       flex: 1;
       min-width: 0;
+      margin: 0;
       font-family: var(--scout-font-family-literata);
       font-weight: var(--scout-font-weight-semibold);
       font-size: var(--scout-font-size-20);
       line-height: var(--scout-font-line-height-30);
     }
+    .subtext {
+      font-size: var(--scout-typography-body-small-font-size);
+      line-height: var(--scout-typography-body-small-line-height);
+      color: var(--scout-text-display-secondary);
+    }
+    .subtext[hidden] { display: none; }
     .close { flex-shrink: 0; margin: -8px; }
 
     .alert { padding: var(--scout-space-16) var(--scout-space-24) 0; }
@@ -123,10 +145,12 @@ export class ScoutDialog extends LitElement {
   @state() private _hasIcon = false;
   @state() private _hasAlert = false;
   @state() private _hasActions = false;
+  @state() private _hasSubtext = false;
 
   private _onIconSlot = (e: Event) => { this._hasIcon = (e.target as HTMLSlotElement).assignedNodes({ flatten: true }).length > 0; };
   private _onAlertSlot = (e: Event) => { this._hasAlert = (e.target as HTMLSlotElement).assignedNodes({ flatten: true }).length > 0; };
   private _onActionsSlot = (e: Event) => { this._hasActions = (e.target as HTMLSlotElement).assignedNodes({ flatten: true }).length > 0; };
+  private _onSubtextSlot = (e: Event) => { this._hasSubtext = (e.target as HTMLSlotElement).assignedNodes({ flatten: true }).length > 0; };
 
   private _close = () => {
     this.dispatchEvent(new CustomEvent('scout-dialog-close', { bubbles: true, composed: true }));
@@ -156,10 +180,17 @@ export class ScoutDialog extends LitElement {
             <span class="icon" ?hidden=${!this._hasIcon}>
               <slot name="icon" @slotchange=${this._onIconSlot}></slot>
             </span>
-            <h2 class="title"><slot name="title"></slot></h2>
-            ${this.closable
-              ? html`<scout-control class="close" type="x-close" size="condensed" aria-label-override="Close dialog" @click=${this._close}></scout-control>`
-              : nothing}
+            <div class="title-stack">
+              <div class="title-row">
+                <h2 class="title"><slot name="title"></slot></h2>
+                ${this.closable
+                  ? html`<scout-control class="close" type="x-close" size="condensed" aria-label-override="Close dialog" @click=${this._close}></scout-control>`
+                  : nothing}
+              </div>
+              <p class="subtext" ?hidden=${!this._hasSubtext}>
+                <slot name="subtext" @slotchange=${this._onSubtextSlot}></slot>
+              </p>
+            </div>
           </div>
           <div class="alert" ?hidden=${!this._hasAlert}>
             <slot name="alert" @slotchange=${this._onAlertSlot}></slot>

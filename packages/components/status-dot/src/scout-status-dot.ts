@@ -31,7 +31,8 @@ export class ScoutStatusDot extends LitElement {
       --_sd-lh: var(--scout-font-line-height-21);
       --_sd-fill: var(--scout-color-cool-gray-700);
     }
-    :host([size='condensed']) {
+    :host([size='condensed']),
+    :host-context([data-density='condensed']) {
       --_sd-dot-size: 6px;
       --_sd-fs: var(--scout-font-size-12);
       --_sd-lh: var(--scout-font-line-height-18);

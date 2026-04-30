@@ -35,7 +35,8 @@ export class ScoutShowMore extends LitElement {
       --_sm-px: 0px;
       --_sm-icon: 16px;
     }
-    :host([size='condensed']) {
+    :host([size='condensed']),
+    :host-context([data-density='condensed']) {
       --_sm-fs: var(--scout-font-size-12);
       --_sm-py: 2px;
       --_sm-icon: 14px;

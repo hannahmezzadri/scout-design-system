@@ -39,7 +39,8 @@ export class ScoutDropdownSelect extends LitElement {
       --_dropdown-h: 36px;
       --_dropdown-fs: var(--scout-font-size-14);
     }
-    :host([size='condensed']) {
+    :host([size='condensed']),
+    :host-context([data-density='condensed']) {
       --_dropdown-h: 28px;
       --_dropdown-fs: var(--scout-font-size-12);
     }

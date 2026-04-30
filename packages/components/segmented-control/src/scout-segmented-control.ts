@@ -28,7 +28,8 @@ export class ScoutSegmentedControl extends LitElement {
       font-family: var(--scout-font-family-inter);
       --_seg-pad: 2px;
     }
-    :host([size='condensed']) { --_seg-pad: 2px; }
+    :host([size='condensed']),
+    :host-context([data-density='condensed']) { --_seg-pad: 2px; }
     :host([disabled]) { opacity: 0.5; pointer-events: none; }
 
     .track {

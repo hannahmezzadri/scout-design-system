@@ -84,15 +84,30 @@ export class ScoutDisclosureDialog extends LitElement {
       align-items: flex-start;
       gap: var(--scout-space-12);
       padding: var(--scout-space-16) var(--scout-space-24);
-      border-bottom: var(--scout-border-width-1) solid var(--scout-border-secondary);
     }
-    .title-group { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+    .title-group { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--scout-space-0); }
+    /* Title row keeps the title text vertically centered with the controls
+       on the right (language tabs + X close), independent of any subtitle
+       that sits below. */
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: var(--scout-space-12);
+    }
     .title {
+      flex: 1;
+      min-width: 0;
       margin: 0;
       font-family: var(--scout-font-family-literata);
       font-weight: var(--scout-font-weight-semibold);
       font-size: var(--scout-font-size-20);
       line-height: var(--scout-font-line-height-30);
+    }
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: var(--scout-space-8);
+      flex-shrink: 0;
     }
     .subtitle {
       font-size: var(--scout-font-size-12);
@@ -111,13 +126,10 @@ export class ScoutDisclosureDialog extends LitElement {
       border-bottom: var(--scout-border-width-1) solid var(--scout-border-warning);
     }
 
-    /* Language tabs */
+    /* Language tabs — sit inline in the header to the left of the X. */
     .tabs {
       display: flex;
       gap: var(--scout-space-4);
-      padding: var(--scout-space-8) var(--scout-space-24);
-      border-bottom: var(--scout-border-width-1) solid var(--scout-border-secondary);
-      background: var(--scout-color-cool-gray-100);
     }
     .tabs[hidden] { display: none; }
     .tab-btn {
@@ -279,30 +291,33 @@ export class ScoutDisclosureDialog extends LitElement {
         <div class="panel">
           <div class="header">
             <div class="title-group">
-              <h2 class="title"><slot name="title"></slot></h2>
+              <div class="title-row">
+                <h2 class="title"><slot name="title"></slot></h2>
+                <div class="header-controls">
+                  <div class="tabs" role="tablist" ?hidden=${!showTabs}>
+                    ${langs.map(l => html`
+                      <button
+                        class="tab-btn ${l.code === this.language ? 'active' : ''}"
+                        role="tab"
+                        aria-selected=${String(l.code === this.language)}
+                        @click=${() => this._onLangClick(l.code)}
+                      >${l.label}</button>
+                    `)}
+                  </div>
+                  ${this.closable
+                    ? html`<scout-control class="close" type="x-close" size="condensed" aria-label-override="Close dialog" @click=${this._close}></scout-control>`
+                    : nothing}
+                </div>
+              </div>
               <div class="subtitle" ?hidden=${!this._hasSubtitle}>
                 <slot name="subtitle" @slotchange=${this._onSubtitleSlot}></slot>
               </div>
             </div>
-            ${this.closable
-              ? html`<scout-control class="close" type="x-close" size="condensed" aria-label-override="Close dialog" @click=${this._close}></scout-control>`
-              : nothing}
           </div>
 
           ${this.type === 'automated'
             ? html`<div class="auto-banner" role="note">⚙️ Automated read — system is reading this disclosure aloud</div>`
             : nothing}
-
-          <div class="tabs" role="tablist" ?hidden=${!showTabs}>
-            ${langs.map(l => html`
-              <button
-                class="tab-btn ${l.code === this.language ? 'active' : ''}"
-                role="tab"
-                aria-selected=${String(l.code === this.language)}
-                @click=${() => this._onLangClick(l.code)}
-              >${l.label}</button>
-            `)}
-          </div>
 
           <div class="body">
             <slot @slotchange=${() => this._syncBody()}></slot>

@@ -1,8 +1,14 @@
-import { LitElement, html, css, nothing } from 'lit';
+import { LitElement, html, css, svg, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import '@scout/badge';
 import '@scout/checkbox';
 import '@scout/radio';
 import type { AddressOrientation, AddressSelectTool, AddressSize } from './types.js';
+
+/* Heroicons solid `chat-bubble-oval-left` — same icon used in the badge
+   component's prescriptive "Do not disclose" variant so the address dnd
+   banner reads as the same affordance. */
+const DND_ICON = svg`<path fill-rule="evenodd" d="M5.337 21.718a6.707 6.707 0 0 1-.533-.074.75.75 0 0 1-.44-1.223 3.73 3.73 0 0 0 .814-1.686c.023-.115-.022-.317-.254-.543C3.274 16.587 2.25 14.41 2.25 12c0-5.03 4.428-9 9.75-9s9.75 3.97 9.75 9c0 5.03-4.428 9-9.75 9-.833 0-1.643-.097-2.417-.279a6.721 6.721 0 0 1-4.246.997Z" clip-rule="evenodd"/>`;
 
 /**
  * `<scout-address>` — pre-formatted display of a postal address.
@@ -36,7 +42,8 @@ export class ScoutAddress extends LitElement {
       --_cnx-address-body-font-size: var(--scout-typography-body-font-size);
       --_cnx-address-body-line-height: var(--scout-typography-body-line-height);
     }
-    :host([size='condensed']) {
+    :host([size='condensed']),
+    :host-context([data-density='condensed']) {
       --_cnx-address-body-font-size: var(--scout-typography-body-small-font-size);
       --_cnx-address-body-line-height: var(--scout-typography-body-small-line-height);
     }
@@ -57,24 +64,10 @@ export class ScoutAddress extends LitElement {
       pointer-events: none;
     }
 
-    /* Privacy banner */
+    /* Privacy banner — host the prescriptive "Do not disclose" badge as
+       a self-aligned chip above the address. */
     .dnd-banner {
-      display: inline-flex;
-      align-items: center;
-      gap: var(--scout-space-4);
       align-self: flex-start;
-      padding: 2px var(--scout-space-8);
-      font-size: var(--scout-font-size-10);
-      font-weight: var(--scout-font-weight-semibold);
-
-      background: var(--scout-color-red-100);
-      color: var(--scout-text-display-error);
-      border-radius: var(--scout-radius-2);
-    }
-    .dnd-icon {
-      width: 12px;
-      height: 12px;
-      flex-shrink: 0;
     }
 
     /* Row holds optional select tool + content */
@@ -271,13 +264,10 @@ export class ScoutAddress extends LitElement {
       <div class="container">
         ${this.doNotDisclose
           ? html`<div class="dnd-banner" role="note">
-              <svg class="dnd-icon" viewBox="0 0 12 12" aria-hidden="true">
-                <path
-                  d="M3 5V3.5a3 3 0 0 1 6 0V5h.5A.5.5 0 0 1 10 5.5v5a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-5a.5.5 0 0 1 .5-.5H3zm1 0h4V3.5a2 2 0 1 0-4 0V5z"
-                  fill="currentColor"
-                />
-              </svg>
-              <span>Do not disclose</span>
+              <scout-badge type="critical" emphasis="low">
+                <svg slot="icon-custom" viewBox="0 0 24 24" aria-hidden="true">${DND_ICON}</svg>
+                Do not disclose
+              </scout-badge>
             </div>`
           : nothing}
 
