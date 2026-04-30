@@ -100,6 +100,7 @@ export class ScoutDialog extends LitElement {
       display: flex;
       align-items: center;
       gap: var(--scout-space-12);
+      margin-top: var(--scout-space-4);
     }
     .title {
       flex: 1;
@@ -111,6 +112,9 @@ export class ScoutDialog extends LitElement {
       line-height: var(--scout-font-line-height-30);
     }
     .subtext {
+      /* Zero browser default p margin and set the title→subtext gap
+         explicitly. Reduced from ~16px (browser default) to space.8. */
+      margin: var(--scout-space-8) 0 0 0;
       font-size: var(--scout-typography-body-small-font-size);
       line-height: var(--scout-typography-body-small-line-height);
       color: var(--scout-text-display-secondary);
@@ -123,6 +127,8 @@ export class ScoutDialog extends LitElement {
 
     .body {
       padding: var(--scout-space-16) var(--scout-space-24);
+      /* Extra space.8 below the main paragraph before the actions row. */
+      padding-bottom: calc(var(--scout-space-16) + var(--scout-space-8));
       font-size: var(--scout-typography-body-font-size);
       line-height: var(--scout-typography-body-line-height);
       overflow-y: auto;

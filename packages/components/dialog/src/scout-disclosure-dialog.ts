@@ -2,6 +2,9 @@ import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import '@scout/overlay';
 import '@scout/control';
+import '@scout/segmented-control';
+import '@scout/progress';
+import '@scout/button';
 import type { DisclosureDialogType } from './types.js';
 
 interface LangDef {
@@ -93,6 +96,7 @@ export class ScoutDisclosureDialog extends LitElement {
       display: flex;
       align-items: center;
       gap: var(--scout-space-12);
+      margin-top: var(--scout-space-4);
     }
     .title {
       flex: 1;
@@ -106,65 +110,59 @@ export class ScoutDisclosureDialog extends LitElement {
     .header-controls {
       display: flex;
       align-items: center;
-      gap: var(--scout-space-8);
+      gap: var(--scout-space-24);
       flex-shrink: 0;
     }
     .subtitle {
-      font-size: var(--scout-font-size-12);
+      margin-top: var(--scout-space-8);
+      font-size: var(--scout-typography-body-small-font-size);
+      line-height: var(--scout-typography-body-small-line-height);
       color: var(--scout-text-display-secondary);
     }
     .subtitle[hidden] { display: none; }
     .close { flex-shrink: 0; margin: -8px; }
 
-    /* Automated banner — reminds the agent the system is reading */
-    .auto-banner {
-      padding: var(--scout-space-8) var(--scout-space-24);
-      background: var(--scout-color-yellow-100);
-      color: var(--scout-text-display-warning);
-      font-size: var(--scout-font-size-12);
-      font-weight: var(--scout-font-weight-semibold);
-      border-bottom: var(--scout-border-width-1) solid var(--scout-border-warning);
+    /* Automated read progress — surfaces how far along the system-narrated
+       disclosure is via a real progress-bar component. */
+    .auto-progress {
+      padding: var(--scout-space-12) var(--scout-space-24);
     }
 
-    /* Language tabs — sit inline in the header to the left of the X. */
-    .tabs {
-      display: flex;
-      gap: var(--scout-space-4);
-    }
-    .tabs[hidden] { display: none; }
-    .tab-btn {
-      appearance: none;
-      background: transparent;
-      border: none;
-      padding: var(--scout-space-4) var(--scout-space-12);
-      font-family: inherit;
-      font-size: var(--scout-font-size-12);
-      font-weight: var(--scout-font-weight-semibold);
-      color: var(--scout-text-display-secondary);
-      cursor: pointer;
-      border-radius: var(--scout-radius-4);
-    }
-    .tab-btn.active {
-      background: var(--scout-surface-primary);
-      color: var(--scout-text-display-primary);
-    }
-    .tab-btn:focus-visible { outline: var(--scout-focus-ring-width) solid var(--scout-focus-ring-color); outline-offset: 1px; }
+    /* Language tabs render as scout-language-tabs (segmented control)
+       inline in the header to the left of the X. */
+    scout-language-tabs[hidden] { display: none; }
 
     .body {
       padding: var(--scout-space-16) var(--scout-space-24);
+      /* Extra space.8 below the main content before the actions row. */
+      padding-bottom: calc(var(--scout-space-16) + var(--scout-space-8));
       font-size: var(--scout-font-size-14);
       line-height: var(--scout-font-line-height-21);
       overflow-y: auto;
       flex: 1;
     }
 
+    /* Play again — appears below the disclosure body once the automated
+       read finishes, so the agent can replay the narration. */
+    .replay {
+      margin-top: var(--scout-space-16);
+    }
+    .replay[hidden] { display: none; }
+
     .ack {
       display: flex;
       align-items: flex-start;
       gap: var(--scout-space-8);
-      padding: var(--scout-space-16) var(--scout-space-24) 0;
+      padding: var(--scout-space-16) var(--scout-space-24) var(--scout-space-24);
       font-size: var(--scout-font-size-14);
       line-height: var(--scout-font-line-height-21);
+    }
+    /* The body's padding-bottom (space.16 + space.8 = 24) already supplies
+       the visible gap. Pull the .ack up by space.8 and zero its top
+       padding so paragraph→checkbox reads as exactly space.16. */
+    .body + .ack {
+      padding-top: 0;
+      margin-top: calc(0px - var(--scout-space-8));
     }
     .ack[hidden] { display: none; }
     .ack input[type='checkbox'] {
@@ -196,6 +194,11 @@ export class ScoutDisclosureDialog extends LitElement {
   @state() private _hasSubtitle = false;
   @state() private _hasAck = false;
   @state() private _hasActions = false;
+  @state() private _readProgress = 0;
+
+  /** Total time (ms) the simulated automated read takes to reach 100%. */
+  @property({ type: Number, attribute: 'read-duration' }) readDuration = 8000;
+  private _readRaf: number | null = null;
 
   private _onSubtitleSlot = (e: Event) => { this._hasSubtitle = (e.target as HTMLSlotElement).assignedNodes({ flatten: true }).length > 0; };
   private _onAckSlot = (e: Event) => { this._hasAck = (e.target as HTMLSlotElement).assignedNodes({ flatten: true }).length > 0; };
@@ -264,6 +267,24 @@ export class ScoutDisclosureDialog extends LitElement {
   disconnectedCallback(): void {
     super.disconnectedCallback();
     document.removeEventListener('keydown', this._onKey);
+    this._stopRead();
+  }
+
+  private _startRead() {
+    this._stopRead();
+    if (this.type !== 'automated' || !this.open) return;
+    this._readProgress = 0;
+    const start = performance.now();
+    const tick = () => {
+      const ratio = Math.min(1, (performance.now() - start) / Math.max(1, this.readDuration));
+      this._readProgress = ratio * 100;
+      if (ratio < 1) this._readRaf = requestAnimationFrame(tick);
+    };
+    this._readRaf = requestAnimationFrame(tick);
+  }
+  private _stopRead() {
+    if (this._readRaf != null) cancelAnimationFrame(this._readRaf);
+    this._readRaf = null;
   }
   private _onKey = (e: KeyboardEvent) => {
     if (this.open && this.closable && e.key === 'Escape') {
@@ -278,6 +299,10 @@ export class ScoutDisclosureDialog extends LitElement {
     }
     if (changed.has('acknowledged') || changed.has('requireCheckbox')) {
       this._syncActionDisabled();
+    }
+    if (changed.has('open') || changed.has('type')) {
+      if (this.open && this.type === 'automated') this._startRead();
+      else this._stopRead();
     }
   }
 
@@ -294,16 +319,15 @@ export class ScoutDisclosureDialog extends LitElement {
               <div class="title-row">
                 <h2 class="title"><slot name="title"></slot></h2>
                 <div class="header-controls">
-                  <div class="tabs" role="tablist" ?hidden=${!showTabs}>
-                    ${langs.map(l => html`
-                      <button
-                        class="tab-btn ${l.code === this.language ? 'active' : ''}"
-                        role="tab"
-                        aria-selected=${String(l.code === this.language)}
-                        @click=${() => this._onLangClick(l.code)}
-                      >${l.label}</button>
-                    `)}
-                  </div>
+                  ${showTabs
+                    ? html`<scout-language-tabs
+                        label=""
+                        size="condensed"
+                        .languages=${langs.map((l) => ({ value: l.code as 'en' | 'es' | 'fr', label: l.label }))}
+                        value=${this.language as 'en' | 'es' | 'fr' | ''}
+                        @scout-language-change=${(e: Event) => this._onLangClick((e as CustomEvent<{ value: string }>).detail.value)}
+                      ></scout-language-tabs>`
+                    : nothing}
                   ${this.closable
                     ? html`<scout-control class="close" type="x-close" size="condensed" aria-label-override="Close dialog" @click=${this._close}></scout-control>`
                     : nothing}
@@ -316,11 +340,32 @@ export class ScoutDisclosureDialog extends LitElement {
           </div>
 
           ${this.type === 'automated'
-            ? html`<div class="auto-banner" role="note">⚙️ Automated read — system is reading this disclosure aloud</div>`
+            ? html`<div class="auto-progress" role="note" aria-label="Automated read progress">
+                <scout-progress-bar
+                  title-text="Automated read"
+                  .value=${this._readProgress}
+                  max="100"
+                  display="percentage"
+                ></scout-progress-bar>
+              </div>`
             : nothing}
 
           <div class="body">
             <slot @slotchange=${() => this._syncBody()}></slot>
+            ${this.type === 'automated' && this._readProgress >= 100
+              ? html`<div class="replay">
+                  <scout-button
+                    variant="secondary"
+                    size="condensed"
+                    @click=${() => this._startRead()}
+                  >
+                    <svg slot="icon-leading" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path fill-rule="evenodd" d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653Z" clip-rule="evenodd"/>
+                    </svg>
+                    Play again
+                  </scout-button>
+                </div>`
+              : nothing}
           </div>
 
           <div class="ack" ?hidden=${!this._hasAck && !this.requireCheckbox}>

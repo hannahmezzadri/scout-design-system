@@ -9,7 +9,7 @@ const STATUS_ICONS: Record<InlineAlertStatus, ReturnType<typeof svg>> = {
   informational: svg`<path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.732 2.923.305-.158a.75.75 0 0 1 .67 1.34l-.32.165c-1.146.573-2.437-.463-2.126-1.706l.732-2.923-.305.158a.75.75 0 1 1-.67-1.34l.32-.165ZM12 8.25a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Z" clip-rule="evenodd"/>`,
   favorable: svg`<path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd"/>`,
   warning: svg`<path fill-rule="evenodd" d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd"/>`,
-  critical: svg`<path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm8.689-4.03a.75.75 0 0 1 1.06 0L12 8.94l.001-.97a.75.75 0 0 1 1.061 0l.97.97-.97.97a.75.75 0 0 1-1.061 0L12 9.061v3.689a.75.75 0 0 1-1.5 0V9.061l-.561.561a.75.75 0 0 1-1.06-1.061l1.06-1.061ZM12 15a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5Z" clip-rule="evenodd"/>`,
+  critical: svg`<path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm11.378-3.917c-.89-.777-2.366-.777-3.255 0a.75.75 0 0 1-.988-1.129c1.454-1.272 3.776-1.272 5.23 0 1.513 1.324 1.513 3.518 0 4.842a3.75 3.75 0 0 1-.837.552c-.676.328-1.028.774-1.028 1.152v.75a.75.75 0 0 1-1.5 0v-.75c0-1.279 1.06-2.107 1.875-2.502.182-.088.351-.199.503-.331.83-.727.83-1.857 0-2.584ZM12 18a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd"/>`,
 };
 
 /**
@@ -19,7 +19,7 @@ const STATUS_ICONS: Record<InlineAlertStatus, ReturnType<typeof svg>> = {
  *
  * @attr {"informational"|"favorable"|"warning"|"critical"} status - Visual + semantic status.
  * @attr {"default"|"condensed"} size - Padding density.
- * @attr closable - When set, renders a close button that fires `scout-inline-alert-close` and removes the host.
+ * @attr closable - When set, renders a close button that fires `scout-inline-alert-close` and removes the host. Ignored on `status="critical"` — critical alerts cannot be dismissed.
  *
  * @slot title   - Optional title rendered above the message.
  * @slot         - Default slot: the message body.
@@ -34,13 +34,14 @@ export class ScoutInlineAlert extends LitElement {
       display: block;
       --_cnx-alert-padding-block: var(--scout-space-12);
       --_cnx-alert-padding-inline: var(--scout-space-16);
+      /* Icon stays at 20px in both default and condensed — only padding
+         changes between the two density presets. */
       --_cnx-alert-icon-size: 20px;
     }
     :host([size='condensed']),
     :host-context([data-density='condensed']) {
       --_cnx-alert-padding-block: var(--scout-space-8);
       --_cnx-alert-padding-inline: var(--scout-space-12);
-      --_cnx-alert-icon-size: 16px;
     }
 
     .alert {
@@ -55,27 +56,30 @@ export class ScoutInlineAlert extends LitElement {
       color: var(--scout-text-display-primary);
     }
 
-    /* Status colors: tinted background + colored left border + colored icon */
+    /* Status colors: tinted background + colored left border + colored icon.
+       Using fill.*-subtle (semantic) so the alert background flips on dark
+       theme; the text color (text.display.primary above) flips alongside it
+       so the message stays readable in both themes. */
     :host([status='informational']) .alert {
-      background: var(--scout-color-blue-100);
+      background: var(--scout-fill-info-subtle);
       border-color: var(--scout-border-info);
     }
     :host([status='informational']) .status-icon { color: var(--scout-text-display-info); }
 
     :host([status='favorable']) .alert {
-      background: var(--scout-color-green-100);
+      background: var(--scout-fill-success-subtle);
       border-color: var(--scout-border-success);
     }
     :host([status='favorable']) .status-icon { color: var(--scout-text-display-success); }
 
     :host([status='warning']) .alert {
-      background: var(--scout-color-yellow-100);
+      background: var(--scout-fill-warning-subtle);
       border-color: var(--scout-border-warning);
     }
     :host([status='warning']) .status-icon { color: var(--scout-text-display-warning); }
 
     :host([status='critical']) .alert {
-      background: var(--scout-color-red-100);
+      background: var(--scout-fill-critical-subtle);
       border-color: var(--scout-border-error);
     }
     :host([status='critical']) .status-icon { color: var(--scout-text-display-error); }
@@ -151,7 +155,7 @@ export class ScoutInlineAlert extends LitElement {
             <slot name="action" @slotchange=${this._onActionSlot}></slot>
           </div>
         </div>
-        ${this.closable
+        ${this.closable && this.status !== 'critical'
           ? html`<scout-control
               class="close"
               type="x-close"

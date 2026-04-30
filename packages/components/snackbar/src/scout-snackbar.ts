@@ -45,11 +45,12 @@ export class ScoutSnackbar extends LitElement {
       align-items: center;
       gap: var(--scout-space-12);
       padding: var(--scout-space-12) var(--scout-space-16);
-      /* Status-driven colored fill — defaults to success-bold; warning and
-         critical override below. The fill-*-bold tokens auto-flip in dark
-         mode so the snackbar stays readable in both themes. */
-      background: var(--_snackbar-bg, var(--scout-fill-success-bold));
-      color: var(--scout-color-white);
+      /* All snackbar statuses share the inverse surface — the status icon
+         color does the semantic lifting instead of the background. The
+         text/icon inverse tokens flip in dark mode so the snackbar stays
+         readable on its (now-light) inverse surface. */
+      background: var(--scout-surface-inverse);
+      color: var(--scout-text-inverse-primary);
       border-radius: var(--scout-radius-8);
       box-shadow: var(--scout-elevation-3);
       font-family: var(--scout-font-family-inter);
@@ -57,33 +58,32 @@ export class ScoutSnackbar extends LitElement {
       line-height: var(--scout-typography-body-line-height);
     }
 
-    :host([status='success'])  { --_snackbar-bg: var(--scout-fill-success-bold); }
-    :host([status='warning'])  { --_snackbar-bg: var(--scout-fill-warning-bold); }
-    :host([status='critical']) { --_snackbar-bg: var(--scout-fill-critical-bold); }
-
     .status-icon {
       width: 20px;
       height: 20px;
       flex-shrink: 0;
-      /* Icon inherits the snackbar's white text so it sits cleanly on the
-         colored fill. */
-      color: var(--scout-color-white);
     }
+    /* Status icon carries the semantic color since the background is now
+       always the inverse surface. */
+    :host([status='success'])  .status-icon { color: var(--scout-fill-success-bold); }
+    :host([status='warning'])  .status-icon { color: var(--scout-fill-warning-bold); }
+    :host([status='critical']) .status-icon { color: var(--scout-fill-critical-bold); }
 
     .description {
       flex: 1;
       min-width: 0;
     }
 
-    /* X dismiss control — sits on the colored fill, so the icon and hover
-       background use white tokens that read in both themes. */
+    /* X dismiss control — sits on the inverse surface, so it pulls from the
+       icon.inverse + interactive.background tokens that auto-flip in dark
+       mode (where surface.inverse becomes a light tone). */
     .dismiss {
       flex-shrink: 0;
-      --_control-fg: var(--scout-color-alpha-white-80);
-      --_control-fg-hover: var(--scout-color-white);
+      --_control-fg: var(--scout-icon-inverse-secondary);
+      --_control-fg-hover: var(--scout-icon-inverse-primary);
     }
     .dismiss::part(button):hover {
-      background: var(--scout-color-alpha-white-20);
+      background: var(--scout-interactive-background-hover);
     }
   `;
 

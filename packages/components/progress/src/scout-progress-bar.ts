@@ -44,7 +44,22 @@ export class ScoutProgressBar extends LitElement {
       font-size: var(--scout-font-size-12);
       color: var(--scout-text-display-secondary);
     }
+    /* When the title moves into the labels row (secondary text is present),
+       the left side becomes the primary label — bump it back to the title's
+       size and weight so it reads as the label, not as caption. */
+    .labels .left.is-title {
+      font-size: var(--scout-font-size-14);
+      font-weight: var(--scout-font-weight-medium);
+      color: var(--scout-text-display-primary);
+    }
     .labels .right { font-variant-numeric: tabular-nums; }
+    .secondary {
+      display: block;
+      font-size: var(--scout-font-size-12);
+      line-height: var(--scout-font-line-height-18);
+      color: var(--scout-text-display-secondary);
+      margin-bottom: var(--scout-space-4);
+    }
 
     .track {
       width: 100%;
@@ -94,16 +109,25 @@ export class ScoutProgressBar extends LitElement {
 
   render() {
     const auto = this._autoReadout();
-    const left = this.leftLabel || auto?.left || '';
     const right = this.rightLabel || auto?.right || '';
-    const showLabels = left || right;
+    const secondary = this.leftLabel; // "secondary text" beneath the label
+    // When there's secondary text, promote the title into the labels row so
+    // it sits inline with the percentage; secondary text drops below.
+    const titleInLabels = !!this.titleText && !!secondary;
+    const labelLeft = titleInLabels ? this.titleText : (auto?.left || '');
+    const showLabels = labelLeft || right;
     return html`
-      ${this.titleText ? html`<span class="title">${this.titleText}</span>` : nothing}
+      ${this.titleText && !titleInLabels
+        ? html`<span class="title">${this.titleText}</span>`
+        : nothing}
       ${showLabels
         ? html`<div class="labels">
-            <span class="left">${left}</span>
+            <span class="left ${titleInLabels ? 'is-title' : ''}">${labelLeft}</span>
             <span class="right">${right}</span>
           </div>`
+        : nothing}
+      ${secondary
+        ? html`<span class="secondary">${secondary}</span>`
         : nothing}
       <div
         class="track"

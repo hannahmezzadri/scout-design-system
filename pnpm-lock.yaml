@@ -369,12 +369,21 @@ importers:
 
   packages/components/dialog:
     dependencies:
+      '@scout/button':
+        specifier: workspace:*
+        version: link:../button
       '@scout/control':
         specifier: workspace:*
         version: link:../control
       '@scout/overlay':
         specifier: workspace:*
         version: link:../overlay
+      '@scout/progress':
+        specifier: workspace:*
+        version: link:../progress
+      '@scout/segmented-control':
+        specifier: workspace:*
+        version: link:../segmented-control
       '@scout/tokens':
         specifier: workspace:*
         version: link:../../tokens

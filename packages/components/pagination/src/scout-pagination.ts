@@ -39,6 +39,16 @@ export class ScoutPagination extends LitElement {
       --_pg-fs: var(--scout-font-size-14);
       --_pg-gap: var(--scout-space-4);
     }
+    /* When both groups are shown, fill the container and push the page-nav
+       group to the far right so the layout reads: items-per-page (left) /
+       page numbers (right). */
+    :host([layout='both']) {
+      display: flex;
+      width: 100%;
+    }
+    :host([layout='both']) .nav {
+      margin-left: auto;
+    }
     :host([size='condensed']),
     :host-context([data-density='condensed']) {
       --_pg-control-size: 24px;

@@ -54,6 +54,9 @@ export class ScoutErrorState extends LitElement {
       font-weight: var(--scout-font-weight-semibold);
       font-size: var(--scout-font-size-32);
       line-height: var(--scout-font-line-height-40);
+      /* Tightens the title→message gap to space.12 (the container's flex
+         gap is space.16, so the negative margin trims the difference). */
+      margin-bottom: calc(var(--scout-space-12) - var(--scout-space-16));
     }
     .header[hidden] { display: none; }
     .message {

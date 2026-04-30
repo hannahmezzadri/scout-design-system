@@ -54,7 +54,7 @@ export class ScoutCard extends LitElement {
     .left-bar {
       width: 4px;
       flex-shrink: 0;
-      background: var(--scout-color-cool-gray-400);
+      background: var(--scout-color-cool-gray-300);
     }
 
     .body-wrap {

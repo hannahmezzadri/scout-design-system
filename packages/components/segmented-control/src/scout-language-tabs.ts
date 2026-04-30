@@ -36,9 +36,7 @@ const SUPPORTED_SET: ReadonlySet<string> = new Set<string>(SUPPORTED_LANGUAGE_VA
  * `<scout-segmented-control>`. Use to switch between translations of the
  * same content (typically inside a share-with-customer surface).
  *
- * Anatomy: optional label + segmented control of language options + a
- * trailing divider that visually separates the picker from the translated
- * content below.
+ * Anatomy: optional label + segmented control of language options.
  *
  * **Supported languages:** English (`en`), Spanish (`es`), French (`fr`).
  * Other tags are stripped from the `languages` array with a console warning.
@@ -67,11 +65,6 @@ export class ScoutLanguageTabs extends LitElement {
       font-weight: var(--scout-font-weight-semibold);
       color: var(--scout-text-display-secondary);
       margin-bottom: var(--scout-space-4);
-    }
-    .divider {
-      margin-top: var(--scout-space-12);
-      height: var(--scout-border-width-1);
-      background: var(--scout-border-secondary);
     }
   `;
 
@@ -135,7 +128,6 @@ export class ScoutLanguageTabs extends LitElement {
           `,
         )}
       </scout-segmented-control>
-      <div class="divider" aria-hidden="true"></div>
     `;
   }
 }

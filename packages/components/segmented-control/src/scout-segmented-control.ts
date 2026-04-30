@@ -38,6 +38,8 @@ export class ScoutSegmentedControl extends LitElement {
       gap: 2px;
       padding: var(--_seg-pad);
       background: var(--scout-color-cool-gray-100);
+      border: var(--scout-border-width-1) var(--scout-stroke-solid)
+        var(--scout-border-primary);
       border-radius: var(--scout-radius-8);
     }
   `;

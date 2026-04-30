@@ -856,7 +856,7 @@ const app = document.getElementById('app')!;
 
     wrap.append(subhead('Border'));
     const borders = el('div', { class: 'grid' });
-    for (const k of ['primary', 'secondary', 'disabled', 'knockout', 'inverse', 'info', 'warning', 'error', 'success']) {
+    for (const k of ['primary', 'secondary', 'disabled', 'knockout', 'inverse', 'info', 'warning', 'error', 'success', 'teal']) {
       borders.append(colorSwatch(`border-${k}`, `border.${k}`));
     }
     wrap.append(borders);
@@ -870,7 +870,7 @@ const app = document.getElementById('app')!;
 
     wrap.append(subhead('Fill — base'));
     const fillBase = el('div', { class: 'grid' });
-    for (const k of ['always-white', 'primary', 'secondary']) {
+    for (const k of ['always-white', 'primary', 'secondary', 'teal']) {
       fillBase.append(colorSwatch(`fill-${k}`, `fill.${k}`));
     }
     wrap.append(fillBase);
@@ -6166,7 +6166,7 @@ function previewInlineAlert(opts: IAOpts = {}): HTMLElement {
   if (action) {
     const btn = document.createElement('scout-button');
     btn.setAttribute('slot', 'action');
-    btn.setAttribute('variant', 'tertiary');
+    btn.setAttribute('variant', 'primary');
     btn.setAttribute('size', 'condensed');
     btn.textContent = action;
     a.appendChild(btn);
@@ -6203,11 +6203,12 @@ function inlineAlertPreview(): HTMLElement {
   );
   block(
     'With action and close',
-    'Add a tertiary button or link in the action slot. Add closable for a dismiss button. Combine for full functionality.',
+    'Add a primary condensed button in the action slot. Add closable for a dismiss button. Informational, favorable, and warning alerts can be dismissed; critical alerts cannot — the user must resolve them.',
     el('div', { class: 'preview-stack' },
-      previewInlineAlert({ status: 'warning', title: 'Update your payment method', message: 'Your card ending in 4242 expires next month.', action: 'Update card' }),
+      previewInlineAlert({ status: 'warning', title: 'Update your payment method', message: 'Your card ending in 4242 expires next month.', action: 'Update card', closable: true }),
       previewInlineAlert({ status: 'informational', message: 'A new build of Ember is available.', closable: true }),
-      previewInlineAlert({ status: 'critical', title: 'Connection lost', message: 'Reconnect to continue.', action: 'Retry', closable: true }),
+      previewInlineAlert({ status: 'favorable', title: 'Payment posted', message: 'Customer payment has been applied.', closable: true }),
+      previewInlineAlert({ status: 'critical', title: 'Connection lost', message: 'Reconnect to continue.', action: 'Retry' }),
     ),
   );
   return wrap;
@@ -6223,7 +6224,7 @@ function inlineAlertControls(): HTMLElement {
   const titleInput = ctrlText('ia-title', 'Title');
   const messageInput = ctrlText('ia-message', 'Message about this alert.');
   const actionInput = ctrlText('ia-action', '');
-  const closableChk = ctrlCheck('ia-closable', 'Closable');
+  const closableChk = ctrlCheck('ia-closable', 'Dismissible');
 
   function render() {
     stage.replaceChildren(previewInlineAlert({
@@ -6239,7 +6240,7 @@ function inlineAlertControls(): HTMLElement {
     if (sizeSel.value !== 'default') attrs.push(`size="${sizeSel.value}"`);
     if (closableChk.checked) attrs.push('closable');
     const titleSlot = titleInput.value ? `\n  <span slot="title">${titleInput.value}</span>` : '';
-    const actionSlot = actionInput.value ? `\n  <scout-button slot="action" variant="tertiary" size="condensed">${actionInput.value}</scout-button>` : '';
+    const actionSlot = actionInput.value ? `\n  <scout-button slot="action" variant="primary" size="condensed">${actionInput.value}</scout-button>` : '';
     codePre.textContent = `<scout-inline-alert${attrs.length ? ' ' + attrs.join(' ') : ''}>${titleSlot}\n  ${messageInput.value}${actionSlot}\n</scout-inline-alert>`;
   }
 
@@ -7318,7 +7319,7 @@ function previewDialogDemo(opts: DialogOpts = {}): HTMLElement {
     secondaryLabel = 'Cancel',
   } = opts;
 
-  const wrap = el('div', { style: 'min-height: 60px;' });
+  const wrap = el('div');
   const trigger = document.createElement('scout-button');
   trigger.setAttribute('variant', 'secondary');
   trigger.textContent = `Open dialog (${size})`;
@@ -7395,6 +7396,7 @@ function dialogPreview(): HTMLElement {
     'A standard dialog for confirming a destructive action. Click outside the panel or press Escape to dismiss.',
     previewDialogDemo({
       title: 'Confirm deletion',
+      subtext: 'Optional sub text goes here',
       body: 'Are you sure you want to delete this account? This cannot be undone.',
       primaryLabel: 'Delete account',
       primaryVariant: 'critical',
@@ -7405,6 +7407,7 @@ function dialogPreview(): HTMLElement {
     'Use the alert slot to surface critical state context inside the dialog.',
     previewDialogDemo({
       title: 'Cancel subscription',
+      subtext: 'Optional sub text goes here',
       body: 'Cancelling now ends auto-pay and the customer will lose access at the end of the current billing period.',
       alert: { status: 'warning', message: 'This change is effective immediately.' },
       primaryLabel: 'Cancel subscription',
@@ -7414,9 +7417,9 @@ function dialogPreview(): HTMLElement {
 
   block('Sizes',
     'Small for tight confirmations. Medium for typical content (default). Large for forms and longer flows.',
-    previewDialogDemo({ size: 'small', title: 'Reset filters?', body: 'Clears all currently applied filters.', primaryLabel: 'Reset', primaryVariant: 'primary' }),
-    previewDialogDemo({ size: 'medium' }),
-    previewDialogDemo({ size: 'large', title: 'Edit account details', body: 'A larger dialog suits forms with multiple fields, longer body copy, or guided multi-step flows.', primaryLabel: 'Save', primaryVariant: 'primary' }),
+    previewDialogDemo({ size: 'small', title: 'Reset filters?', subtext: 'Optional sub text goes here', body: 'Clears all currently applied filters.', primaryLabel: 'Reset', primaryVariant: 'primary' }),
+    previewDialogDemo({ size: 'medium', subtext: 'Optional sub text goes here' }),
+    previewDialogDemo({ size: 'large', title: 'Edit account details', subtext: 'Optional sub text goes here', body: 'A larger dialog suits forms with multiple fields, longer body copy, or guided multi-step flows.', primaryLabel: 'Save', primaryVariant: 'primary' }),
   );
 
   return wrap;
@@ -7500,24 +7503,45 @@ function dialogControls(): HTMLElement {
 }
 
 function dialogGuidelines(): HTMLElement {
+  const doCard = (p: HTMLElement, c: string) =>
+    el('div', { class: 'do-card' },
+      el('div', { class: 'do-dont-header' }, heroIconSvg('check-circle', 16), ' Do'),
+      el('div', { class: 'do-dont-preview' }, p),
+      el('p', {}, c));
+  const dontCard = (p: HTMLElement, c: string) =>
+    el('div', { class: 'dont-card' },
+      el('div', { class: 'do-dont-header' }, heroIconSvg('x-circle', 16), " Don't"),
+      el('div', { class: 'do-dont-preview' }, p),
+      el('p', {}, c));
   return el('div', { class: 'tab-content guidelines-layout' },
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading do-heading' }, heroIconSvg('check-circle', 20), ' Do'),
-      el('ul', { class: 'guideline-list' },
-        el('li', {}, 'Use a dialog for confirmations, important state changes, and decisions that require focused attention.'),
-        el('li', {}, 'Pair a critical action (Delete, Cancel subscription) with a clear secondary "back out" button.'),
-        el('li', {}, 'Slot a scout-inline-alert when the action has timing- or compliance-sensitive context.'),
-      ),
-    ),
+      el('p', { class: 'preview-block__lede' }, 'Patterns that focus the user on a single decision.'),
+      el('div', { class: 'do-dont-grid' },
+        doCard(
+          previewDialogDemo({ title: 'Confirm deletion', body: 'Are you sure you want to delete this account? This cannot be undone.', primaryLabel: 'Delete account', primaryVariant: 'critical' }),
+          'Use a dialog for confirmations, important state changes, and decisions that require focused attention.'),
+        doCard(
+          previewDialogDemo({ title: 'Cancel subscription', body: 'Auto-pay will stop on May 18.', primaryLabel: 'Cancel subscription', primaryVariant: 'critical', secondaryLabel: 'Keep subscription' }),
+          'Pair a critical action with a clear secondary "back out" button.'),
+        doCard(
+          previewDialogDemo({ title: 'Reset filters?', body: 'Clears all currently applied filters.', primaryLabel: 'Reset', primaryVariant: 'primary', alert: { status: 'warning', message: 'Unsaved filter view will be lost.' } }),
+          'Slot a scout-inline-alert when the action has timing- or compliance-sensitive context.'),
+      )),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading dont-heading' }, heroIconSvg('x-circle', 20), " Don't"),
-      el('ul', { class: 'guideline-list' },
-        el('li', {}, "Don't stack dialogs. If a dialog leads to another decision, use the body to host that flow."),
-        el('li', {}, "Don't use a dialog for non-blocking notifications — use scout-snackbar or scout-inline-alert."),
-        el('li', {}, "Don't disable the X close button unless the user truly cannot opt out (forced disclosures use scout-disclosure-dialog)."),
-      ),
-    ),
-  );
+      el('p', { class: 'preview-block__lede' }, 'Patterns that misuse the modal surface or fight the user instead of helping them decide.'),
+      el('div', { class: 'do-dont-grid' },
+        dontCard(
+          previewDialogDemo({ title: 'Confirm deletion', body: 'Are you sure you want to delete this account?', primaryLabel: 'Delete account', primaryVariant: 'critical' }),
+          "Don't stack dialogs. If a dialog leads to another decision, host that flow inside the same dialog body."),
+        dontCard(
+          previewDialogDemo({ title: 'Action saved', body: 'Your changes were saved.', primaryLabel: 'OK', primaryVariant: 'primary', secondaryLabel: '' }),
+          "Don't use a dialog for non-blocking notifications — use scout-snackbar or scout-inline-alert."),
+        dontCard(
+          previewDialogDemo({ title: 'Confirm', body: 'Are you sure?', primaryLabel: 'OK', primaryVariant: 'primary', closable: false }),
+          "Don't disable the X close button unless the user truly cannot opt out (forced disclosures use scout-disclosure-dialog)."),
+      )));
 }
 
 function dialogContent(): HTMLElement {
@@ -7562,7 +7586,7 @@ app.append(componentPage(
 
 function previewDisclosureDemo(opts: { type?: 'simple' | 'automated'; languages?: string; requireCheckbox?: boolean } = {}): HTMLElement {
   const { type = 'simple', languages = 'en,es', requireCheckbox = false } = opts;
-  const wrap = el('div', { style: 'min-height: 60px;' });
+  const wrap = el('div');
   const trigger = document.createElement('scout-button');
   trigger.setAttribute('variant', 'secondary');
   trigger.textContent = `Open ${type} disclosure`;
@@ -7714,23 +7738,42 @@ function disclosureControls(): HTMLElement {
 }
 
 function disclosureGuidelines(): HTMLElement {
+  const doCard = (p: HTMLElement, c: string) =>
+    el('div', { class: 'do-card' },
+      el('div', { class: 'do-dont-header' }, heroIconSvg('check-circle', 16), ' Do'),
+      el('div', { class: 'do-dont-preview' }, p),
+      el('p', {}, c));
+  const dontCard = (p: HTMLElement, c: string) =>
+    el('div', { class: 'dont-card' },
+      el('div', { class: 'do-dont-header' }, heroIconSvg('x-circle', 16), " Don't"),
+      el('div', { class: 'do-dont-preview' }, p),
+      el('p', {}, c));
   return el('div', { class: 'tab-content guidelines-layout' },
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading do-heading' }, heroIconSvg('check-circle', 20), ' Do'),
-      el('ul', { class: 'guideline-list' },
-        el('li', {}, 'Use a disclosure dialog when legal or compliance requires the agent to read verbatim text before proceeding.'),
-        el('li', {}, 'Pair the dialog with the optional acknowledgement checkbox when the customer must opt in explicitly.'),
-        el('li', {}, 'Surface the agent-facing translations supported by the flow (English, Spanish, French) via the language tabs.'),
-      ),
-    ),
+      el('p', { class: 'preview-block__lede' }, 'Patterns that meet the legal/compliance bar and respect the agent reading the script.'),
+      el('div', { class: 'do-dont-grid' },
+        doCard(
+          previewDisclosureDemo({ type: 'simple', languages: 'en,es' }),
+          'Use a disclosure dialog when legal or compliance requires the agent to read verbatim text before proceeding.'),
+        doCard(
+          previewDisclosureDemo({ type: 'simple', languages: 'en,es', requireCheckbox: true }),
+          'Pair the dialog with the optional acknowledgement checkbox when the customer must opt in explicitly.'),
+        doCard(
+          previewDisclosureDemo({ type: 'automated', languages: 'en,es,fr' }),
+          'Surface the agent-facing translations supported by the flow (English, Spanish, French) via the language tabs.'),
+      )),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading dont-heading' }, heroIconSvg('x-circle', 20), " Don't"),
-      el('ul', { class: 'guideline-list' },
-        el('li', {}, "Don't use a disclosure dialog for general confirmations — use scout-dialog instead."),
-        el('li', {}, "Don't paraphrase or summarize the disclosure copy. Render the legal text exactly as approved."),
-      ),
-    ),
-  );
+      el('p', { class: 'preview-block__lede' }, 'Patterns that misuse the disclosure surface or weaken the legal contract.'),
+      el('div', { class: 'do-dont-grid' },
+        dontCard(
+          previewDisclosureDemo({ type: 'simple', languages: 'en' }),
+          "Don't use a disclosure dialog for general confirmations — use scout-dialog instead."),
+        dontCard(
+          previewDisclosureDemo({ type: 'simple', languages: 'en,es' }),
+          "Don't paraphrase or summarize the disclosure copy. Render the legal text exactly as approved."),
+      )));
 }
 
 function disclosureContent(): HTMLElement {
@@ -7807,7 +7850,7 @@ function snackbarPreview(): HTMLElement {
         const trigger = document.createElement('scout-button');
         trigger.setAttribute('variant', 'secondary');
         trigger.textContent = 'Trigger snackbar (4s)';
-        const stage = el('div', { style: 'min-height: 60px;' });
+        const stage = el('div');
         trigger.addEventListener('click', () => {
           const sb = previewSnackbar({ status: 'success', description: 'Triggered! Auto-dismissing in 4 seconds…', duration: 4000 });
           stage.appendChild(sb);

@@ -23,6 +23,7 @@
     "ai": {
       "subtle": { "$value": "{color.purple.50}", "$type": "color" },
       "bold":   { "$value": "{color.purple.500}","$type": "color" }
-    }
+    },
+    "teal":         { "$value": "{color.teal.100}", "$type": "color", "$description": "Teal-tinted fill — used by share-with-customer surfaces and other agent-only callouts that should feel distinct from the info/blue family." }
   }
 }

@@ -61,7 +61,8 @@ export class ScoutDataUnavailable extends LitElement {
       width: var(--_du-icon);
       height: var(--_du-icon);
       flex-shrink: 0;
-      fill: currentColor;
+      /* One step lighter than the label color for a softer state cue. */
+      fill: var(--scout-color-cool-gray-500);
     }
     .label {
       font-size: var(--_du-fs);

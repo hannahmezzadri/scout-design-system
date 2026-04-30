@@ -23,11 +23,12 @@ export class ScoutDivider extends LitElement {
     :host {
       display: block;
       /* Color tokens per variant — picked at the host level so both
-         orientations share one source of truth. */
-      --_div-color: var(--scout-border-secondary);
+         orientations share one source of truth. Default sits one step
+         darker than border-secondary for stronger separation. */
+      --_div-color: var(--scout-border-primary);
       --_div-weight: var(--scout-border-width-1);
     }
-    :host([color='light'])    { --_div-color: var(--scout-color-cool-gray-100); }
+    :host([color='light'])    { --_div-color: var(--scout-color-cool-gray-200); }
     /* Knockout reads against the opposite end of the page palette: closer
        to white in the light theme, closer to black in the dark theme. */
     :host([color='knockout']) { --_div-color: var(--scout-color-alpha-white-80); }

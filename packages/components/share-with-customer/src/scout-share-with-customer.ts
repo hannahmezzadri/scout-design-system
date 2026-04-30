@@ -56,14 +56,20 @@ export class ScoutShareWithCustomer extends LitElement {
     }
 
     .surface {
-      display: grid;
-      grid-template-columns: auto 1fr;
+      display: flex;
+      flex-direction: column;
       gap: var(--scout-space-12);
       padding: var(--scout-space-16);
-      background: var(--scout-fill-primary, var(--scout-color-blue-50));
+      background: var(--scout-fill-teal);
       border: var(--scout-border-width-1) var(--scout-stroke-solid)
-        var(--scout-color-blue-100);
+        var(--scout-border-teal);
       border-radius: var(--scout-radius-8);
+    }
+
+    .head {
+      display: flex;
+      align-items: center;
+      gap: var(--scout-space-12);
     }
 
     .icon {
@@ -71,24 +77,21 @@ export class ScoutShareWithCustomer extends LitElement {
       height: 24px;
       flex-shrink: 0;
       color: var(--scout-text-interactive-primary);
-      grid-row: span 2;
     }
     .icon svg { width: 100%; height: 100%; fill: currentColor; }
 
-    .head {
-      grid-column: 2;
-      display: flex;
-      flex-direction: column;
-      gap: var(--scout-space-8);
-    }
     .label {
       font-size: var(--scout-font-size-14);
       font-weight: var(--scout-font-weight-semibold);
       color: var(--scout-text-display-primary);
     }
 
+    .head scout-language-tabs {
+      margin-left: auto;
+    }
+
     .body {
-      grid-column: 2;
+      padding-left: calc(24px + var(--scout-space-12));
       font-size: var(--scout-font-size-14);
       line-height: var(--scout-font-line-height-21);
       color: var(--scout-text-display-primary);
@@ -133,14 +136,15 @@ export class ScoutShareWithCustomer extends LitElement {
     const hasLangs = langs.length > 0;
     return html`
       <div class="surface" role="note" aria-label=${this.label}>
-        <span class="icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24">${ICON}</svg>
-        </span>
         <div class="head">
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">${ICON}</svg>
+          </span>
           <span class="label">${this.label}</span>
           ${hasLangs
             ? html`<scout-language-tabs
                 label=""
+                size="condensed"
                 .languages=${langs.map((l) => ({
                   value: l.value,
                   label: l.label,
@@ -151,9 +155,7 @@ export class ScoutShareWithCustomer extends LitElement {
               ></scout-language-tabs>`
             : nothing}
         </div>
-        <div class="body">
-          ${hasLangs ? this._activeBody : html`<slot></slot>`}
-        </div>
+        <div class="body">${hasLangs ? this._activeBody : html`<slot></slot>`}</div>
       </div>
     `;
   }
