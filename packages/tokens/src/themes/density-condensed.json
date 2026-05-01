@@ -51,26 +51,6 @@
         "letterSpacing": "{font.letter-spacing.0}"
       }
     },
-    "heading-5": {
-      "$type": "typography",
-      "$value": {
-        "fontFamily": "{font.family.literata}",
-        "fontWeight": "{font.weight.semibold}",
-        "fontSize":   "{font.size.14}",
-        "lineHeight": "{font.line-height.18}",
-        "letterSpacing": "{font.letter-spacing.0}"
-      }
-    },
-    "heading-4": {
-      "$type": "typography",
-      "$value": {
-        "fontFamily": "{font.family.literata}",
-        "fontWeight": "{font.weight.semibold}",
-        "fontSize":   "{font.size.16}",
-        "lineHeight": "{font.line-height.21}",
-        "letterSpacing": "{font.letter-spacing.0}"
-      }
-    },
     "heading-3": {
       "$type": "typography",
       "$value": {

@@ -15,6 +15,7 @@ import type { ButtonSize, ButtonType, ButtonVariant } from './types.js';
  * @attr {"default"|"condensed"} size - Density preset matching the page's `[data-density]`.
  * @attr {"button"|"submit"|"reset"} type - Form-association behavior.
  * @attr disabled - Disables interaction; skips tab order.
+ * @attr knockout - White-on-dark treatment for buttons sitting on dark / saturated surfaces.
  * @attr loading - Shows a spinner and sets `aria-busy="true"`.
  *
  * @slot icon-leading - Icon rendered before the label (e.g. plus, search).
@@ -159,6 +160,27 @@ export class ScoutButton extends LitElement {
       background: var(--scout-color-red-200);
     }
 
+    /* === Knockout — for buttons sitting on dark / saturated surfaces
+       (system-outage banner, dark cards, snackbar). Locks the resting
+       fill to white with dark text; hover/active drop to alpha-white
+       tints so the affordance reads in both themes. */
+    :host([knockout]) .button {
+      background: var(--scout-color-white);
+      color: var(--scout-text-display-primary);
+      border-color: var(--scout-color-white);
+    }
+    :host([knockout]) .button:hover:not(:disabled):not([aria-busy='true']) {
+      background: var(--scout-color-alpha-white-80);
+      border-color: var(--scout-color-alpha-white-80);
+    }
+    :host([knockout]) .button:active:not(:disabled):not([aria-busy='true']) {
+      background: var(--scout-color-cool-gray-100);
+      border-color: var(--scout-color-cool-gray-100);
+    }
+    :host([knockout]) .button:focus-visible {
+      outline-color: var(--scout-color-white);
+    }
+
     /* === Icon slots === */
     ::slotted([slot='icon-leading']),
     ::slotted([slot='icon-trailing']) {
@@ -208,6 +230,9 @@ export class ScoutButton extends LitElement {
 
   /** Disables interaction; skips tab order. */
   @property({ type: Boolean, reflect: true }) disabled = false;
+
+  /** White-on-dark treatment — pair with dark / saturated surfaces. */
+  @property({ type: Boolean, reflect: true }) knockout = false;
 
   /** Shows a spinner and sets `aria-busy="true"`. */
   @property({ type: Boolean, reflect: true }) loading = false;

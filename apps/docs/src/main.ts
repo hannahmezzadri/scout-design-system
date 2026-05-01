@@ -28,12 +28,8 @@ const html = document.documentElement;
 
 // --- Theme controls (now <scout-dropdown-select>)
 type DropdownEl = HTMLElement & { value: string };
-const brandSel = document.getElementById('brand') as DropdownEl;
 const themeSel = document.getElementById('theme') as DropdownEl;
 const densitySel = document.getElementById('density') as DropdownEl;
-brandSel.addEventListener('scout-dropdown-change', () =>
-  html.setAttribute('data-brand', brandSel.value),
-);
 themeSel.addEventListener('scout-dropdown-change', () =>
   html.setAttribute('data-theme', themeSel.value),
 );
@@ -1018,8 +1014,6 @@ const app = document.getElementById('app')!;
     ['heading-1', 't-h1', 'Scout is the best'],
     ['heading-2', 't-h2', 'Scout is the best'],
     ['heading-3', 't-h3', 'Scout is the best'],
-    ['heading-4', 't-h4', 'Scout is the best'],
-    ['heading-5', 't-h5', 'Scout is the best'],
     ['body-large', 't-body-large', 'Scout is the best'],
     ['body', 't-body', 'Scout is the best'],
     ['body-small', 't-body-small', 'Scout is the best'],
@@ -1605,6 +1599,7 @@ interface BtnOpts {
   loading?: boolean;
   leadingIcon?: string;
   trailingIcon?: string;
+  knockout?: boolean;
 }
 
 function previewButton(opts: BtnOpts = {}): HTMLElement {
@@ -1616,6 +1611,7 @@ function previewButton(opts: BtnOpts = {}): HTMLElement {
     loading = false,
     leadingIcon,
     trailingIcon,
+    knockout = false,
   } = opts;
 
   const btn = document.createElement('scout-button');
@@ -1623,6 +1619,7 @@ function previewButton(opts: BtnOpts = {}): HTMLElement {
   btn.setAttribute('size', size);
   if (disabled) btn.setAttribute('disabled', '');
   if (loading) btn.setAttribute('loading', '');
+  if (knockout) btn.setAttribute('knockout', '');
 
   if (leadingIcon) {
     const i = document.createElement('span');
@@ -1680,6 +1677,19 @@ function buttonPreview(): HTMLElement {
     previewButton({ label: 'Loading', loading: true }),
   );
 
+  wrap.append(el('div', { class: 'preview-block' },
+    el('h3', { class: 'preview-block__title' }, 'Knockout'),
+    el('p', { class: 'preview-block__lede' }, 'White-on-dark treatment for buttons that sit on dark or saturated surfaces — system outage banner, dark cards, snackbar.'),
+    el('div', {
+      class: 'preview-row',
+      style: 'padding: var(--scout-space-16); background: var(--scout-surface-inverse); border-radius: var(--scout-radius-4);',
+    },
+      previewButton({ label: 'Read the docs', knockout: true }),
+      previewButton({ label: 'Add address', knockout: true, leadingIcon: '+' }),
+      previewButton({ label: 'Disabled', knockout: true, disabled: true }),
+    ),
+  ));
+
   block(
     'Prescriptive usage',
     'Pair labels with the right variant per role. Icons can optionally sit before or after the label when the action benefits from a visual cue. Icon-only buttons require an aria-label-override and use a separate IconButton component (forthcoming).',
@@ -1689,6 +1699,7 @@ function buttonPreview(): HTMLElement {
         el('div', { class: 'btn-prescriptive__row' },
           previewButton({ label: 'View all addresses' }),
           previewButton({ label: 'Continue' }),
+          previewButton({ variant: 'action',    label: 'Submit' }),
           previewButton({ variant: 'action',    label: 'Approve' }),
           previewButton({ variant: 'critical',  label: 'Delete' }),
         ),
@@ -1721,6 +1732,7 @@ function buttonControls(): HTMLElement {
 
   const disabledChk = ctrlCheck('btn-disabled', 'Disabled');
   const loadingChk = ctrlCheck('btn-loading', 'Loading');
+  const knockoutChk = ctrlCheck('btn-knockout', 'Knockout');
   const leadingChk = ctrlCheck('btn-leading', 'Leading icon');
   const trailingChk = ctrlCheck('btn-trailing', 'Trailing icon');
 
@@ -1734,23 +1746,30 @@ function buttonControls(): HTMLElement {
         label: labelInput.value || 'Button',
         disabled: disabledChk.checked,
         loading: loadingChk.checked,
+        knockout: knockoutChk.checked,
         leadingIcon: leadingChk.checked ? '+' : undefined,
         trailingIcon: trailingChk.checked ? '→' : undefined,
       }),
     );
+    /* When knockout is on, give the stage a dark backdrop so the white
+       button reads correctly. */
+    stage.style.background = knockoutChk.checked ? 'var(--scout-surface-inverse)' : '';
+    stage.style.padding = knockoutChk.checked ? 'var(--scout-space-16)' : '';
+    stage.style.borderRadius = knockoutChk.checked ? 'var(--scout-radius-4)' : '';
 
     const attrs: string[] = [];
     if (variant !== 'primary') attrs.push(`variant="${variant}"`);
     if (size !== 'default') attrs.push(`size="${size}"`);
     if (disabledChk.checked) attrs.push('disabled');
     if (loadingChk.checked) attrs.push('loading');
+    if (knockoutChk.checked) attrs.push('knockout');
     const open = `<scout-button${attrs.length ? ' ' + attrs.join(' ') : ''}>`;
     const lead = leadingChk.checked ? '\n  <svg slot="icon-leading">…</svg>' : '';
     const trail = trailingChk.checked ? '\n  <svg slot="icon-trailing">…</svg>' : '';
     codePre.textContent = `${open}${lead}\n  ${labelInput.value || 'Button'}${trail}\n</scout-button>`;
   }
 
-  for (const c of [variantSel, sizeSel, labelInput, disabledChk, loadingChk, leadingChk, trailingChk]) {
+  for (const c of [variantSel, sizeSel, labelInput, disabledChk, loadingChk, knockoutChk, leadingChk, trailingChk]) {
     c.addEventListener('input', render);
     c.addEventListener('change', render);
   }
@@ -1766,6 +1785,7 @@ function buttonControls(): HTMLElement {
     el('div', { class: 'ctrl-checks' },
       disabledChk,
       loadingChk,
+      knockoutChk,
       leadingChk,
       trailingChk,
     ),
@@ -2000,7 +2020,7 @@ import '@scout/button';`,
     { id: 'components-badge',         name: 'Badge',         summary: 'Small label conveying status, category, or count. Six types, two emphasis levels, default and condensed sizes, prescriptive status icons.' },
     { id: 'components-breadcrumb',    name: 'Breadcrumb',    summary: 'Hierarchy navigation showing the user\'s location. Supports multi-level chains and single back-link mode.' },
     { id: 'components-button',        name: 'Button',        summary: 'Six variants (primary, secondary, tertiary, action, critical, critical-tertiary). Default and condensed sizes. Loading and icon states.' },
-    { id: 'components-card',          name: 'Card',          summary: 'Stylized container for AI summaries and extracted plain-text content. Three background colors, optional AI call-out and show-more toggle.' },
+    { id: 'components-card',          name: 'Card',          summary: 'Stylized container for AI summaries and extracted plain-text content. Three background colors (white / cool-gray.100 / cool-gray.200), optional AI call-out and show-more toggle.' },
     { id: 'components-checkbox',      name: 'Checkbox',      summary: 'Single and multi-select form input. Selected, not selected, and indeterminate states. Group orientation, helper, error, and warning messages.' },
     { id: 'components-control',       name: 'Control',       summary: 'Icon-only interactive control for triggering single actions. 11 built-in types (close, clear, navigation arrows, tooltip, trash, kebab) with primary and critical colors.' },
     { id: 'components-data-pair',     name: 'Data pair',     summary: 'Label + description display with optional meta and link. Vertical (stacked) layout.' },
@@ -3794,7 +3814,7 @@ app.append(
 // =================================================================
 import '@scout/card';
 
-type CardBg = 'white' | 'cool-gray-100';
+type CardBg = 'white' | 'cool-gray-100' | 'cool-gray-200';
 
 interface CardOpts {
   background?: CardBg;
@@ -3861,10 +3881,11 @@ function cardPreview(): HTMLElement {
 
   block(
     'Background colors',
-    'Two options. White is the default. Cool-gray.100 sits well on white surfaces.',
+    'Three options. White is the default. Cool-gray.100 sits well on white surfaces; cool-gray.200 reads as a stronger inset against either.',
     el('div', { class: 'preview-stack' },
       previewCard({ background: 'white', aiCallout: true, body: 'Background: white (default).' }),
       previewCard({ background: 'cool-gray-100', aiCallout: true, body: 'Background: cool-gray.100.' }),
+      previewCard({ background: 'cool-gray-200', aiCallout: true, body: 'Background: cool-gray.200.' }),
     ),
   );
 
@@ -3895,7 +3916,7 @@ function cardControls(): HTMLElement {
   const stage = el('div', { class: 'preview-stage preview-stage--block' });
   const codePre = el('pre', { class: 'code-block' }) as HTMLPreElement;
 
-  const bgSel = ddSelect('card-bg', ['white', 'cool-gray-100'] as const);
+  const bgSel = ddSelect('card-bg', ['white', 'cool-gray-100', 'cool-gray-200'] as const);
   const bodyInput = ctrlText('card-body', 'Customer mentioned a recurring charge issue. Last call was 2 days ago.');
   const aiLabelInput = ctrlText('card-ailabel', 'AI summary');
   const accentBarChk = ctrlCheck('card-accent', 'Accent bar');
@@ -4039,7 +4060,7 @@ function cardCode(): HTMLElement {
         el('table', { class: 'props-table' },
           el('thead', {}, el('tr', {}, el('th', {}, 'Prop'), el('th', {}, 'Type'), el('th', {}, 'Default'), el('th', {}, 'Description'))),
           el('tbody', {},
-            el('tr', {}, el('td', {}, 'background'), el('td', {}, '"white" | "cool-gray-100"'), el('td', {}, '"white"'), el('td', {}, 'Card background color.')),
+            el('tr', {}, el('td', {}, 'background'), el('td', {}, '"white" | "cool-gray-100" | "cool-gray-200"'), el('td', {}, '"white"'), el('td', {}, 'Card background color.')),
             el('tr', {}, el('td', {}, 'accent-bar'), el('td', {}, 'boolean'), el('td', {}, 'false'), el('td', {}, 'Renders a 4px brand-colored bar along the card’s left edge.')),
             el('tr', {}, el('td', {}, 'ai-callout'), el('td', {}, 'boolean'), el('td', {}, 'false'), el('td', {}, 'Renders the AI callout banner.')),
             el('tr', {}, el('td', {}, 'show-more'), el('td', {}, 'boolean'), el('td', {}, 'false'), el('td', {}, 'Truncates body and reveals expand/collapse toggle.')),
@@ -10285,12 +10306,21 @@ function previewPopoverMenu(opts: {
   placement?: PopPlacement;
   open?: boolean;
   icons?: boolean;
+  trigger?: 'button' | 'kebab';
 } = {}): HTMLElement {
   const m = document.createElement('scout-popover-menu');
   if (opts.label) m.setAttribute('label', opts.label);
   m.setAttribute('placement', opts.placement ?? 'bottom');
   if (opts.open) m.setAttribute('open', '');
-  m.appendChild(makeTriggerButton('Open menu'));
+  if (opts.trigger === 'kebab') {
+    const kebab = document.createElement('scout-control');
+    kebab.setAttribute('slot', 'trigger');
+    kebab.setAttribute('type', 'kebab');
+    kebab.setAttribute('size', 'default');
+    m.appendChild(kebab);
+  } else {
+    m.appendChild(makeTriggerButton('Open menu'));
+  }
   for (const [val, lab, sel, icon] of [
     ['view',   'View',   true,  'eye'],
     ['edit',   'Edit',   false, 'pencil-square'],
@@ -10372,7 +10402,6 @@ function popoverPreview(): HTMLElement {
         body: 'The amount you owe at the close of the most recent billing cycle. Pay this in full to avoid interest charges.',
         alert: 'New billing cycle starts May 18.',
         link: 'Learn more',
-        open: true,
       }),
       previewTooltip({
         variant: 'advanced',
@@ -10382,7 +10411,6 @@ function popoverPreview(): HTMLElement {
         body: 'The amount you owe at the close of the most recent billing cycle. Pay this in full to avoid interest charges.',
         alert: 'New billing cycle starts May 18.',
         link: 'Learn more',
-        open: true,
       }),
     ),
   );
@@ -10404,6 +10432,8 @@ function popoverPreview(): HTMLElement {
     el('div', { class: 'preview-stack preview-stack--inline' },
       previewPopoverMenu({ label: 'Actions', placement: 'bottom', open: true, icons: true }),
       previewPopoverMenu({ placement: 'right', icons: true }),
+      previewPopoverMenu({ label: 'Actions', placement: 'bottom', open: true }),
+      previewPopoverMenu({ label: 'Actions', placement: 'bottom', open: true, icons: true, trigger: 'kebab' }),
     ),
   );
 

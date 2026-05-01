@@ -13,7 +13,7 @@ html, body { margin: 0; padding: 0; }
 /* Topbar height — single source of truth used by both topbar and sidebar
    so the sidebar's internal scroll calc tracks the actual topbar size. */
 :root { --topbar-h: 60px; }
-@media (max-width: 600px) { :root { --topbar-h: 112px; } }
+@media (max-width: 600px) { :root { --topbar-h: 60px; } }
 
 /* Page margin — single source of truth for the inline padding around the
    main content area. Each breakpoint shrinks the gutter while keeping
@@ -85,6 +85,12 @@ body {
    wants a more compact footprint. +20px from the previous 140px baseline. */
 .controls scout-dropdown-select {
   width: 160px;
+}
+/* On mobile the topbar wraps onto two rows; the density toggle is the
+   least essential of the three controls (brand + theme + density), so
+   hide it to keep the header compact. */
+@media (max-width: 600px) {
+  .controls scout-dropdown-select#density { display: none; }
 }
 
 /* === Layout: sidebar + main ===
@@ -721,7 +727,9 @@ section > p.lede {
   display: grid;
   grid-template-columns: 160px 1fr;
   gap: var(--scout-space-24);
-  align-items: baseline;
+  /* Center the meta block vertically with the preview sample so labels
+     don't drop to the bottom of large display-size lines. */
+  align-items: center;
 }
 .specimen:last-child { border-bottom: none; }
 .typography-section-heading {
@@ -808,8 +816,6 @@ section > p.lede {
 .t-body-small    { font-family: var(--scout-typography-body-small-font-family);    font-weight: var(--scout-typography-body-small-font-weight);    font-size: var(--scout-typography-body-small-font-size);    line-height: var(--scout-typography-body-small-line-height); }
 .t-body          { font-family: var(--scout-typography-body-font-family);          font-weight: var(--scout-typography-body-font-weight);          font-size: var(--scout-typography-body-font-size);          line-height: var(--scout-typography-body-line-height); }
 .t-body-large    { font-family: var(--scout-typography-body-large-font-family);    font-weight: var(--scout-typography-body-large-font-weight);    font-size: var(--scout-typography-body-large-font-size);    line-height: var(--scout-typography-body-large-line-height); }
-.t-h5            { font-family: var(--scout-typography-heading-5-font-family);     font-weight: var(--scout-typography-heading-5-font-weight);     font-size: var(--scout-typography-heading-5-font-size);     line-height: var(--scout-typography-heading-5-line-height); }
-.t-h4            { font-family: var(--scout-typography-heading-4-font-family);     font-weight: var(--scout-typography-heading-4-font-weight);     font-size: var(--scout-typography-heading-4-font-size);     line-height: var(--scout-typography-heading-4-line-height); }
 .t-h3            { font-family: var(--scout-typography-heading-3-font-family);     font-weight: var(--scout-typography-heading-3-font-weight);     font-size: var(--scout-typography-heading-3-font-size);     line-height: var(--scout-typography-heading-3-line-height); }
 .t-h2            { font-family: var(--scout-typography-heading-2-font-family);     font-weight: var(--scout-typography-heading-2-font-weight);     font-size: var(--scout-typography-heading-2-font-size);     line-height: var(--scout-typography-heading-2-line-height); }
 .t-h1            { font-family: var(--scout-typography-heading-1-font-family);     font-weight: var(--scout-typography-heading-1-font-weight);     font-size: var(--scout-typography-heading-1-font-size);     line-height: var(--scout-typography-heading-1-line-height); }
@@ -948,21 +954,22 @@ body.nav-open .sidebar-scrim { opacity: 1; }
 
 @media (max-width: 600px) {
   .topbar {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: var(--scout-space-12);
     padding: var(--scout-space-12) var(--scout-space-16);
   }
   .brand .subtitle { display: none; }
+  /* Hamburger + Scout BETA hug the left edge; Theme dropdown sits on the
+     far right of the topbar. The auto margin on .brand absorbs the
+     remaining horizontal space. */
+  .brand { margin-right: auto; }
   .controls {
-    width: 100%;
-    gap: var(--scout-space-12);
-    flex-wrap: wrap;
+    width: auto;
+    gap: var(--scout-space-8);
+    flex-wrap: nowrap;
+    align-items: center;
   }
-  .controls label {
-    flex: 1 1 calc(33.333% - var(--scout-space-12));
-    min-width: 90px;
-  }
-  .controls select { width: 100%; }
+  .controls scout-dropdown-select { width: auto; }
 
   /* Inline padding comes from --page-margin; only the inter-section gap
      tightens at this breakpoint. */

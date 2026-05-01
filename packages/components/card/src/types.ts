@@ -1,1 +1,1 @@
-export type CardBackground = 'white' | 'cool-gray-100';
+export type CardBackground = 'white' | 'cool-gray-100' | 'cool-gray-200';

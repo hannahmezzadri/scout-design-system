@@ -3,7 +3,8 @@ import { customElement, property, state } from 'lit/decorators.js';
 import '@scout/control';
 import type { TipAlignment, TipPlacement, TooltipTrigger, TooltipVariant } from './types.js';
 
-const INFO_ICON = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="16" height="16"><path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.732 2.923.305-.158a.75.75 0 0 1 .67 1.34l-.32.165c-1.146.573-2.437-.463-2.126-1.706l.732-2.923-.305.158a.75.75 0 1 1-.67-1.34l.32-.165ZM12 8.25a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Z" clip-rule="evenodd"/></svg>`;
+const INFO_ICON_OUTLINE = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16"><path d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"/></svg>`;
+const INFO_ICON_SOLID = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="16" height="16"><path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.732 2.923.305-.158a.75.75 0 0 1 .67 1.34l-.32.165c-1.146.573-2.437-.463-2.126-1.706l.732-2.923-.305.158a.75.75 0 1 1-.67-1.34l.32-.165ZM12 8.25a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Z" clip-rule="evenodd"/></svg>`;
 
 /**
  * `<scout-tooltip>` — popover tooltip anchored to a trigger.
@@ -65,6 +66,28 @@ export class ScoutTooltip extends LitElement {
       cursor: not-allowed;
       pointer-events: none;
     }
+    /* Info-icon trigger — outline by default, swap to solid on hover/focus
+       so the affordance reads as active. */
+    .trigger-info {
+      width: 24px;
+      height: 24px;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .trigger-info span {
+      position: absolute;
+      inset: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity var(--scout-motion-duration-fast, 120ms) ease;
+    }
+    .trigger-info .info-solid { opacity: 0; }
+    .trigger-info:hover .info-outline,
+    .trigger-info:focus-visible .info-outline { opacity: 0; }
+    .trigger-info:hover .info-solid,
+    .trigger-info:focus-visible .info-solid { opacity: 1; }
 
     /* Popover surface — width hugs the content (max-content) and only
        wraps once it would otherwise exceed the max-width cap. */
@@ -133,6 +156,18 @@ export class ScoutTooltip extends LitElement {
     :host([variant='simple']:focus-within[placement='top']) .popover,
     :host([variant='simple']:focus-within[placement='bottom']) .popover {
       transform: translateX(-50%) translateY(0);
+    }
+    /* Left / right placements need their own open-state override because
+       the general transform: translateY(0) rule would clobber the
+       translateY(-50%) that vertically centers the popover on the
+       trigger, dropping it below the trigger's center. */
+    :host([open][placement='left']) .popover,
+    :host([open][placement='right']) .popover,
+    :host([variant='simple']:hover[placement='left']) .popover,
+    :host([variant='simple']:hover[placement='right']) .popover,
+    :host([variant='simple']:focus-within[placement='left']) .popover,
+    :host([variant='simple']:focus-within[placement='right']) .popover {
+      transform: translateY(-50%);
     }
     :host([open][placement='top'][alignment='start']) .popover,
     :host([open][placement='bottom'][alignment='start']) .popover,
@@ -221,15 +256,17 @@ export class ScoutTooltip extends LitElement {
   render() {
     const trigger =
       this.trigger === 'info-icon'
-        ? html`<scout-control
-            class="trigger"
-            type="tooltip"
-            size="condensed"
-            aria-label-override="More info"
+        ? html`<button
+            class="trigger trigger-info"
+            type="button"
+            aria-label="More info"
             aria-describedby=${this._id}
             ?disabled=${this.disabled}
             @click=${this._onTriggerClick}
-          ></scout-control>`
+          >
+            <span class="info-outline" .innerHTML=${INFO_ICON_OUTLINE}></span>
+            <span class="info-solid" .innerHTML=${INFO_ICON_SOLID}></span>
+          </button>`
         : html`<button
             class="trigger"
             type="button"

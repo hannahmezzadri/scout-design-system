@@ -1,7 +1,7 @@
 {
   "surface": {
     "$description": "Semantic surface colors — opaque chrome (cards, dialogs, page background, scrim, inverse panels). Replaces v1 `background.*`. The `inverse` rows are designed to be paired with `text.inverse.*` / `icon.inverse.*` for dark-on-light surfaces like the snackbar interior.",
-    "page":           { "$value": "{color.cool-gray.100}",  "$type": "color", "$description": "Document background." },
+    "page":           { "$value": "{color.cool-gray.50}",   "$type": "color", "$description": "Document background." },
     "primary":        { "$value": "{color.white}",          "$type": "color", "$description": "Default raised surface (cards, dialogs, popovers)." },
     "scrim":          { "$value": "{color.alpha.80}",       "$type": "color", "$description": "Modal / drawer backdrop." },
     "disabled":       { "$value": "{color.cool-gray.50}",   "$type": "color", "$description": "Background for disabled inputs and controls." },

@@ -75,16 +75,16 @@ export class ScoutPopoverTime extends LitElement {
 
     .col {
       position: relative;
-      /* Sit above the highlight band so the selected row's text isn't
-         covered by the cool-gray-100 fill — the band reads as a backdrop,
-         not as a mask. */
       z-index: 1;
       width: 56px;
       height: 160px;
       overflow-y: scroll;
       scroll-snap-type: y mandatory;
       scrollbar-width: thin;
-      padding: 64px 0;
+      /* Padding removed — without the highlight band, the first row reads
+         best when it sits at the top of the column instead of centered
+         (which left a 64px white gap below the title). */
+      padding: 0;
     }
     .col::-webkit-scrollbar {
       width: 6px;
