@@ -164,14 +164,16 @@ export class ScoutBadge extends LitElement {
   render() {
     // Render the prescribed icon when:
     //   - size is default (icons are disallowed at condensed)
-    //   - the consumer set the `icon` boolean attribute (opt-in for every type)
     //   - the consumer hasn't slotted a custom icon
     //   - the type has a prescribed icon (informational, success, warning, critical, ai-summary)
+    //   - either the consumer set the `icon` boolean attribute, OR the type
+    //     is ai-summary (the sparkle is always rendered to anchor the AI
+    //     convention even when icon isn't explicitly set).
     const showPrescribed =
       this.size !== 'condensed' &&
       !this._hasCustomIcon &&
       this.type in PRESCRIBED_ICON &&
-      this.icon;
+      (this.icon || this.type === 'ai-summary');
 
     const showCustomSlot = this.size !== 'condensed';
 

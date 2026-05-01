@@ -1,5 +1,5 @@
 import { LitElement, html, css, svg, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 
 const CHECK_ICON = svg`<path d="M3.5 8l3 3 6-6.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`;
 const INDETERMINATE_ICON = svg`<path d="M3.5 8h9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>`;
@@ -131,6 +131,10 @@ export class ScoutCheckbox extends LitElement {
       gap: 2px;
       min-width: 0;
     }
+    /* When there's no slotted label and no secondary text, drop the .text
+       wrapper so the .row's flex gap doesn't reserve 8px of empty space
+       to the right of the control (matters in data-table select cells). */
+    .text[hidden] { display: none; }
     .label {
       font-size: var(--scout-typography-body-font-size);
       line-height: var(--scout-typography-body-line-height);
@@ -157,6 +161,12 @@ export class ScoutCheckbox extends LitElement {
   @property() name = '';
   @property() value = '';
   @property() secondary = '';
+
+  @state() private _hasLabel = false;
+
+  private _onLabelSlot = (e: Event) => {
+    this._hasLabel = (e.target as HTMLSlotElement).assignedNodes({ flatten: true }).length > 0;
+  };
 
   private readonly _internals: ElementInternals;
 
@@ -200,8 +210,8 @@ export class ScoutCheckbox extends LitElement {
           <svg class="icon check" viewBox="0 0 16 16" aria-hidden="true">${CHECK_ICON}</svg>
           <svg class="icon indeterminate" viewBox="0 0 16 16" aria-hidden="true">${INDETERMINATE_ICON}</svg>
         </span>
-        <span class="text">
-          <span class="label"><slot></slot></span>
+        <span class="text" ?hidden=${!this._hasLabel && !this.secondary}>
+          <span class="label"><slot @slotchange=${this._onLabelSlot}></slot></span>
           ${this.secondary
             ? html`<span class="secondary">${this.secondary}</span>`
             : nothing}

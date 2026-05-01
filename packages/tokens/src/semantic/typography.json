@@ -15,7 +15,7 @@
       "$type": "typography",
       "$value": {
         "fontFamily": "{font.family.inter}",
-        "fontWeight": "{font.weight.medium}",
+        "fontWeight": "{font.weight.semibold}",
         "fontSize":   "{font.size.14}",
         "lineHeight": "{font.line-height.21}",
         "letterSpacing": "{font.letter-spacing.0}"
@@ -105,7 +105,7 @@
       "$type": "typography",
       "$value": {
         "fontFamily": "{font.family.literata}",
-        "fontWeight": "{font.weight.bold}",
+        "fontWeight": "{font.weight.semibold}",
         "fontSize":   "{font.size.48}",
         "lineHeight": "{font.line-height.64}",
         "letterSpacing": "{font.letter-spacing.0}"
@@ -115,7 +115,7 @@
       "$type": "typography",
       "$value": {
         "fontFamily": "{font.family.literata}",
-        "fontWeight": "{font.weight.bold}",
+        "fontWeight": "{font.weight.semibold}",
         "fontSize":   "{font.size.64}",
         "lineHeight": "{font.line-height.76}",
         "letterSpacing": "{font.letter-spacing.0}"

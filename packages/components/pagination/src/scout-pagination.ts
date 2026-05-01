@@ -96,7 +96,7 @@ export class ScoutPagination extends LitElement {
       justify-content: center;
       font-family: inherit;
       font-size: var(--_pg-fs);
-      font-weight: var(--scout-font-weight-medium);
+      font-weight: var(--scout-font-weight-semibold);
       color: var(--scout-text-display-primary);
       cursor: pointer;
       transition: background var(--scout-motion-duration-fast, 120ms)

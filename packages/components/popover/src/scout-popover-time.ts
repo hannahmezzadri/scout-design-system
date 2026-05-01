@@ -100,7 +100,7 @@ export class ScoutPopoverTime extends LitElement {
       justify-content: center;
       scroll-snap-align: center;
       font-size: var(--scout-font-size-14);
-      font-weight: var(--scout-font-weight-medium);
+      font-weight: var(--scout-font-weight-semibold);
       color: var(--scout-text-display-primary);
       cursor: pointer;
       border-radius: var(--scout-radius-4);

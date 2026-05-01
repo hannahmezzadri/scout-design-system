@@ -30,14 +30,16 @@ export class ScoutShowMore extends LitElement {
     :host {
       display: inline-block;
       font-family: var(--scout-font-family-inter);
-      --_sm-fs: var(--scout-font-size-14);
+      --_sm-fs: var(--scout-typography-body-font-size);
+      --_sm-lh: var(--scout-typography-body-line-height);
       --_sm-py: var(--scout-space-4);
       --_sm-px: 0px;
       --_sm-icon: 16px;
     }
     :host([size='condensed']),
     :host-context([data-density='condensed']) {
-      --_sm-fs: var(--scout-font-size-12);
+      --_sm-fs: var(--scout-typography-body-small-font-size);
+      --_sm-lh: var(--scout-typography-body-small-line-height);
       --_sm-py: 2px;
       --_sm-icon: 14px;
     }
@@ -52,6 +54,7 @@ export class ScoutShowMore extends LitElement {
       gap: var(--scout-space-4);
       font-family: inherit;
       font-size: var(--_sm-fs);
+      line-height: var(--_sm-lh);
       font-weight: var(--scout-font-weight-semibold);
       line-height: var(--scout-font-line-height-21);
       color: var(--scout-text-interactive-primary);

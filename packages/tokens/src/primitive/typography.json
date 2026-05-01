@@ -6,12 +6,9 @@
       "inter":    { "$value": "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif", "$type": "fontFamily" }
     },
     "weight": {
-      "extra-light": { "$value": 200, "$type": "fontWeight" },
-      "light":       { "$value": 300, "$type": "fontWeight" },
-      "regular":     { "$value": 400, "$type": "fontWeight" },
-      "medium":      { "$value": 500, "$type": "fontWeight" },
-      "semibold":    { "$value": 600, "$type": "fontWeight" },
-      "bold":        { "$value": 700, "$type": "fontWeight" }
+      "$description": "Two-step weight ramp. Use regular for body copy and semibold for emphasis, labels, headings, and display.",
+      "regular":  { "$value": 400, "$type": "fontWeight" },
+      "semibold": { "$value": 600, "$type": "fontWeight" }
     },
     "size": {
       "10": { "$value": "10px", "$type": "dimension" },

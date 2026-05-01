@@ -159,7 +159,7 @@ export class ScoutProgressStepper extends LitElement {
     /* Labels */
     .label {
       font-size: var(--scout-font-size-12);
-      font-weight: var(--scout-font-weight-medium);
+      font-weight: var(--scout-font-weight-semibold);
       color: var(--scout-text-display-primary);
       text-align: center;
       line-height: var(--scout-font-line-height-15);

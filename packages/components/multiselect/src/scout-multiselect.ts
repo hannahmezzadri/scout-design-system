@@ -92,7 +92,7 @@ export class ScoutMultiselect extends LitElement {
       color: var(--scout-color-blue-700);
       border-radius: var(--scout-radius-4);
       font-size: var(--scout-font-size-12);
-      font-weight: var(--scout-font-weight-medium);
+      font-weight: var(--scout-font-weight-semibold);
       max-width: 200px;
     }
     .chip-label {

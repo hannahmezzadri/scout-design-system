@@ -32,7 +32,7 @@ export class ScoutProgressBar extends LitElement {
     .title-only {
       display: block;
       font-size: var(--scout-font-size-14);
-      font-weight: var(--scout-font-weight-medium);
+      font-weight: var(--scout-font-weight-semibold);
       color: var(--scout-text-display-primary);
       margin-bottom: var(--scout-space-4);
     }
@@ -59,7 +59,7 @@ export class ScoutProgressBar extends LitElement {
        visual line. */
     .labels .left.is-title {
       font-size: var(--scout-font-size-14);
-      font-weight: var(--scout-font-weight-medium);
+      font-weight: var(--scout-font-weight-semibold);
       color: var(--scout-text-display-primary);
     }
     .labels:has(.left.is-title) .right {

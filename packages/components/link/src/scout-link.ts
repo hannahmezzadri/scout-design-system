@@ -26,12 +26,17 @@ export class ScoutLink extends LitElement {
     :host {
       display: inline;
       font-family: var(--scout-font-family-inter);
-      --_link-fs: var(--scout-font-size-14);
+      /* Default size maps to the body composite token; condensed maps to
+         body-small. Keeps link sizing in lock-step with the surrounding
+         body copy across the system. */
+      --_link-fs: var(--scout-typography-body-font-size);
+      --_link-lh: var(--scout-typography-body-line-height);
       --_link-icon-size: 14px;
     }
     :host([size='condensed']),
     :host-context([data-density='condensed']) {
-      --_link-fs: var(--scout-font-size-12);
+      --_link-fs: var(--scout-typography-body-small-font-size);
+      --_link-lh: var(--scout-typography-body-small-line-height);
       --_link-icon-size: 12px;
     }
     :host([disabled]) {
@@ -71,7 +76,8 @@ export class ScoutLink extends LitElement {
     :host([type='standalone']) a,
     :host(:not([type])) a {
       font-size: var(--_link-fs);
-      font-weight: var(--scout-font-weight-medium);
+      line-height: var(--_link-lh);
+      font-weight: var(--scout-font-weight-regular);
       text-decoration: none;
     }
     :host([type='standalone']) a:hover,
@@ -109,6 +115,25 @@ export class ScoutLink extends LitElement {
       border-radius: var(--scout-radius-2);
     }
 
+    /* Knockout — for links sitting on dark / saturated surfaces (system
+       outage banner, dark cards, snackbar). Locks the color to white in
+       both themes and tweaks hover/active to alpha-white tints. */
+    :host([knockout]) a,
+    :host([knockout]) a:hover,
+    :host([knockout]) a:active {
+      color: var(--scout-color-white);
+    }
+    :host([knockout]) a:hover {
+      color: var(--scout-color-alpha-white-80);
+    }
+    :host([knockout][type='standalone']) a,
+    :host([knockout]:not([type])) a {
+      color: var(--scout-color-white);
+    }
+    :host([knockout]) a:focus-visible {
+      outline-color: var(--scout-color-white);
+    }
+
     .icon {
       width: var(--_link-icon-size);
       height: var(--_link-icon-size);
@@ -124,6 +149,8 @@ export class ScoutLink extends LitElement {
   @property({ type: String, reflect: true }) type: LinkType = 'standalone';
   @property({ type: String, reflect: true }) size: LinkSize = 'default';
   @property({ type: Boolean, reflect: true }) disabled = false;
+  /** White-on-dark treatment — pair with dark / saturated surfaces. */
+  @property({ type: Boolean, reflect: true }) knockout = false;
   @property() target: string | null = null;
   @property() rel: string | null = null;
 

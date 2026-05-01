@@ -12,8 +12,8 @@ import type { DividerColor, DividerOrientation, DividerWeight } from './types.js
  * @element scout-divider
  *
  * @attr {"1"|"2"} weight                                - Line thickness in pixels.
- * @attr {"default"|"light"|"knockout"} color            - `default` is the standard secondary border;
- *                                                          `light` is the more subtle cool-gray.100; `knockout`
+ * @attr {"default"|"subtle"|"knockout"} color           - `default` is the standard secondary border;
+ *                                                          `subtle` is the lower-emphasis cool-gray-200; `knockout`
  *                                                          is white-on-dark for use against dark surfaces.
  * @attr {"horizontal"|"vertical"} orientation           - Direction of the line.
  */
@@ -28,7 +28,7 @@ export class ScoutDivider extends LitElement {
       --_div-color: var(--scout-border-primary);
       --_div-weight: var(--scout-border-width-1);
     }
-    :host([color='light'])    { --_div-color: var(--scout-color-cool-gray-200); }
+    :host([color='subtle'])    { --_div-color: var(--scout-color-cool-gray-200); }
     /* Knockout reads against the opposite end of the page palette: closer
        to white in the light theme, closer to black in the dark theme. */
     :host([color='knockout']) { --_div-color: var(--scout-color-alpha-white-80); }
@@ -41,7 +41,7 @@ export class ScoutDivider extends LitElement {
     :host-context([data-theme='dark']) {
       --_div-color: var(--scout-color-cool-gray-500);
     }
-    :host-context([data-theme='dark']):host([color='light'])    { --_div-color: var(--scout-color-cool-gray-700); }
+    :host-context([data-theme='dark']):host([color='subtle'])    { --_div-color: var(--scout-color-cool-gray-700); }
     :host-context([data-theme='dark']):host([color='knockout']) { --_div-color: var(--scout-color-alpha-80); }
 
     /* Horizontal — full-width rule that takes its own line in flow. */

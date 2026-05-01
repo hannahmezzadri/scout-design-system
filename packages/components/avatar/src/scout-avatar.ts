@@ -30,7 +30,7 @@ export class ScoutAvatar extends LitElement {
       --_avatar-font-size: var(--scout-font-size-12);
       --_avatar-badge-size: 10px;
       --_avatar-title-font-size: var(--scout-font-size-14);
-      --_avatar-title-font-weight: var(--scout-font-weight-medium);
+      --_avatar-title-font-weight: var(--scout-font-weight-semibold);
     }
     :host([size='small']) {
       --_avatar-size: 24px;

@@ -43,7 +43,7 @@ export class ScoutAccordionItem extends LitElement {
       font-family: var(--scout-font-family-inter);
       font-size: var(--_cnx-accordion-font-size, 16px);
       line-height: var(--_cnx-accordion-line-height, 24px);
-      font-weight: var(--scout-font-weight-medium);
+      font-weight: var(--scout-font-weight-semibold);
       text-align: start;
       cursor: pointer;
       transition: background var(--scout-motion-duration-fast)

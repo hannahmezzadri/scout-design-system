@@ -67,7 +67,7 @@ body {
 
 .brand .title {
   font-family: var(--scout-font-family-literata);
-  font-weight: var(--scout-font-weight-bold);
+  font-weight: var(--scout-font-weight-semibold);
   font-size: var(--scout-font-size-20);
 }
 .brand .subtitle {
@@ -165,7 +165,7 @@ body {
   flex: 1;
   color: var(--scout-text-interactive-primary);
   text-decoration: none;
-  font-weight: var(--scout-font-weight-medium);
+  font-weight: var(--scout-font-weight-semibold);
 }
 .sidebar li:has(a):hover {
   background: var(--scout-interactive-background-brand-hover);
@@ -176,7 +176,7 @@ body {
 .sidebar li.active a { color: var(--scout-text-display-primary); }
 .sidebar .tag {
   font-size: 10px;
-  font-weight: var(--scout-font-weight-medium);
+  font-weight: var(--scout-font-weight-semibold);
 
   padding: 2px var(--scout-space-4);
   border-radius: var(--scout-radius-2);
@@ -247,7 +247,7 @@ section > p.lede {
 }
 .category-banner h1 {
   font-family: var(--scout-font-family-literata);
-  font-weight: var(--scout-font-weight-bold);
+  font-weight: var(--scout-font-weight-semibold);
   font-size: var(--scout-font-size-48);
   line-height: var(--scout-font-line-height-64);
   margin: 0 0 var(--scout-space-8);
@@ -286,7 +286,7 @@ section > p.lede {
 .overview-hero__title {
   margin: 0;
   font-family: var(--scout-font-family-literata);
-  font-weight: var(--scout-font-weight-bold);
+  font-weight: var(--scout-font-weight-semibold);
   font-size: var(--scout-font-size-32);
   line-height: var(--scout-font-line-height-40, 1.25);
   color: var(--scout-text-display-primary);
@@ -317,7 +317,7 @@ section > p.lede {
 .overview-hero__product-chip {
   font-family: var(--scout-font-family-inter);
   font-size: var(--scout-font-size-14);
-  font-weight: var(--scout-font-weight-medium);
+  font-weight: var(--scout-font-weight-semibold);
   color: var(--scout-color-blue-500);
   background: var(--scout-color-white);
   border: var(--scout-border-width-1) solid var(--scout-color-blue-200);
@@ -420,7 +420,7 @@ section > p.lede {
 .overview-card__illustration-label {
   font-family: var(--scout-font-family-inter);
   font-size: var(--scout-font-size-12);
-  font-weight: var(--scout-font-weight-medium);
+  font-weight: var(--scout-font-weight-semibold);
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--scout-text-display-secondary);
@@ -635,7 +635,7 @@ section > p.lede {
 }
 .swatch .value--ref {
   color: var(--scout-text-display-primary);
-  font-weight: var(--scout-font-weight-medium);
+  font-weight: var(--scout-font-weight-semibold);
 }
 
 /* Spacing visualizer */
@@ -705,6 +705,15 @@ section > p.lede {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
+/* Type specimens are wrapped in a white tile container that mirrors the
+   weights card treatment below — surface fill, secondary border, rounded
+   corners, and a single source of inner padding. */
+.typography-types-card {
+  background: var(--scout-surface-primary);
+  border: var(--scout-border-width-1) solid var(--scout-border-secondary);
+  border-radius: var(--scout-radius-8);
+  padding: 0 var(--scout-space-16);
+}
 /* Type specimen */
 .specimen {
   border-bottom: var(--scout-border-width-1) solid var(--scout-border-secondary);
@@ -1025,7 +1034,7 @@ body.nav-open .sidebar-scrim { opacity: 1; }
 }
 .component-title {
   font-family: var(--scout-font-family-literata);
-  font-weight: var(--scout-font-weight-bold);
+  font-weight: var(--scout-font-weight-semibold);
   font-size: var(--scout-font-size-48);
   line-height: var(--scout-font-line-height-64);
   margin: 0;
@@ -1223,7 +1232,7 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   appearance: none;
   font-family: inherit;
   font-size: var(--scout-font-size-14);
-  font-weight: var(--scout-font-weight-medium);
+  font-weight: var(--scout-font-weight-semibold);
   padding: var(--scout-space-8) var(--scout-space-12);
   border: var(--scout-border-width-1) solid var(--scout-border-primary);
   border-radius: var(--scout-radius-4);
@@ -2114,7 +2123,7 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   flex-direction: column;
   gap: var(--scout-space-12);
   --_dt-row-pad-y: var(--scout-space-12);
-  --_dt-row-pad-x: var(--scout-space-16);
+  --_dt-row-pad-x: var(--scout-space-12);
   --_dt-fs: var(--scout-typography-body-font-size);
   --_dt-lh: var(--scout-typography-body-line-height);
 }
@@ -2149,6 +2158,14 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   vertical-align: middle;
   padding: var(--_dt-row-pad-y) var(--_dt-row-pad-x);
   border-bottom: var(--scout-border-width-1) solid var(--scout-border-secondary);
+}
+/* Table edge always indents space.12 — the first cell hugs the left edge
+   and the last cell hugs the right edge with the same gap. */
+.dt-row > .dt-cell:first-child {
+  padding-left: var(--scout-space-12);
+}
+.dt-row > .dt-cell:last-child {
+  padding-right: var(--scout-space-12);
 }
 .dt-cell--right { text-align: right; }
 .dt-row--section + .dt-row .dt-cell,
@@ -2245,21 +2262,24 @@ body.nav-open .sidebar-scrim { opacity: 1; }
 
 /* Body cells */
 .dt-cell--body { color: var(--scout-text-display-primary); }
-.dt-cell__primary { font-weight: var(--scout-font-weight-medium); }
+.dt-cell__primary { font-weight: var(--scout-font-weight-semibold); }
 .dt-cell__secondary {
   font-size: var(--scout-font-size-12);
   color: var(--scout-text-display-secondary);
   margin-top: var(--scout-space-0);
 }
 
-/* Selectable rows — checkbox stays flush-left at the table's space.16 padding,
-   and the cell hugs its content so the next column sits exactly space.16 to
-   the right of the checkbox (provided by the next cell's padding-left). */
+/* Selectable rows — table auto-layout stretches this column to absorb
+   leftover space, so we anchor the (now content-hugging) checkbox to
+   the cell's right edge. The cell's left padding sets the table-edge
+   indent (space.12); the next column's padding-left sits exactly
+   space.12 to the right of the checkbox. */
 .dt-cell--select {
-  width: 40px;
-  text-align: left;
-  padding-left: var(--scout-space-16);
+  width: 0;
+  text-align: right;
+  padding-left: var(--scout-space-12);
   padding-right: 0;
+  white-space: nowrap;
 }
 
 /* Row hover — applies to body cells; selected state below wins via order. */
@@ -2271,13 +2291,14 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   background: var(--scout-interactive-background-brand-hover);
 }
 
-/* Expandable rows — chevron stays flush-left at the table's space.16 padding,
-   and the cell hugs its content so the next column sits exactly space.16 to
-   the right of the chevron (provided by the next cell's padding-left). */
+/* Expandable rows — chevron stays flush-left at the table's space.12
+   indent, and the cell hugs its content so the next column sits exactly
+   space.12 to the right of the chevron (provided by the next cell's
+   padding-left). */
 .dt-cell--expand {
   width: 40px;
   text-align: left;
-  padding-left: var(--scout-space-16);
+  padding-left: var(--scout-space-12);
   padding-right: 0;
 }
 .dt-expand-btn {

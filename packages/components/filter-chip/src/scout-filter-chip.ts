@@ -59,7 +59,7 @@ export class ScoutFilterChip extends LitElement {
       border-radius: var(--scout-radius-999);
       font-family: inherit;
       font-size: var(--_chip-fs);
-      font-weight: var(--scout-font-weight-medium);
+      font-weight: var(--scout-font-weight-semibold);
       line-height: 1.2;
       cursor: pointer;
       white-space: nowrap;

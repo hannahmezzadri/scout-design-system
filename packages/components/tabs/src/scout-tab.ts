@@ -37,7 +37,7 @@ export class ScoutTab extends LitElement {
       gap: var(--scout-space-8);
       font: inherit;
       font-size: var(--scout-font-size-14);
-      font-weight: var(--scout-font-weight-medium);
+      font-weight: var(--scout-font-weight-semibold);
       line-height: var(--scout-font-line-height-21);
       color: var(--scout-text-display-secondary);
       cursor: pointer;

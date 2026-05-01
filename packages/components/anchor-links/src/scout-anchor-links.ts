@@ -49,7 +49,7 @@ export class ScoutAnchorLinks extends LitElement {
       padding: var(--scout-space-8) var(--scout-space-12) var(--scout-space-8) var(--scout-space-16);
       font-size: var(--scout-font-size-14);
       line-height: var(--scout-font-line-height-21);
-      font-weight: var(--scout-font-weight-medium);
+      font-weight: var(--scout-font-weight-regular);
       color: var(--scout-text-display-secondary);
       text-decoration: none;
       border-left: 2px solid transparent;

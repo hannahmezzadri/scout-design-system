@@ -27,24 +27,24 @@ export class ScoutStatusDot extends LitElement {
       gap: var(--scout-space-8);
       font-family: var(--scout-font-family-inter);
       --_sd-dot-size: 10px;
-      --_sd-fs: var(--scout-font-size-14);
-      --_sd-lh: var(--scout-font-line-height-21);
+      --_sd-fs: var(--scout-typography-body-font-size);
+      --_sd-lh: var(--scout-typography-body-line-height);
       --_sd-fill: var(--scout-color-cool-gray-700);
     }
     :host([size='condensed']),
     :host-context([data-density='condensed']) {
       --_sd-dot-size: 8px;
-      --_sd-fs: var(--scout-font-size-12);
-      --_sd-lh: var(--scout-font-line-height-18);
+      --_sd-fs: var(--scout-typography-body-small-font-size);
+      --_sd-lh: var(--scout-typography-body-small-line-height);
       gap: var(--scout-space-4);
     }
 
     /* === Per-status fill === */
-    :host([type='informational']) { --_sd-fill: var(--scout-text-interactive-primary); }
-    :host([type='neutral'])       { --_sd-fill: var(--scout-color-cool-gray-700); }
-    :host([type='success'])       { --_sd-fill: var(--scout-color-green-600); }
-    :host([type='warning'])       { --_sd-fill: var(--scout-color-yellow-600); }
-    :host([type='critical'])      { --_sd-fill: var(--scout-color-red-600); }
+    :host([type='informational']) { --_sd-fill: var(--scout-color-blue-500); }
+    :host([type='neutral'])       { --_sd-fill: var(--scout-color-cool-gray-500); }
+    :host([type='success'])       { --_sd-fill: var(--scout-color-green-500); }
+    :host([type='warning'])       { --_sd-fill: var(--scout-color-yellow-500); }
+    :host([type='critical'])      { --_sd-fill: var(--scout-color-red-500); }
 
     .dot {
       width: var(--_sd-dot-size);

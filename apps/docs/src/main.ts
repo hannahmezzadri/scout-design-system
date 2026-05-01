@@ -1041,6 +1041,9 @@ const app = document.getElementById('app')!;
   }
 
   const specimens: Array<{ row: HTMLElement; sizeEl: HTMLElement; name: string }> = [];
+  // All specimens live inside a single white tile container — mirrors the
+  // surface treatment used by the Weights section below.
+  const typesCard = el('div', { class: 'typography-types-card' });
   for (const [name, cls, sample] of styles) {
     const m = typographyMetrics(name);
     const sizeEl = el('span', { class: 'value' }, `${m.size} / ${m.lineHeight} · ${m.weight}`);
@@ -1056,9 +1059,10 @@ const app = document.getElementById('app')!;
       ),
       el('div', { class: cls }, sample),
     );
-    wrap.append(row);
+    typesCard.append(row);
     specimens.push({ row, sizeEl, name });
   }
+  wrap.append(typesCard);
   // Re-read metrics whenever density flips at the document root so the
   // displayed size/line-height stays accurate.
   const refreshTypographyMetrics = () => {
@@ -1070,16 +1074,13 @@ const app = document.getElementById('app')!;
   densitySel.addEventListener('scout-dropdown-change', () => requestAnimationFrame(refreshTypographyMetrics));
 
   // === Weights ===================================================
-  // Atomic font-weight tokens (extra-light → bold). For each weight, we
+  // Atomic font-weight tokens — Scout uses a two-step ramp (regular for
+  // body copy, semibold for emphasis/labels/headings). For each weight, we
   // render the body→caption type ramp so designers can scan how a weight
   // reads at every size at a glance.
   const weights: Array<string> = [
-    'extra-light',
-    'light',
     'regular',
-    'medium',
     'semibold',
-    'bold',
   ];
   const weightSizes: Array<{ name: string; cls: string }> = [
     { name: 'body-large', cls: 't-body-large' },
@@ -2006,7 +2007,7 @@ import '@scout/button';`,
     { id: 'components-data-unavailable', name: 'Data unavailable', summary: 'Inline placeholder for surfaces whose data couldn\'t be fetched. Cloud-with-slash icon + label. Three sizes: small, medium, large.' },
     { id: 'components-dialog',        name: 'Dialog',        summary: 'Modal surface that disables the page behind it. Confirms actions, displays simple flows, surfaces important system messages.' },
     { id: 'components-disclosure-dialog', name: 'Disclosure dialog', summary: 'Specialized dialog for legal/compliance disclosures. Language tabs, optional acknowledgement checkbox. Simple and Automated types.' },
-    { id: 'components-divider',       name: 'Divider',       summary: 'Visual separator for organizing content. Two weights (1px / 2px), three colors (default / light / knockout), horizontal or vertical.' },
+    { id: 'components-divider',       name: 'Divider',       summary: 'Visual separator for organizing content. Two weights (1px / 2px), three colors (default / subtle / knockout), horizontal or vertical.' },
     { id: 'components-dropdown',      name: 'Dropdown',      summary: 'Single-select dropdown for choosing from a list. Two variants: standard select and searchable. Default and condensed sizes, helper, and error messaging.' },
     { id: 'components-error-state',   name: 'Error state',   summary: 'Full-application error display. Centered illustration, header, message, and optional link.' },
     { id: 'components-filter-chip',   name: 'Filter chip',   summary: 'Selectable tag for filtering content. Toggle mode (default) or menu mode with chevron. Default and condensed sizes.' },
@@ -3256,7 +3257,7 @@ function badgePreview(): HTMLElement {
     const b = document.createElement('scout-badge');
     b.setAttribute('type', 'critical');
     b.setAttribute('emphasis', 'low');
-    const icon = heroIconSvg('chat-bubble-oval-left', 14);
+    const icon = heroIconSvg('no-symbol', 14);
     icon.setAttribute('slot', 'icon-custom');
     b.append(icon, document.createTextNode('Do not disclose'));
     return b;
@@ -5150,7 +5151,7 @@ import '@scout/divider';
 
 function previewDivider(opts: {
   weight?: '1' | '2';
-  color?: 'default' | 'light' | 'knockout';
+  color?: 'default' | 'subtle' | 'knockout';
   orientation?: 'horizontal' | 'vertical';
 } = {}): HTMLElement {
   const d = document.createElement('scout-divider');
@@ -5184,7 +5185,7 @@ function dividerPreview(): HTMLElement {
     'Default uses the standard secondary border color; light is the more subtle cool-gray.100; knockout is white-on-dark for use against dark surfaces.',
     el('div', { class: 'divider-stack' },
       el('div', { class: 'divider-row' }, el('span', {}, 'Default'),  previewDivider({ color: 'default' })),
-      el('div', { class: 'divider-row' }, el('span', {}, 'Light'),    previewDivider({ color: 'light' })),
+      el('div', { class: 'divider-row' }, el('span', {}, 'Subtle'),   previewDivider({ color: 'subtle' })),
       el('div', { class: 'divider-row divider-row--dark' }, el('span', {}, 'Knockout'), previewDivider({ color: 'knockout' })),
     ),
   );
@@ -5211,13 +5212,13 @@ function dividerControls(): HTMLElement {
 
   const orientationSel = ddSelect('dv-orient', ['horizontal', 'vertical']);
   const weightSel = ddSelect('dv-weight', ['1', '2']);
-  const colorSel = ddSelect('dv-color', ['default', 'light', 'knockout']);
+  const colorSel = ddSelect('dv-color', ['default', 'subtle', 'knockout']);
 
   function render() {
     const node = previewDivider({
       orientation: orientationSel.value as 'horizontal' | 'vertical',
       weight: weightSel.value as '1' | '2',
-      color: colorSel.value as 'default' | 'light' | 'knockout',
+      color: colorSel.value as 'default' | 'subtle' | 'knockout',
     });
     if (orientationSel.value === 'vertical') {
       const wrap2 = el('div', { class: 'divider-vert-row' },
@@ -5347,8 +5348,8 @@ function dividerCode(): HTMLElement {
         `<!-- Default 1px horizontal -->
 <scout-divider></scout-divider>
 
-<!-- 2px, light -->
-<scout-divider weight="2" color="light"></scout-divider>
+<!-- 2px, subtle -->
+<scout-divider weight="2" color="subtle"></scout-divider>
 
 <!-- Vertical, knockout (e.g., on a dark surface) -->
 <scout-divider orientation="vertical" color="knockout"></scout-divider>`)),
@@ -5362,7 +5363,7 @@ function dividerCode(): HTMLElement {
           el('thead', {}, el('tr', {}, el('th', {}, 'Prop'), el('th', {}, 'Type'), el('th', {}, 'Default'), el('th', {}, 'Description'))),
           el('tbody', {},
             el('tr', {}, el('td', {}, 'weight'),      el('td', {}, '"1" | "2"'),                          el('td', {}, '"1"'),         el('td', {}, 'Line thickness in pixels.')),
-            el('tr', {}, el('td', {}, 'color'),       el('td', {}, '"default" | "light" | "knockout"'),   el('td', {}, '"default"'),   el('td', {}, 'Visual treatment of the line.')),
+            el('tr', {}, el('td', {}, 'color'),       el('td', {}, '"default" | "subtle" | "knockout"'),  el('td', {}, '"default"'),   el('td', {}, 'Visual treatment of the line.')),
             el('tr', {}, el('td', {}, 'orientation'), el('td', {}, '"horizontal" | "vertical"'),          el('td', {}, '"horizontal"'),el('td', {}, 'Direction of the line.')),
           )))),
   );
@@ -5371,7 +5372,7 @@ function dividerCode(): HTMLElement {
 app.append(componentPage(
   'components-divider',
   'Divider',
-  'Visual separator for organizing content. Two weights (1px / 2px), three colors (default / light / knockout), horizontal or vertical orientation.',
+  'Visual separator for organizing content. Two weights (1px / 2px), three colors (default / subtle / knockout), horizontal or vertical orientation.',
   [
     { id: 'preview', label: 'Preview', content: dividerPreview() },
     { id: 'controls', label: 'Controls', content: dividerControls() },
@@ -6399,6 +6400,7 @@ interface LinkOpts {
   size?: 'default' | 'condensed';
   iconPosition?: 'leading' | 'trailing' | 'none';
   disabled?: boolean;
+  knockout?: boolean;
 }
 
 function previewLink(opts: LinkOpts = {}): HTMLElement {
@@ -6409,12 +6411,14 @@ function previewLink(opts: LinkOpts = {}): HTMLElement {
     size = 'default',
     iconPosition = 'none',
     disabled = false,
+    knockout = false,
   } = opts;
   const link = document.createElement('scout-link');
   link.setAttribute('href', href);
   link.setAttribute('type', type);
   link.setAttribute('size', size);
   if (disabled) link.setAttribute('disabled', '');
+  if (knockout) link.setAttribute('knockout', '');
 
   if (iconPosition !== 'none') {
     const slot = iconPosition === 'leading' ? 'icon-leading' : 'icon-trailing';
@@ -6449,13 +6453,13 @@ function linkPreview(): HTMLElement {
   block('Types',
     'Inline lives within paragraph text. Standalone is a block-level CTA. Hyperlink is for external destinations and auto-renders an "open in new tab" icon.',
     el('div', { class: 'preview-stack' },
-      el('p', { style: 'margin: 0; font-size: var(--scout-font-size-14); line-height: var(--scout-font-line-height-21);' },
+      el('p', { style: 'margin: 0; font-size: var(--scout-typography-body-font-size); line-height: var(--scout-typography-body-line-height);' },
         'Inline links sit inside flowing text — like ',
         previewLink({ label: 'this one', type: 'inline' }),
         ' — and inherit the paragraph\'s font size and color treatment.',
       ),
       previewLink({ label: 'Read the docs', type: 'standalone' }),
-      el('p', { style: 'margin: 0; font-size: var(--scout-font-size-14); line-height: var(--scout-font-line-height-21);' },
+      el('p', { style: 'margin: 0; font-size: var(--scout-typography-body-font-size); line-height: var(--scout-typography-body-line-height);' },
         'External destinations use the hyperlink type, which adds an icon: visit ',
         previewLink({ label: 'heroicons.com', href: 'https://heroicons.com', type: 'hyperlink' }),
         ' to browse the icon set.',
@@ -6477,6 +6481,16 @@ function linkPreview(): HTMLElement {
     el('div', { class: 'preview-stack' },
       previewLink({ label: 'Default', type: 'standalone' }),
       previewLink({ label: 'Condensed', type: 'standalone', size: 'condensed' }),
+    ),
+  );
+
+  block('Knockout',
+    'Use the knockout treatment for links that sit on dark or saturated surfaces — system outage banner, dark cards, snackbar. The link locks to white in both themes.',
+    el('div', {
+      style: 'display: flex; gap: var(--scout-space-12); align-items: center; padding: var(--scout-space-16); background: var(--scout-surface-inverse); border-radius: var(--scout-radius-4);',
+    },
+      previewLink({ label: 'Read the docs', type: 'standalone', knockout: true }),
+      previewLink({ label: 'External link', type: 'hyperlink', knockout: true }),
     ),
   );
 
@@ -8256,9 +8270,12 @@ function previewSystemOutage(opts: { status?: SOStatus; title?: string; descript
   so.appendChild(t);
   so.appendChild(document.createTextNode(description));
   if (link) {
-    const a = document.createElement('a');
+    const a = document.createElement('scout-link');
     a.setAttribute('slot', 'link');
     a.setAttribute('href', '#');
+    a.setAttribute('type', 'standalone');
+    a.setAttribute('size', 'condensed');
+    a.setAttribute('knockout', '');
     a.textContent = link;
     so.appendChild(a);
   }
