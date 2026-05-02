@@ -80,7 +80,7 @@ export class ScoutMultiselect extends LitElement {
       outline-offset: 1px;
       border-color: var(--scout-text-interactive-primary);
     }
-    :host([invalid]) .input-wrap { border-color: var(--scout-border-error); }
+    :host([invalid]) .input-wrap { border-color: var(--scout-border-critical); }
     .input-wrap.disabled { opacity: 0.5; pointer-events: none; }
 
     .chip {
@@ -88,8 +88,8 @@ export class ScoutMultiselect extends LitElement {
       align-items: center;
       gap: var(--scout-space-4);
       padding: 2px 4px 2px 8px;
-      background: var(--scout-color-blue-100);
-      color: var(--scout-color-blue-700);
+      background: var(--scout-fill-info-subtle);
+      color: var(--scout-interactive-background-brand-strong-pressed);
       border-radius: var(--scout-radius-4);
       font-size: var(--scout-font-size-12);
       font-weight: var(--scout-font-weight-semibold);
@@ -112,7 +112,7 @@ export class ScoutMultiselect extends LitElement {
       display: inline-flex;
       align-items: center;
     }
-    .chip-remove:hover { background: var(--scout-color-blue-200); }
+    .chip-remove:hover { background: var(--scout-interactive-background-brand-pressed); }
     .chip-remove svg { width: 12px; height: 12px; display: block; }
 
     input {
@@ -195,7 +195,7 @@ export class ScoutMultiselect extends LitElement {
       font-family: inherit;
       font-size: var(--scout-font-size-12);
       font-weight: var(--scout-font-weight-semibold);
-      color: var(--scout-text-display-error);
+      color: var(--scout-text-display-critical);
       cursor: pointer;
     }
     .clear-all:hover { text-decoration: underline; }
@@ -213,7 +213,7 @@ export class ScoutMultiselect extends LitElement {
     }
     .helper { color: var(--scout-text-display-secondary); }
     .error-msg {
-      color: var(--scout-text-display-error);
+      color: var(--scout-text-display-critical);
       display: inline-flex;
       align-items: flex-start;
       gap: var(--scout-space-4);

@@ -5,23 +5,23 @@
     "primary":      { "$value": "{color.blue.50}",        "$type": "color", "$description": "Subtle brand-tinted fill (alias of `fill.info.subtle`)." },
     "secondary":    { "$value": "{color.cool-gray.100}",  "$type": "color", "$description": "Subtle neutral fill." },
     "info": {
-      "subtle": { "$value": "{color.blue.50}",   "$type": "color" },
+      "subtle": { "$value": "{color.blue.100}",  "$type": "color" },
       "bold":   { "$value": "{color.blue.500}",  "$type": "color" }
     },
     "success": {
-      "subtle": { "$value": "{color.green.50}",  "$type": "color" },
+      "subtle": { "$value": "{color.green.100}", "$type": "color" },
       "bold":   { "$value": "{color.green.500}", "$type": "color" }
     },
     "warning": {
-      "subtle": { "$value": "{color.yellow.50}", "$type": "color" },
+      "subtle": { "$value": "{color.yellow.100}","$type": "color" },
       "bold":   { "$value": "{color.yellow.500}","$type": "color" }
     },
     "critical": {
-      "subtle": { "$value": "{color.red.50}",    "$type": "color" },
+      "subtle": { "$value": "{color.red.100}",   "$type": "color" },
       "bold":   { "$value": "{color.red.500}",   "$type": "color" }
     },
     "ai": {
-      "subtle": { "$value": "{color.purple.50}", "$type": "color" },
+      "subtle": { "$value": "{color.purple.100}","$type": "color" },
       "bold":   { "$value": "{color.purple.500}","$type": "color" }
     },
     "teal":         { "$value": "{color.teal.100}", "$type": "color", "$description": "Teal-tinted fill — used by share-with-customer surfaces and other agent-only callouts that should feel distinct from the info/blue family." }

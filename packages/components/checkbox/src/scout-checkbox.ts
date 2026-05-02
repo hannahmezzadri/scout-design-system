@@ -84,7 +84,7 @@ export class ScoutCheckbox extends LitElement {
           var(--scout-motion-easing-standard);
     }
     input:hover:not(:disabled) {
-      border-color: var(--scout-color-blue-700);
+      border-color: var(--scout-interactive-background-brand-strong-pressed);
     }
     input:focus-visible {
       outline: var(--scout-focus-ring-width) solid var(--scout-focus-ring-color);
@@ -95,8 +95,8 @@ export class ScoutCheckbox extends LitElement {
     }
     input:checked,
     input:indeterminate {
-      background: var(--scout-color-blue-700);
-      border-color: var(--scout-color-blue-700);
+      background: var(--scout-interactive-background-brand-strong-pressed);
+      border-color: var(--scout-interactive-background-brand-strong-pressed);
     }
     input:checked:active,
     input:indeterminate:active {
@@ -104,7 +104,7 @@ export class ScoutCheckbox extends LitElement {
     }
 
     :host([invalid]) input:not(:checked):not(:indeterminate) {
-      border-color: var(--scout-border-error);
+      border-color: var(--scout-border-critical);
     }
 
     .icon {

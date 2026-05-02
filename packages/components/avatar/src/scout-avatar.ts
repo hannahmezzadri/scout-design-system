@@ -65,11 +65,19 @@ export class ScoutAvatar extends LitElement {
     }
 
     /* Color variants — all token-driven */
-    /* Blue mirrors the low-emphasis "informational" badge — light blue
-       fill with the info text color so initials stay legible. */
+    /* Blue: soft brand-tinted fill in light theme (subtle + info text) so
+       the avatar reads as a chip alongside data; in dark theme the same
+       subtle fill (blue.900) blends into the dark surface and the info
+       text (blue.300) loses contrast against it, so we flip to the bolder
+       brand fill (blue.400) with white initials. The result reads as a
+       confident brand-blue avatar in both themes. */
     :host([color='blue']) .badge {
-      background: var(--scout-color-blue-100);
+      background: var(--scout-fill-info-subtle);
       color: var(--scout-text-display-info);
+    }
+    :host-context([data-theme='dark']):host([color='blue']) .badge {
+      background: var(--scout-fill-info-bold);
+      color: var(--scout-text-inverse-primary);
     }
     :host([color='gray']) .badge {
       background: var(--scout-color-cool-gray-200);

@@ -86,15 +86,15 @@ export class ScoutFilterChip extends LitElement {
 
     /* Selected — uses brand-aligned blue tint */
     :host([selected]) .chip {
-      background: var(--scout-color-blue-100);
-      color: var(--scout-color-blue-700);
+      background: var(--scout-fill-info-subtle);
+      color: var(--scout-interactive-background-brand-strong-pressed);
       border-color: var(--scout-text-interactive-primary);
     }
     :host([selected]) .chip:hover:not(:disabled) {
-      background: var(--scout-color-blue-200);
+      background: var(--scout-interactive-background-brand-pressed);
     }
     :host([selected]) .chip:active:not(:disabled) {
-      background: var(--scout-color-blue-300);
+      background: var(--scout-interactive-background-brand-pressed);
     }
 
     .icon {

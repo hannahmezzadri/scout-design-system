@@ -16,7 +16,11 @@
       "critical-pressed":   { "$value": "{color.red.100}",  "$type": "color" },
       "critical-strong":         { "$value": "{color.red.500}", "$type": "color", "$description": "Filled critical surface — critical button rest." },
       "critical-strong-hover":   { "$value": "{color.red.600}", "$type": "color" },
-      "critical-strong-pressed": { "$value": "{color.red.700}", "$type": "color" }
+      "critical-strong-pressed": { "$value": "{color.red.700}", "$type": "color" },
+
+      "success-strong":         { "$value": "{color.green.600}", "$type": "color", "$description": "Filled success / affirmative surface — action button rest." },
+      "success-strong-hover":   { "$value": "{color.green.700}", "$type": "color" },
+      "success-strong-pressed": { "$value": "{color.green.800}", "$type": "color" }
     }
   }
 }

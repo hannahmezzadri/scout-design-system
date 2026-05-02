@@ -30,9 +30,20 @@ const html = document.documentElement;
 type DropdownEl = HTMLElement & { value: string };
 const themeSel = document.getElementById('theme') as DropdownEl;
 const densitySel = document.getElementById('density') as DropdownEl;
-themeSel.addEventListener('scout-dropdown-change', () =>
-  html.setAttribute('data-theme', themeSel.value),
-);
+// Mobile-only segmented control mirrors the theme dropdown so toggling
+// either keeps both in sync.
+const themeSegments = document.getElementById('theme-segments') as
+  | (HTMLElement & { value: string })
+  | null;
+themeSel.addEventListener('scout-dropdown-change', () => {
+  html.setAttribute('data-theme', themeSel.value);
+  themeSegments?.setAttribute('value', themeSel.value);
+});
+themeSegments?.addEventListener('scout-segmented-change', (e) => {
+  const value = (e as CustomEvent<{ value: string }>).detail.value;
+  html.setAttribute('data-theme', value);
+  themeSel.setAttribute('value', value);
+});
 densitySel.addEventListener('scout-dropdown-change', () =>
   html.setAttribute('data-density', densitySel.value),
 );
@@ -709,7 +720,7 @@ const app = document.getElementById('app')!;
   type TokenEntry = { id: string; name: string; summary: string };
   const tokenEntries: TokenEntry[] = [
     { id: 'colors',      name: 'Color',        summary: 'Three layers of color: primitive scales (red, yellow, green, teal, blue, purple, cool gray, warm gray, alpha), semantic aliases for text / icon / background / border / fill, and per-product brand palettes scoped via [data-brand].' },
-    { id: 'typography',  name: 'Typography',   summary: 'Composite typography tokens. Literata for heading + display, Inter for everything else. Toggle Density to compare default vs. condensed.' },
+    { id: 'typography',  name: 'Typography',   summary: 'Composite typography tokens. Literata for heading + display (display-large/small, heading-1/2/3), Inter for everything else (body-large/body/body-small/label/caption). Two-step weight ramp: regular and semibold. Toggle Density to compare default vs. condensed.' },
     { id: 'iconography', name: 'Iconography',  summary: 'Hero Icons referenced via primitive icon tokens. Stroke and fill variants, sized at 16 / 20 / 24, themed via the icon-display / icon-interactive semantic tokens.' },
     { id: 'spacing',     name: 'Spacing',      summary: '4-based scale used for padding, margin, and gap. 0 / 4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 / 96.' },
     { id: 'radius',      name: 'Corner radius',summary: 'Border-radius scale. 999 = fully rounded (pill / circle).' },
@@ -810,14 +821,14 @@ const app = document.getElementById('app')!;
 
     wrap.append(subhead('Text — display'));
     const tDisplay = el('div', { class: 'grid' });
-    for (const k of ['primary', 'secondary', 'disabled', 'info', 'warning', 'error', 'success', 'increase', 'decrease']) {
+    for (const k of ['primary', 'secondary', 'disabled', 'info', 'warning', 'critical', 'success', 'increase', 'decrease']) {
       tDisplay.append(colorSwatch(`text-display-${k}`, `text.display.${k}`));
     }
     wrap.append(tDisplay);
 
     wrap.append(subhead('Text — interactive'));
     const tInter = el('div', { class: 'grid' });
-    for (const k of ['primary', 'secondary', 'info', 'warning', 'error', 'success', 'increase', 'decrease']) {
+    for (const k of ['primary', 'secondary', 'info', 'warning', 'critical', 'success', 'increase', 'decrease']) {
       tInter.append(colorSwatch(`text-interactive-${k}`, `text.interactive.${k}`));
     }
     wrap.append(tInter);
@@ -831,14 +842,14 @@ const app = document.getElementById('app')!;
 
     wrap.append(subhead('Icon — display'));
     const iDisplay = el('div', { class: 'grid' });
-    for (const k of ['primary', 'secondary', 'disabled', 'info', 'warning', 'error', 'success', 'increase', 'decrease']) {
+    for (const k of ['primary', 'secondary', 'disabled', 'info', 'warning', 'critical', 'success', 'increase', 'decrease']) {
       iDisplay.append(colorSwatch(`icon-display-${k}`, `icon.display.${k}`));
     }
     wrap.append(iDisplay);
 
     wrap.append(subhead('Icon — interactive'));
     const iInter = el('div', { class: 'grid' });
-    for (const k of ['primary', 'secondary', 'delete', 'info', 'warning', 'error', 'success', 'increase', 'decrease']) {
+    for (const k of ['primary', 'secondary', 'delete', 'info', 'warning', 'critical', 'success', 'increase', 'decrease']) {
       iInter.append(colorSwatch(`icon-interactive-${k}`, `icon.interactive.${k}`));
     }
     wrap.append(iInter);
@@ -852,7 +863,7 @@ const app = document.getElementById('app')!;
 
     wrap.append(subhead('Border'));
     const borders = el('div', { class: 'grid' });
-    for (const k of ['primary', 'secondary', 'disabled', 'knockout', 'inverse', 'info', 'warning', 'error', 'success', 'teal']) {
+    for (const k of ['primary', 'secondary', 'disabled', 'inverse', 'info', 'warning', 'critical', 'success', 'teal']) {
       borders.append(colorSwatch(`border-${k}`, `border.${k}`));
     }
     wrap.append(borders);
@@ -2019,7 +2030,7 @@ import '@scout/button';`,
     { id: 'components-avatar',        name: 'Avatar',        summary: 'Thumbnail representation of a person or entity. Three sizes, three color treatments (blue, gray, knockout), optional notification dot and title.' },
     { id: 'components-badge',         name: 'Badge',         summary: 'Small label conveying status, category, or count. Six types, two emphasis levels, default and condensed sizes, prescriptive status icons.' },
     { id: 'components-breadcrumb',    name: 'Breadcrumb',    summary: 'Hierarchy navigation showing the user\'s location. Supports multi-level chains and single back-link mode.' },
-    { id: 'components-button',        name: 'Button',        summary: 'Six variants (primary, secondary, tertiary, action, critical, critical-tertiary). Default and condensed sizes. Loading and icon states.' },
+    { id: 'components-button',        name: 'Button',        summary: 'Six variants (primary, secondary, tertiary, action, critical, critical-tertiary) plus an optional knockout treatment for dark surfaces. Default and condensed sizes. Loading and icon states.' },
     { id: 'components-card',          name: 'Card',          summary: 'Stylized container for AI summaries and extracted plain-text content. Three background colors (white / cool-gray.100 / cool-gray.200), optional AI call-out and show-more toggle.' },
     { id: 'components-checkbox',      name: 'Checkbox',      summary: 'Single and multi-select form input. Selected, not selected, and indeterminate states. Group orientation, helper, error, and warning messages.' },
     { id: 'components-control',       name: 'Control',       summary: 'Icon-only interactive control for triggering single actions. 11 built-in types (close, clear, navigation arrows, tooltip, trash, kebab) with primary and critical colors.' },
@@ -2031,13 +2042,13 @@ import '@scout/button';`,
     { id: 'components-dropdown',      name: 'Dropdown',      summary: 'Single-select dropdown for choosing from a list. Two variants: standard select and searchable. Default and condensed sizes, helper, and error messaging.' },
     { id: 'components-error-state',   name: 'Error state',   summary: 'Full-application error display. Centered illustration, header, message, and optional link.' },
     { id: 'components-filter-chip',   name: 'Filter chip',   summary: 'Selectable tag for filtering content. Toggle mode (default) or menu mode with chevron. Default and condensed sizes.' },
-    { id: 'components-inline-alert',  name: 'Inline alert',  summary: 'Contextual message embedded in the page flow. Four statuses (informational, favorable, warning, critical), optional title, action, and close.' },
-    { id: 'components-link',          name: 'Link',          summary: 'Anchor for navigation between files and external pages. Three types (inline, standalone, hyperlink), optional leading or trailing icon.' },
+    { id: 'components-inline-alert',  name: 'Inline alert',  summary: 'Contextual message embedded in the page flow. Four statuses (informational, favorable, warning, critical), optional title and primary-condensed action button. Informational / favorable / warning are dismissible; critical is not.' },
+    { id: 'components-link',          name: 'Link',          summary: 'Anchor for navigation between files and external pages. Three types (inline, standalone, hyperlink), optional leading or trailing icon, optional knockout treatment for dark surfaces. Default size maps to body, condensed to body-small.' },
     { id: 'components-multiselect',   name: 'Multiselect',   summary: 'Multi-select dropdown with searchable input, chips, select-all, counter, and clear-all. Default and condensed sizes.' },
     { id: 'components-notification-badge', name: 'Notification badge', summary: 'Small indicator that signals new activity. Four sizes (XX-small dot through Medium with number). Composes inside avatars, icons, and buttons.' },
     { id: 'components-overlay',       name: 'Overlay',       summary: 'Semi-transparent scrim that dims content behind dialogs and drawers. Sits below the dialog on the z-index.' },
     { id: 'components-pagination',    name: 'Pagination',    summary: 'Page navigation for tables and paged content. Items-per-page dropdown, range readout, chevron prev/next, and numbered page buttons. Default and condensed sizes.' },
-    { id: 'components-popover',       name: 'Popover',       summary: 'Anchored surface that appears after a trigger. Four sub-elements: tooltip, menu, date picker, and time picker. Configurable tip placement and alignment.' },
+    { id: 'components-popover',       name: 'Popover',       summary: 'Anchored surface that appears after a trigger. Four sub-elements: tooltip (simple + advanced), menu (with optional 20px leading icons or kebab trigger), date picker, and time picker. Configurable placement and alignment.' },
     { id: 'components-progress',      name: 'Progress',      summary: 'Bar, gauge, stepper (horizontal + vertical), and timeline. Status, ratio, and step-by-step progression for long-running flows.' },
     { id: 'components-radio',         name: 'Radio',         summary: 'Single-select form input rendered as a group of mutually-exclusive radio buttons. Optional badge, secondary text, per-item warning, group helper and error.' },
     { id: 'components-segmented-control', name: 'Segmented control', summary: 'Pill-style group of mutually-exclusive segments. Use when the user must pick exactly one of two to five short options that fit on one line.' },
@@ -2045,9 +2056,9 @@ import '@scout/button';`,
     { id: 'components-share-with-customer', name: 'Share with customer', summary: 'Agent-facing message displayed inside a workflow tile. The body text is intended to be read aloud to the customer; supports an optional language tab picker for translations.' },
     { id: 'components-show-more',     name: 'Show more',     summary: 'Collapse / expand toggle used inside cards, tiles, and data tables to reveal additional content. Default and condensed sizes.' },
     { id: 'components-skeleton',      name: 'Skeleton loader',summary: 'Animated placeholder shape that reserves space while content is loading. Three preset shapes (line, block, circle) plus full attribute overrides.' },
-    { id: 'components-snackbar',      name: 'Snackbar',      summary: 'Temporary, low-impact toast notification confirming an action. Auto-dismisses. Three statuses (success, warning, critical).' },
-    { id: 'components-status-dot',    name: 'Status dot',    summary: 'Colored dot + adjacent text for inline status indicators. Five status colors and two sizes. Status only — not for general categories or callouts.' },
-    { id: 'components-system-outage', name: 'System outage', summary: 'Full-width banner for downtime, maintenance, and service restoration. Three statuses (platform-wide, feature, restored).' },
+    { id: 'components-snackbar',      name: 'Snackbar',      summary: 'Temporary toast confirming an action. Three statuses (success, warning, critical) all share the inverse surface; a colored status icon carries the semantic meaning. Auto-dismisses.' },
+    { id: 'components-status-dot',    name: 'Status dot',    summary: 'Colored dot + adjacent text for inline status indicators. Five status colors at the 500 step and two sizes (default body, condensed body-small). Status only — not for general categories or callouts.' },
+    { id: 'components-system-outage', name: 'System outage', summary: 'Full-width banner for downtime, maintenance, and service restoration. Three statuses (platform-wide, feature, restored) on saturated 600-step backgrounds. Body-small bold title, body description, knockout link.' },
     { id: 'components-tabs',          name: 'Tabs',          summary: 'Horizontal tab list for navigating between groups of related content at the same hierarchy. Optional leading icon per tab. Minimum of two tabs.' },
     { id: 'components-text-input',    name: 'Text inputs',   summary: 'Text field (eleven variants: text, number, currency, phone, password, search, sensitive data, confirmation, date / month / time pickers) and text area. Default and condensed sizes.' },
     { id: 'components-tile',          name: 'Tile',          summary: 'Three tile variants: tile-button (interactive), tile (rich content with header parts and footer), tile-workflow (collapsible step in a multi-step flow).' },
@@ -8256,7 +8267,7 @@ function statusDotCode(): HTMLElement {
 app.append(componentPage(
   'components-status-dot',
   'Status dot',
-  'Colored dot + adjacent text for inline status indicators. Five status colors and two sizes. Status only — not for general categories or callouts.',
+  'Colored dot + adjacent text for inline status indicators. Five 500-step status colors and two sizes (default body, condensed body-small). Status only — not for general categories or callouts.',
   [
     { id: 'preview', label: 'Preview', content: statusDotPreview() },
     { id: 'controls', label: 'Controls', content: statusDotControls() },
@@ -10554,20 +10565,40 @@ function popoverControls(): HTMLElement {
 
   const ctrlField = (l: string, f: string, c: HTMLElement) =>
     el('div', { class: 'ctrl-field' }, el('label', { for: f }, l), c);
+  // Hold references so render() can disable child fields whose property
+  // does not apply to the current Sub-component parent.
+  const variantField = ctrlField('Variant (tooltip)', 'pop-variant', variantSel);
+  const triggerField = ctrlField('Trigger (tooltip)', 'pop-trigger', triggerSel);
+  const typeField = ctrlField('Type (date)', 'pop-type', typeSel);
+  const bodyField = ctrlField('Body (tooltip)', 'pop-body', bodyInput);
   const panel = el('div', { class: 'ctrl-panel' },
     el('h3', { class: 'preview-block__title' }, 'Properties'),
     ctrlField('Sub-component', 'pop-sub', subSel),
     ctrlField('Placement', 'pop-placement', placementSel),
-    ctrlField('Variant (tooltip)', 'pop-variant', variantSel),
-    ctrlField('Trigger (tooltip)', 'pop-trigger', triggerSel),
-    ctrlField('Type (date)', 'pop-type', typeSel),
+    variantField,
+    triggerField,
+    typeField,
     ctrlField('Label / title', 'pop-label', labelInput),
-    ctrlField('Body (tooltip)', 'pop-body', bodyInput),
+    bodyField,
     el('div', { class: 'ctrl-checks' },
       openChk,
       extendedChk,
     ),
   );
+
+  // Disable child fields when their parent property doesn't apply.
+  const syncEnabled = () => {
+    const sub = subSel.value;
+    setFieldDisabled(variantField, variantSel, sub !== 'tooltip');
+    setFieldDisabled(triggerField, triggerSel, sub !== 'tooltip');
+    setFieldDisabled(bodyField,    bodyInput,  sub !== 'tooltip');
+    setFieldDisabled(typeField,    typeSel,    sub !== 'date');
+    if (sub === 'date') extendedChk.removeAttribute('disabled');
+    else extendedChk.setAttribute('disabled', '');
+    extendedChk.classList.toggle('is-disabled', sub !== 'date');
+  };
+  subSel.addEventListener('scout-dropdown-change', syncEnabled);
+  queueMicrotask(syncEnabled);
   wrap.append(panel, el('div', { class: 'ctrl-stage-wrap' }, stage,
     el('div', { class: 'code-wrap' }, el('h3', { class: 'preview-block__title' }, 'Code'), codePre)));
   queueMicrotask(render);
@@ -10713,7 +10744,7 @@ function popoverCode(): HTMLElement {
 app.append(componentPage(
   'components-popover',
   'Popover',
-  'Anchored surface that appears after a trigger. Tooltip, menu, date and time pickers all share the same popover scaffold (tip placement, alignment, open/close).',
+  'Anchored surface that appears after a trigger. Tooltip, menu, date and time pickers all share the same popover scaffold (placement, alignment, open/close).',
   [
     { id: 'preview', label: 'Preview', content: popoverPreview() },
     { id: 'controls', label: 'Controls', content: popoverControls() },
@@ -10954,14 +10985,29 @@ function progressControls(): HTMLElement {
   }
   const ctrlField = (l: string, f: string, c: HTMLElement) =>
     el('div', { class: 'ctrl-field' }, el('label', { for: f }, l), c);
+  const valueField = ctrlField('Value (bar / gauge)', 'pr-value', valueInput);
+  const displayField = ctrlField('Display (bar)', 'pr-display', displaySel);
+  const sizeField = ctrlField('Size (gauge)', 'pr-size', sizeSel);
   const panel = el('div', { class: 'ctrl-panel' },
     el('h3', { class: 'preview-block__title' }, 'Properties'),
     ctrlField('Sub-component', 'pr-sub', subSel),
-    ctrlField('Value (bar / gauge)', 'pr-value', valueInput),
-    ctrlField('Display (bar)', 'pr-display', displaySel),
-    ctrlField('Size (gauge)', 'pr-size', sizeSel),
+    valueField,
+    displayField,
+    sizeField,
     ctrlField('Label', 'pr-label', labelInput),
   );
+
+  // Disable child fields whose property doesn't apply to the current
+  // Sub-component (bar / gauge / stepper / timeline).
+  const syncEnabled = () => {
+    const sub = subSel.value;
+    const isBarOrGauge = sub === 'bar' || sub === 'gauge';
+    setFieldDisabled(valueField,   valueInput, !isBarOrGauge);
+    setFieldDisabled(displayField, displaySel, sub !== 'bar');
+    setFieldDisabled(sizeField,    sizeSel,    sub !== 'gauge');
+  };
+  subSel.addEventListener('scout-dropdown-change', syncEnabled);
+  queueMicrotask(syncEnabled);
   wrap.append(panel, el('div', { class: 'ctrl-stage-wrap' }, stage,
     el('div', { class: 'code-wrap' }, el('h3', { class: 'preview-block__title' }, 'Code'), codePre)));
   queueMicrotask(render);

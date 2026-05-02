@@ -21,7 +21,7 @@ export class ScoutNotificationBadge extends LitElement {
   static styles = css`
     :host {
       display: inline-flex;
-      --_nb-base: var(--scout-color-red-500);
+      --_nb-base: var(--scout-fill-critical-bold);
       --_nb-text: var(--scout-color-white);
       --_nb-stroke-w: 2px;
       --_nb-stroke-c: var(--cnx-notification-stroke-color, var(--scout-surface-page));

@@ -115,7 +115,7 @@ export class ScoutAddress extends LitElement {
     .favorite-icon {
       width: 14px;
       height: 14px;
-      color: var(--scout-color-yellow-500);
+      color: var(--scout-fill-warning-bold);
       flex-shrink: 0;
     }
     .header[hidden] {

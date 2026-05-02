@@ -73,7 +73,7 @@ export class ScoutTileButton extends LitElement {
        reinforces focus for users who can't see color. */
     button:focus-visible {
       outline: none;
-      border-color: var(--scout-color-blue-700);
+      border-color: var(--scout-interactive-background-brand-strong-pressed);
       box-shadow: var(--scout-elevation-2);
     }
     button:active:not(:disabled) {
@@ -115,7 +115,7 @@ export class ScoutTileButton extends LitElement {
       display: inline-flex;
       align-items: center;
       gap: var(--scout-space-8);
-      color: var(--scout-text-display-error);
+      color: var(--scout-text-display-critical);
       font-size: var(--scout-font-size-14);
     }
     .error svg { width: 20px; height: 20px; flex-shrink: 0; fill: currentColor; }

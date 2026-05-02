@@ -86,10 +86,10 @@ export class ScoutTileWorkflow extends LitElement {
     .dot svg { width: 60%; height: 60%; }
 
     :host([state='active']) .dot {
-      background: var(--scout-color-blue-100);
+      background: var(--scout-fill-info-subtle);
       border-color: var(--scout-text-interactive-primary);
       color: var(--scout-text-interactive-primary);
-      box-shadow: 0 0 0 4px var(--scout-color-blue-100);
+      box-shadow: 0 0 0 4px var(--scout-fill-info-subtle);
     }
     :host([state='completed-editable']) .dot {
       background: var(--scout-fill-success-bold);
@@ -99,7 +99,7 @@ export class ScoutTileWorkflow extends LitElement {
     :host([state='completed-locked']) .dot {
       background: var(--scout-color-green-200);
       border-color: var(--scout-color-green-200);
-      color: var(--scout-color-green-500);
+      color: var(--scout-fill-success-bold);
     }
 
     .text {
@@ -188,7 +188,7 @@ export class ScoutTileWorkflow extends LitElement {
       display: inline-flex;
       align-items: center;
       gap: var(--scout-space-8);
-      color: var(--scout-text-display-error);
+      color: var(--scout-text-display-critical);
       font-size: var(--scout-font-size-14);
     }
     .error svg { width: 20px; height: 20px; fill: currentColor; flex-shrink: 0; }

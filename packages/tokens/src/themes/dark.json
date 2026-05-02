@@ -7,7 +7,7 @@
       "disabled":  { "$value": "{color.cool-gray.600}", "$type": "color" },
       "info":      { "$value": "{color.blue.300}",      "$type": "color" },
       "warning":   { "$value": "{color.yellow.300}",    "$type": "color" },
-      "error":     { "$value": "{color.red.300}",       "$type": "color" },
+      "critical":     { "$value": "{color.red.300}",       "$type": "color" },
       "success":   { "$value": "{color.green.300}",     "$type": "color" },
       "increase":  { "$value": "{color.green.300}",     "$type": "color" },
       "decrease":  { "$value": "{color.red.300}",       "$type": "color" }
@@ -17,7 +17,7 @@
       "secondary": { "$value": "{color.cool-gray.300}", "$type": "color" },
       "info":      { "$value": "{color.blue.300}",      "$type": "color" },
       "warning":   { "$value": "{color.yellow.300}",    "$type": "color" },
-      "error":     { "$value": "{color.red.300}",       "$type": "color" },
+      "critical":     { "$value": "{color.red.300}",       "$type": "color" },
       "success":   { "$value": "{color.green.300}",     "$type": "color" },
       "increase":  { "$value": "{color.green.300}",     "$type": "color" },
       "decrease":  { "$value": "{color.red.300}",       "$type": "color" }
@@ -34,7 +34,7 @@
       "disabled":  { "$value": "{color.cool-gray.600}", "$type": "color" },
       "info":      { "$value": "{color.blue.400}",      "$type": "color" },
       "warning":   { "$value": "{color.yellow.400}",    "$type": "color" },
-      "error":     { "$value": "{color.red.400}",       "$type": "color" },
+      "critical":     { "$value": "{color.red.400}",       "$type": "color" },
       "success":   { "$value": "{color.green.400}",     "$type": "color" },
       "increase":  { "$value": "{color.green.400}",     "$type": "color" },
       "decrease":  { "$value": "{color.red.400}",       "$type": "color" }
@@ -45,7 +45,7 @@
       "delete":    { "$value": "{color.red.300}",       "$type": "color" },
       "info":      { "$value": "{color.blue.400}",      "$type": "color" },
       "warning":   { "$value": "{color.yellow.400}",    "$type": "color" },
-      "error":     { "$value": "{color.red.400}",       "$type": "color" },
+      "critical":     { "$value": "{color.red.400}",       "$type": "color" },
       "success":   { "$value": "{color.green.400}",     "$type": "color" },
       "increase":  { "$value": "{color.green.400}",     "$type": "color" },
       "decrease":  { "$value": "{color.red.400}",       "$type": "color" }
@@ -57,18 +57,17 @@
   },
   "border": {
     "none":      { "$value": "transparent",            "$type": "color" },
-    "primary":   { "$value": "{color.cool-gray.700}",  "$type": "color" },
-    "secondary": { "$value": "{color.cool-gray.800}",  "$type": "color" },
+    "primary":   { "$value": "{color.cool-gray.600}",  "$type": "color", "$description": "Bumped one step lighter than surface.primary (cool-gray.800) so dividers and outlines stay visible on raised dark surfaces." },
+    "secondary": { "$value": "{color.cool-gray.700}",  "$type": "color", "$description": "Softer divider — still visible against surface.primary (cool-gray.800)." },
     "disabled":  { "$value": "{color.cool-gray.700}",  "$type": "color" },
-    "knockout":  { "$value": "{color.cool-gray.100}",  "$type": "color" },
     "inverse":   { "$value": "{color.alpha-white.20}", "$type": "color" },
     "info":      { "$value": "{color.blue.400}",       "$type": "color" },
     "warning":   { "$value": "{color.yellow.400}",     "$type": "color" },
-    "error":     { "$value": "{color.red.400}",        "$type": "color" },
+    "critical":     { "$value": "{color.red.400}",        "$type": "color" },
     "success":   { "$value": "{color.green.400}",      "$type": "color" }
   },
   "surface": {
-    "page":           { "$value": "#1a1a1a",                  "$type": "color" },
+    "page":           { "$value": "{color.cool-gray.950}",    "$type": "color" },
     "primary":        { "$value": "{color.cool-gray.800}",    "$type": "color" },
     "scrim":          { "$value": "{color.alpha.80}",         "$type": "color" },
     "disabled":       { "$value": "{color.cool-gray.900}",    "$type": "color" },
@@ -113,12 +112,16 @@
       "critical-pressed":   { "$value": "{color.red.800}",   "$type": "color" },
       "critical-strong":         { "$value": "{color.red.500}", "$type": "color" },
       "critical-strong-hover":   { "$value": "{color.red.400}", "$type": "color" },
-      "critical-strong-pressed": { "$value": "{color.red.300}", "$type": "color" }
+      "critical-strong-pressed": { "$value": "{color.red.300}", "$type": "color" },
+
+      "success-strong":         { "$value": "{color.green.500}", "$type": "color" },
+      "success-strong-hover":   { "$value": "{color.green.400}", "$type": "color" },
+      "success-strong-pressed": { "$value": "{color.green.300}", "$type": "color" }
     }
   },
   "focus": {
     "ring":       { "color": { "$value": "{color.blue.400}", "$type": "color" } },
-    "ring-error": { "color": { "$value": "{color.red.400}",  "$type": "color" } }
+    "ring-critical": { "color": { "$value": "{color.red.400}",  "$type": "color" } }
   },
   "illustration": {
     "$description": "Dark-theme illustration slot overrides. Primary brand color stays mid-step so it reads on both themes; secondary / accent / surface flip to deeper steps so figures sit on a dark canvas without losing tonal hierarchy.",

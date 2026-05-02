@@ -40,11 +40,11 @@ export class ScoutStatusDot extends LitElement {
     }
 
     /* === Per-status fill === */
-    :host([type='informational']) { --_sd-fill: var(--scout-color-blue-500); }
+    :host([type='informational']) { --_sd-fill: var(--scout-fill-info-bold); }
     :host([type='neutral'])       { --_sd-fill: var(--scout-color-cool-gray-500); }
-    :host([type='success'])       { --_sd-fill: var(--scout-color-green-500); }
-    :host([type='warning'])       { --_sd-fill: var(--scout-color-yellow-500); }
-    :host([type='critical'])      { --_sd-fill: var(--scout-color-red-500); }
+    :host([type='success'])       { --_sd-fill: var(--scout-fill-success-bold); }
+    :host([type='warning'])       { --_sd-fill: var(--scout-fill-warning-bold); }
+    :host([type='critical'])      { --_sd-fill: var(--scout-fill-critical-bold); }
 
     .dot {
       width: var(--_sd-dot-size);

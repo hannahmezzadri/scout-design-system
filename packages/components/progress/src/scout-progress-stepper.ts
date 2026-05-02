@@ -125,18 +125,18 @@ export class ScoutProgressStepper extends LitElement {
       color: var(--scout-color-white);
     }
     .in-progress .dot {
-      background: var(--scout-color-blue-100);
+      background: var(--scout-fill-info-subtle);
       color: var(--scout-text-interactive-primary);
-      box-shadow: 0 0 0 4px var(--scout-color-blue-100);
+      box-shadow: 0 0 0 4px var(--scout-fill-info-subtle);
     }
     .action-needed .dot {
-      background: var(--scout-color-yellow-600);
-      border-color: var(--scout-color-yellow-600);
+      background: var(--scout-fill-warning-bold);
+      border-color: var(--scout-fill-warning-bold);
       color: var(--scout-color-white);
     }
     .expired .dot {
-      background: var(--scout-color-red-600);
-      border-color: var(--scout-color-red-600);
+      background: var(--scout-interactive-background-critical-strong-hover);
+      border-color: var(--scout-interactive-background-critical-strong-hover);
       color: var(--scout-color-white);
     }
     .expired-completed .dot {
@@ -153,7 +153,7 @@ export class ScoutProgressStepper extends LitElement {
     .last-completed .dot {
       width: calc(var(--_dot-size) + 4px);
       height: calc(var(--_dot-size) + 4px);
-      box-shadow: 0 0 0 4px var(--scout-color-blue-100);
+      box-shadow: 0 0 0 4px var(--scout-fill-info-subtle);
     }
 
     /* Labels */
@@ -197,7 +197,7 @@ export class ScoutProgressStepper extends LitElement {
 
     /* Per-state label tints */
     .not-started .label { color: var(--scout-text-display-secondary); }
-    .action-needed .label { color: var(--scout-color-yellow-600); }
+    .action-needed .label { color: var(--scout-fill-warning-bold); }
     .expired .label,
     .expired-completed .label { color: var(--scout-text-display-secondary); }
 

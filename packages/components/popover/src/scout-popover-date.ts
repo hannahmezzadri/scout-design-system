@@ -203,7 +203,7 @@ export class ScoutPopoverDate extends LitElement {
       background: var(--scout-interactive-background-hover);
     }
     .cell.late-hover:hover {
-      background: var(--scout-color-red-100);
+      background: var(--scout-fill-critical-subtle);
     }
     .cell:focus-visible {
       outline: var(--scout-focus-ring-width) solid var(--scout-focus-ring-color);
@@ -217,7 +217,7 @@ export class ScoutPopoverDate extends LitElement {
       color: var(--scout-color-white);
     }
     .cell.range {
-      background: var(--scout-color-blue-100);
+      background: var(--scout-fill-info-subtle);
       color: var(--scout-text-display-info);
       border-radius: 0;
     }
@@ -241,10 +241,10 @@ export class ScoutPopoverDate extends LitElement {
       border-radius: 50%;
     }
     .cell.due::after       { background: var(--scout-text-interactive-primary); }
-    .cell.late::after      { background: var(--scout-text-display-error, var(--scout-color-red-600)); }
-    .cell.yellow::after    { background: var(--scout-color-yellow-600); }
-    .cell.red::after       { background: var(--scout-color-red-600); }
-    .cell.green::after     { background: var(--scout-color-green-600); }
+    .cell.late::after      { background: var(--scout-text-display-critical, var(--scout-interactive-background-critical-strong-hover)); }
+    .cell.yellow::after    { background: var(--scout-fill-warning-bold); }
+    .cell.red::after       { background: var(--scout-interactive-background-critical-strong-hover); }
+    .cell.green::after     { background: var(--scout-interactive-background-success-strong); }
     .cell.statement::after { background: var(--scout-color-cool-gray-700); }
 
     /* Late + selected: keep the dot visible against the dark fill */
@@ -276,9 +276,9 @@ export class ScoutPopoverDate extends LitElement {
     .key-row { display: inline-flex; align-items: center; gap: var(--scout-space-8); }
     .key-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
     .key-dot.due { background: var(--scout-text-interactive-primary); }
-    .key-dot.late { background: var(--scout-color-red-600); }
-    .key-dot.yellow { background: var(--scout-color-yellow-600); }
-    .key-dot.green { background: var(--scout-color-green-600); }
+    .key-dot.late { background: var(--scout-interactive-background-critical-strong-hover); }
+    .key-dot.yellow { background: var(--scout-fill-warning-bold); }
+    .key-dot.green { background: var(--scout-interactive-background-success-strong); }
     .key-dot.statement { background: var(--scout-color-cool-gray-700); }
   `;
 

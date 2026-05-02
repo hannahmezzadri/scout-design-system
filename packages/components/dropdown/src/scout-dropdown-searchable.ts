@@ -77,7 +77,7 @@ export class ScoutDropdownSearchable extends LitElement {
       opacity: 0.5;
       pointer-events: none;
     }
-    :host([invalid]) .input-wrap { border-color: var(--scout-border-error); }
+    :host([invalid]) .input-wrap { border-color: var(--scout-border-critical); }
 
     input {
       flex: 1;
@@ -132,7 +132,7 @@ export class ScoutDropdownSearchable extends LitElement {
     }
     .helper { color: var(--scout-text-display-secondary); }
     .error-msg {
-      color: var(--scout-text-display-error);
+      color: var(--scout-text-display-critical);
       display: inline-flex;
       align-items: flex-start;
       gap: var(--scout-space-4);

@@ -69,7 +69,7 @@ export class ScoutBadge extends LitElement {
     }
     :host([type='informational'][emphasis='low']) .badge,
     :host([type='informational']:not([emphasis])) .badge {
-      background: var(--scout-color-blue-100);
+      background: var(--scout-fill-info-subtle);
       color: var(--scout-text-display-info);
     }
 
@@ -100,45 +100,45 @@ export class ScoutBadge extends LitElement {
 
     /* Success */
     :host([type='success'][emphasis='high']) .badge {
-      background: var(--scout-color-green-600);
+      background: var(--scout-interactive-background-success-strong);
       color: var(--scout-color-white);
     }
     :host([type='success'][emphasis='low']) .badge,
     :host([type='success']:not([emphasis])) .badge {
-      background: var(--scout-color-green-100);
+      background: var(--scout-fill-success-subtle);
       color: var(--scout-text-display-success);
     }
 
     /* Warning */
     :host([type='warning'][emphasis='high']) .badge {
-      background: var(--scout-color-yellow-600);
+      background: var(--scout-fill-warning-bold);
       color: var(--scout-color-white);
     }
     :host([type='warning'][emphasis='low']) .badge,
     :host([type='warning']:not([emphasis])) .badge {
-      background: var(--scout-color-yellow-100);
+      background: var(--scout-fill-warning-subtle);
       color: var(--scout-text-display-warning);
     }
 
     /* Critical */
     :host([type='critical'][emphasis='high']) .badge {
-      background: var(--scout-color-red-600);
+      background: var(--scout-interactive-background-critical-strong-hover);
       color: var(--scout-color-white);
     }
     :host([type='critical'][emphasis='low']) .badge,
     :host([type='critical']:not([emphasis])) .badge {
-      background: var(--scout-color-red-100);
-      color: var(--scout-text-display-error);
+      background: var(--scout-fill-critical-subtle);
+      color: var(--scout-text-display-critical);
     }
 
     /* AI summary — purple, the system's convention for AI-generated content */
     :host([type='ai-summary'][emphasis='high']) .badge {
-      background: var(--scout-color-purple-600);
+      background: var(--scout-fill-ai-bold);
       color: var(--scout-color-white);
     }
     :host([type='ai-summary'][emphasis='low']) .badge,
     :host([type='ai-summary']:not([emphasis])) .badge {
-      background: var(--scout-color-purple-100);
+      background: var(--scout-fill-ai-subtle);
       color: var(--scout-color-purple-700);
     }
 

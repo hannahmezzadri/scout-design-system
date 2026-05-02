@@ -126,23 +126,23 @@ export class ScoutButton extends LitElement {
 
     /* === Variant: action (filled, success/affirmative) === */
     :host([variant='action']) .button {
-      background: var(--scout-color-green-600);
+      background: var(--scout-interactive-background-success-strong);
       color: var(--scout-color-white);
     }
     :host([variant='action']) .button:hover:not(:disabled):not([aria-busy='true']) {
-      background: var(--scout-color-green-700);
+      background: var(--scout-interactive-background-success-strong-hover);
     }
     :host([variant='action']) .button:active:not(:disabled):not([aria-busy='true']) {
-      background: var(--scout-color-green-800);
+      background: var(--scout-interactive-background-success-strong-pressed);
     }
 
     /* === Variant: critical (filled, destructive) === */
     :host([variant='critical']) .button {
-      background: var(--scout-color-red-600);
+      background: var(--scout-interactive-background-critical-strong-hover);
       color: var(--scout-color-white);
     }
     :host([variant='critical']) .button:hover:not(:disabled):not([aria-busy='true']) {
-      background: var(--scout-color-red-700);
+      background: var(--scout-interactive-background-critical-strong-pressed);
     }
     :host([variant='critical']) .button:active:not(:disabled):not([aria-busy='true']) {
       background: var(--scout-color-red-800);
@@ -151,10 +151,10 @@ export class ScoutButton extends LitElement {
     /* === Variant: critical-tertiary (text-only, destructive) === */
     :host([variant='critical-tertiary']) .button {
       background: transparent;
-      color: var(--scout-text-interactive-error);
+      color: var(--scout-text-interactive-critical);
     }
     :host([variant='critical-tertiary']) .button:hover:not(:disabled):not([aria-busy='true']) {
-      background: var(--scout-color-red-100);
+      background: var(--scout-fill-critical-subtle);
     }
     :host([variant='critical-tertiary']) .button:active:not(:disabled):not([aria-busy='true']) {
       background: var(--scout-color-red-200);

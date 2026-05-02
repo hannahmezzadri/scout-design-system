@@ -6,7 +6,7 @@
       "width":   { "$value": "2px",              "$type": "dimension" },
       "offset":  { "$value": "2px",              "$type": "dimension" }
     },
-    "ring-error": {
+    "ring-critical": {
       "color":   { "$value": "{color.red.500}",  "$type": "color", "$description": "Focus ring on invalid form fields." }
     }
   }

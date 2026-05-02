@@ -80,9 +80,9 @@ export class ScoutInlineAlert extends LitElement {
 
     :host([status='critical']) .alert {
       background: var(--scout-fill-critical-subtle);
-      border-color: var(--scout-border-error);
+      border-color: var(--scout-border-critical);
     }
-    :host([status='critical']) .status-icon { color: var(--scout-text-display-error); }
+    :host([status='critical']) .status-icon { color: var(--scout-text-display-critical); }
 
     .status-icon {
       width: var(--_cnx-alert-icon-size);

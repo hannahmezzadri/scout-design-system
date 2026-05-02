@@ -88,10 +88,10 @@ export class ScoutTextArea extends LitElement {
       border-color: var(--scout-text-interactive-primary);
     }
     :host([invalid]) textarea {
-      border-color: var(--scout-border-error);
+      border-color: var(--scout-border-critical);
     }
     :host([invalid]) textarea:focus {
-      outline-color: var(--scout-focus-ring-error-color);
+      outline-color: var(--scout-focus-ring-critical-color);
     }
 
     .msg {
@@ -101,7 +101,7 @@ export class ScoutTextArea extends LitElement {
       color: var(--scout-text-display-secondary);
       margin-top: var(--scout-space-4);
     }
-    .msg.error { color: var(--scout-text-display-error); }
+    .msg.error { color: var(--scout-text-display-critical); }
   `;
 
   @property({ reflect: true }) size: TextInputSize = 'default';

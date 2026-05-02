@@ -86,7 +86,7 @@ export class ScoutDropdownSelect extends LitElement {
       opacity: 0.5;
       cursor: not-allowed;
     }
-    :host([invalid]) .trigger { border-color: var(--scout-border-error); }
+    :host([invalid]) .trigger { border-color: var(--scout-border-critical); }
 
     .value { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .value.placeholder { color: var(--scout-text-display-secondary); }
@@ -123,7 +123,7 @@ export class ScoutDropdownSelect extends LitElement {
     }
     .helper { color: var(--scout-text-display-secondary); }
     .error-msg {
-      color: var(--scout-text-display-error);
+      color: var(--scout-text-display-critical);
       display: inline-flex;
       align-items: flex-start;
       gap: var(--scout-space-4);

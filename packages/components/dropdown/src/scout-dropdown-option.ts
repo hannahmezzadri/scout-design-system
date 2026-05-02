@@ -46,7 +46,7 @@ export class ScoutDropdownOption extends LitElement {
       background: var(--scout-interactive-background-pressed);
     }
     :host([selected]) .option {
-      background: var(--scout-color-blue-100);
+      background: var(--scout-fill-info-subtle);
       color: var(--scout-text-interactive-primary);
       font-weight: var(--scout-font-weight-semibold);
     }

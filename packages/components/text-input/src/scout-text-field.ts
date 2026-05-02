@@ -110,10 +110,10 @@ export class ScoutTextField extends LitElement {
       border-color: var(--scout-text-display-primary);
     }
     :host([invalid]) .field {
-      border-color: var(--scout-border-error);
+      border-color: var(--scout-border-critical);
     }
     :host([invalid]) .field:focus-within {
-      outline-color: var(--scout-focus-ring-error-color);
+      outline-color: var(--scout-focus-ring-critical-color);
     }
 
     input {
@@ -179,7 +179,7 @@ export class ScoutTextField extends LitElement {
       color: var(--scout-text-display-secondary);
       margin-top: var(--scout-space-4);
     }
-    .msg.error { color: var(--scout-text-display-error); }
+    .msg.error { color: var(--scout-text-display-critical); }
 
     @media (prefers-reduced-motion: reduce) {
       .field { transition: none; }

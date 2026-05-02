@@ -79,7 +79,7 @@ export class ScoutRadioGroup extends LitElement {
       font-size: var(--scout-font-size-12);
       line-height: var(--scout-font-line-height-18);
       margin-top: var(--scout-space-0);
-      color: var(--scout-text-display-error);
+      color: var(--scout-text-display-critical);
     }
     .message[hidden] { display: none; }
     .message svg {

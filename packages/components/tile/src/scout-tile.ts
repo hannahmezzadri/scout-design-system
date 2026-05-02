@@ -133,7 +133,7 @@ export class ScoutTile extends LitElement {
       display: inline-flex;
       align-items: center;
       gap: var(--scout-space-8);
-      color: var(--scout-text-display-error);
+      color: var(--scout-text-display-critical);
       font-size: var(--scout-font-size-14);
     }
     .error svg { width: 20px; height: 20px; fill: currentColor; flex-shrink: 0; }

@@ -80,7 +80,7 @@ export class ScoutRadio extends LitElement {
           var(--scout-motion-easing-standard);
     }
     input:hover:not(:disabled) {
-      border-color: var(--scout-color-blue-700);
+      border-color: var(--scout-interactive-background-brand-strong-pressed);
     }
     input:focus-visible {
       outline: var(--scout-focus-ring-width) solid var(--scout-focus-ring-color);
@@ -90,7 +90,7 @@ export class ScoutRadio extends LitElement {
       background: var(--scout-color-cool-gray-100);
     }
     input:checked {
-      border-color: var(--scout-color-blue-700);
+      border-color: var(--scout-interactive-background-brand-strong-pressed);
       background: var(--scout-surface-primary);
     }
     /* Inner dot for the selected state. Kept inside the input via a ::after to
@@ -100,14 +100,14 @@ export class ScoutRadio extends LitElement {
       position: absolute;
       inset: 3px;
       border-radius: 50%;
-      background: var(--scout-color-blue-700);
+      background: var(--scout-interactive-background-brand-strong-pressed);
     }
     input:checked:active::after {
       background: var(--scout-interactive-background-brand-strong-pressed);
     }
 
     :host([invalid]) input:not(:checked) {
-      border-color: var(--scout-border-error);
+      border-color: var(--scout-border-critical);
     }
 
     /* Text + label column */

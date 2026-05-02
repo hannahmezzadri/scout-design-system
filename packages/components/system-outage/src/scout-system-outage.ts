@@ -44,13 +44,13 @@ export class ScoutSystemOutage extends LitElement {
 
     /* Status backgrounds */
     :host([status='platform-wide-outage']) .banner {
-      background: var(--scout-color-red-600);
+      background: var(--scout-interactive-background-critical-strong-hover);
     }
     :host([status='feature-outage']) .banner {
-      background: var(--scout-color-yellow-600);
+      background: var(--scout-fill-warning-bold);
     }
     :host([status='outage-restored']) .banner {
-      background: var(--scout-color-green-600);
+      background: var(--scout-interactive-background-success-strong);
     }
 
     .status-icon {

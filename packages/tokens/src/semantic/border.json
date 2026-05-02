@@ -1,15 +1,14 @@
 {
   "border": {
-    "$description": "Semantic border colors. Border *width* tokens live in primitive/border.json. Top key dropped the `.color` infix in v2 — emit as `--scout-border-*`.",
+    "$description": "Semantic border colors. Border *width* tokens live in primitive/border.json.",
     "none":      { "$value": "transparent",            "$type": "color" },
     "primary":   { "$value": "{color.cool-gray.300}",  "$type": "color" },
     "secondary": { "$value": "{color.cool-gray.200}",  "$type": "color" },
     "disabled":  { "$value": "{color.cool-gray.200}",  "$type": "color", "$description": "Disabled inputs and controls." },
-    "knockout":  { "$value": "{color.white}",          "$type": "color", "$description": "Legacy alias kept for components that still reference it; prefer `border.inverse` on dark surfaces." },
     "inverse":   { "$value": "{color.alpha-white.20}", "$type": "color", "$description": "Border drawn on top of inverse / dark surfaces (snackbar, tile splits)." },
     "info":      { "$value": "{color.blue.500}",       "$type": "color" },
     "warning":   { "$value": "{color.yellow.500}",     "$type": "color" },
-    "error":     { "$value": "{color.red.500}",        "$type": "color" },
+    "critical":  { "$value": "{color.red.500}",        "$type": "color", "$description": "Renamed from `error` for consistency with fill.critical and the component status vocabulary." },
     "success":   { "$value": "{color.green.500}",      "$type": "color" },
     "teal":      { "$value": "{color.teal.500}",       "$type": "color", "$description": "Teal border paired with `fill.teal` — used by share-with-customer surfaces." }
   }

@@ -39,9 +39,9 @@ export class ScoutToggleSwitch extends LitElement {
       --_knob-offset: 2px;
       --_track-off: var(--scout-color-cool-gray-300, var(--scout-color-cool-gray-200));
       --_track-on:  var(--scout-text-interactive-primary);
-      --_track-on-pressed: var(--scout-color-blue-700);
-      --_track-critical: var(--scout-color-red-600);
-      --_track-critical-pressed: var(--scout-color-red-700);
+      --_track-on-pressed: var(--scout-interactive-background-brand-strong-pressed);
+      --_track-critical: var(--scout-interactive-background-critical-strong-hover);
+      --_track-critical-pressed: var(--scout-interactive-background-critical-strong-pressed);
     }
     :host([size='condensed']),
     :host-context([data-density='condensed']) {

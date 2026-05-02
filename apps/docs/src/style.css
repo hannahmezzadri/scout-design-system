@@ -86,11 +86,14 @@ body {
 .controls scout-dropdown-select {
   width: 160px;
 }
-/* On mobile the topbar wraps onto two rows; the density toggle is the
-   least essential of the three controls (brand + theme + density), so
-   hide it to keep the header compact. */
+/* Theme segmented-control is mobile-only; the desktop dropdown above is
+   hidden in its place at the small breakpoint. Density doesn't apply on
+   mobile, so the dropdown stays hidden there too. */
+.controls #theme-segments { display: none; }
 @media (max-width: 600px) {
   .controls scout-dropdown-select#density { display: none; }
+  .controls scout-dropdown-select#theme   { display: none; }
+  .controls #theme-segments               { display: inline-flex; }
 }
 
 /* === Layout: sidebar + main ===
@@ -1086,6 +1089,21 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   flex-direction: column;
   gap: var(--scout-space-12);
 }
+
+/* === Density-aware doc surface ===
+   When the topbar Density toggle is set to condensed, the doc site shrinks
+   one spacing step everywhere ([16→12, 12→8, 24→16, 48→32, 64→48, 96→64])
+   and hides any explicit `size="default"` component instances inside
+   density-comparison preview rows (those marked with `data-density-demo`)
+   so the preview shows only the condensed forms. */
+[data-density='condensed'] main { gap: var(--scout-space-48); padding-bottom: var(--scout-space-64); }
+[data-density='condensed'] .preview-block { gap: var(--scout-space-8); }
+[data-density='condensed'] .preview-row    { gap: var(--scout-space-8);  padding: var(--scout-space-16); }
+[data-density='condensed'] .preview-stack  { gap: var(--scout-space-8); }
+[data-density='condensed'] .guideline-section { gap: var(--scout-space-12); }
+[data-density='condensed'] .component-page-header { margin-bottom: var(--scout-space-12); }
+/* Hide explicit default-size instances in density-comparison demos. */
+[data-density='condensed'] [data-density-demo] [size='default'] { display: none; }
 .preview-block__title {
   font-family: var(--scout-font-family-literata);
   font-weight: var(--scout-font-weight-semibold);
@@ -1217,6 +1235,15 @@ body.nav-open .sidebar-scrim { opacity: 1; }
    value won't be applied. */
 .ctrl-field.is-disabled label {
   color: var(--scout-text-display-disabled, var(--scout-color-cool-gray-400));
+}
+.ctrl-field.is-disabled scout-dropdown-select,
+.ctrl-field.is-disabled scout-text-field,
+.ctrl-field.is-disabled scout-text-area,
+.ctrl-field.is-disabled scout-checkbox,
+.ctrl-field.is-disabled input,
+.ctrl-checks scout-checkbox.is-disabled {
+  opacity: 0.5;
+  pointer-events: none;
 }
 .ctrl-field select,
 .ctrl-field input[type="text"],
@@ -1729,7 +1756,7 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   gap: var(--scout-space-8);
 }
 .do-heading { color: var(--scout-text-display-success); }
-.dont-heading { color: var(--scout-text-display-error); }
+.dont-heading { color: var(--scout-text-display-critical); }
 
 /* ========================================================================
    Theming page
@@ -1941,7 +1968,7 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   background: var(--scout-surface-primary);
 }
 .do-card { border-top-color: var(--scout-border-success); }
-.dont-card { border-top-color: var(--scout-border-error); }
+.dont-card { border-top-color: var(--scout-border-critical); }
 .do-dont-header {
   font-size: var(--scout-font-size-14);
   font-weight: var(--scout-font-weight-semibold);
@@ -1950,7 +1977,7 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   gap: var(--scout-space-4);
 }
 .do-card .do-dont-header { color: var(--scout-text-display-success); }
-.dont-card .do-dont-header { color: var(--scout-text-display-error); }
+.dont-card .do-dont-header { color: var(--scout-text-display-critical); }
 .do-dont-preview {
   display: flex;
   align-items: center;

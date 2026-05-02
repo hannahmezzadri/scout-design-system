@@ -80,7 +80,7 @@ export class ScoutAnchorLinks extends LitElement {
       color: var(--scout-text-interactive-primary);
       border-left-color: var(--scout-text-interactive-primary);
       font-weight: var(--scout-font-weight-semibold);
-      background: var(--scout-color-blue-50);
+      background: var(--scout-fill-info-subtle);
     }
 
     /* Disabled */

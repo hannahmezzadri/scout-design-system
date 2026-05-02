@@ -81,7 +81,7 @@ export class ScoutCheckboxGroup extends LitElement {
       margin-top: 2px;
     }
     .warning { color: var(--scout-text-display-warning); }
-    .error { color: var(--scout-text-display-error); }
+    .error { color: var(--scout-text-display-critical); }
   `;
 
   @property() label = '';
