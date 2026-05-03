@@ -1029,6 +1029,7 @@ const app = document.getElementById('app')!;
     ['body', 't-body', 'Scout is the best'],
     ['body-small', 't-body-small', 'Scout is the best'],
     ['label', 't-label', 'Scout is the best'],
+    ['label-small', 't-label-small', 'Scout is the best'],
     ['caption', 't-caption', 'Scout is the best'],
   ];
   // Read each typography token's resolved size + line-height + weight from
@@ -1092,6 +1093,7 @@ const app = document.getElementById('app')!;
     { name: 'body',       cls: 't-body' },
     { name: 'body-small', cls: 't-body-small' },
     { name: 'label',      cls: 't-label' },
+    { name: 'label-small', cls: 't-label-small' },
     { name: 'caption',    cls: 't-caption' },
   ];
   wrap.append(el('h2', { class: 'typography-section-heading' }, 'Weights'));
@@ -1720,6 +1722,19 @@ function buttonPreview(): HTMLElement {
         el('div', { class: 'btn-prescriptive__row' },
           previewButton({ label: 'Add address', leadingIcon: '+' }),
           previewButton({ variant: 'secondary', label: 'Filter', leadingIcon: '⚲' }),
+          (() => {
+            const btn = document.createElement('scout-button');
+            btn.setAttribute('variant', 'tertiary');
+            const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            icon.setAttribute('slot', 'icon-leading');
+            icon.setAttribute('viewBox', '0 0 24 24');
+            icon.setAttribute('fill', 'currentColor');
+            icon.setAttribute('aria-hidden', 'true');
+            icon.innerHTML = '<path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32L19.513 8.2Z"/>';
+            btn.append(icon);
+            btn.appendChild(document.createTextNode('Edit'));
+            return btn;
+          })(),
         ),
       ),
     ),
@@ -1744,24 +1759,28 @@ function buttonControls(): HTMLElement {
   const disabledChk = ctrlCheck('btn-disabled', 'Disabled');
   const loadingChk = ctrlCheck('btn-loading', 'Loading');
   const knockoutChk = ctrlCheck('btn-knockout', 'Knockout');
+  const flushChk = ctrlCheck('btn-flush', 'Flush (tertiary only)');
   const leadingChk = ctrlCheck('btn-leading', 'Leading icon');
   const trailingChk = ctrlCheck('btn-trailing', 'Trailing icon');
 
   function render() {
     const variant = variantSel.value as BtnVariant;
     const size = sizeSel.value as BtnSize;
-    stage.replaceChildren(
-      previewButton({
-        variant,
-        size,
-        label: labelInput.value || 'Button',
-        disabled: disabledChk.checked,
-        loading: loadingChk.checked,
-        knockout: knockoutChk.checked,
-        leadingIcon: leadingChk.checked ? '+' : undefined,
-        trailingIcon: trailingChk.checked ? '→' : undefined,
-      }),
-    );
+    const isTertiary = variant === 'tertiary' || variant === 'critical-tertiary';
+    setFieldDisabled(flushField, flushChk, !isTertiary);
+    if (!isTertiary) flushChk.checked = false;
+    const btn = previewButton({
+      variant,
+      size,
+      label: labelInput.value || 'Button',
+      disabled: disabledChk.checked,
+      loading: loadingChk.checked,
+      knockout: knockoutChk.checked,
+      leadingIcon: leadingChk.checked ? '+' : undefined,
+      trailingIcon: trailingChk.checked ? '→' : undefined,
+    });
+    if (flushChk.checked && isTertiary) btn.setAttribute('flush', '');
+    stage.replaceChildren(btn);
     /* When knockout is on, give the stage a dark backdrop so the white
        button reads correctly. */
     stage.style.background = knockoutChk.checked ? 'var(--scout-surface-inverse)' : '';
@@ -1774,19 +1793,31 @@ function buttonControls(): HTMLElement {
     if (disabledChk.checked) attrs.push('disabled');
     if (loadingChk.checked) attrs.push('loading');
     if (knockoutChk.checked) attrs.push('knockout');
+    if (flushChk.checked && isTertiary) attrs.push('flush');
     const open = `<scout-button${attrs.length ? ' ' + attrs.join(' ') : ''}>`;
     const lead = leadingChk.checked ? '\n  <svg slot="icon-leading">…</svg>' : '';
     const trail = trailingChk.checked ? '\n  <svg slot="icon-trailing">…</svg>' : '';
     codePre.textContent = `${open}${lead}\n  ${labelInput.value || 'Button'}${trail}\n</scout-button>`;
   }
 
-  for (const c of [variantSel, sizeSel, labelInput, disabledChk, loadingChk, knockoutChk, leadingChk, trailingChk]) {
+  // Leading and trailing icons are mutually exclusive — checking one
+  // unchecks the other so the live preview can never end up with both.
+  leadingChk.addEventListener('change', () => {
+    if (leadingChk.checked) trailingChk.checked = false;
+  });
+  trailingChk.addEventListener('change', () => {
+    if (trailingChk.checked) leadingChk.checked = false;
+  });
+
+  for (const c of [variantSel, sizeSel, labelInput, disabledChk, loadingChk, knockoutChk, flushChk, leadingChk, trailingChk]) {
     c.addEventListener('input', render);
     c.addEventListener('change', render);
   }
 
   const ctrlField = (labelText: string, htmlFor: string, control: HTMLElement) =>
     el('div', { class: 'ctrl-field' }, el('label', { for: htmlFor }, labelText), control);
+
+  const flushField = flushChk;
 
   const panel = el('div', { class: 'ctrl-panel' },
     el('h3', { class: 'preview-block__title' }, 'Properties'),
@@ -1797,6 +1828,7 @@ function buttonControls(): HTMLElement {
       disabledChk,
       loadingChk,
       knockoutChk,
+      flushChk,
       leadingChk,
       trailingChk,
     ),
@@ -3213,8 +3245,22 @@ function previewBadge(opts: {
   b.setAttribute('type', type);
   b.setAttribute('emphasis', emphasis);
   b.setAttribute('size', size);
-  if (icon) b.setAttribute('icon', '');
-  b.textContent = label;
+  // Neutral and neutral-knockout don't carry a prescribed icon. When the
+  // preview is in an "with icons" row, slot a generic info-circle outline
+  // via icon-custom so gray and white show an icon alongside the rest of
+  // the row instead of falling back to a plain pill.
+  if (icon && (type === 'neutral' || type === 'neutral-knockout')) {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('slot', 'icon-custom');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('fill', 'currentColor');
+    svg.setAttribute('aria-hidden', 'true');
+    svg.innerHTML = '<path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.732 2.923.305-.158a.75.75 0 0 1 .67 1.34l-.32.165c-1.146.573-2.437-.463-2.126-1.706l.732-2.923-.305.158a.75.75 0 1 1-.67-1.34l.32-.165ZM12 8.25a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Z" clip-rule="evenodd"/>';
+    b.appendChild(svg);
+  } else if (icon) {
+    b.setAttribute('icon', '');
+  }
+  b.appendChild(document.createTextNode(label));
   return b;
 }
 
@@ -3242,12 +3288,14 @@ function badgePreview(): HTMLElement {
 
   block(
     'With icons — low emphasis',
-    'Set the icon attribute to render the prescribed status icon on the left of the label. Neutral types stay icon-less by design.',
-    previewBadge({ type: 'informational', icon: true, label: 'Blue' }),
-    previewBadge({ type: 'success', icon: true, label: 'Green' }),
-    previewBadge({ type: 'warning', icon: true, label: 'Yellow' }),
-    previewBadge({ type: 'critical', icon: true, label: 'Red' }),
-    previewBadge({ type: 'ai-summary', icon: true, label: 'Purple' }),
+    'Set the icon attribute to render the prescribed status icon on the left of the label. Neutral and neutral-knockout render without a prescribed icon — use icon-custom to slot one if needed.',
+    previewBadge({ type: 'informational',     icon: true, label: 'Blue' }),
+    previewBadge({ type: 'neutral',           icon: true, label: 'Gray' }),
+    previewBadge({ type: 'neutral-knockout',  icon: true, label: 'White' }),
+    previewBadge({ type: 'success',           icon: true, label: 'Green' }),
+    previewBadge({ type: 'warning',           icon: true, label: 'Yellow' }),
+    previewBadge({ type: 'critical',          icon: true, label: 'Red' }),
+    previewBadge({ type: 'ai-summary',        icon: true, label: 'Purple' }),
   );
 
   block(
@@ -3265,11 +3313,13 @@ function badgePreview(): HTMLElement {
   block(
     'With icons — high emphasis',
     'Same prescribed status icons, paired with the high-emphasis fill for badges that need stronger visual presence.',
-    previewBadge({ type: 'informational', emphasis: 'high', icon: true, label: 'Blue' }),
-    previewBadge({ type: 'success',       emphasis: 'high', icon: true, label: 'Green' }),
-    previewBadge({ type: 'warning',       emphasis: 'high', icon: true, label: 'Yellow' }),
-    previewBadge({ type: 'critical',      emphasis: 'high', icon: true, label: 'Red' }),
-    previewBadge({ type: 'ai-summary',    emphasis: 'high', icon: true, label: 'Purple' }),
+    previewBadge({ type: 'informational',    emphasis: 'high', icon: true, label: 'Blue' }),
+    previewBadge({ type: 'neutral',          emphasis: 'high', icon: true, label: 'Gray' }),
+    previewBadge({ type: 'neutral-knockout', emphasis: 'high', icon: true, label: 'White' }),
+    previewBadge({ type: 'success',          emphasis: 'high', icon: true, label: 'Green' }),
+    previewBadge({ type: 'warning',          emphasis: 'high', icon: true, label: 'Yellow' }),
+    previewBadge({ type: 'critical',         emphasis: 'high', icon: true, label: 'Red' }),
+    previewBadge({ type: 'ai-summary',       emphasis: 'high', icon: true, label: 'Purple' }),
   );
 
   block(
@@ -3892,11 +3942,11 @@ function cardPreview(): HTMLElement {
 
   block(
     'Background colors',
-    'Three options. White is the default. Cool-gray.100 sits well on white surfaces; cool-gray.200 reads as a stronger inset against either.',
+    'Three options. White is the default. Cool-gray.100 sits well on white surfaces; cool-gray.200 reads as a stronger inset against either. In dark theme each variant maps to an elevated cool-gray (700 / 800 / 900) so the relative hierarchy stays intact.',
     el('div', { class: 'preview-stack' },
-      previewCard({ background: 'white', aiCallout: true, body: 'Background: white (default).' }),
-      previewCard({ background: 'cool-gray-100', aiCallout: true, body: 'Background: cool-gray.100.' }),
-      previewCard({ background: 'cool-gray-200', aiCallout: true, body: 'Background: cool-gray.200.' }),
+      previewCard({ background: 'white', aiCallout: true, body: 'Background: white (default) — cool-gray.700 in dark.' }),
+      previewCard({ background: 'cool-gray-100', aiCallout: true, body: 'Background: cool-gray.100 — cool-gray.800 in dark.' }),
+      previewCard({ background: 'cool-gray-200', aiCallout: true, body: 'Background: cool-gray.200 — cool-gray.900 in dark.' }),
     ),
   );
 
@@ -4501,7 +4551,7 @@ app.append(componentPage(
 // =================================================================
 import '@scout/control';
 
-const CONTROL_TYPES = ['x-close', 'x-clear', 'arrow-left', 'arrow-right', 'arrow-left-double', 'arrow-right-double', 'chevron-up', 'chevron-down', 'tooltip', 'trash', 'kebab'] as const;
+const CONTROL_TYPES = ['x-close', 'x-clear', 'arrow-left', 'arrow-right', 'arrow-left-double', 'arrow-right-double', 'chevron-up', 'chevron-down', 'chevron-left', 'chevron-right', 'tooltip', 'trash', 'kebab'] as const;
 type CtrlType = typeof CONTROL_TYPES[number];
 
 interface CtrlOpts {
@@ -4548,6 +4598,8 @@ function controlPreview(): HTMLElement {
     'arrow-right-double': 'Double arrow right',
     'chevron-up': 'Chevron up',
     'chevron-down': 'Chevron down',
+    'chevron-left': 'Chevron left',
+    'chevron-right': 'Chevron right',
     tooltip: 'Tooltip',
     trash: 'Trash',
     kebab: 'Kebab menu',
@@ -4672,6 +4724,7 @@ function controlContent(): HTMLElement {
         el('li', {}, 'arrow-left / arrow-right — navigate to previous / next item.'),
         el('li', {}, 'arrow-left-double / arrow-right-double — navigate to first / last item.'),
         el('li', {}, 'chevron-up / chevron-down — expand or collapse content vertically.'),
+        el('li', {}, 'chevron-left / chevron-right — step content horizontally (carousels, single-step pagers, accordion side panels).'),
         el('li', {}, 'tooltip — trigger a popover with additional context. Pairs with the Tooltip component.'),
         el('li', {}, 'trash — delete a record. Use color="critical".'),
         el('li', {}, 'kebab — trigger a popover menu of secondary actions.'),
@@ -7072,19 +7125,7 @@ function notificationBadgePreview(): HTMLElement {
     cell('99+', previewNotificationBadge({ size: 'medium', count: '99+' })),
   );
 
-  // Show in context: paired with a button + avatar
-  const btnWithBadge = (() => {
-    const wrap = el('div', { style: 'position: relative; display: inline-block;' });
-    const btn = document.createElement('scout-button');
-    btn.setAttribute('variant', 'secondary');
-    btn.textContent = 'Inbox';
-    wrap.appendChild(btn);
-    const badge = previewNotificationBadge({ size: 'small', count: '3' });
-    badge.setAttribute('style', 'position: absolute; top: -6px; right: -6px;');
-    wrap.appendChild(badge);
-    return wrap;
-  })();
-
+  // Show in context: paired with an avatar
   const avatarWithBadge = (() => {
     const a = document.createElement('scout-avatar');
     a.setAttribute('initials', 'HM');
@@ -7096,8 +7137,7 @@ function notificationBadgePreview(): HTMLElement {
 
   block(
     'In context',
-    'Composes naturally inside other components — avatars, buttons, icons. The avatar component below already uses the notification badge internally.',
-    cell('On a button', btnWithBadge),
+    'Composes naturally inside other components — avatars, icons. The avatar component below already uses the notification badge internally.',
     cell('On an avatar', avatarWithBadge),
   );
 
@@ -9316,11 +9356,11 @@ function makeTile(opts: {
   }
   if (opts.body) t.appendChild(document.createTextNode(opts.body));
   if (opts.footer === 'button-tertiary') {
-    const cnxBtn = document.createElement('scout-button');
-    cnxBtn.setAttribute('slot', 'footer');
-    cnxBtn.setAttribute('variant', 'tertiary');
-    cnxBtn.textContent = 'View all activity';
-    t.appendChild(cnxBtn);
+    const link = document.createElement('scout-link');
+    link.setAttribute('slot', 'footer');
+    link.setAttribute('href', '#');
+    link.textContent = 'View all activity';
+    t.appendChild(link);
   }
   return t;
 }
@@ -9346,7 +9386,6 @@ function makeTileWorkflow(opts: {
   step?: number; header?: string; subhead?: string;
   state?: WorkflowHeaderState; expanded?: boolean;
   functional?: TileFunctionalState;
-  disabled?: boolean;
   noStep?: boolean;
   noEdit?: boolean;
   body?: string;
@@ -9361,7 +9400,6 @@ function makeTileWorkflow(opts: {
   if (opts.state) t.setAttribute('state', opts.state);
   if (opts.functional) t.setAttribute('functional', opts.functional);
   if (opts.expanded) t.setAttribute('expanded', '');
-  if (opts.disabled) t.setAttribute('disabled', '');
   if (opts.body) t.appendChild(document.createTextNode(opts.body));
   // Footer button group
   const buildBtn = (label: string, variant: string) => {
@@ -9425,7 +9463,6 @@ function tilePreview(): HTMLElement {
       makeTile({
         eyebrow: 'AI summary',
         header: 'Call summary',
-        badge: { label: 'AI', type: 'ai-summary' },
         body: 'Customer called about a $42.18 charge they didn\'t recognize. Verified identity via KBA. Initiated dispute and provided dispute reference. Customer was reassured by ETA of 5–7 business days. Follow-up email queued.',
         footer: 'show-more',
       }),
@@ -9461,10 +9498,9 @@ function tilePreview(): HTMLElement {
 
   block(
     'Tile workflow — functional states',
-    'Default and disabled cover the resting interaction states; loading and error replace the body content while the header keeps its state.',
+    'Default covers the resting interaction state; loading and error replace the body content while the header keeps its state.',
     el('div', { class: 'tile-stack' },
-      makeTileWorkflow({ noStep: true, header: 'Default', subhead: 'Tap to expand', state: 'active' }),
-      makeTileWorkflow({ noStep: true, header: 'Disabled', subhead: 'Locked while underwriting reviews', state: 'not-started', disabled: true }),
+      makeTileWorkflow({ noStep: true, header: 'Default', subhead: 'Subhead text goes here', state: 'active' }),
       makeTileWorkflow({ noStep: true, header: 'Loading data', state: 'active', expanded: true, functional: 'loading' }),
       makeTileWorkflow({ noStep: true, header: 'Couldn\'t load', state: 'active', expanded: true, functional: 'error' }),
     ),
@@ -13061,7 +13097,11 @@ import '@scout/anchor-links';
       summary: 'Vertical menu that links to in-page sections. Auto-scroll mode highlights the active section as the user scrolls; manual mode is click-only.',
       href: 'patterns-anchor-links',
     },
-    { title: 'Data display', summary: 'Lists, tables, and grids for showing structured records at scale. Sorting, density, empty + loading states.', comingSoon: true },
+    {
+      title: 'Data display',
+      summary: 'List-style key/value rows separated by dividers. Use inside a tile to surface dense reference data without the chrome of a full table.',
+      href: 'patterns-data-display',
+    },
     {
       title: 'Data table',
       summary: 'Rows and columns of structured data. Optional table / section / column headers, expandable rows, selectable rows, and a paginated or show-more footer.',
@@ -13071,6 +13111,7 @@ import '@scout/anchor-links';
     { title: 'Filter',   summary: 'Faceted filter rail + chip summary. Multi-select, date ranges, clear-all.', comingSoon: true },
     { title: 'Form',     summary: 'Field grouping, inline validation, submission states, error summaries.', comingSoon: true },
     { title: 'Search',   summary: 'Global search input + result list. Type-ahead, keyboard navigation, recent queries.', comingSoon: true },
+    { title: 'Side drawer', summary: 'Slide-in panel anchored to the edge of the viewport. Holds detail views, secondary forms, and overflow content without leaving the current page.', comingSoon: true },
   ];
   const { field: searchInput, count, toolbar: searchToolbar } = overviewSearchToolbar({
     placeholder: 'Search patterns by name or description (e.g. "table", "filter")',
@@ -14182,6 +14223,467 @@ import '@scout/anchor-links';
   ));
 }
 
+// -----------------------------------------------------------------
+// Data display pattern — list-style key/value rows separated by
+// horizontal dividers. Follows the standard six-tab componentPage
+// scaffold (Preview / Controls / Usage guidelines / Content /
+// Accessibility / Code) so it lives next to data-table without
+// breaking the docs reader's expectations.
+// -----------------------------------------------------------------
+{
+  type DDAlign = 'left-left' | 'left-right' | 'left-link' | 'left-button';
+  type DDSize = 'default' | 'condensed';
+  type DDRow = {
+    label: string;
+    /** Plain-text value used by left-left and left-right variants. */
+    value?: string;
+    /** Link copy used by left-link. */
+    linkLabel?: string;
+    linkHref?: string;
+    /** Button copy used by left-button. */
+    buttonLabel?: string;
+    /** Optional info-icon tooltip rendered next to the label. */
+    labelTooltip?: string;
+    /** Optional info-icon tooltip rendered next to the value. Skipped on
+     *  link / button rows where the tooltip would compete with the
+     *  trailing affordance. */
+    valueTooltip?: string;
+  };
+
+  /** Builds an info-icon tooltip with the given body copy. */
+  function makeTooltip(body: string): HTMLElement {
+    const tt = document.createElement('scout-tooltip');
+    tt.setAttribute('trigger', 'info-icon');
+    tt.setAttribute('placement', 'top');
+    tt.appendChild(document.createTextNode(body));
+    return tt;
+  }
+
+  function makeRow(opts: DDRow & { align: DDAlign; size: DDSize }): HTMLElement {
+    const row = el('div', { class: `dd-row dd-row--${opts.align}` });
+    const label = el('div', { class: 'dd-row__label' }, opts.label);
+    if (opts.labelTooltip) label.append(makeTooltip(opts.labelTooltip));
+    let valueNode: HTMLElement;
+    if (opts.align === 'left-link') {
+      const link = document.createElement('scout-link');
+      link.setAttribute('href', opts.linkHref ?? '#');
+      if (opts.size === 'condensed') link.setAttribute('size', 'condensed');
+      link.textContent = opts.linkLabel ?? 'View details';
+      valueNode = link;
+    } else if (opts.align === 'left-button') {
+      const btn = document.createElement('scout-button');
+      btn.setAttribute('variant', 'tertiary');
+      btn.setAttribute('flush', '');
+      if (opts.size === 'condensed') btn.setAttribute('size', 'condensed');
+      // Leading pencil icon — sized via the button's icon slot. Uses Hero
+      // Icons "pencil" so it sits next to the verb without competing.
+      const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      icon.setAttribute('slot', 'icon-leading');
+      icon.setAttribute('viewBox', '0 0 24 24');
+      icon.setAttribute('fill', 'currentColor');
+      icon.setAttribute('aria-hidden', 'true');
+      icon.innerHTML = '<path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32L19.513 8.2Z"/>';
+      btn.append(icon);
+      btn.appendChild(document.createTextNode(opts.buttonLabel ?? 'Edit'));
+      valueNode = btn;
+    } else {
+      valueNode = el('div', { class: 'dd-row__value' }, opts.value ?? '');
+    }
+    // Value tooltip — only meaningful on plain-text rows; link / button
+    // rows already carry a trailing control so an extra info icon would
+    // crowd the row.
+    if (opts.valueTooltip && (opts.align === 'left-left' || opts.align === 'left-right')) {
+      valueNode.append(makeTooltip(opts.valueTooltip));
+    }
+    row.append(label, valueNode);
+    return row;
+  }
+
+  function makeList(rows: Array<DDRow & { align: DDAlign }>, size: DDSize = 'default'): HTMLElement {
+    const list = el('div', { class: `dd-list${size === 'condensed' ? ' dd-list--condensed' : ''}`, role: 'list' });
+    rows.forEach((row, i) => {
+      list.append(makeRow({ ...row, size }));
+      if (i < rows.length - 1) {
+        const div = document.createElement('scout-divider');
+        list.appendChild(div);
+      }
+    });
+    return list;
+  }
+
+  /** Wraps a list inside a tile so the example matches the canonical use.
+   *  An empty header skips the title row entirely so the data display reads
+   *  as the sole content of the tile. */
+  function makeListInTile(opts: { header: string; rows: Array<DDRow & { align: DDAlign }>; size?: DDSize }): HTMLElement {
+    const tile = document.createElement('scout-tile');
+    if (opts.header) tile.setAttribute('header', opts.header);
+    tile.append(makeList(opts.rows, opts.size ?? 'default'));
+    return tile;
+  }
+
+  function dataDisplayPreview(): HTMLElement {
+    const wrap = el('div', { class: 'tab-content preview-layout' });
+
+    function block(title: string, lede: string, ...kids: (Node | string)[]) {
+      wrap.append(
+        el(
+          'section',
+          { class: 'preview-block' },
+          el('h3', { class: 'preview-block__title' }, title),
+          el('p', { class: 'preview-block__lede' }, lede),
+          ...kids,
+        ),
+      );
+    }
+
+    block(
+      'Left, left alignment',
+      'Label and description both anchor to the left. Use when values are short enough that left-alignment keeps the rhythm intact.',
+      makeListInTile({
+        header: '',
+        rows: [
+          { align: 'left-left', label: 'Name', value: 'Hannah Mezzadri' },
+          { align: 'left-left', label: 'Email', value: 'hannah@example.com' },
+          { align: 'left-left', label: 'Phone', value: '+1 555-0142' },
+          { align: 'left-left', label: 'Member since', value: 'May 2021' },
+        ],
+      }),
+    );
+
+    block(
+      'Left, right alignment',
+      'Label anchors to the left, description anchors to the right. Best for numeric or status-style values that benefit from a tabular feel.',
+      makeListInTile({
+        header: '',
+        rows: [
+          { align: 'left-right', label: 'Available balance', value: '$1,248.50' },
+          { align: 'left-right', label: 'Pending', value: '$42.18' },
+          { align: 'left-right', label: 'Statement balance', value: '$1,206.32' },
+          { align: 'left-right', label: 'Minimum due', value: '$25.00' },
+        ],
+      }),
+    );
+
+    block(
+      'Left label, right link',
+      'Label on the left, contextual link on the right. Use when each row deeps into more detail (a full transaction, a related record, an external page).',
+      makeListInTile({
+        header: '',
+        rows: [
+          { align: 'left-link', label: 'Charge on May 18 — $42.18', linkLabel: 'View dispute' },
+          { align: 'left-link', label: 'Charge on Apr 02 — $19.99', linkLabel: 'View dispute' },
+          { align: 'left-link', label: 'Charge on Mar 11 — $128.40', linkLabel: 'View dispute' },
+        ],
+      }),
+    );
+
+    block(
+      'Left label, right button',
+      'Label on the left, action button on the right. Use when the user might mutate the row in place — edit a value, resend a notification, retry a payment.',
+      makeListInTile({
+        header: '',
+        rows: [
+          { align: 'left-button', label: 'Mailing address', buttonLabel: 'Edit' },
+          { align: 'left-button', label: 'Default payment', buttonLabel: 'Edit' },
+          { align: 'left-button', label: 'Communication preferences', buttonLabel: 'Edit' },
+        ],
+      }),
+    );
+
+    block(
+      'With tooltips',
+      'Slot a scout-tooltip next to a label or description when a row needs a definition or context (acronyms, computed values, regulatory disclosures). Use sparingly — every tooltip is a request the user has to make.',
+      makeListInTile({
+        header: '',
+        rows: [
+          {
+            align: 'left-right',
+            label: 'APR',
+            value: '24.99%',
+            labelTooltip: 'Annual Percentage Rate — the yearly cost of borrowing, including interest and fees.',
+          },
+          {
+            align: 'left-right',
+            label: 'Available balance',
+            value: '$1,248.50',
+            valueTooltip: 'Reflects pending transactions and may differ from the statement balance.',
+          },
+          {
+            align: 'left-right',
+            label: 'Statement balance',
+            value: '$1,206.32',
+          },
+        ],
+      }),
+    );
+
+    block(
+      'Sizes',
+      'Default rows breathe (48px tall, body type) for general reference data; condensed rows (32px tall, body-small type) compress dense surfaces like a side rail or a multi-card dashboard.',
+      el('div', { class: 'preview-row', style: 'gap: var(--scout-space-16); flex-wrap: wrap;' },
+        (() => {
+          const wrap = el('div', { style: 'flex: 1; min-width: 280px;' });
+          wrap.append(
+            el('h4', { class: 'preview-block__heading' }, 'Default'),
+            makeListInTile({
+              header: '',
+              rows: [
+                { align: 'left-right', label: 'Available balance', value: '$1,248.50' },
+                { align: 'left-right', label: 'Pending', value: '$42.18' },
+                { align: 'left-right', label: 'Statement balance', value: '$1,206.32' },
+              ],
+            }),
+          );
+          return wrap;
+        })(),
+        (() => {
+          const wrap = el('div', { style: 'flex: 1; min-width: 280px;' });
+          wrap.append(
+            el('h4', { class: 'preview-block__heading' }, 'Condensed'),
+            makeListInTile({
+              header: '',
+              size: 'condensed',
+              rows: [
+                { align: 'left-right', label: 'Available balance', value: '$1,248.50' },
+                { align: 'left-right', label: 'Pending', value: '$42.18' },
+                { align: 'left-right', label: 'Statement balance', value: '$1,206.32' },
+              ],
+            }),
+          );
+          return wrap;
+        })(),
+      ),
+    );
+
+    return wrap;
+  }
+
+  function dataDisplayControls(): HTMLElement {
+    const wrap = el('div', { class: 'tab-content controls-layout' });
+    const stage = el('div', { class: 'preview-stage' });
+    const codePre = el('pre', { class: 'code-block' });
+
+    const alignSel = ddSelect('dd-align', ['left-left', 'left-right', 'left-link', 'left-button']);
+    const sizeSel = ddSelect('dd-size', ['default', 'condensed']);
+    const labelInput = ctrlText('dd-label', 'Name');
+    const valueInput = ctrlText('dd-value', 'Hannah Mezzadri');
+    const labelTooltipChk = ctrlCheck('dd-label-tooltip', 'Tooltip on label');
+    const valueTooltipChk = ctrlCheck('dd-value-tooltip', 'Tooltip on description');
+    const valueTooltipField = el('div', { class: 'ctrl-checks' }, valueTooltipChk);
+
+    function render() {
+      const align = alignSel.value as DDAlign;
+      const size = sizeSel.value as DDSize;
+      // Description tooltips only apply to plain-text rows; gate the
+      // checkbox so the user can't request something the row can't render.
+      const valueTooltipApplies = align === 'left-left' || align === 'left-right';
+      setFieldDisabled(valueTooltipField, valueTooltipChk, !valueTooltipApplies);
+      if (!valueTooltipApplies) valueTooltipChk.checked = false;
+      const sampleLabelTip = 'Definition or extra context for the label.';
+      const sampleValueTip = 'Definition or extra context for the value.';
+      const tile = makeListInTile({
+        header: '',
+        size,
+        rows: [
+          {
+            align,
+            label: labelInput.value,
+            value: valueInput.value,
+            linkLabel: valueInput.value || 'View details',
+            buttonLabel: valueInput.value || 'Edit',
+            labelTooltip: labelTooltipChk.checked ? sampleLabelTip : undefined,
+            valueTooltip: valueTooltipChk.checked ? sampleValueTip : undefined,
+          },
+          {
+            align,
+            label: 'Email',
+            value: 'hannah@example.com',
+            linkLabel: 'View details',
+            buttonLabel: 'Edit',
+          },
+          {
+            align,
+            label: 'Phone',
+            value: '+1 555-0142',
+            linkLabel: 'View details',
+            buttonLabel: 'Edit',
+          },
+        ],
+      });
+      stage.replaceChildren(tile);
+      const sizeAttr = size === 'condensed' ? ' size="condensed"' : '';
+      const ttMarkup = `<scout-tooltip trigger="info-icon">…</scout-tooltip>`;
+      const labelMarkup = labelTooltipChk.checked
+        ? `<div class="dd-row__label">${labelInput.value} ${ttMarkup}</div>`
+        : `<div class="dd-row__label">${labelInput.value}</div>`;
+      const plainValueMarkup = valueTooltipChk.checked && valueTooltipApplies
+        ? `<div class="dd-row__value">…  ${ttMarkup}</div>`
+        : `<div class="dd-row__value">…</div>`;
+      const valueMarkup =
+        align === 'left-link'
+          ? `<scout-link href="#"${sizeAttr}>View details</scout-link>`
+          : align === 'left-button'
+          ? `<scout-button variant="tertiary"${sizeAttr}><svg slot="icon-leading" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32L19.513 8.2Z"/></svg>Edit</scout-button>`
+          : plainValueMarkup;
+      const listClass = size === 'condensed' ? 'dd-list dd-list--condensed' : 'dd-list';
+      codePre.textContent = `<scout-tile>
+  <div class="${listClass}">
+    <div class="dd-row dd-row--${align}">
+      ${labelMarkup}
+      ${valueMarkup}
+    </div>
+    <scout-divider></scout-divider>
+    <!-- additional rows -->
+  </div>
+</scout-tile>`;
+    }
+    for (const c of [alignSel, sizeSel, labelInput, valueInput, labelTooltipChk, valueTooltipChk]) {
+      c.addEventListener('input', render);
+      c.addEventListener('change', render);
+    }
+
+    const panel = el('div', { class: 'ctrl-panel' },
+      el('h3', { class: 'preview-block__title' }, 'Properties'),
+      ctrlField('Alignment', 'dd-align', alignSel),
+      ctrlField('Size', 'dd-size', sizeSel),
+      ctrlField('Row label', 'dd-label', labelInput),
+      ctrlField('Row value', 'dd-value', valueInput),
+      el('div', { class: 'ctrl-checks' }, labelTooltipChk, valueTooltipChk),
+    );
+    wrap.append(
+      panel,
+      el('div', { class: 'ctrl-stage-wrap' }, stage,
+        el('div', { class: 'code-wrap' }, el('h3', { class: 'preview-block__title' }, 'Code'), codePre)),
+    );
+    queueMicrotask(render);
+    return wrap;
+  }
+
+  function dataDisplayGuidelines(): HTMLElement {
+    return el('div', { class: 'tab-content guidelines-layout' },
+      el('section', { class: 'guideline-section' },
+        el('h3', { class: 'guideline-heading' }, 'When to use'),
+        el('ul', { class: 'guideline-list' },
+          el('li', {}, 'Reference data with a clear label / value relationship — account info, balance summary, profile fields.'),
+          el('li', {}, 'Lower-density alternative to a full data table when rows do not need to be sorted or selected.'),
+          el('li', {}, 'Always place data display content inside a tile to convey grouping and ownership of the data.'),
+        )),
+      el('section', { class: 'guideline-section' },
+        el('h3', { class: 'guideline-heading' }, 'When not to use'),
+        el('ul', { class: 'guideline-list' },
+          el('li', {}, 'Comparing rows or scanning across columns — use a data table.'),
+          el('li', {}, 'Long-form prose or status messages — use a tile body or inline-alert.'),
+        )),
+      el('section', { class: 'guideline-section' },
+        el('h3', { class: 'guideline-heading' }, 'Picking an alignment'),
+        el('ul', { class: 'guideline-list' },
+          el('li', {}, 'Left, left — short text values where left-alignment keeps a vertical rhythm.'),
+          el('li', {}, 'Left, right — numeric or status values that benefit from right-alignment for comparison.'),
+          el('li', {}, 'Left, right link — each row deeps into more detail elsewhere.'),
+          el('li', {}, 'Left, right button — the user might edit or act on each row in place.'),
+        )),
+    );
+  }
+
+  function dataDisplayContent(): HTMLElement {
+    return el('div', { class: 'tab-content guidelines-layout' },
+      el('section', { class: 'guideline-section' },
+        el('h3', { class: 'guideline-heading' }, 'Anatomy'),
+        el('ul', { class: 'guideline-list' },
+          el('li', {}, 'Each row is made up of a label and a description, link, or button.'),
+          el('li', {}, 'Rows are separated by a horizontal divider.'),
+          el('li', {}, 'Place the list inside a tile so the data reads as a grouped record.'),
+        )),
+      el('section', { class: 'guideline-section' },
+        el('h3', { class: 'guideline-heading' }, 'Voice & tone'),
+        el('ul', { class: 'guideline-list' },
+          el('li', {}, 'Labels are short noun phrases ("Mailing address", "Statement balance") — sentence case, no trailing colon.'),
+          el('li', {}, 'Values are concrete and scannable. Format numbers consistently across rows in the same list.'),
+          el('li', {}, 'Action buttons use a single verb ("Edit", "Retry", "Resend") so the user knows what will change.'),
+        )),
+    );
+  }
+
+  function dataDisplayAccessibility(): HTMLElement {
+    return el('div', { class: 'tab-content guidelines-layout' },
+      el('section', { class: 'guideline-section' },
+        el('h3', { class: 'guideline-heading' }, 'Semantics'),
+        el('ul', { class: 'guideline-list' },
+          el('li', {}, 'The list uses role="list" and rows are read in document order.'),
+          el('li', {}, 'Labels and values are paired in the DOM so screen readers announce them together.'),
+          el('li', {}, 'Slotted links and buttons inherit their own accessible name; do not duplicate the label inside them.'),
+        )),
+      el('section', { class: 'guideline-section' },
+        el('h3', { class: 'guideline-heading' }, 'Keyboard'),
+        el('ul', { class: 'guideline-list' },
+          el('li', {}, 'Tab focuses each interactive element (link or button) in row order.'),
+          el('li', {}, 'Plain text rows are not focusable — they are read inline by AT.'),
+        )),
+    );
+  }
+
+  function dataDisplayCode(): HTMLElement {
+    return el('div', { class: 'tab-content code-layout' },
+      el('section', { class: 'preview-block' },
+        el('h3', { class: 'preview-block__title' }, 'Install'),
+        el('p', { class: 'preview-block__lede' },
+          'Data display is composed from existing Scout parts — tile, divider, link, button — so there is no separate package to install. Pull in the parts you need:'),
+        el('pre', { class: 'code-block' }, `pnpm add @scout/tile @scout/divider @scout/link @scout/button`),
+      ),
+      el('section', { class: 'preview-block' },
+        el('h3', { class: 'preview-block__title' }, 'Markup'),
+        el('pre', { class: 'code-block' },
+          `<scout-tile header="Account holder">
+  <div class="dd-list" role="list">
+    <div class="dd-row dd-row--left-left">
+      <div class="dd-row__label">Name</div>
+      <div class="dd-row__value">Hannah Mezzadri</div>
+    </div>
+    <scout-divider></scout-divider>
+
+    <div class="dd-row dd-row--left-right">
+      <div class="dd-row__label">Available balance</div>
+      <div class="dd-row__value">$1,248.50</div>
+    </div>
+    <scout-divider></scout-divider>
+
+    <div class="dd-row dd-row--left-link">
+      <div class="dd-row__label">Recent dispute — May 18</div>
+      <scout-link href="#">View dispute</scout-link>
+    </div>
+    <scout-divider></scout-divider>
+
+    <div class="dd-row dd-row--left-button">
+      <div class="dd-row__label">Mailing address</div>
+      <scout-button variant="tertiary">
+        <svg slot="icon-leading" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32L19.513 8.2Z"/>
+        </svg>
+        Edit
+      </scout-button>
+    </div>
+  </div>
+</scout-tile>`),
+      ),
+    );
+  }
+
+  app.append(componentPage(
+    'patterns-data-display',
+    'Data display',
+    'List-style key/value rows separated by horizontal dividers. Similar to a data table but presented as a list — best for grouped reference data inside a tile rather than tabular comparison.',
+    [
+      { id: 'preview', label: 'Preview', content: dataDisplayPreview() },
+      { id: 'controls', label: 'Controls', content: dataDisplayControls() },
+      { id: 'guidelines', label: 'Usage guidelines', content: dataDisplayGuidelines() },
+      { id: 'content', label: 'Content', content: dataDisplayContent() },
+      { id: 'accessibility', label: 'Accessibility', content: dataDisplayAccessibility() },
+      { id: 'code', label: 'Code', content: dataDisplayCode() },
+    ],
+    'pattern',
+  ));
+}
+
 // =================================================================
 // TEMPLATES
 // =================================================================
@@ -14314,12 +14816,13 @@ const navSections: NavSection[] = [
     items: [
       { id: 'patterns-overview',      label: 'Overview' },
       { id: 'patterns-anchor-links',  label: 'Anchor links' },
-      { id: 'patterns-data-display',  label: 'Data display',     disabled: true, tag: 'Soon' },
+      { id: 'patterns-data-display',  label: 'Data display' },
       { id: 'patterns-data-table',    label: 'Data table' },
       { id: 'patterns-data-viz',      label: 'Data viz',         disabled: true, tag: 'Soon' },
       { id: 'patterns-filter',        label: 'Filter',           disabled: true, tag: 'Soon' },
       { id: 'patterns-form',          label: 'Form',             disabled: true, tag: 'Soon' },
       { id: 'patterns-search',        label: 'Search',           disabled: true, tag: 'Soon' },
+      { id: 'patterns-side-drawer',   label: 'Side drawer',      disabled: true, tag: 'Soon' },
     ],
   },
   {

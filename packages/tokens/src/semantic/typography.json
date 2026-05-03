@@ -21,6 +21,17 @@
         "letterSpacing": "{font.letter-spacing.0}"
       }
     },
+    "label-small": {
+      "$type": "typography",
+      "$description": "Compact label for condensed-size form fields. Same weight as label, one step down in size to match the condensed input rhythm.",
+      "$value": {
+        "fontFamily": "{font.family.inter}",
+        "fontWeight": "{font.weight.semibold}",
+        "fontSize":   "{font.size.12}",
+        "lineHeight": "{font.line-height.18}",
+        "letterSpacing": "{font.letter-spacing.0}"
+      }
+    },
     "body-small": {
       "$type": "typography",
       "$value": {

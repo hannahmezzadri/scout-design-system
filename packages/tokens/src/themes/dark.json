@@ -64,7 +64,8 @@
     "info":      { "$value": "{color.blue.400}",       "$type": "color" },
     "warning":   { "$value": "{color.yellow.400}",     "$type": "color" },
     "critical":     { "$value": "{color.red.400}",        "$type": "color" },
-    "success":   { "$value": "{color.green.400}",      "$type": "color" }
+    "success":   { "$value": "{color.green.400}",      "$type": "color" },
+    "teal":      { "$value": "{color.teal.600}",       "$type": "color", "$description": "Dark-mode teal border — bumped lighter so the panel edge stays visible against the deeper fill.teal." }
   },
   "surface": {
     "page":           { "$value": "{color.cool-gray.950}",    "$type": "color" },
@@ -96,13 +97,16 @@
     "ai": {
       "subtle": { "$value": "{color.purple.900}","$type": "color" },
       "bold":   { "$value": "{color.purple.400}","$type": "color" }
-    }
+    },
+    "teal":     { "$value": "{color.teal.900}", "$type": "color", "$description": "Dark-mode teal fill — flips to a deep teal so the share-with-customer surface reads as a tinted panel against the page (cool-gray.950) instead of a pale chip on a dark canvas." }
   },
   "interactive": {
     "background": {
       "hover":           { "$value": "{color.cool-gray.700}", "$type": "color" },
       "pressed":         { "$value": "{color.cool-gray.600}", "$type": "color" },
       "selected":        { "$value": "{color.cool-gray.700}", "$type": "color" },
+      "hover-on-tint":   { "$value": "{color.alpha-white.10}", "$type": "color", "$description": "Dark-mode pair to the light-mode black-alpha overlay — flips to white-alpha so the hover lifts off the (now-darker) status fill instead of vanishing into it." },
+      "pressed-on-tint": { "$value": "{color.alpha-white.20}", "$type": "color" },
       "brand-hover":     { "$value": "{color.blue.900}",      "$type": "color" },
       "brand-pressed":   { "$value": "{color.blue.800}",      "$type": "color" },
       "brand-strong":         { "$value": "{color.blue.500}", "$type": "color" },

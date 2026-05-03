@@ -65,18 +65,26 @@ export class ScoutBadge extends LitElement {
     /* Informational */
     :host([type='informational'][emphasis='high']) .badge {
       background: var(--scout-text-interactive-primary);
-      color: var(--scout-color-white);
+      color: var(--scout-color-cool-gray-50);
     }
     :host([type='informational'][emphasis='low']) .badge,
     :host([type='informational']:not([emphasis])) .badge {
       background: var(--scout-fill-info-subtle);
       color: var(--scout-text-display-info);
     }
+    /* Dark mode — text-display-info (blue.300) on blue.900 has weak
+       contrast. Bump text to blue.200 so the chip stays readable. */
+    :host-context([data-theme='dark']):host([type='informational'][emphasis='low']) .badge,
+    :host-context([data-theme='dark']):host([type='informational']:not([emphasis])) .badge {
+      color: var(--scout-color-blue-200);
+    }
 
-    /* Neutral */
+    /* Neutral — light theme defaults. In dark theme the chip would lose
+       contrast against the page (cool-gray.900) so we flip the fill +
+       text per emphasis level via :host-context overrides below. */
     :host([type='neutral'][emphasis='high']) .badge {
       background: var(--scout-color-cool-gray-700);
-      color: var(--scout-color-white);
+      color: var(--scout-color-cool-gray-50);
     }
     :host([type='neutral'][emphasis='low']) .badge,
     :host([type='neutral']:not([emphasis])) .badge,
@@ -84,65 +92,110 @@ export class ScoutBadge extends LitElement {
       background: var(--scout-color-cool-gray-200);
       color: var(--scout-color-cool-gray-700);
     }
-
-    /* Neutral knockout — outlined chip. Low = subtle, high = stronger presence. */
-    :host([type='neutral-knockout'][emphasis='low']) .badge,
-    :host([type='neutral-knockout']:not([emphasis])) .badge {
-      background: transparent;
-      color: var(--scout-text-display-secondary);
-      border-color: var(--scout-border-primary);
+    :host-context([data-theme='dark']):host([type='neutral'][emphasis='high']) .badge {
+      /* Bumps from .700 to .500 so the high-emphasis chip lifts off the
+         dark page surface (cool-gray.900) instead of merging into it. */
+      background: var(--scout-color-cool-gray-500);
+      color: var(--scout-color-cool-gray-50);
     }
-    :host([type='neutral-knockout'][emphasis='high']) .badge {
-      background: var(--scout-surface-primary);
-      color: var(--scout-text-display-primary);
-      border-color: var(--scout-color-cool-gray-700);
+    :host-context([data-theme='dark']):host([type='neutral'][emphasis='low']) .badge,
+    :host-context([data-theme='dark']):host([type='neutral']:not([emphasis])) .badge,
+    :host-context([data-theme='dark']):host(:not([type])) .badge {
+      /* Mid-tone chip: dark enough to sit on the page, light enough to
+         read against. Text bumps to .200 for legibility. */
+      background: var(--scout-color-cool-gray-700);
+      color: var(--scout-color-cool-gray-200);
+    }
+
+    /* Neutral knockout — borderless white chip with gray text in light
+       theme. In dark theme the always-white fill reads as a hard punch
+       through the page; soften to cool-gray.100 so the chip still
+       knockouts but doesn't shout. */
+    :host([type='neutral-knockout']) .badge {
+      background: var(--scout-fill-always-white);
+      color: var(--scout-color-cool-gray-900);
+      border-color: transparent;
+    }
+    /* Dark-mode neutral-knockout splits emphasis levels:
+       - Low: transparent fill + subtle border so the chip recedes into
+         the page (a "ghost" chip for tagging-style use).
+       - High: cool-gray.100 fill keeps a soft knockout identity
+         without the harshness of pure white. */
+    :host-context([data-theme='dark']):host([type='neutral-knockout'][emphasis='low']) .badge,
+    :host-context([data-theme='dark']):host([type='neutral-knockout']:not([emphasis])) .badge {
+      background: transparent;
+      color: var(--scout-color-cool-gray-300);
+      border-color: var(--scout-color-cool-gray-600);
+    }
+    :host-context([data-theme='dark']):host([type='neutral-knockout'][emphasis='high']) .badge {
+      background: var(--scout-color-cool-gray-100);
+      color: var(--scout-color-cool-gray-700);
     }
 
     /* Success */
     :host([type='success'][emphasis='high']) .badge {
       background: var(--scout-interactive-background-success-strong);
-      color: var(--scout-color-white);
+      color: var(--scout-color-cool-gray-50);
     }
     :host([type='success'][emphasis='low']) .badge,
     :host([type='success']:not([emphasis])) .badge {
       background: var(--scout-fill-success-subtle);
       color: var(--scout-text-display-success);
     }
+    :host-context([data-theme='dark']):host([type='success'][emphasis='low']) .badge,
+    :host-context([data-theme='dark']):host([type='success']:not([emphasis])) .badge {
+      color: var(--scout-color-green-200);
+    }
 
     /* Warning */
     :host([type='warning'][emphasis='high']) .badge {
       background: var(--scout-fill-warning-bold);
-      color: var(--scout-color-white);
+      color: var(--scout-color-cool-gray-50);
     }
     :host([type='warning'][emphasis='low']) .badge,
     :host([type='warning']:not([emphasis])) .badge {
       background: var(--scout-fill-warning-subtle);
       color: var(--scout-text-display-warning);
     }
+    :host-context([data-theme='dark']):host([type='warning'][emphasis='low']) .badge,
+    :host-context([data-theme='dark']):host([type='warning']:not([emphasis])) .badge {
+      color: var(--scout-color-yellow-200);
+    }
 
     /* Critical */
     :host([type='critical'][emphasis='high']) .badge {
       background: var(--scout-interactive-background-critical-strong-hover);
-      color: var(--scout-color-white);
+      color: var(--scout-color-cool-gray-50);
     }
     :host([type='critical'][emphasis='low']) .badge,
     :host([type='critical']:not([emphasis])) .badge {
       background: var(--scout-fill-critical-subtle);
       color: var(--scout-text-display-critical);
     }
+    :host-context([data-theme='dark']):host([type='critical'][emphasis='low']) .badge,
+    :host-context([data-theme='dark']):host([type='critical']:not([emphasis])) .badge {
+      color: var(--scout-color-red-200);
+    }
 
     /* AI summary — purple, the system's convention for AI-generated content */
     :host([type='ai-summary'][emphasis='high']) .badge {
       background: var(--scout-fill-ai-bold);
-      color: var(--scout-color-white);
+      color: var(--scout-color-cool-gray-50);
     }
     :host([type='ai-summary'][emphasis='low']) .badge,
     :host([type='ai-summary']:not([emphasis])) .badge {
       background: var(--scout-fill-ai-subtle);
       color: var(--scout-color-purple-700);
     }
+    /* Dark mode — purple-700 text on purple-900 bg has almost no contrast.
+       Bump text to purple-200 so the chip stays readable. */
+    :host-context([data-theme='dark']):host([type='ai-summary'][emphasis='low']) .badge,
+    :host-context([data-theme='dark']):host([type='ai-summary']:not([emphasis])) .badge {
+      color: var(--scout-color-purple-200);
+    }
 
-    .icon {
+    .icon,
+    ::slotted([slot='icon-custom']) {
       width: var(--_badge-icon-size);
       height: var(--_badge-icon-size);
       flex-shrink: 0;
@@ -166,14 +219,12 @@ export class ScoutBadge extends LitElement {
     //   - size is default (icons are disallowed at condensed)
     //   - the consumer hasn't slotted a custom icon
     //   - the type has a prescribed icon (informational, success, warning, critical, ai-summary)
-    //   - either the consumer set the `icon` boolean attribute, OR the type
-    //     is ai-summary (the sparkle is always rendered to anchor the AI
-    //     convention even when icon isn't explicitly set).
+    //   - the consumer explicitly opted in via the `icon` attribute.
     const showPrescribed =
       this.size !== 'condensed' &&
       !this._hasCustomIcon &&
       this.type in PRESCRIBED_ICON &&
-      (this.icon || this.type === 'ai-summary');
+      this.icon;
 
     const showCustomSlot = this.size !== 'condensed';
 

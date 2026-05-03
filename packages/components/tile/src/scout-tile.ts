@@ -60,8 +60,20 @@ export class ScoutTile extends LitElement {
       padding: var(--scout-space-16);
       display: flex;
       flex-direction: column;
-      gap: var(--scout-space-12);
     }
+
+    /* Default vertical rhythm between siblings inside the tile. */
+    .tile > * + * { margin-top: var(--scout-space-12); }
+
+    /* Tight pairings inside the header. */
+    .tile > .title-row { margin-top: var(--scout-space-4); }
+    .tile > .subhead { margin-top: var(--scout-space-4); }
+
+    /* Footer affordances sit space.16 below the content above them and the
+       tile keeps its default space.16 bottom padding, so the link /
+       show-more toggle has equal breathing room above and below. */
+    .tile > .footer-divider { margin-top: var(--scout-space-16); }
+    .tile > .footer { margin-top: var(--scout-space-16); }
 
     /* Header --------------------------------------------------------- */
     .eyebrow {
@@ -81,9 +93,9 @@ export class ScoutTile extends LitElement {
       display: inline-flex;
       align-items: center;
       gap: var(--scout-space-8);
-      font-size: var(--scout-font-size-16);
+      font-size: var(--scout-font-size-20);
       font-weight: var(--scout-font-weight-semibold);
-      line-height: var(--scout-font-line-height-24);
+      line-height: var(--scout-font-line-height-30);
       color: var(--scout-text-display-primary);
     }
     .title h3 {
@@ -94,14 +106,15 @@ export class ScoutTile extends LitElement {
       flex-shrink: 0;
     }
     .subhead {
-      font-size: var(--scout-font-size-12);
+      font-size: var(--scout-typography-body-small-font-size);
+      line-height: var(--scout-typography-body-small-line-height);
       color: var(--scout-text-display-secondary);
     }
 
     /* Body ----------------------------------------------------------- */
     .body {
-      font-size: var(--scout-font-size-14);
-      line-height: var(--scout-font-line-height-21);
+      font-size: var(--scout-typography-body-font-size);
+      line-height: var(--scout-typography-body-line-height);
       color: var(--scout-text-display-primary);
     }
     /* When show-more is the footer and the tile is collapsed, clamp the body */
@@ -181,7 +194,6 @@ export class ScoutTile extends LitElement {
     if (this.footer === 'none') return nothing;
     if (this.footer === 'show-more') {
       return html`
-        <scout-divider class="footer-divider"></scout-divider>
         <div class="footer">
           <scout-show-more
             ?expanded=${this.expanded}
@@ -201,14 +213,16 @@ export class ScoutTile extends LitElement {
     return html`
       <div class="tile">
         <div class="eyebrow"><slot name="eyebrow"></slot></div>
-        <div class="title-row">
-          <span class="title">
-            <h3>${this.header}</h3>
-            <slot name="tooltip"></slot>
-            <slot name="badge"></slot>
-          </span>
-          <span class="header-button"><slot name="header-button"></slot></span>
-        </div>
+        ${this.header
+          ? html`<div class="title-row">
+              <span class="title">
+                <h3>${this.header}</h3>
+                <slot name="tooltip"></slot>
+                <slot name="badge"></slot>
+              </span>
+              <span class="header-button"><slot name="header-button"></slot></span>
+            </div>`
+          : nothing}
         ${this.subhead ? html`<div class="subhead">${this.subhead}</div>` : nothing}
         ${this._renderBody()}
         ${this._renderFooter()}

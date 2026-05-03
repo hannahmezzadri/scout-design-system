@@ -67,13 +67,17 @@ export class ScoutTooltip extends LitElement {
       pointer-events: none;
     }
     /* Info-icon trigger — outline by default, swap to solid on hover/focus
-       so the affordance reads as active. */
+       so the affordance reads as active. Uses the dedicated control-icon
+       token (icon.interactive.primary / cool-gray.800) instead of the
+       brand-blue text token shared with the text trigger, so the icon
+       reads as a neutral control affordance rather than a link. */
     .trigger-info {
       width: 24px;
       height: 24px;
       align-items: center;
       justify-content: center;
       position: relative;
+      color: var(--scout-icon-interactive-primary);
     }
     .trigger-info span {
       position: absolute;

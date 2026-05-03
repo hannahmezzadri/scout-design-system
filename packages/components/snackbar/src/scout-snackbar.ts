@@ -36,21 +36,32 @@ const STATUS_ICONS: Record<SnackbarStatus, ReturnType<typeof svg>> = {
 export class ScoutSnackbar extends LitElement {
   static styles = css`
     :host {
+      /* Hugs the slotted description text — no min-width, capped at 400px
+         so longer messages wrap rather than stretching across the page. */
       display: inline-block;
-      max-width: 420px;
+      min-width: 0;
+      width: max-content;
+      max-width: 400px;
     }
 
     .snackbar {
       display: flex;
-      align-items: center;
+      /* Top-align so the icon and X control stay anchored to the first
+         line of the description when the message wraps to multiple lines.
+         Per-element margin-top below offsets each control's height
+         against the body line-height (24px) to land its visual center on
+         the first line's center (12px from line-top). */
+      align-items: flex-start;
       gap: var(--scout-space-12);
       padding: var(--scout-space-12) var(--scout-space-16);
-      /* All snackbar statuses share the inverse surface — the status icon
-         color does the semantic lifting instead of the background. The
-         text/icon inverse tokens flip in dark mode so the snackbar stays
-         readable on its (now-light) inverse surface. */
-      background: var(--scout-surface-inverse);
-      color: var(--scout-text-inverse-primary);
+      /* Status-tinted surface + colored leading border, mirroring the
+         inline-alert language so the two components feel like one family.
+         Background uses fill.*-subtle (themes in dark mode) and the text
+         color uses text.display.primary so the message stays readable on
+         both themes. */
+      border: var(--scout-border-width-1) var(--scout-stroke-solid) transparent;
+      border-left-width: var(--scout-border-width-4, 4px);
+      color: var(--scout-text-display-primary);
       border-radius: var(--scout-radius-8);
       box-shadow: var(--scout-elevation-3);
       font-family: var(--scout-font-family-inter);
@@ -58,32 +69,53 @@ export class ScoutSnackbar extends LitElement {
       line-height: var(--scout-typography-body-line-height);
     }
 
+    /* Per-status fills + accent borders + status-icon color. */
+    :host([status='success']) .snackbar {
+      background: var(--scout-fill-success-subtle);
+      border-color: var(--scout-border-success);
+    }
+    :host([status='success']) .status-icon { color: var(--scout-text-display-success); }
+
+    :host([status='warning']) .snackbar {
+      background: var(--scout-fill-warning-subtle);
+      border-color: var(--scout-border-warning);
+    }
+    :host([status='warning']) .status-icon { color: var(--scout-text-display-warning); }
+
+    :host([status='critical']) .snackbar {
+      background: var(--scout-fill-critical-subtle);
+      border-color: var(--scout-border-critical);
+    }
+    :host([status='critical']) .status-icon { color: var(--scout-text-display-critical); }
+
     .status-icon {
       width: 20px;
       height: 20px;
       flex-shrink: 0;
+      /* Center the 20px icon against the 24px first-line of the body
+         (line-center = 12px → icon-top = 12 − 10 = 2px). */
+      margin-top: 2px;
     }
-    /* Status icon carries the semantic color since the background is now
-       always the inverse surface. */
-    :host([status='success'])  .status-icon { color: var(--scout-fill-success-bold); }
-    :host([status='warning'])  .status-icon { color: var(--scout-fill-warning-bold); }
-    :host([status='critical']) .status-icon { color: var(--scout-fill-critical-bold); }
 
     .description {
       flex: 1;
       min-width: 0;
     }
 
-    /* X dismiss control — sits on the inverse surface, so it pulls from the
-       icon.inverse + interactive.background tokens that auto-flip in dark
-       mode (where surface.inverse becomes a light tone). */
+    /* X dismiss control — sits on the tinted surface, so it pulls from the
+       display icon tokens (which match the now-light background and flip
+       on dark theme alongside the surface). */
     .dismiss {
       flex-shrink: 0;
-      --_control-fg: var(--scout-icon-inverse-secondary);
-      --_control-fg-hover: var(--scout-icon-inverse-primary);
+      /* Center the 32px default control against the 24px first-line
+         (line-center = 12px → control-top = 12 − 16 = −4px). */
+      margin-top: -4px;
     }
     .dismiss::part(button):hover {
-      background: var(--scout-interactive-background-hover);
+      background: var(--scout-interactive-background-hover-on-tint);
+    }
+    .dismiss::part(button):active {
+      background: var(--scout-interactive-background-pressed-on-tint);
     }
   `;
 
@@ -137,7 +169,6 @@ export class ScoutSnackbar extends LitElement {
           ? html`<scout-control
               class="dismiss"
               type="x-close"
-              size="condensed"
               aria-label-override="Dismiss"
               @click=${this._dismiss}
             ></scout-control>`

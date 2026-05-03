@@ -120,12 +120,14 @@
       "999": { "$value": "#040302", "$type": "color" }
     },
     "alpha": {
-      "$description": "Black-based transparency overlays. Two opacity levels — 20 for hovers/dividers, 80 for scrims/backdrops. The stop number IS the opacity percentage.",
+      "$description": "Black-based transparency overlays. Three opacity levels — 10 for subtle control hovers on tinted surfaces, 20 for hovers/dividers on neutral surfaces, 80 for scrims/backdrops. The stop number IS the opacity percentage.",
+      "10": { "$value": "rgba(0,0,0,0.10)", "$type": "color" },
       "20": { "$value": "rgba(0,0,0,0.20)", "$type": "color" },
       "80": { "$value": "rgba(0,0,0,0.80)", "$type": "color" }
     },
     "alpha-white": {
-      "$description": "White-based transparency overlays for use on dark surfaces. Two opacity levels — 20 and 80 — matching alpha.",
+      "$description": "White-based transparency overlays for use on dark surfaces. Opacity levels matching alpha.",
+      "10": { "$value": "rgba(255,255,255,0.10)", "$type": "color" },
       "20": { "$value": "rgba(255,255,255,0.20)", "$type": "color" },
       "80": { "$value": "rgba(255,255,255,0.80)", "$type": "color" }
     },

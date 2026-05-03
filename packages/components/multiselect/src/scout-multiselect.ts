@@ -54,9 +54,14 @@ export class ScoutMultiselect extends LitElement {
       gap: var(--scout-space-4);
     }
     label.field-label {
-      font-size: var(--scout-font-size-12);
-      font-weight: var(--scout-font-weight-semibold);
+      font-size: var(--scout-typography-label-font-size);
+      line-height: var(--scout-typography-label-line-height);
+      font-weight: var(--scout-typography-label-font-weight);
       color: var(--scout-text-display-primary);
+    }
+    :host([size='condensed']) label.field-label {
+      font-size: var(--scout-typography-label-small-font-size);
+      line-height: var(--scout-typography-label-small-line-height);
     }
 
     .input-wrap {

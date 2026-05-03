@@ -55,7 +55,7 @@ export class ScoutShowMore extends LitElement {
       font-family: inherit;
       font-size: var(--_sm-fs);
       line-height: var(--_sm-lh);
-      font-weight: var(--scout-font-weight-semibold);
+      font-weight: var(--scout-font-weight-regular);
       line-height: var(--scout-font-line-height-21);
       color: var(--scout-text-interactive-primary);
       border-radius: var(--scout-radius-2);

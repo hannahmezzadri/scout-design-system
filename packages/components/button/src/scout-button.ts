@@ -16,6 +16,7 @@ import type { ButtonSize, ButtonType, ButtonVariant } from './types.js';
  * @attr {"button"|"submit"|"reset"} type - Form-association behavior.
  * @attr disabled - Disables interaction; skips tab order.
  * @attr knockout - White-on-dark treatment for buttons sitting on dark / saturated surfaces.
+ * @attr flush - Tertiary-only — drops the left/right padding so the label sits flush with surrounding text.
  * @attr loading - Shows a spinner and sets `aria-busy="true"`.
  *
  * @slot icon-leading - Icon rendered before the label (e.g. plus, search).
@@ -122,6 +123,17 @@ export class ScoutButton extends LitElement {
     }
     :host([variant='tertiary']) .button:active:not(:disabled):not([aria-busy='true']) {
       background: var(--scout-interactive-background-pressed);
+    }
+    /* The flush attribute drops the inline (left/right) padding so a
+       tertiary button can sit edge-aligned with surrounding text/labels
+       (e.g. "Edit" inside a data display row, inline "View all" links).
+       Block padding stays so the click target keeps height; hover and
+       pressed backgrounds still draw around the visible label only.
+       Tertiary-only by design — filled variants need their padding to
+       read as a button. */
+    :host([variant='tertiary'][flush]) .button,
+    :host([variant='critical-tertiary'][flush]) .button {
+      --_cnx-button-padding-inline: 0px;
     }
 
     /* === Variant: action (filled, success/affirmative) === */
@@ -233,6 +245,10 @@ export class ScoutButton extends LitElement {
 
   /** White-on-dark treatment — pair with dark / saturated surfaces. */
   @property({ type: Boolean, reflect: true }) knockout = false;
+
+  /** Tertiary-only — drops the left/right padding so the label sits flush
+   *  with surrounding text. Has no effect on filled variants. */
+  @property({ type: Boolean, reflect: true }) flush = false;
 
   /** Shows a spinner and sets `aria-busy="true"`. */
   @property({ type: Boolean, reflect: true }) loading = false;

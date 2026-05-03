@@ -37,7 +37,10 @@ export class ScoutSegmentedControl extends LitElement {
       align-items: stretch;
       gap: 2px;
       padding: var(--_seg-pad);
-      background: var(--scout-color-cool-gray-100);
+      /* Theme-aware track surface — flips to a deeper neutral in dark mode
+         so the lifted selected segment (surface-primary) keeps a clear
+         contrast step against the well behind it. */
+      background: var(--scout-surface-page);
       border: var(--scout-border-width-1) var(--scout-stroke-solid)
         var(--scout-border-primary);
       border-radius: var(--scout-radius-8);

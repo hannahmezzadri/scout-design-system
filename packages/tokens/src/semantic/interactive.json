@@ -5,6 +5,8 @@
       "hover":           { "$value": "{color.cool-gray.100}", "$type": "color", "$description": "Default hover background for buttons, list items, dropdown options." },
       "pressed":         { "$value": "{color.cool-gray.200}", "$type": "color", "$description": "Default active / pressed background." },
       "selected":        { "$value": "{color.cool-gray.100}", "$type": "color", "$description": "Resting selected background (segmented control track, sidebar selected row)." },
+      "hover-on-tint":   { "$value": "{color.alpha.10}",      "$type": "color", "$description": "Subtle black-alpha hover for controls sitting on a tinted surface (snackbar / inline-alert dismiss). The neutral hover (cool-gray.100) disappears against status fills, so this overlay reads on any tint and on both themes." },
+      "pressed-on-tint": { "$value": "{color.alpha.20}",      "$type": "color", "$description": "Pressed companion to `hover-on-tint`." },
 
       "brand-hover":     { "$value": "{color.blue.50}",      "$type": "color", "$description": "Hover for brand-tinted neutral surfaces (anchor-links rest hover, sidebar nav rest hover)." },
       "brand-pressed":   { "$value": "{color.blue.100}",     "$type": "color", "$description": "Pressed for brand-tinted neutral surfaces." },

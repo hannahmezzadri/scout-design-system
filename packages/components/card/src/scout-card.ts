@@ -35,14 +35,16 @@ export class ScoutCard extends LitElement {
     }
 
     /* Dark theme — promote each variant to a clearly elevated cool-gray
-       surface so the card reads as raised against the darker page chrome. */
+       surface so the card reads as raised against the darker page chrome
+       (cool-gray.950). Selector chains :host-context to :host so the
+       per-background overrides actually win against the base rule. */
     :host-context([data-theme='dark']) {
       --_card-bg: var(--scout-color-cool-gray-700);
     }
-    :host-context([data-theme='dark'])[background='cool-gray-100'] {
+    :host-context([data-theme='dark']):host([background='cool-gray-100']) {
       --_card-bg: var(--scout-color-cool-gray-800);
     }
-    :host-context([data-theme='dark'])[background='cool-gray-200'] {
+    :host-context([data-theme='dark']):host([background='cool-gray-200']) {
       --_card-bg: var(--scout-color-cool-gray-900);
     }
 

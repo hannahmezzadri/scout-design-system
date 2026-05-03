@@ -68,10 +68,15 @@ export class ScoutTextField extends LitElement {
 
     .label {
       display: block;
-      font-size: var(--scout-font-size-12);
-      font-weight: var(--scout-font-weight-semibold);
+      font-size: var(--scout-typography-label-font-size);
+      line-height: var(--scout-typography-label-line-height);
+      font-weight: var(--scout-typography-label-font-weight);
       color: var(--scout-text-display-primary);
       margin-bottom: var(--scout-space-4);
+    }
+    :host([size='condensed']) .label {
+      font-size: var(--scout-typography-label-small-font-size);
+      line-height: var(--scout-typography-label-small-line-height);
     }
     /* Optional hint sits inline with the label, regular weight + secondary
        color so it reads as supporting metadata, not part of the label name. */

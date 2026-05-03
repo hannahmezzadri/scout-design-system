@@ -378,6 +378,9 @@ importers:
       '@scout/control':
         specifier: workspace:*
         version: link:../control
+      '@scout/inline-alert':
+        specifier: workspace:*
+        version: link:../inline-alert
       '@scout/overlay':
         specifier: workspace:*
         version: link:../overlay

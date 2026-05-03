@@ -113,8 +113,8 @@ export class ScoutDialog extends LitElement {
     }
     .subtext {
       /* Zero browser default p margin and set the title→subtext gap
-         explicitly. Reduced from ~16px (browser default) to space.8. */
-      margin: var(--scout-space-8) 0 0 0;
+         explicitly. Reduced from ~16px (browser default) to space.4. */
+      margin: var(--scout-space-4) 0 0 0;
       font-size: var(--scout-typography-body-small-font-size);
       line-height: var(--scout-typography-body-small-line-height);
       color: var(--scout-text-display-secondary);

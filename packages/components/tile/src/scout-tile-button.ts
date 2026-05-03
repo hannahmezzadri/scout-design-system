@@ -85,20 +85,21 @@ export class ScoutTileButton extends LitElement {
     }
 
     .header {
-      font-size: var(--scout-font-size-16);
+      font-size: var(--scout-font-size-20);
       font-weight: var(--scout-font-weight-semibold);
-      line-height: var(--scout-font-line-height-24);
+      line-height: var(--scout-font-line-height-30);
       color: var(--scout-text-display-primary);
     }
     .subhead {
-      font-size: var(--scout-font-size-12);
+      font-size: var(--scout-typography-body-small-font-size);
+      line-height: var(--scout-typography-body-small-line-height);
       color: var(--scout-text-display-secondary);
       margin-top: 2px;
     }
     .body {
       margin-top: var(--scout-space-12);
-      font-size: var(--scout-font-size-14);
-      line-height: var(--scout-font-line-height-21);
+      font-size: var(--scout-typography-body-font-size);
+      line-height: var(--scout-typography-body-line-height);
       color: var(--scout-text-display-secondary);
     }
 

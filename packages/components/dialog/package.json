@@ -17,7 +17,8 @@
     "@scout/segmented-control": "workspace:*",
     "@scout/progress": "workspace:*",
     "@scout/button": "workspace:*",
-    "@scout/checkbox": "workspace:*"
+    "@scout/checkbox": "workspace:*",
+    "@scout/inline-alert": "workspace:*"
   },
   "dependencies": {
     "lit": "^3.2.0",
@@ -27,7 +28,8 @@
     "@scout/segmented-control": "workspace:*",
     "@scout/progress": "workspace:*",
     "@scout/button": "workspace:*",
-    "@scout/checkbox": "workspace:*"
+    "@scout/checkbox": "workspace:*",
+    "@scout/inline-alert": "workspace:*"
   },
   "devDependencies": { "tsup": "^8.3.0", "typescript": "^5.6.3" },
   "publishConfig": { "access": "restricted" },

@@ -117,6 +117,15 @@ export class ScoutInlineAlert extends LitElement {
       flex-shrink: 0;
       margin: -4px;
     }
+    /* The default neutral hover (cool-gray.100) disappears against the
+       alert's status-tinted background; switch to a black-alpha overlay
+       that reads on every status fill and on both themes. */
+    .close::part(button):hover {
+      background: var(--scout-interactive-background-hover-on-tint);
+    }
+    .close::part(button):active {
+      background: var(--scout-interactive-background-pressed-on-tint);
+    }
   `;
 
   @property({ type: String, reflect: true }) status: InlineAlertStatus = 'informational';
@@ -159,7 +168,6 @@ export class ScoutInlineAlert extends LitElement {
           ? html`<scout-control
               class="close"
               type="x-close"
-              size="condensed"
               aria-label-override="Close alert"
               @click=${this._close}
             ></scout-control>`

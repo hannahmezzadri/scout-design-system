@@ -8,6 +8,8 @@ export type ControlType =
   | 'arrow-right-double' // navigates to the last item
   | 'chevron-up'
   | 'chevron-down'
+  | 'chevron-left'
+  | 'chevron-right'
   | 'tooltip' // triggers a popover with additional context
   | 'trash' // deletes a record
   | 'kebab'; // triggers a popover menu

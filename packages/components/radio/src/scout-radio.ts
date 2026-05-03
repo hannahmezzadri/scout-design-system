@@ -69,7 +69,12 @@ export class ScoutRadio extends LitElement {
       margin: 0;
       width: 100%;
       height: 100%;
-      border: var(--scout-border-width-1) solid var(--scout-border-primary);
+      /* Dedicated higher-contrast outline. The shared border-primary
+         token (cool-gray.300 light / cool-gray.600 dark) is too soft for
+         a form input — bump to cool-gray.500 light / cool-gray.400 dark
+         so the unchecked radio reads against the surface in both
+         themes. */
+      border: var(--scout-border-width-1) solid var(--scout-color-cool-gray-500);
       border-radius: 50%;
       background: var(--scout-surface-primary);
       cursor: inherit;
@@ -79,8 +84,11 @@ export class ScoutRadio extends LitElement {
         border-color var(--scout-motion-duration-fast)
           var(--scout-motion-easing-standard);
     }
+    :host-context([data-theme='dark']) input {
+      border-color: var(--scout-color-cool-gray-400);
+    }
     input:hover:not(:disabled) {
-      border-color: var(--scout-interactive-background-brand-strong-pressed);
+      border-color: var(--scout-interactive-background-brand-strong);
     }
     input:focus-visible {
       outline: var(--scout-focus-ring-width) solid var(--scout-focus-ring-color);
@@ -90,7 +98,7 @@ export class ScoutRadio extends LitElement {
       background: var(--scout-color-cool-gray-100);
     }
     input:checked {
-      border-color: var(--scout-interactive-background-brand-strong-pressed);
+      border-color: var(--scout-interactive-background-brand-strong);
       background: var(--scout-surface-primary);
     }
     /* Inner dot for the selected state. Kept inside the input via a ::after to
@@ -100,10 +108,10 @@ export class ScoutRadio extends LitElement {
       position: absolute;
       inset: 3px;
       border-radius: 50%;
-      background: var(--scout-interactive-background-brand-strong-pressed);
+      background: var(--scout-interactive-background-brand-strong);
     }
     input:checked:active::after {
-      background: var(--scout-interactive-background-brand-strong-pressed);
+      background: var(--scout-interactive-background-brand-strong);
     }
 
     :host([invalid]) input:not(:checked) {

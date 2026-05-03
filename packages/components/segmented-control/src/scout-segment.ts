@@ -82,15 +82,20 @@ export class ScoutSegment extends LitElement {
       cursor: not-allowed;
     }
 
-    /* === Selected — functional state === */
+    /* === Selected — functional state ===
+       Selected segment uses the theme-aware raised surface so it lifts
+       against the track (surface-page) on both light and dark themes —
+       previously the always-white pill on a near-white track had almost
+       no contrast in light, and was unreadable against light text in
+       dark theme. */
     :host([selected]) button {
-      background: var(--scout-fill-always-white);
+      background: var(--scout-surface-primary);
       color: var(--scout-text-display-primary);
       font-weight: var(--scout-font-weight-semibold);
       box-shadow: var(--scout-elevation-1);
     }
     :host([selected]) button:hover:not(:disabled) {
-      background: var(--scout-fill-always-white);
+      background: var(--scout-surface-primary);
     }
 
     ::slotted([slot='icon']) {

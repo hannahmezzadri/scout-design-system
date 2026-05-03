@@ -31,7 +31,6 @@ const PENDING_DASH = svg`<path d="M6 10h8" stroke="currentColor" stroke-width="2
  * @attr {WorkflowHeaderState} state                     - Header state. Default `not-started`.
  * @attr {"default"|"loading"|"error"} functional        - Functional state. Default `default`.
  * @attr expanded                                        - Reflects open/closed state (collapsed by default for non-active steps).
- * @attr disabled                                        - Disables the toggle and edit button.
  *
  * @slot       - Body content rendered when expanded.
  * @slot footer - Footer buttons (Cancel / Save, etc).
@@ -45,7 +44,7 @@ export class ScoutTileWorkflow extends LitElement {
     :host {
       display: block;
       font-family: var(--scout-font-family-inter);
-      --_dot: var(--scout-space-24);
+      --_dot: 20px;
     }
 
     .tile {
@@ -61,22 +60,24 @@ export class ScoutTileWorkflow extends LitElement {
     /* Header row ----------------------------------------------------- */
     .head {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: var(--scout-space-12);
       width: 100%;
       text-align: left;
     }
-    :host([disabled]) .head { opacity: 0.5; }
-
     /* Status icon — varies by state */
     .dot {
       width: var(--_dot);
       height: var(--_dot);
+      box-sizing: border-box;
       border-radius: 50%;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+      /* Center the dot vertically against the title line, not the whole
+         text column (so a slotted subhead doesn't push it off-center). */
+      margin-top: calc((var(--scout-font-line-height-30) - var(--_dot)) / 2);
       background: var(--scout-surface-primary);
       border: var(--scout-border-width-2) solid var(--scout-border-primary);
       color: var(--scout-text-display-secondary);
@@ -110,15 +111,15 @@ export class ScoutTileWorkflow extends LitElement {
       gap: 2px;
     }
     .header-line {
-      font-size: var(--scout-font-size-16);
+      font-size: var(--scout-font-size-20);
       font-weight: var(--scout-font-weight-semibold);
+      line-height: var(--scout-font-line-height-30);
       color: var(--scout-text-display-primary);
     }
-    :host([state='not-started']) .header-line { color: var(--scout-text-display-secondary); }
-    :host([state='completed-locked']) .header-line { color: var(--scout-text-display-secondary); }
 
     .subhead {
-      font-size: var(--scout-font-size-12);
+      font-size: var(--scout-typography-body-small-font-size);
+      line-height: var(--scout-typography-body-small-line-height);
       color: var(--scout-text-display-secondary);
     }
 
@@ -151,6 +152,9 @@ export class ScoutTileWorkflow extends LitElement {
     .body-inner {
       overflow: hidden;
       padding-top: var(--scout-space-16);
+      font-size: var(--scout-typography-body-font-size);
+      line-height: var(--scout-typography-body-line-height);
+      color: var(--scout-text-display-primary);
     }
     :host(:not([expanded])) .body-inner { padding-top: 0; }
 
@@ -206,7 +210,6 @@ export class ScoutTileWorkflow extends LitElement {
   @property({ reflect: true }) state: WorkflowHeaderState = 'not-started';
   @property({ reflect: true }) functional: TileFunctionalState = 'default';
   @property({ type: Boolean, reflect: true }) expanded = false;
-  @property({ type: Boolean, reflect: true }) disabled = false;
 
   /** State drives expansion per spec: only `active` is expanded; every
    *  other state collapses. We sync `expanded` whenever `state` changes
@@ -219,7 +222,6 @@ export class ScoutTileWorkflow extends LitElement {
 
   private _onEdit = (e: Event) => {
     e.stopPropagation();
-    if (this.disabled) return;
     // Per spec: clicking Edit on a completed-editable tile transitions it
     // to active. The owning app is responsible for moving the previously-
     // active tile back to completed-editable (only one tile may be active
@@ -265,8 +267,8 @@ export class ScoutTileWorkflow extends LitElement {
   render() {
     // Per spec the Edit button appears only in completed-editable. The
     // `no-edit` attribute suppresses the affordance for static / preview
-    // tiles, and disabled hides it across the board.
-    const showEdit = this.state === 'completed-editable' && !this.disabled && !this.noEdit;
+    // tiles.
+    const showEdit = this.state === 'completed-editable' && !this.noEdit;
     return html`
       <div class="tile">
         <div
@@ -284,7 +286,6 @@ export class ScoutTileWorkflow extends LitElement {
                   class="edit-btn-cnx"
                   variant="tertiary"
                   size="condensed"
-                  ?disabled=${this.disabled}
                   @click=${this._onEdit}
                 >
                   <svg slot="icon-leading" viewBox="0 0 20 20" aria-hidden="true">${EDIT}</svg>

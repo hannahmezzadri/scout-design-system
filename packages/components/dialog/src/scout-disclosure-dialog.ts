@@ -6,6 +6,7 @@ import '@scout/segmented-control';
 import '@scout/progress';
 import '@scout/button';
 import '@scout/checkbox';
+import '@scout/inline-alert';
 import type { DisclosureDialogType } from './types.js';
 
 interface LangDef {
@@ -115,7 +116,7 @@ export class ScoutDisclosureDialog extends LitElement {
       flex-shrink: 0;
     }
     .subtitle {
-      margin-top: var(--scout-space-8);
+      margin-top: var(--scout-space-4);
       font-size: var(--scout-typography-body-small-font-size);
       line-height: var(--scout-typography-body-small-line-height);
       color: var(--scout-text-display-secondary);
@@ -132,6 +133,29 @@ export class ScoutDisclosureDialog extends LitElement {
     /* Language tabs render as scout-language-tabs (segmented control)
        inline in the header to the left of the X. */
     scout-language-tabs[hidden] { display: none; }
+
+    /* Small breakpoint — push the language-tabs segmented control below
+       the subtitle. The X close stays anchored top-right next to the
+       title. We dissolve .title-row + .header-controls with
+       display:contents so the title, tabs, close, and subtitle become
+       direct grid children of .title-group and we can re-area them. */
+    @media (max-width: 600px) {
+      .title-row, .header-controls { display: contents; }
+      .title-group {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-template-areas:
+          "title    close"
+          "subtitle subtitle"
+          "tabs     tabs";
+        align-items: center;
+        column-gap: var(--scout-space-12);
+      }
+      .title { grid-area: title; }
+      .close { grid-area: close; align-self: center; }
+      .subtitle { grid-area: subtitle; }
+      scout-language-tabs { grid-area: tabs; justify-self: start; margin-top: var(--scout-space-16); }
+    }
 
     .body {
       padding: var(--scout-space-16) var(--scout-space-24);
@@ -167,6 +191,14 @@ export class ScoutDisclosureDialog extends LitElement {
     }
     .ack[hidden] { display: none; }
 
+    /* Validation alert shown below the subtitle when the agent tries to
+       confirm without ticking the acknowledgement. Uses scout-inline-alert
+       for the chrome; we just slot it into the header rail. */
+    .ack-alert {
+      padding: 0 var(--scout-space-24) var(--scout-space-12);
+    }
+    .ack-alert[hidden] { display: none; }
+
     .actions {
       display: flex;
       justify-content: flex-end;
@@ -190,6 +222,9 @@ export class ScoutDisclosureDialog extends LitElement {
   @state() private _hasAck = false;
   @state() private _hasActions = false;
   @state() private _readProgress = 0;
+  /** Surfaces the inline-alert + checkbox-invalid state when the user
+   *  clicks the primary action without acknowledging. */
+  @state() private _ackError = false;
 
   /** Total time (ms) the simulated automated read takes to reach 100%. */
   @property({ type: Number, attribute: 'read-duration' }) readDuration = 8000;
@@ -199,7 +234,7 @@ export class ScoutDisclosureDialog extends LitElement {
   private _onAckSlot = (e: Event) => { this._hasAck = (e.target as HTMLSlotElement).assignedNodes({ flatten: true }).length > 0; };
   private _onActionsSlot = (e: Event) => {
     this._hasActions = (e.target as HTMLSlotElement).assignedNodes({ flatten: true }).length > 0;
-    this._syncActionDisabled();
+    this._bindActionValidation();
   };
 
   private _close = () => {
@@ -216,7 +251,8 @@ export class ScoutDisclosureDialog extends LitElement {
 
   private _onCheckboxChange = (e: Event) => {
     this.acknowledged = (e.target as HTMLInputElement).checked;
-    this._syncActionDisabled();
+    // Clear the validation error as soon as the agent ticks the box.
+    if (this.acknowledged) this._ackError = false;
     this.dispatchEvent(new CustomEvent('scout-disclosure-acknowledge', {
       bubbles: true, composed: true, detail: { acknowledged: this.acknowledged },
     }));
@@ -242,18 +278,34 @@ export class ScoutDisclosureDialog extends LitElement {
     });
   }
 
-  /** Toggle disabled on slotted primary action(s) until acknowledged. */
-  private _syncActionDisabled() {
+  /** Validate the checkbox at click-time on slotted primary action(s).
+   *  Per spec the primary button is enabled at rest; clicking without
+   *  acknowledging surfaces an inline-alert and flips the checkbox into
+   *  invalid state. We attach a capture-phase listener once and let the
+   *  consumer's own click handler still run when validation passes. */
+  private _bindActionValidation() {
     if (!this.requireCheckbox) return;
     const slot = this.shadowRoot?.querySelector<HTMLSlotElement>('slot[name="actions"]');
     const nodes = slot?.assignedElements({ flatten: true }) ?? [];
     nodes.forEach((node) => {
-      // Disable any scout-button with variant="primary" until acknowledged
       if (node.tagName === 'SCOUT-BUTTON' && node.getAttribute('variant') === 'primary') {
-        node.toggleAttribute('disabled', !this.acknowledged);
+        // Idempotent — replace any prior bound handler so re-slotting
+        // doesn't stack listeners.
+        node.removeEventListener('click', this._onPrimaryClick, true);
+        node.addEventListener('click', this._onPrimaryClick, true);
       }
     });
   }
+
+  private _onPrimaryClick = (e: Event) => {
+    if (!this.requireCheckbox || this.acknowledged) {
+      this._ackError = false;
+      return;
+    }
+    e.stopImmediatePropagation();
+    e.preventDefault();
+    this._ackError = true;
+  };
 
   connectedCallback(): void {
     super.connectedCallback();
@@ -293,7 +345,7 @@ export class ScoutDisclosureDialog extends LitElement {
       this._syncBody();
     }
     if (changed.has('acknowledged') || changed.has('requireCheckbox')) {
-      this._syncActionDisabled();
+      this._bindActionValidation();
     }
     if (changed.has('open') || changed.has('type')) {
       if (this.open && this.type === 'automated') this._startRead();
@@ -334,6 +386,12 @@ export class ScoutDisclosureDialog extends LitElement {
             </div>
           </div>
 
+          <div class="ack-alert" ?hidden=${!this._ackError}>
+            <scout-inline-alert status="critical">
+              You must attest that you have confirmed the customer has been read this disclosure verbatim. Check the checkbox.
+            </scout-inline-alert>
+          </div>
+
           ${this.type === 'automated'
             ? html`<div class="auto-progress" role="note" aria-label="Automated read progress">
                 <scout-progress-bar
@@ -367,6 +425,7 @@ export class ScoutDisclosureDialog extends LitElement {
             ${this.requireCheckbox
               ? html`<scout-checkbox
                   .checked=${this.acknowledged}
+                  ?invalid=${this._ackError}
                   @change=${this._onCheckboxChange}
                 >
                   <slot name="acknowledgement" @slotchange=${this._onAckSlot}></slot>

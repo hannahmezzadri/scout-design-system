@@ -90,6 +90,22 @@ export class ScoutShareWithCustomer extends LitElement {
       margin-left: auto;
     }
 
+    /* Small breakpoint — wrap the language tabs onto their own line below
+       the title so the segmented control isn't squeezed against the icon
+       row. The tabs anchor to the left edge of the title so they read as
+       a control attached to the heading. */
+    @media (max-width: 600px) {
+      .head {
+        flex-wrap: wrap;
+      }
+      .head scout-language-tabs {
+        margin-left: 0;
+        flex-basis: 100%;
+        order: 2;
+        padding-left: calc(24px + var(--scout-space-12));
+      }
+    }
+
     .body {
       padding-left: calc(24px + var(--scout-space-12));
       font-size: var(--scout-font-size-14);
