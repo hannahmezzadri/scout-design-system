@@ -1485,8 +1485,8 @@ const app = document.getElementById('app')!;
     'Token',
     ),
   );
-  const durations = ['fast', 'base', 'slow', 'deliberate'];
-  const easings = ['standard', 'enter', 'exit', 'emphasis'];
+  const durations = ['hover', 'fast', 'base', 'slow', 'deliberate'];
+  const easings = ['standard', 'gentle', 'enter', 'exit', 'emphasis'];
   const grid = el('div', { class: 'motion-grid' });
   for (const d of durations) {
     for (const e of easings) {
@@ -4310,6 +4310,7 @@ function checkboxControls(): HTMLElement {
 
   const viewSel = ddSelect('cb-view', ['single', 'group'] as const);
   const groupLabelInput = ctrlText('cb-group-label', 'Notification preferences');
+  const groupHelperInput = ctrlText('cb-group-helper', 'Choose how you want to be notified about account activity.');
   const labelInput = ctrlText('cb-label', 'Subscribe to email updates');
   const secondaryInput = ctrlText('cb-secondary', '');
   const checkedChk = ctrlCheck('cb-checked', 'Checked');
@@ -4317,19 +4318,23 @@ function checkboxControls(): HTMLElement {
   const disabledChk = ctrlCheck('cb-disabled', 'Disabled');
   const invalidChk = ctrlCheck('cb-invalid', 'Invalid');
 
-  // Wrap the group-label field so it can be shown/hidden per view.
+  // Wrap the group-only fields so they can be enabled/disabled per view.
   const ctrlField = (l: string, f: string, c: HTMLElement) =>
     el('div', { class: 'ctrl-field' }, el('label', { for: f }, l), c);
   const groupLabelField = ctrlField('Group label', 'cb-group-label', groupLabelInput);
+  const groupHelperField = ctrlField('Group helper', 'cb-group-helper', groupHelperInput);
 
   function render() {
     const isGroup = viewSel.value === 'group';
     setFieldDisabled(groupLabelField, groupLabelInput, !isGroup);
+    setFieldDisabled(groupHelperField, groupHelperInput, !isGroup);
 
     if (isGroup) {
       const groupLabel = groupLabelInput.value.trim();
+      const groupHelper = groupHelperInput.value.trim();
       stage.replaceChildren(previewCheckboxGroup({
         label: groupLabel || undefined,
+        helper: groupHelper || undefined,
         orientation: 'vertical',
         items: [
           {
@@ -4350,7 +4355,10 @@ function checkboxControls(): HTMLElement {
       if (disabledChk.checked) attrs.push('disabled');
       if (invalidChk.checked) attrs.push('invalid');
       if (secondaryInput.value) attrs.push(`secondary="${secondaryInput.value}"`);
-      const groupAttr = groupLabel ? ` label="${groupLabel}"` : '';
+      const groupAttrs: string[] = [];
+      if (groupLabel) groupAttrs.push(`label="${groupLabel}"`);
+      if (groupHelper) groupAttrs.push(`helper="${groupHelper}"`);
+      const groupAttr = groupAttrs.length ? ` ${groupAttrs.join(' ')}` : '';
       codePre.textContent = `<scout-checkbox-group${groupAttr}>\n  <scout-checkbox${attrs.length ? ' ' + attrs.join(' ') : ''}>${labelInput.value || 'Checkbox'}</scout-checkbox>\n  <scout-checkbox>Save card on file</scout-checkbox>\n  <scout-checkbox>Auto-pay (managed by admin)</scout-checkbox>\n</scout-checkbox-group>`;
     } else {
       stage.replaceChildren(previewCheckbox({
@@ -4370,7 +4378,7 @@ function checkboxControls(): HTMLElement {
       codePre.textContent = `<scout-checkbox${attrs.length ? ' ' + attrs.join(' ') : ''}>\n  ${labelInput.value || 'Checkbox'}\n</scout-checkbox>`;
     }
   }
-  for (const c of [viewSel, groupLabelInput, labelInput, secondaryInput, checkedChk, indeterminateChk, disabledChk, invalidChk]) {
+  for (const c of [viewSel, groupLabelInput, groupHelperInput, labelInput, secondaryInput, checkedChk, indeterminateChk, disabledChk, invalidChk]) {
     c.addEventListener('input', render);
     c.addEventListener('change', render);
   }
@@ -4378,6 +4386,7 @@ function checkboxControls(): HTMLElement {
     el('h3', { class: 'preview-block__title' }, 'Properties'),
     ctrlField('View', 'cb-view', viewSel),
     groupLabelField,
+    groupHelperField,
     ctrlField('Label', 'cb-label', labelInput),
     ctrlField('Secondary text', 'cb-secondary', secondaryInput),
     el('div', { class: 'ctrl-checks' },
@@ -6570,9 +6579,9 @@ function linkPreview(): HTMLElement {
   );
 
   block('Knockout',
-    'Use the knockout treatment for links that sit on dark or saturated surfaces — system outage banner, dark cards, snackbar. The link locks to white in both themes.',
+    'Use the knockout treatment for links that sit on dark or saturated surfaces — system outage banner, dark cards, snackbar. The link locks to white in both themes; the preview locks its surface to a dark cool-gray so the demo still reads in dark mode (where surface-inverse flips light).',
     el('div', {
-      style: 'display: flex; gap: var(--scout-space-12); align-items: center; padding: var(--scout-space-16); background: var(--scout-surface-inverse); border-radius: var(--scout-radius-4);',
+      style: 'display: flex; gap: var(--scout-space-12); align-items: center; padding: var(--scout-space-16); background: var(--scout-color-cool-gray-800); border-radius: var(--scout-radius-4);',
     },
       previewLink({ label: 'Read the docs', type: 'standalone', knockout: true }),
       previewLink({ label: 'External link', type: 'hyperlink', knockout: true }),
@@ -9346,13 +9355,39 @@ function makeTile(opts: {
     t.appendChild(b);
   }
   if (opts.headerButton) {
-    const btn = document.createElement('button');
-    btn.setAttribute('slot', 'header-button');
-    btn.className = 'tile-overflow';
-    btn.type = 'button';
-    btn.setAttribute('aria-label', 'More options');
-    btn.textContent = '⋯';
-    t.appendChild(btn);
+    // Wire the "More options" affordance to a real popover menu so the
+    // tile's overflow surfaces the same secondary-action UX used
+    // everywhere else in Scout.
+    const menu = document.createElement('scout-popover-menu');
+    menu.setAttribute('slot', 'header-button');
+    // bottom + alignment="end" opens the menu below the kebab, with the
+    // menu's right edge anchored to the kebab's right edge — so the
+    // menu extends to the LEFT of the trigger instead of running off
+    // the tile's right side.
+    menu.setAttribute('placement', 'bottom');
+    menu.setAttribute('alignment', 'end');
+    menu.setAttribute('label', 'Actions');
+
+    const kebab = document.createElement('scout-control');
+    kebab.setAttribute('slot', 'trigger');
+    kebab.setAttribute('type', 'kebab');
+    kebab.setAttribute('size', 'condensed');
+    kebab.setAttribute('aria-label-override', 'More options');
+    menu.appendChild(kebab);
+
+    for (const [val, lab] of [
+      ['view',   'View'],
+      ['edit',   'Edit'],
+      ['share',  'Share'],
+      ['delete', 'Delete'],
+    ] as const) {
+      const item = document.createElement('scout-popover-menu-item');
+      item.setAttribute('value', val);
+      item.appendChild(document.createTextNode(lab));
+      menu.appendChild(item);
+    }
+
+    t.appendChild(menu);
   }
   if (opts.body) t.appendChild(document.createTextNode(opts.body));
   if (opts.footer === 'button-tertiary') {
@@ -9473,15 +9508,17 @@ function tilePreview(): HTMLElement {
 
   // === Tile workflow ===
   block(
-    'Tile workflow — header states',
-    'Four header states: not-started (collapsed), active (expanded — exactly one per flow), completed-editable (collapsed, with Edit button), completed-locked (collapsed). State drives expansion, so only the active step shows its body and footer.',
+    'Tile workflow — states',
+    'Four header states control expansion — not-started (collapsed, no icon), active (expanded — exactly one per flow), completed-editable (collapsed with Edit), completed-locked (collapsed). The active step also surfaces functional states (loading, error) that replace the body content while the header stays put.',
     el('div', { class: 'tile-stack' },
       makeTileWorkflow({ step: 1, header: 'Not started', state: 'not-started' }),
       makeTileWorkflow({ step: 2, header: 'Active', state: 'active',
         body: 'Choose how the customer wants to pay. Selection saves automatically.',
         footer: 'cancel-continue' }),
-      makeTileWorkflow({ step: 3, header: 'Completed - editable', subhead: 'On-file address', state: 'completed-editable' }),
-      makeTileWorkflow({ step: 4, header: 'Completed - locked', state: 'completed-locked' }),
+      makeTileWorkflow({ step: 3, header: 'Active — loading', state: 'active', expanded: true, functional: 'loading' }),
+      makeTileWorkflow({ step: 4, header: 'Active — couldn\'t load', state: 'active', expanded: true, functional: 'error' }),
+      makeTileWorkflow({ step: 5, header: 'Completed - editable', subhead: 'On-file address', state: 'completed-editable' }),
+      makeTileWorkflow({ step: 6, header: 'Completed - locked', state: 'completed-locked' }),
     ),
   );
 
@@ -9496,16 +9533,6 @@ function tilePreview(): HTMLElement {
     ),
   );
 
-  block(
-    'Tile workflow — functional states',
-    'Default covers the resting interaction state; loading and error replace the body content while the header keeps its state.',
-    el('div', { class: 'tile-stack' },
-      makeTileWorkflow({ noStep: true, header: 'Default', subhead: 'Subhead text goes here', state: 'active' }),
-      makeTileWorkflow({ noStep: true, header: 'Loading data', state: 'active', expanded: true, functional: 'loading' }),
-      makeTileWorkflow({ noStep: true, header: 'Couldn\'t load', state: 'active', expanded: true, functional: 'error' }),
-    ),
-  );
-
   return wrap;
 }
 
@@ -9515,10 +9542,21 @@ function tileControls(): HTMLElement {
   const codePre = el('pre', { class: 'code-block' }) as HTMLPreElement;
 
   const variantSel = ddSelect('tl-variant', ['tile-button', 'tile', 'tile-workflow']);
+  // tile-button and tile share a 3-state functional dropdown.
   const stateSel = ddSelect('tl-state', ['default', 'loading', 'error']);
+  // tile-workflow folds its 4 header states + 2 functional states for the
+  // active step into a single ramp so they can't drift out of sync (e.g.
+  // "loading" + "completed-locked", which doesn't render anything).
+  const wfCombinedStateSel = ddSelect('tl-wf-combined-state', [
+    'not-started',
+    'active',
+    'active — loading',
+    'active — error',
+    'completed-editable',
+    'completed-locked',
+  ]);
   const headerInput = ctrlText('tl-header', 'Tile header');
   const subheadInput = ctrlText('tl-subhead', 'Subhead text');
-  const wfStateSel = ddSelect('tl-wf-state', ['not-started', 'active', 'completed-editable', 'completed-locked']);
   const wfFooterSel = ddSelect('tl-wf-footer', ['cancel-save', 'cancel-submit', 'cancel-continue', 'done', 'none']);
   const advFooterSel = ddSelect('tl-adv-footer', ['none', 'button-tertiary', 'show-more']);
 
@@ -9526,23 +9564,39 @@ function tileControls(): HTMLElement {
   // tells the full story of every prop the component accepts. Fields whose
   // underlying property doesn't apply to the active variant are disabled
   // via the shared setFieldDisabled helper.
-  const wfStateField   = ctrlField('Workflow state', 'tl-wf-state',  wfStateSel);
-  const wfFooterField  = ctrlField('Workflow footer',       'tl-wf-footer', wfFooterSel);
-  const advFooterField = ctrlField('Advanced footer',       'tl-adv-footer', advFooterSel);
+  const stateField     = ctrlField('Functional state',  'tl-state',              stateSel);
+  const wfStateField   = ctrlField('State',             'tl-wf-combined-state',  wfCombinedStateSel);
+  const wfFooterField  = ctrlField('Workflow footer',   'tl-wf-footer',          wfFooterSel);
+  const advFooterField = ctrlField('Advanced footer',   'tl-adv-footer',         advFooterSel);
+
+  /** Map the combined dropdown value back to the two underlying props. */
+  function unpackWorkflowState(v: string): { state: WorkflowHeaderState; functional: TileFunctionalState } {
+    switch (v) {
+      case 'active — loading':       return { state: 'active', functional: 'loading' };
+      case 'active — error':         return { state: 'active', functional: 'error' };
+      case 'not-started':
+      case 'active':
+      case 'completed-editable':
+      case 'completed-locked':       return { state: v as WorkflowHeaderState, functional: 'default' };
+      default:                       return { state: 'active', functional: 'default' };
+    }
+  }
 
   function render() {
     const v = variantSel.value;
 
-    // Variant-gated enablement — workflow header state + footer only apply
-    // to tile-workflow; advanced footer only applies to tile. Workflow footer
-    // is also disabled when the step is "not-started" since the body/footer
-    // are hidden in that state.
+    // Variant-gated enablement — the simple functional dropdown applies to
+    // tile-button and tile only; the combined state dropdown applies to
+    // tile-workflow only; advanced footer only applies to tile. Workflow
+    // footer is disabled for not-started + completed-* (no body to act on).
     const workflowApplies = v === 'tile-workflow';
     const advFooterApplies = v === 'tile';
-    const notStarted = workflowApplies && wfStateSel.value === 'not-started';
-    setFieldDisabled(wfStateField,   wfStateSel,   !workflowApplies);
-    setFieldDisabled(wfFooterField,  wfFooterSel,  !workflowApplies || notStarted);
-    setFieldDisabled(advFooterField, advFooterSel, !advFooterApplies);
+    const wf = unpackWorkflowState(wfCombinedStateSel.value);
+    const wfHasBody = workflowApplies && wf.state === 'active' && wf.functional === 'default';
+    setFieldDisabled(stateField,     stateSel,            workflowApplies);
+    setFieldDisabled(wfStateField,   wfCombinedStateSel,  !workflowApplies);
+    setFieldDisabled(wfFooterField,  wfFooterSel,         !wfHasBody);
+    setFieldDisabled(advFooterField, advFooterSel,        !advFooterApplies);
 
     let node: HTMLElement;
     if (v === 'tile-button') {
@@ -9570,24 +9624,25 @@ function tileControls(): HTMLElement {
         step: 1,
         header: headerInput.value,
         subhead: subheadInput.value,
-        state: wfStateSel.value as WorkflowHeaderState,
+        state: wf.state,
         expanded: true,
         body: 'Step body. Inputs, dropdowns, tables go here.',
         footer: wfFooterSel.value as 'cancel-save' | 'cancel-submit' | 'cancel-continue' | 'done' | 'none',
-        functional: stateSel.value as TileFunctionalState,
+        functional: wf.functional,
       });
-      codePre.textContent = `<scout-tile-workflow step="1" header="${headerInput.value}" subhead="${subheadInput.value}" state="${wfStateSel.value}" expanded>\n  Step body\n  <div slot="footer">…</div>\n</scout-tile-workflow>`;
+      const fnAttr = wf.functional !== 'default' ? ` functional="${wf.functional}"` : '';
+      codePre.textContent = `<scout-tile-workflow step="1" header="${headerInput.value}" subhead="${subheadInput.value}" state="${wf.state}"${fnAttr} expanded>\n  Step body\n  <div slot="footer">…</div>\n</scout-tile-workflow>`;
     }
     stage.replaceChildren(node);
   }
-  for (const c of [variantSel, stateSel, headerInput, subheadInput, wfStateSel, wfFooterSel, advFooterSel]) {
+  for (const c of [variantSel, stateSel, headerInput, subheadInput, wfCombinedStateSel, wfFooterSel, advFooterSel]) {
     c.addEventListener('input', render);
     c.addEventListener('change', render);
   }
   const panel = el('div', { class: 'ctrl-panel' },
     el('h3', { class: 'preview-block__title' }, 'Properties'),
     ctrlField('Variant',          'tl-variant', variantSel),
-    ctrlField('Functional state', 'tl-state',   stateSel),
+    stateField,
     ctrlField('Header',           'tl-header',  headerInput),
     ctrlField('Subhead',          'tl-subhead', subheadInput),
     wfStateField,
@@ -11383,11 +11438,13 @@ function radioControls(): HTMLElement {
   const orientationSel = ddSelect('rd-orient', ['vertical', 'horizontal']);
   const labelInput = ctrlText('rd-label', 'Notification preference');
   const helperInput = ctrlText('rd-helper', 'How should we contact you?');
+  const secondaryInput = ctrlText('rd-secondary', '');
   const errorInput = ctrlText('rd-error', '');
   const valueInput = ctrlText('rd-value', 'email');
   const disabledChk = ctrlCheck('rd-disabled', 'Disabled (group)');
 
   function render() {
+    const secondary = secondaryInput.value.trim();
     stage.replaceChildren(previewRadioGroup({
       label: labelInput.value,
       helper: helperInput.value,
@@ -11396,7 +11453,7 @@ function radioControls(): HTMLElement {
       disabled: disabledChk.checked,
       value: valueInput.value,
       items: [
-        { label: 'Email', value: 'email' },
+        { label: 'Email', value: 'email', secondary: secondary || undefined },
         { label: 'SMS',   value: 'sms' },
         { label: 'Paper', value: 'paper' },
       ],
@@ -11408,10 +11465,11 @@ function radioControls(): HTMLElement {
     if (orientationSel.value !== 'vertical') attrs.push(`orientation="${orientationSel.value}"`);
     if (disabledChk.checked) attrs.push('disabled');
     if (valueInput.value)  attrs.push(`value="${valueInput.value}"`);
+    const secondaryAttr = secondary ? ` secondary="${secondary}"` : '';
     codePre.textContent =
-      `<scout-radio-group ${attrs.join(' ')}>\n  <scout-radio value="email">Email</scout-radio>\n  <scout-radio value="sms">SMS</scout-radio>\n  <scout-radio value="paper">Paper</scout-radio>\n</scout-radio-group>`;
+      `<scout-radio-group ${attrs.join(' ')}>\n  <scout-radio value="email"${secondaryAttr}>Email</scout-radio>\n  <scout-radio value="sms">SMS</scout-radio>\n  <scout-radio value="paper">Paper</scout-radio>\n</scout-radio-group>`;
   }
-  for (const c of [orientationSel, labelInput, helperInput, errorInput, valueInput, disabledChk]) {
+  for (const c of [orientationSel, labelInput, helperInput, secondaryInput, errorInput, valueInput, disabledChk]) {
     c.addEventListener('input', render);
     c.addEventListener('change', render);
   }
@@ -11427,6 +11485,7 @@ function radioControls(): HTMLElement {
     ctrlField('Orientation', 'rd-orient', orientationSel),
     ctrlField('Group label', 'rd-label', labelInput),
     ctrlField('Group helper', 'rd-helper', helperInput),
+    ctrlField('Secondary text (first item)', 'rd-secondary', secondaryInput),
     ctrlField('Group error', 'rd-error', errorInput),
     ctrlField('Selected value', 'rd-value', valueInput),
     el('div', { class: 'ctrl-checks' }, disabledChk),
@@ -13537,8 +13596,8 @@ import '@scout/anchor-links';
     { id: 'a1', cells: { name: 'Hannah Mezzadri',  plan: 'Premium',  status: 'enrolled',   balance: '$0.00'   }, secondary: 'acct ····4429' },
     { id: 'a2', cells: { name: 'Jordan Diaz',      plan: 'Standard', status: 'pending',    balance: '$124.50' }, secondary: 'acct ····8861' },
     { id: 'a3', cells: { name: 'Ali Bautista',     plan: 'Premium',  status: 'enrolled',   balance: '$0.00'   }, secondary: 'acct ····0042' },
-    { id: 'a4', cells: { name: 'Sam Caro',         plan: 'Lite',     status: 'unenrolled', balance: '—'       }, secondary: 'acct ····7715' },
-    { id: 'a5', cells: { name: 'Rin Ito',          plan: 'Standard', status: 'canceled',   balance: '—'       }, secondary: 'acct ····3320' },
+    { id: 'a4', cells: { name: 'Sam Caro',         plan: 'Lite',     status: 'unenrolled', balance: '-'       }, secondary: 'acct ····7715' },
+    { id: 'a5', cells: { name: 'Rin Ito',          plan: 'Standard', status: 'canceled',   balance: '-'       }, secondary: 'acct ····3320' },
   ];
 
   // === Helpers ====================================================
@@ -13756,14 +13815,26 @@ import '@scout/anchor-links';
     expandable?: boolean;
     footer?: 'none' | 'pagination' | 'show-more';
     secondaryText?: boolean;
+    /** Optional initial sort. Surfaces the sort icon on the matching
+     *  column so the user knows which column the data is ordered by
+     *  without having to click first. */
+    defaultSort?: { key: string; dir?: 'asc' | 'desc' };
   }): HTMLElement {
     const size = opts.size ?? 'default';
     const selected = new Set<string>();
     const expanded = new Set<string>();
     let allSelected = false;
     let showMoreCount = 3;
-    let sortKey: string | null = null;
-    let sortDir: 'asc' | 'desc' = 'asc';
+    // If the consumer didn't request a specific default sort, fall back
+    // to the last sortable column descending. The intent: every data
+    // table boots with the sort icon visible on some column so the
+    // user can read the current order without having to click first.
+    const fallbackSortKey =
+      opts.defaultSort?.key ??
+      [...opts.columns].reverse().find((c) => c.sortable)?.id ??
+      null;
+    let sortKey: string | null = fallbackSortKey;
+    let sortDir: 'asc' | 'desc' = opts.defaultSort?.dir ?? 'desc';
 
     const wrap = el('div', {
       class: `dt-pattern dt-pattern--${size}`,
@@ -13771,11 +13842,12 @@ import '@scout/anchor-links';
       'aria-label': opts.header?.title ?? 'Data table',
     });
 
-    /** Sort comparator that handles currency / numeric / em-dash cells.
-     *  Em-dashes ("—") sort to the bottom regardless of direction. */
+    /** Sort comparator that handles currency / numeric / placeholder cells.
+     *  A bare hyphen ("-") indicates "no data" and sorts to the bottom
+     *  regardless of direction. */
     function compareCells(a: string, b: string): number {
-      const aDash = a === '—' || a === '';
-      const bDash = b === '—' || b === '';
+      const aDash = a === '-' || a === '';
+      const bDash = b === '-' || b === '';
       if (aDash && bDash) return 0;
       if (aDash) return 1;
       if (bDash) return -1;
@@ -13939,6 +14011,7 @@ import '@scout/anchor-links';
         columns: accountColumns,
         rows: accountRows,
         header: { title: 'Customer accounts', description: 'All active and recent enrollments for this household.' },
+        defaultSort: { key: 'balance', dir: 'desc' },
       }),
     );
 
@@ -13949,6 +14022,7 @@ import '@scout/anchor-links';
         rows: accountRows,
         selectable: true,
         header: { title: 'Customer accounts' },
+        defaultSort: { key: 'balance', dir: 'desc' },
       }),
     );
 
@@ -13970,6 +14044,7 @@ import '@scout/anchor-links';
           { label: 'Active',   rowIds: ['a1', 'a3'] },
           { label: 'Inactive', rowIds: ['a2', 'a4', 'a5'] },
         ],
+        defaultSort: { key: 'balance', dir: 'desc' },
       }),
     );
 
@@ -13980,6 +14055,7 @@ import '@scout/anchor-links';
         rows: accountRows,
         header: { title: 'Customer accounts' },
         footer: 'pagination',
+        defaultSort: { key: 'balance', dir: 'desc' },
       }),
     );
 
@@ -13990,14 +14066,15 @@ import '@scout/anchor-links';
         rows: accountRows,
         header: { title: 'Customer accounts' },
         footer: 'show-more',
+        defaultSort: { key: 'balance', dir: 'desc' },
       }),
     );
 
     block('Sizes',
       'Default for general-purpose surfaces. Condensed tightens row height and typography for data-dense surfaces (agent desktops, dashboards).',
       el('div', { class: 'preview-stack' },
-        buildDataTable({ columns: accountColumns, rows: accountRows.slice(0, 3), size: 'default'   }),
-        buildDataTable({ columns: accountColumns, rows: accountRows.slice(0, 3), size: 'condensed' }),
+        buildDataTable({ columns: accountColumns, rows: accountRows.slice(0, 3), size: 'default',   defaultSort: { key: 'balance', dir: 'desc' } }),
+        buildDataTable({ columns: accountColumns, rows: accountRows.slice(0, 3), size: 'condensed', defaultSort: { key: 'balance', dir: 'desc' } }),
       ),
     );
 
@@ -14037,6 +14114,7 @@ import '@scout/anchor-links';
           : undefined,
         footer: footerSel.value === 'none' ? 'none' : (footerSel.value as 'pagination' | 'show-more'),
         secondaryText: secondaryChk.checked,
+        defaultSort: { key: 'balance', dir: 'desc' },
       }));
     }
     for (const c of [sizeSel, footerSel, titleInput, subtitleInput, headerChk, selectableChk, expandableChk, sectionedChk, secondaryChk]) {

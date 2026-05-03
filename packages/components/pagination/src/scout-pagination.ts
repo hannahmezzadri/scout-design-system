@@ -99,9 +99,9 @@ export class ScoutPagination extends LitElement {
       font-weight: var(--scout-font-weight-regular);
       color: var(--scout-text-display-primary);
       cursor: pointer;
-      transition: background var(--scout-motion-duration-fast, 120ms)
-        var(--scout-motion-easing-standard, ease),
-        color var(--scout-motion-duration-fast, 120ms) var(--scout-motion-easing-standard, ease);
+      transition: background var(--scout-motion-duration-hover, 120ms)
+        var(--scout-motion-easing-gentle, ease),
+        color var(--scout-motion-duration-hover, 120ms) var(--scout-motion-easing-gentle, ease);
     }
     .ctrl svg {
       width: 16px;

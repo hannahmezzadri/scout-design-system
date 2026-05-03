@@ -40,7 +40,10 @@ export class ScoutRadioGroup extends LitElement {
     .group {
       display: flex;
       flex-direction: column;
-      gap: var(--scout-space-8);
+      /* All header rows (label / helper / items) sit space.4 apart so
+         the gap from the bottom-most header element to the first radio
+         stays consistent whether or not a helper is rendered. */
+      gap: var(--scout-space-4);
       margin: 0;
       padding: 0;
       border: none;
@@ -64,8 +67,13 @@ export class ScoutRadioGroup extends LitElement {
       display: flex;
       flex-direction: column;
       gap: var(--scout-space-12);
-      margin-top: var(--scout-space-8);
     }
+    /* When the helper is omitted, the label sits directly above the
+       items. Space.4 reads too tight there (no intervening line of
+       secondary text) so push the items down by an extra space.4. With
+       the .group gap also at space.4, the total label-to-items gap
+       becomes space.8. */
+    .helper[hidden] + .items { margin-top: var(--scout-space-4); }
     :host([orientation='horizontal']) .items {
       flex-direction: row;
       flex-wrap: wrap;

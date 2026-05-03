@@ -75,7 +75,7 @@ export class ScoutDropdownSelect extends LitElement {
       color: var(--scout-text-display-primary);
       text-align: start;
       cursor: pointer;
-      transition: border-color var(--scout-motion-duration-fast) var(--scout-motion-easing-standard);
+      transition: border-color var(--scout-motion-duration-hover) var(--scout-motion-easing-gentle);
     }
     .trigger:hover:not(:disabled) {
       border-color: var(--scout-text-interactive-primary);
@@ -100,7 +100,7 @@ export class ScoutDropdownSelect extends LitElement {
       width: 16px;
       height: 16px;
       color: var(--scout-icon-display-secondary);
-      transition: transform var(--scout-motion-duration-fast) var(--scout-motion-easing-standard);
+      transition: transform var(--scout-motion-duration-hover) var(--scout-motion-easing-gentle);
       flex-shrink: 0;
     }
     .field[data-open='true'] .caret { transform: rotate(180deg); }

@@ -50,12 +50,12 @@ export class ScoutSegment extends LitElement {
       border-radius: var(--scout-radius-4);
       white-space: nowrap;
       transition:
-        background var(--scout-motion-duration-fast, 120ms)
-          var(--scout-motion-easing-standard, ease),
-        color var(--scout-motion-duration-fast, 120ms)
-          var(--scout-motion-easing-standard, ease),
-        box-shadow var(--scout-motion-duration-fast, 120ms)
-          var(--scout-motion-easing-standard, ease);
+        background var(--scout-motion-duration-hover, 120ms)
+          var(--scout-motion-easing-gentle, ease),
+        color var(--scout-motion-duration-hover, 120ms)
+          var(--scout-motion-easing-gentle, ease),
+        box-shadow var(--scout-motion-duration-hover, 120ms)
+          var(--scout-motion-easing-gentle, ease);
     }
 
     /* Condensed sizing inherited from the parent */

@@ -32,7 +32,7 @@ export class ScoutMultiselectOption extends LitElement {
       padding: var(--scout-space-8) var(--scout-space-12);
       cursor: pointer;
       user-select: none;
-      transition: background var(--scout-motion-duration-fast) var(--scout-motion-easing-standard);
+      transition: background var(--scout-motion-duration-hover) var(--scout-motion-easing-gentle);
     }
     .row:hover { background: var(--scout-interactive-background-hover); }
     .row:active { background: var(--scout-interactive-background-pressed); }
@@ -53,8 +53,8 @@ export class ScoutMultiselectOption extends LitElement {
       align-items: center;
       justify-content: center;
       color: transparent;
-      transition: background var(--scout-motion-duration-fast) var(--scout-motion-easing-standard),
-                  border-color var(--scout-motion-duration-fast) var(--scout-motion-easing-standard);
+      transition: background var(--scout-motion-duration-hover) var(--scout-motion-easing-gentle),
+                  border-color var(--scout-motion-duration-hover) var(--scout-motion-easing-gentle);
     }
     :host([selected]) .check {
       background: var(--scout-text-interactive-primary);

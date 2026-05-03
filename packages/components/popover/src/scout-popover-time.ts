@@ -41,8 +41,8 @@ export class ScoutPopoverTime extends LitElement {
       opacity: 0;
       pointer-events: none;
       transform: translateY(2px);
-      transition: opacity var(--scout-motion-duration-fast, 120ms) ease,
-        transform var(--scout-motion-duration-fast, 120ms) ease;
+      transition: opacity var(--scout-motion-duration-hover, 120ms) ease,
+        transform var(--scout-motion-duration-hover, 120ms) ease;
     }
     :host([open]) .surface {
       opacity: 1;
@@ -105,8 +105,8 @@ export class ScoutPopoverTime extends LitElement {
       cursor: pointer;
       border-radius: var(--scout-radius-4);
       user-select: none;
-      transition: background var(--scout-motion-duration-fast, 120ms) ease,
-        color var(--scout-motion-duration-fast, 120ms) ease;
+      transition: background var(--scout-motion-duration-hover, 120ms) ease,
+        color var(--scout-motion-duration-hover, 120ms) ease;
     }
     .col-row:hover { background: var(--scout-interactive-background-hover); }
     .col-row:active { background: var(--scout-interactive-background-pressed); }

@@ -84,7 +84,10 @@ export class ScoutTileWorkflow extends LitElement {
       font-size: var(--scout-font-size-14);
       font-weight: var(--scout-font-weight-semibold);
     }
-    .dot svg { width: 60%; height: 60%; }
+    /* Bumped from 60% to 80% so the checkmark / dash icons read at the
+       same visual weight as a default scout-control icon (16px inside a
+       20px container). */
+    .dot svg { width: 80%; height: 80%; }
 
     :host([state='active']) .dot {
       background: var(--scout-fill-info-subtle);
@@ -97,10 +100,13 @@ export class ScoutTileWorkflow extends LitElement {
       border-color: var(--scout-fill-success-bold);
       color: var(--scout-color-white);
     }
+    /* Locked: neutral gray circle + checkmark. Reads as "completed but
+       no longer actionable" — distinct from completed-editable's green
+       fill which still affords interaction via the Edit button. */
     :host([state='completed-locked']) .dot {
-      background: var(--scout-color-green-200);
-      border-color: var(--scout-color-green-200);
-      color: var(--scout-fill-success-bold);
+      background: var(--scout-color-cool-gray-300);
+      border-color: var(--scout-color-cool-gray-300);
+      color: var(--scout-color-cool-gray-700);
     }
 
     .text {
@@ -275,7 +281,9 @@ export class ScoutTileWorkflow extends LitElement {
           class="head"
           aria-expanded=${String(this.expanded)}
         >
-          ${this.noStep ? nothing : html`<span class="dot" aria-hidden="true">${this._renderDotContents()}</span>`}
+          ${this.noStep || this.state === 'not-started'
+            ? nothing
+            : html`<span class="dot" aria-hidden="true">${this._renderDotContents()}</span>`}
           <span class="text">
             <span class="header-line">${this.header}</span>
             ${this.subhead ? html`<span class="subhead">${this.subhead}</span>` : nothing}

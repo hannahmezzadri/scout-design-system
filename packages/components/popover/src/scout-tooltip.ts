@@ -85,7 +85,7 @@ export class ScoutTooltip extends LitElement {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      transition: opacity var(--scout-motion-duration-fast, 120ms) ease;
+      transition: opacity var(--scout-motion-duration-hover, 120ms) ease;
     }
     .trigger-info .info-solid { opacity: 0; }
     .trigger-info:hover .info-outline,
@@ -111,10 +111,10 @@ export class ScoutTooltip extends LitElement {
       pointer-events: none;
       opacity: 0;
       transform: translateY(2px);
-      transition: opacity var(--scout-motion-duration-fast, 120ms)
-          var(--scout-motion-easing-standard, ease),
-        transform var(--scout-motion-duration-fast, 120ms)
-          var(--scout-motion-easing-standard, ease);
+      transition: opacity var(--scout-motion-duration-hover, 120ms)
+          var(--scout-motion-easing-gentle, ease),
+        transform var(--scout-motion-duration-hover, 120ms)
+          var(--scout-motion-easing-gentle, ease);
     }
     :host([variant='advanced']) .popover {
       background: var(--scout-surface-primary);

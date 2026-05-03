@@ -97,10 +97,10 @@ export class ScoutTextField extends LitElement {
       border: var(--scout-border-width-1) solid var(--scout-border-primary);
       border-radius: var(--scout-radius-4);
       transition:
-        border-color var(--scout-motion-duration-fast, 120ms)
-          var(--scout-motion-easing-standard, ease),
-        background var(--scout-motion-duration-fast, 120ms)
-          var(--scout-motion-easing-standard, ease);
+        border-color var(--scout-motion-duration-hover, 120ms)
+          var(--scout-motion-easing-gentle, ease),
+        background var(--scout-motion-duration-hover, 120ms)
+          var(--scout-motion-easing-gentle, ease);
     }
     .field:hover {
       border-color: var(--scout-text-interactive-primary);

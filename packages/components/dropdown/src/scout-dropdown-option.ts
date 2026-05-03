@@ -36,8 +36,8 @@ export class ScoutDropdownOption extends LitElement {
       color: var(--scout-text-display-primary);
       cursor: pointer;
       user-select: none;
-      transition: background var(--scout-motion-duration-fast)
-        var(--scout-motion-easing-standard);
+      transition: background var(--scout-motion-duration-hover)
+        var(--scout-motion-easing-gentle);
     }
     .option:hover {
       background: var(--scout-interactive-background-hover);

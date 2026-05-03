@@ -51,8 +51,8 @@ export class ScoutLink extends LitElement {
       color: var(--scout-text-interactive-primary);
       cursor: pointer;
       transition:
-        color var(--scout-motion-duration-fast) var(--scout-motion-easing-standard),
-        text-decoration-color var(--scout-motion-duration-fast) var(--scout-motion-easing-standard);
+        color var(--scout-motion-duration-hover) var(--scout-motion-easing-gentle),
+        text-decoration-color var(--scout-motion-duration-hover) var(--scout-motion-easing-gentle);
     }
 
     /* Type: inline — always underlined, inherits parent font-size */

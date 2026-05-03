@@ -93,10 +93,10 @@ export class ScoutControl extends LitElement {
       color: var(--_control-fg);
       cursor: pointer;
       transition:
-        background var(--scout-motion-duration-fast)
-          var(--scout-motion-easing-standard),
-        color var(--scout-motion-duration-fast)
-          var(--scout-motion-easing-standard);
+        background var(--scout-motion-duration-hover)
+          var(--scout-motion-easing-gentle),
+        color var(--scout-motion-duration-hover)
+          var(--scout-motion-easing-gentle);
       flex-shrink: 0;
     }
     .control:hover:not(:disabled) {

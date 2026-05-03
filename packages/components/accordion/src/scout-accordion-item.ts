@@ -46,8 +46,8 @@ export class ScoutAccordionItem extends LitElement {
       font-weight: var(--scout-font-weight-semibold);
       text-align: start;
       cursor: pointer;
-      transition: background var(--scout-motion-duration-fast)
-        var(--scout-motion-easing-standard);
+      transition: background var(--scout-motion-duration-hover)
+        var(--scout-motion-easing-gentle);
     }
     .trigger:hover:not(:disabled) {
       background: var(--scout-interactive-background-hover);
@@ -76,7 +76,7 @@ export class ScoutAccordionItem extends LitElement {
       height: var(--_cnx-accordion-icon-size, 20px);
       color: var(--scout-icon-display-secondary);
       transition: transform var(--scout-motion-duration-base)
-        var(--scout-motion-easing-standard);
+        var(--scout-motion-easing-gentle);
     }
     :host([expanded]) .icon {
       transform: rotate(180deg);
@@ -87,7 +87,7 @@ export class ScoutAccordionItem extends LitElement {
       display: grid;
       grid-template-rows: 0fr;
       transition: grid-template-rows var(--scout-motion-duration-base)
-        var(--scout-motion-easing-standard);
+        var(--scout-motion-easing-gentle);
     }
     :host([expanded]) .content {
       grid-template-rows: 1fr;

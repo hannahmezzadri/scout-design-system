@@ -60,6 +60,10 @@ export class ScoutRadio extends LitElement {
       width: var(--scout-font-size-20);
       height: var(--scout-font-size-20);
       flex-shrink: 0;
+      /* Optical center the 20px control against the 24px body line-height
+         label — drops the circle 2px so its vertical midpoint (10 + 2)
+         lines up with the label's first-line midpoint (12). */
+      margin-top: 2px;
     }
 
     input {
@@ -79,10 +83,10 @@ export class ScoutRadio extends LitElement {
       background: var(--scout-surface-primary);
       cursor: inherit;
       transition:
-        background var(--scout-motion-duration-fast)
-          var(--scout-motion-easing-standard),
-        border-color var(--scout-motion-duration-fast)
-          var(--scout-motion-easing-standard);
+        background var(--scout-motion-duration-hover)
+          var(--scout-motion-easing-gentle),
+        border-color var(--scout-motion-duration-hover)
+          var(--scout-motion-easing-gentle);
     }
     :host-context([data-theme='dark']) input {
       border-color: var(--scout-color-cool-gray-400);
@@ -122,7 +126,7 @@ export class ScoutRadio extends LitElement {
     .text {
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 0;
       min-width: 0;
     }
     .label-row {

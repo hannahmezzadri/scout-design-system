@@ -60,10 +60,10 @@ export class ScoutShowMore extends LitElement {
       color: var(--scout-text-interactive-primary);
       border-radius: var(--scout-radius-2);
       cursor: pointer;
-      transition: color var(--scout-motion-duration-fast, 120ms)
-          var(--scout-motion-easing-standard, ease),
-        background var(--scout-motion-duration-fast, 120ms)
-          var(--scout-motion-easing-standard, ease);
+      transition: color var(--scout-motion-duration-hover, 120ms)
+          var(--scout-motion-easing-gentle, ease),
+        background var(--scout-motion-duration-hover, 120ms)
+          var(--scout-motion-easing-gentle, ease);
     }
     .toggle:hover:not(:disabled) {
       text-decoration: underline;
@@ -85,7 +85,7 @@ export class ScoutShowMore extends LitElement {
       height: var(--_sm-icon);
       flex-shrink: 0;
       transition: transform var(--scout-motion-duration-base, 240ms)
-        var(--scout-motion-easing-standard, ease);
+        var(--scout-motion-easing-gentle, ease);
     }
     :host([expanded]) .icon { transform: rotate(180deg); }
 

@@ -24,8 +24,10 @@ export class ScoutBreadcrumbItem extends LitElement {
       display: inline-flex;
       align-items: center;
       font-family: var(--scout-font-family-inter);
-      font-size: var(--scout-font-size-14);
-      line-height: var(--scout-font-line-height-21);
+      /* Body type style — both linked and current crumbs inherit; the
+         current crumb adds semibold weight via the .current rule below. */
+      font-size: var(--scout-typography-body-font-size);
+      line-height: var(--scout-typography-body-line-height);
     }
 
     /* Trailing chevron separator. Skipped on the current item, the last item,

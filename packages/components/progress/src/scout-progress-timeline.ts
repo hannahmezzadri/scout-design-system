@@ -128,7 +128,7 @@ export class ScoutProgressTimelineItem extends LitElement {
       color: var(--scout-text-display-secondary);
       cursor: pointer;
       flex-shrink: 0;
-      transition: background var(--scout-motion-duration-fast, 120ms) ease,
+      transition: background var(--scout-motion-duration-hover, 120ms) ease,
         transform var(--scout-motion-duration-base, 240ms) ease;
     }
     .toggle:hover { background: var(--scout-interactive-background-hover); }
@@ -144,7 +144,7 @@ export class ScoutProgressTimelineItem extends LitElement {
       display: grid;
       grid-template-rows: 0fr;
       transition: grid-template-rows var(--scout-motion-duration-base, 240ms)
-        var(--scout-motion-easing-standard, ease);
+        var(--scout-motion-easing-gentle, ease);
       margin-top: 0;
     }
     :host([expanded]) .body {

@@ -27,8 +27,8 @@ body {
   background: var(--scout-surface-page);
   color: var(--scout-text-display-primary);
   -webkit-font-smoothing: antialiased;
-  transition: background var(--scout-motion-duration-base) var(--scout-motion-easing-standard),
-              color var(--scout-motion-duration-base) var(--scout-motion-easing-standard);
+  transition: background var(--scout-motion-duration-base) var(--scout-motion-easing-gentle),
+              color var(--scout-motion-duration-base) var(--scout-motion-easing-gentle);
 }
 
 /* === Topbar (sticky, full width) === */
@@ -66,7 +66,7 @@ body {
 .brand .logo {
   font-size: 24px;
   color: var(--scout-brand-scout-primary, #029dd4);
-  transition: color var(--scout-motion-duration-base) var(--scout-motion-easing-standard);
+  transition: color var(--scout-motion-duration-base) var(--scout-motion-easing-gentle);
 }
 [data-brand="ember"] .brand .logo { color: var(--scout-brand-ember-primary); }
 [data-brand="snag"]   .brand .logo { color: var(--scout-brand-snag-primary); }
@@ -917,8 +917,8 @@ section > p.lede {
   height: 2px;
   background: var(--scout-text-display-primary);
   border-radius: 2px;
-  transition: transform var(--scout-motion-duration-fast) var(--scout-motion-easing-standard),
-              opacity var(--scout-motion-duration-fast) var(--scout-motion-easing-standard);
+  transition: transform var(--scout-motion-duration-hover) var(--scout-motion-easing-gentle),
+              opacity var(--scout-motion-duration-hover) var(--scout-motion-easing-gentle);
 }
 body.nav-open .nav-toggle span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
 body.nav-open .nav-toggle span:nth-child(2) { opacity: 0; }
@@ -932,7 +932,7 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-6px) rotate
   background: var(--scout-surface-scrim);
   z-index: 90;
   opacity: 0;
-  transition: opacity var(--scout-motion-duration-base) var(--scout-motion-easing-standard);
+  transition: opacity var(--scout-motion-duration-base) var(--scout-motion-easing-gentle);
 }
 body.nav-open .sidebar-scrim { opacity: 1; }
 
@@ -954,7 +954,7 @@ body.nav-open .sidebar-scrim { opacity: 1; }
     max-width: 85vw;
     padding-top: var(--scout-space-16);
     transform: translateX(-100%);
-    transition: transform var(--scout-motion-duration-base) var(--scout-motion-easing-standard);
+    transition: transform var(--scout-motion-duration-base) var(--scout-motion-easing-gentle);
     box-shadow: var(--scout-elevation-3);
   }
   body.nav-open .sidebar { transform: translateX(0); }
@@ -1660,6 +1660,15 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   gap: var(--scout-space-32);
   align-items: start;
 }
+@media (max-width: 600px) {
+  /* Stack the menu rail above the body so the body has the full viewport
+     width to read on narrow phones. The fixed 220px rail + 1fr grid was
+     squeezing the body into a sliver on iPhone-class widths. */
+  .pattern-demo {
+    grid-template-columns: 1fr;
+    gap: var(--scout-space-16);
+  }
+}
 .pattern-demo-body {
   height: 320px;
   overflow-y: auto;
@@ -1690,6 +1699,14 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   grid-template-columns: repeat(3, 1fr);
   gap: var(--scout-space-24);
   align-items: start;
+}
+@media (max-width: 600px) {
+  /* Stack the three columns vertically on mobile so each anchor-links
+     specimen has full width to render its labels without truncation. */
+  .pattern-states-grid {
+    grid-template-columns: 1fr;
+    gap: var(--scout-space-16);
+  }
 }
 .pattern-states-grid > div { display: flex; flex-direction: column; gap: var(--scout-space-8); }
 .ctrl-checks {
@@ -1928,7 +1945,7 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   background: var(--scout-surface-page);
   border-radius: var(--scout-radius-4);
   cursor: default;
-  transition: background var(--scout-motion-duration-fast) var(--scout-motion-easing-standard);
+  transition: background var(--scout-motion-duration-hover) var(--scout-motion-easing-gentle);
 }
 .icon-grid--catalog .icon-cell:hover { background: var(--scout-color-alpha-20); }
 .icon-grid--catalog .icon-stage { min-height: 28px; }
@@ -2095,9 +2112,9 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   text-decoration: none;
   color: inherit;
   position: relative;
-  transition: border-color var(--scout-motion-duration-fast) var(--scout-motion-easing-standard),
-              transform var(--scout-motion-duration-fast) var(--scout-motion-easing-standard),
-              box-shadow var(--scout-motion-duration-fast) var(--scout-motion-easing-standard);
+  transition: border-color var(--scout-motion-duration-hover) var(--scout-motion-easing-gentle),
+              transform var(--scout-motion-duration-hover) var(--scout-motion-easing-gentle),
+              box-shadow var(--scout-motion-duration-hover) var(--scout-motion-easing-gentle);
 }
 .component-link-card:hover {
   border-color: var(--scout-text-interactive-primary);
@@ -2122,7 +2139,7 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   top: var(--scout-space-16);
   right: var(--scout-space-16);
   color: var(--scout-text-interactive-primary);
-  transition: transform var(--scout-motion-duration-fast) var(--scout-motion-easing-standard);
+  transition: transform var(--scout-motion-duration-hover) var(--scout-motion-easing-gentle);
 }
 .component-link-card:hover .component-link-card__arrow {
   transform: translateX(4px);
@@ -2205,6 +2222,11 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   display: inline-flex;
   align-items: center;
   gap: var(--scout-space-4);
+  /* Allow long values (emails, URLs, currency) to wrap rather than
+     overflow the tile on narrow viewports. */
+  min-width: 0;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 /* Slotted info-icon tooltip — sits inline with the text without
    pushing the row past its fixed envelope. */
@@ -2219,6 +2241,32 @@ body.nav-open .sidebar-scrim { opacity: 1; }
 .dd-row--left-left .dd-row__value {
   flex: 1;
   min-width: 0;
+}
+/* Narrow viewports: drop the label's fixed width, stack columns top to
+   bottom inside each row. The fixed-row-height envelope is replaced
+   with auto so the wrapped layout doesn't get cropped. */
+@media (max-width: 600px) {
+  .dd-row {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    min-height: 0;
+    padding: var(--scout-space-8) 0;
+  }
+  .dd-row--left-left .dd-row__label,
+  .dd-row--left-right .dd-row__label,
+  .dd-row--left-link .dd-row__label,
+  .dd-row--left-button .dd-row__label {
+    min-width: 0;
+    flex-basis: 100%;
+  }
+  .dd-row--left-right .dd-row__value,
+  .dd-row--left-link scout-link,
+  .dd-row--left-button scout-button {
+    margin-left: 0;
+  }
+  .dd-row--left-right .dd-row__value {
+    text-align: left;
+  }
 }
 /* Left, right — label hugs left, value pushes to the right edge. */
 .dd-row--left-right .dd-row__label {
@@ -2287,6 +2335,10 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   vertical-align: middle;
   padding: var(--_dt-row-pad-y) var(--_dt-row-pad-x);
   border-bottom: var(--scout-border-width-1) solid var(--scout-border-secondary);
+  /* Subtle ease so the row hover/selection background fade matches the
+     other interactive surfaces (buttons, anchor links, accordion). */
+  transition: background var(--scout-motion-duration-hover)
+    var(--scout-motion-easing-gentle);
 }
 /* Table edge always indents space.12 — the first cell hugs the left edge
    and the last cell hugs the right edge with the same gap. */
@@ -2329,17 +2381,35 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   font-weight: var(--scout-typography-body-small-font-weight);
   color: var(--scout-text-display-secondary);
 }
+/* Condensed density steps title + description down one rung so the
+   table-header rhythm matches the tighter row-height + cell type. */
+.dt-pattern--condensed .dt-table-header__title {
+  font-family: var(--scout-typography-body-font-family);
+  font-weight: var(--scout-font-weight-semibold);
+  font-size: var(--scout-typography-body-font-size);
+  line-height: var(--scout-typography-body-line-height);
+}
+.dt-pattern--condensed .dt-table-header__description {
+  font-size: var(--scout-typography-caption-font-size);
+  line-height: var(--scout-typography-caption-line-height);
+}
 .dt-table-header__action { flex-shrink: 0; }
 
 /* Section header — in-body group separator. */
 .dt-cell--section {
   background: var(--scout-interactive-background-hover);
   font-size: var(--scout-font-size-12);
+  /* Override the inherited body line-height (24px) — at 12px font that
+     leaves a 24px-tall text box, inflating the row. Caption-style 18px
+     keeps the chip compact while staying readable. */
+  line-height: var(--scout-font-line-height-18);
   font-weight: var(--scout-font-weight-semibold);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--scout-text-display-secondary);
-  padding: var(--scout-space-8) var(--scout-space-16);
+  /* Tighter than body cells — section rows are scaffolding, not content,
+     so they shouldn't read at the same vertical weight as the data. */
+  padding: var(--scout-space-4) var(--scout-space-12);
 }
 
 /* Column headers — default = body, condensed = body-small. */
@@ -2393,13 +2463,27 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   opacity: 1;
 }
 
-/* Body cells */
+/* Body cells — primary + secondary text mirror the checkbox label /
+   secondary spec so cells, checkboxes, and radios all read with the
+   same vertical rhythm. Default density uses body, condensed steps
+   down to body-small to match the tighter row-height. */
 .dt-cell--body { color: var(--scout-text-display-primary); }
-.dt-cell__primary { font-weight: var(--scout-font-weight-semibold); }
+.dt-cell__primary {
+  font-size: var(--scout-typography-body-font-size);
+  line-height: var(--scout-typography-body-line-height);
+  font-weight: var(--scout-font-weight-regular);
+  color: var(--scout-text-display-primary);
+}
+.dt-pattern--condensed .dt-cell__primary {
+  font-size: var(--scout-typography-body-small-font-size);
+  line-height: var(--scout-typography-body-small-line-height);
+}
 .dt-cell__secondary {
+  display: block;
   font-size: var(--scout-font-size-12);
+  line-height: var(--scout-font-line-height-18);
   color: var(--scout-text-display-secondary);
-  margin-top: var(--scout-space-0);
+  margin-top: 0;
 }
 
 /* Selectable rows — table auto-layout stretches this column to absorb
@@ -2407,9 +2491,14 @@ body.nav-open .sidebar-scrim { opacity: 1; }
    the cell's right edge. The cell's left padding sets the table-edge
    indent (space.12); the next column's padding-left sits exactly
    space.12 to the right of the checkbox. */
+/* The checkbox column always sits space.12 from the table's left edge.
+   We left-align the checkbox inside the cell (instead of right-aligning
+   inside an auto-sized cell) so the checkbox stays anchored to space.12
+   regardless of how the browser distributes remaining table width to
+   the column at large breakpoints. */
 .dt-cell--select {
-  width: 0;
-  text-align: right;
+  width: 1px;
+  text-align: left;
   padding-left: var(--scout-space-12);
   padding-right: 0;
   white-space: nowrap;
@@ -2428,18 +2517,30 @@ body.nav-open .sidebar-scrim { opacity: 1; }
    indent, and the cell hugs its content so the next column sits exactly
    space.12 to the right of the chevron (provided by the next cell's
    padding-left). */
-.dt-cell--expand {
+/* Selector is matched with the same specificity as the
+   `.dt-row > .dt-cell:first-child { padding-left: space.12; }` rule
+   above so this override wins for the expand column. */
+.dt-row > .dt-cell--expand,
+.dt-row > .dt-cell--expand:first-child {
   width: 40px;
   text-align: left;
-  padding-left: var(--scout-space-12);
+  /* The chevron control supplies its own 32px hit target (and 24px in
+     condensed); a wide padding-left would compound that and push the
+     first column too far from the table edge. Trim to space.4 so the
+     visual chevron-to-edge gap stays tight. */
+  padding-left: var(--scout-space-4);
   padding-right: 0;
 }
 .dt-expand-btn {
   appearance: none;
   background: transparent;
   border: 0;
-  width: 24px;
-  height: 24px;
+  /* Mirrors scout-control's default size (32px button / 20px icon) so
+     expandable rows match the chevron, x-close, and other control
+     components on the page. Condensed-density tables tighten back to
+     24px / 14px below. */
+  width: 32px;
+  height: 32px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -2449,9 +2550,17 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   border-radius: var(--scout-radius-4);
   cursor: pointer;
   transition: transform var(--scout-motion-duration-base, 240ms)
-              var(--scout-motion-easing-standard, ease),
-              background var(--scout-motion-duration-fast, 120ms)
-                var(--scout-motion-easing-standard, ease);
+              var(--scout-motion-easing-gentle, ease),
+              background var(--scout-motion-duration-hover, 120ms)
+                var(--scout-motion-easing-gentle, ease);
+}
+.dt-pattern--condensed .dt-expand-btn {
+  width: 24px;
+  height: 24px;
+}
+.dt-pattern--condensed .dt-expand-icon {
+  width: 14px;
+  height: 14px;
 }
 .dt-expand-btn:hover {
   background: var(--scout-interactive-background-hover);

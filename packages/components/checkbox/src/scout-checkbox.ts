@@ -82,10 +82,10 @@ export class ScoutCheckbox extends LitElement {
       background: var(--scout-surface-primary);
       cursor: inherit;
       transition:
-        background var(--scout-motion-duration-fast)
-          var(--scout-motion-easing-standard),
-        border-color var(--scout-motion-duration-fast)
-          var(--scout-motion-easing-standard);
+        background var(--scout-motion-duration-hover)
+          var(--scout-motion-easing-gentle),
+        border-color var(--scout-motion-duration-hover)
+          var(--scout-motion-easing-gentle);
     }
     :host-context([data-theme='dark']) input {
       border-color: var(--scout-color-cool-gray-400);
@@ -122,8 +122,8 @@ export class ScoutCheckbox extends LitElement {
       color: var(--scout-color-white);
       pointer-events: none;
       opacity: 0;
-      transition: opacity var(--scout-motion-duration-fast)
-        var(--scout-motion-easing-standard);
+      transition: opacity var(--scout-motion-duration-hover)
+        var(--scout-motion-easing-gentle);
     }
     input:checked ~ .check {
       opacity: 1;
@@ -135,7 +135,7 @@ export class ScoutCheckbox extends LitElement {
     .text {
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 0;
       min-width: 0;
     }
     /* When there's no slotted label and no secondary text, drop the .text

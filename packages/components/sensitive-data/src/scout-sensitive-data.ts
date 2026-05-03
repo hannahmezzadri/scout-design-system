@@ -70,10 +70,10 @@ export class ScoutSensitiveData extends LitElement {
       color: var(--scout-text-interactive-primary);
       border-radius: var(--scout-radius-2);
       cursor: pointer;
-      transition: background var(--scout-motion-duration-fast, 120ms)
-          var(--scout-motion-easing-standard, ease),
-        color var(--scout-motion-duration-fast, 120ms)
-          var(--scout-motion-easing-standard, ease);
+      transition: background var(--scout-motion-duration-hover, 120ms)
+          var(--scout-motion-easing-gentle, ease),
+        color var(--scout-motion-duration-hover, 120ms)
+          var(--scout-motion-easing-gentle, ease);
     }
     .toggle:hover:not(:disabled) {
       background: var(--scout-interactive-background-brand-hover);

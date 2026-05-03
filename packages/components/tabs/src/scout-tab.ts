@@ -46,12 +46,12 @@ export class ScoutTab extends LitElement {
       /* Transparent bottom border that becomes the selection indicator */
       border-bottom: 2px solid transparent;
       transition:
-        color var(--scout-motion-duration-fast, 120ms)
-          var(--scout-motion-easing-standard, ease),
-        background var(--scout-motion-duration-fast, 120ms)
-          var(--scout-motion-easing-standard, ease),
-        border-color var(--scout-motion-duration-fast, 120ms)
-          var(--scout-motion-easing-standard, ease);
+        color var(--scout-motion-duration-hover, 120ms)
+          var(--scout-motion-easing-gentle, ease),
+        background var(--scout-motion-duration-hover, 120ms)
+          var(--scout-motion-easing-gentle, ease),
+        border-color var(--scout-motion-duration-hover, 120ms)
+          var(--scout-motion-easing-gentle, ease);
     }
 
     /* === Interactive states === */

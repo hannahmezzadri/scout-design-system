@@ -85,8 +85,8 @@ export class ScoutToggleSwitch extends LitElement {
       flex-shrink: 0;
       border-radius: 999px;
       background: var(--_track-off);
-      transition: background var(--scout-motion-duration-fast, 120ms)
-        var(--scout-motion-easing-standard, ease);
+      transition: background var(--scout-motion-duration-hover, 120ms)
+        var(--scout-motion-easing-gentle, ease);
     }
     .track::after {
       content: '';
@@ -98,8 +98,8 @@ export class ScoutToggleSwitch extends LitElement {
       background: var(--scout-color-white);
       border-radius: 50%;
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
-      transition: transform var(--scout-motion-duration-fast, 120ms)
-        var(--scout-motion-easing-standard, ease);
+      transition: transform var(--scout-motion-duration-hover, 120ms)
+        var(--scout-motion-easing-gentle, ease);
     }
 
     /* Hover / pressed / focus on the track when not disabled */
@@ -125,13 +125,18 @@ export class ScoutToggleSwitch extends LitElement {
     :host([checked][on-variant='on-critical']) .row:hover .track { background: var(--_track-critical); }
     :host([checked][on-variant='on-critical']) .row:active .track { background: var(--_track-critical-pressed); }
 
-    /* Label */
+    /* Label — default = body, condensed steps down to body-small to
+       match the rest of the form-input family. */
     .label {
-      font-size: var(--scout-font-size-14);
-      line-height: var(--scout-font-line-height-21);
+      font-size: var(--scout-typography-body-font-size);
+      line-height: var(--scout-typography-body-line-height);
       color: var(--scout-text-display-primary);
     }
-    :host([size='condensed']) .label { font-size: var(--scout-font-size-12); }
+    :host([size='condensed']) .label,
+    :host-context([data-density='condensed']) .label {
+      font-size: var(--scout-typography-body-small-font-size);
+      line-height: var(--scout-typography-body-small-line-height);
+    }
 
     @media (prefers-reduced-motion: reduce) {
       .track, .track::after { transition: none; }

@@ -67,10 +67,10 @@ export class ScoutButton extends LitElement {
       white-space: nowrap;
       user-select: none;
       transition:
-        background var(--scout-motion-duration-fast) var(--scout-motion-easing-standard),
-        border-color var(--scout-motion-duration-fast) var(--scout-motion-easing-standard),
-        color var(--scout-motion-duration-fast) var(--scout-motion-easing-standard),
-        transform var(--scout-motion-duration-fast) var(--scout-motion-easing-standard);
+        background var(--scout-motion-duration-hover) var(--scout-motion-easing-gentle),
+        border-color var(--scout-motion-duration-hover) var(--scout-motion-easing-gentle),
+        color var(--scout-motion-duration-hover) var(--scout-motion-easing-gentle),
+        transform var(--scout-motion-duration-hover) var(--scout-motion-easing-gentle);
     }
     .button:focus-visible {
       outline: var(--scout-focus-ring-width) solid var(--scout-focus-ring-color);

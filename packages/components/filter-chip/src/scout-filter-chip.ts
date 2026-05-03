@@ -64,9 +64,9 @@ export class ScoutFilterChip extends LitElement {
       cursor: pointer;
       white-space: nowrap;
       transition:
-        background var(--scout-motion-duration-fast) var(--scout-motion-easing-standard),
-        border-color var(--scout-motion-duration-fast) var(--scout-motion-easing-standard),
-        color var(--scout-motion-duration-fast) var(--scout-motion-easing-standard);
+        background var(--scout-motion-duration-hover) var(--scout-motion-easing-gentle),
+        border-color var(--scout-motion-duration-hover) var(--scout-motion-easing-gentle),
+        color var(--scout-motion-duration-hover) var(--scout-motion-easing-gentle);
     }
     .chip:hover:not(:disabled) {
       background: var(--scout-interactive-background-hover);
@@ -103,7 +103,7 @@ export class ScoutFilterChip extends LitElement {
       flex-shrink: 0;
     }
     .menu-caret {
-      transition: transform var(--scout-motion-duration-fast) var(--scout-motion-easing-standard);
+      transition: transform var(--scout-motion-duration-hover) var(--scout-motion-easing-gentle);
     }
     :host([data-menu-open]) .menu-caret {
       transform: rotate(180deg);

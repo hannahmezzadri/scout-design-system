@@ -79,8 +79,8 @@ export class ScoutTextArea extends LitElement {
       font-size: var(--_ta-fs);
       line-height: var(--scout-font-line-height-21);
       resize: vertical;
-      transition: border-color var(--scout-motion-duration-fast, 120ms)
-        var(--scout-motion-easing-standard, ease);
+      transition: border-color var(--scout-motion-duration-hover, 120ms)
+        var(--scout-motion-easing-gentle, ease);
     }
     :host([resize='none']) textarea { resize: none; }
     :host([resize='both']) textarea { resize: both; }

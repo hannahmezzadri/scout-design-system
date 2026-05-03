@@ -57,12 +57,12 @@ export class ScoutTileButton extends LitElement {
       color: var(--scout-text-display-primary);
       cursor: pointer;
       transition:
-        background var(--scout-motion-duration-fast, 120ms)
-          var(--scout-motion-easing-standard, ease),
-        border-color var(--scout-motion-duration-fast, 120ms)
-          var(--scout-motion-easing-standard, ease),
-        box-shadow var(--scout-motion-duration-fast, 120ms)
-          var(--scout-motion-easing-standard, ease);
+        background var(--scout-motion-duration-hover, 120ms)
+          var(--scout-motion-easing-gentle, ease),
+        border-color var(--scout-motion-duration-hover, 120ms)
+          var(--scout-motion-easing-gentle, ease),
+        box-shadow var(--scout-motion-duration-hover, 120ms)
+          var(--scout-motion-easing-gentle, ease);
     }
     /* Per spec: hover lifts the tile via elevation.2 instead of changing fill. */
     button:hover:not(:disabled) {

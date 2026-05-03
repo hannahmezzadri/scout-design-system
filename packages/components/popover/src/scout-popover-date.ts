@@ -1,4 +1,4 @@
-import { LitElement, html, css, nothing } from 'lit';
+import { LitElement, html, css, svg, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import type { DatePickerType, DayCellState } from './types.js';
 
@@ -12,9 +12,15 @@ const MONTH_LABELS_LONG = [
   'July', 'August', 'September', 'October', 'November', 'December',
 ];
 
-const CHEVRON_LEFT = `<svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M15.78 4.72a.75.75 0 0 1 0 1.06L9.56 12l6.22 6.22a.75.75 0 1 1-1.06 1.06l-6.75-6.75a.75.75 0 0 1 0-1.06l6.75-6.75a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd"/></svg>`;
-const CHEVRON_RIGHT = `<svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M8.22 4.72a.75.75 0 0 0 0 1.06L14.44 12l-6.22 6.22a.75.75 0 1 0 1.06 1.06l6.75-6.75a.75.75 0 0 0 0-1.06L9.28 4.72a.75.75 0 0 0-1.06 0Z" clip-rule="evenodd"/></svg>`;
-const CHEVRON_DOWN = `<svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14" aria-hidden="true"><path fill-rule="evenodd" d="M12.53 16.28a.75.75 0 0 1-1.06 0l-7.5-7.5a.75.75 0 0 1 1.06-1.06L12 14.69l6.97-6.97a.75.75 0 1 1 1.06 1.06l-7.5 7.5Z" clip-rule="evenodd"/></svg>`;
+/* Hero Icon paths only — wrap in `svg` template tag at the call site.
+   Previously these were full markup strings injected via `.innerHTML`,
+   which Lit only applies to the existing element instance — when a
+   re-render swapped the parent <button> the new <span> sometimes ended
+   up empty and the chevron disappeared. Native lit `svg` templates are
+   re-rendered every pass and stay reliable. */
+const CHEVRON_LEFT = svg`<path fill-rule="evenodd" d="M15.78 4.72a.75.75 0 0 1 0 1.06L9.56 12l6.22 6.22a.75.75 0 1 1-1.06 1.06l-6.75-6.75a.75.75 0 0 1 0-1.06l6.75-6.75a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd"/>`;
+const CHEVRON_RIGHT = svg`<path fill-rule="evenodd" d="M8.22 4.72a.75.75 0 0 0 0 1.06L14.44 12l-6.22 6.22a.75.75 0 1 0 1.06 1.06l6.75-6.75a.75.75 0 0 0 0-1.06L9.28 4.72a.75.75 0 0 0-1.06 0Z" clip-rule="evenodd"/>`;
+const CHEVRON_DOWN = svg`<path fill-rule="evenodd" d="M12.53 16.28a.75.75 0 0 1-1.06 0l-7.5-7.5a.75.75 0 0 1 1.06-1.06L12 14.69l6.97-6.97a.75.75 0 1 1 1.06 1.06l-7.5 7.5Z" clip-rule="evenodd"/>`;
 
 interface DayMark {
   /** ISO date string yyyy-mm-dd */
@@ -70,8 +76,8 @@ export class ScoutPopoverDate extends LitElement {
       opacity: 0;
       pointer-events: none;
       transform: translateY(2px);
-      transition: opacity var(--scout-motion-duration-fast, 120ms) ease,
-        transform var(--scout-motion-duration-fast, 120ms) ease;
+      transition: opacity var(--scout-motion-duration-hover, 120ms) ease,
+        transform var(--scout-motion-duration-hover, 120ms) ease;
     }
     :host([open]) .surface {
       opacity: 1;
@@ -193,8 +199,8 @@ export class ScoutPopoverDate extends LitElement {
       align-items: center;
       justify-content: center;
       position: relative;
-      transition: background var(--scout-motion-duration-fast, 120ms) ease,
-        color var(--scout-motion-duration-fast, 120ms) ease;
+      transition: background var(--scout-motion-duration-hover, 120ms) ease,
+        color var(--scout-motion-duration-hover, 120ms) ease;
     }
     .cell.outside { color: var(--scout-text-display-disabled, var(--scout-color-cool-gray-400)); }
     .cell.past    { color: var(--scout-text-display-secondary); }
@@ -418,7 +424,8 @@ export class ScoutPopoverDate extends LitElement {
               this._view === 'months' ? 'years' : 'days';
           }}
         >
-          ${headerText} <span .innerHTML=${CHEVRON_DOWN}></span>
+          ${headerText}
+          <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14" aria-hidden="true">${CHEVRON_DOWN}</svg>
         </button>
         <div class="nav-buttons">
           <button class="nav-btn" type="button" aria-label="Previous"
@@ -427,14 +434,14 @@ export class ScoutPopoverDate extends LitElement {
               else if (this._view === 'months') this._cursor = { ...this._cursor, year: year - 1 };
               else this._shiftMonth(-1);
             }}
-          ><span .innerHTML=${CHEVRON_LEFT}></span></button>
+          ><svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16" aria-hidden="true">${CHEVRON_LEFT}</svg></button>
           <button class="nav-btn" type="button" aria-label="Next"
             @click=${() => {
               if (this._view === 'years') this._cursor = { ...this._cursor, year: year + 12 };
               else if (this._view === 'months') this._cursor = { ...this._cursor, year: year + 1 };
               else this._shiftMonth(1);
             }}
-          ><span .innerHTML=${CHEVRON_RIGHT}></span></button>
+          ><svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16" aria-hidden="true">${CHEVRON_RIGHT}</svg></button>
         </div>
       </div>
     `;

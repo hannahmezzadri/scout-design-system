@@ -49,10 +49,10 @@ export class ScoutPopoverMenu extends LitElement {
       opacity: 0;
       pointer-events: none;
       transform: translateY(2px);
-      transition: opacity var(--scout-motion-duration-fast, 120ms)
-          var(--scout-motion-easing-standard, ease),
-        transform var(--scout-motion-duration-fast, 120ms)
-          var(--scout-motion-easing-standard, ease);
+      transition: opacity var(--scout-motion-duration-hover, 120ms)
+          var(--scout-motion-easing-gentle, ease),
+        transform var(--scout-motion-duration-hover, 120ms)
+          var(--scout-motion-easing-gentle, ease);
     }
     :host([open]) .surface {
       opacity: 1;
@@ -198,8 +198,8 @@ export class ScoutPopoverMenuItem extends LitElement {
       color: var(--scout-text-display-primary);
       cursor: pointer;
       user-select: none;
-      transition: background var(--scout-motion-duration-fast, 120ms)
-        var(--scout-motion-easing-standard, ease);
+      transition: background var(--scout-motion-duration-hover, 120ms)
+        var(--scout-motion-easing-gentle, ease);
     }
     .row:hover  { background: var(--scout-interactive-background-hover); }
     .row:active { background: var(--scout-interactive-background-pressed); }

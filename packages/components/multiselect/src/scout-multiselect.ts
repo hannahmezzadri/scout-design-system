@@ -69,12 +69,17 @@ export class ScoutMultiselect extends LitElement {
       flex-wrap: wrap;
       align-items: center;
       gap: var(--scout-space-4);
+      /* border-box matches scout-dropdown-select so min-height is the
+         total rendered height (border + padding included). content-box
+         was leaking padding + border on top of the 36px floor and
+         making the empty multiselect render ~46px. */
+      box-sizing: border-box;
       min-height: var(--_ms-min-h);
       padding: 4px var(--scout-space-12) 4px 4px;
       background: var(--scout-surface-primary);
       border: var(--scout-border-width-1) solid var(--scout-border-primary);
       border-radius: var(--scout-radius-4);
-      transition: border-color var(--scout-motion-duration-fast) var(--scout-motion-easing-standard);
+      transition: border-color var(--scout-motion-duration-hover) var(--scout-motion-easing-gentle);
       cursor: text;
     }
     .input-wrap:hover:not(.disabled) {
@@ -126,7 +131,13 @@ export class ScoutMultiselect extends LitElement {
       border: none;
       outline: none;
       background: transparent;
-      padding: 4px 0;
+      /* Zero block padding — the input-wrap already supplies the
+         vertical breathing room. Without this the native input added
+         ~10px and pushed the empty-state multiselect to 46px tall
+         (dropdown is 36px). */
+      padding: 0 var(--scout-space-8);
+      margin-left: var(--scout-space-4);
+      line-height: var(--scout-typography-body-line-height);
       font-family: inherit;
       font-size: var(--_ms-fs);
       color: var(--scout-text-display-primary);
@@ -138,7 +149,7 @@ export class ScoutMultiselect extends LitElement {
       height: 16px;
       flex-shrink: 0;
       color: var(--scout-icon-display-secondary);
-      transition: transform var(--scout-motion-duration-fast) var(--scout-motion-easing-standard);
+      transition: transform var(--scout-motion-duration-hover) var(--scout-motion-easing-gentle);
       cursor: pointer;
       align-self: center;
       margin-left: auto;

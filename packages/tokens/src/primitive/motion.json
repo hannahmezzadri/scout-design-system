@@ -2,7 +2,8 @@
   "motion": {
     "duration": {
       "instant":    { "$value": "0ms",   "$type": "duration", "$description": "Reduced-motion fallback." },
-      "fast":       { "$value": "150ms", "$type": "duration", "$description": "Hover, focus, small-scale transitions." },
+      "hover":      { "$value": "180ms", "$type": "duration", "$description": "Subtle, on-the-edge-of-perception pace for hover and focus state transitions. Slow enough to feel intentional, fast enough to feel responsive." },
+      "fast":       { "$value": "150ms", "$type": "duration", "$description": "Small-scale transitions (toasts dismissing, tooltips appearing)." },
       "base":       { "$value": "250ms", "$type": "duration", "$description": "Default — toasts, tooltips, most enter/exit." },
       "slow":       { "$value": "400ms", "$type": "duration", "$description": "Modal, drawer, emphasis." },
       "deliberate": { "$value": "600ms", "$type": "duration", "$description": "Page-level transitions." }
@@ -10,6 +11,7 @@
     "easing": {
       "linear":   { "$value": "linear",                       "$type": "cubicBezier" },
       "standard": { "$value": "cubic-bezier(0.2, 0, 0, 1)",   "$type": "cubicBezier", "$description": "Default UI motion." },
+      "gentle":   { "$value": "cubic-bezier(0.4, 0, 0.2, 1)", "$type": "cubicBezier", "$description": "Softer ease-out for hover / focus changes — eases in and out symmetrically so the change feels like settling, not snapping." },
       "enter":    { "$value": "cubic-bezier(0, 0, 0, 1)",     "$type": "cubicBezier", "$description": "Decelerate-in." },
       "exit":     { "$value": "cubic-bezier(0.4, 0, 1, 1)",   "$type": "cubicBezier", "$description": "Accelerate-out." },
       "emphasis": { "$value": "cubic-bezier(0.2, 0, 0, 1.4)", "$type": "cubicBezier", "$description": "Slight overshoot." }
