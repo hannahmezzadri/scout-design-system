@@ -21,8 +21,11 @@ export class ScoutAccordionItem extends LitElement {
   static styles = css`
     :host {
       display: block;
+      /* Use border-primary (cool-gray.300 / cool-gray.600 in dark) so
+         the divider stays visible on every surface, including
+         surface.primary cards where border-secondary disappears. */
       border-bottom: var(--_cnx-accordion-divider-width, 0) solid
-        var(--scout-border-secondary);
+        var(--scout-border-primary);
     }
     :host(:last-of-type) {
       border-bottom: none;

@@ -47,6 +47,9 @@ importers:
       '@scout/control':
         specifier: workspace:*
         version: link:../../packages/components/control
+      '@scout/copy':
+        specifier: workspace:*
+        version: link:../../packages/components/copy
       '@scout/data-pair':
         specifier: workspace:*
         version: link:../../packages/components/data-pair
@@ -317,6 +320,22 @@ importers:
         version: 5.9.3
 
   packages/components/control:
+    dependencies:
+      '@scout/tokens':
+        specifier: workspace:*
+        version: link:../../tokens
+      lit:
+        specifier: ^3.2.0
+        version: 3.3.2
+    devDependencies:
+      tsup:
+        specifier: ^8.3.0
+        version: 8.5.1(postcss@8.5.10)(typescript@5.9.3)(yaml@2.8.3)
+      typescript:
+        specifier: ^5.6.3
+        version: 5.9.3
+
+  packages/components/copy:
     dependencies:
       '@scout/tokens':
         specifier: workspace:*

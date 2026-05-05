@@ -2066,6 +2066,7 @@ import '@scout/button';`,
     { id: 'components-card',          name: 'Card',          summary: 'Stylized container for AI summaries and extracted plain-text content. Three background colors (white / cool-gray.100 / cool-gray.200), optional AI call-out and show-more toggle.' },
     { id: 'components-checkbox',      name: 'Checkbox',      summary: 'Single and multi-select form input. Selected, not selected, and indeterminate states. Group orientation, helper, error, and warning messages.' },
     { id: 'components-control',       name: 'Control',       summary: 'Icon-only interactive control for triggering single actions. 11 built-in types (close, clear, navigation arrows, tooltip, trash, kebab) with primary and critical colors.' },
+    { id: 'components-copy',          name: 'Copy',          summary: 'One-click copy-to-clipboard control. Hover shows a "Copy" tooltip; clicking copies the bound value and flips the tooltip to "Copied!". Two layouts (icon-only, icon + label), two sizes (default, condensed).' },
     { id: 'components-data-pair',     name: 'Data pair',     summary: 'Label + description display with optional meta and link. Vertical (stacked) layout.' },
     { id: 'components-data-unavailable', name: 'Data unavailable', summary: 'Inline placeholder for surfaces whose data couldn\'t be fetched. Cloud-with-slash icon + label. Three sizes: small, medium, large.' },
     { id: 'components-dialog',        name: 'Dialog',        summary: 'Modal surface that disables the page behind it. Confirms actions, displays simple flows, surfaces important system messages.' },
@@ -2328,7 +2329,7 @@ function accordionGuidelines(): HTMLElement {
 
   return el(
     'div',
-    { class: 'tab-content guidelines-layout' },
+    { class: 'tab-content guidelines-layout accordion-guidelines' },
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading do-heading' }, heroIconSvg('check-circle', 20), ' Do'),
       el('p', { class: 'preview-block__lede' }, 'Patterns that match user expectations and keep the accordion useful.'),
@@ -12305,6 +12306,269 @@ app.append(componentPage(
 ));
 
 // =================================================================
+// Copy (real Lit component from @scout/copy)
+// =================================================================
+import '@scout/copy';
+import type { CopyLayout, CopySize } from '@scout/copy';
+
+interface CopyOpts {
+  value?: string;
+  layout?: CopyLayout;
+  label?: string;
+  size?: CopySize;
+  disabled?: boolean;
+}
+
+function previewCopy(opts: CopyOpts = {}): HTMLElement {
+  const c = document.createElement('scout-copy');
+  if (opts.value)    c.setAttribute('value', opts.value);
+  if (opts.layout)   c.setAttribute('layout', opts.layout);
+  if (opts.label)    c.setAttribute('label', opts.label);
+  if (opts.size)     c.setAttribute('size', opts.size);
+  if (opts.disabled) c.setAttribute('disabled', '');
+  return c;
+}
+
+function copyPreview(): HTMLElement {
+  const wrap = el('div', { class: 'tab-content' });
+  const block = (heading: string, lede: string, ...children: HTMLElement[]) => {
+    wrap.append(el('div', { class: 'preview-block' },
+      el('h3', { class: 'preview-block__title' }, heading),
+      el('p', { class: 'preview-block__lede' }, lede),
+      el('div', { class: 'preview-row' }, ...children),
+    ));
+  };
+
+  // Pair the icon with a value preview so the user sees what gets copied.
+  const valueRow = (label: string, value: string, layout: CopyLayout, size: CopySize = 'default') => {
+    const row = el('div', {
+      style: 'display: inline-flex; align-items: center; gap: var(--scout-space-12); padding: var(--scout-space-8) var(--scout-space-12); background: var(--scout-surface-primary); border: var(--scout-border-width-1) solid var(--scout-border-secondary); border-radius: var(--scout-radius-4); font-family: var(--scout-font-family-inter); font-size: var(--scout-typography-body-font-size); color: var(--scout-text-display-primary);',
+    });
+    row.append(
+      el('span', {}, `${label}: `),
+      el('span', { style: 'font-weight: var(--scout-font-weight-semibold);' }, value),
+      previewCopy({ value, layout, size }),
+    );
+    return row;
+  };
+
+  block(
+    'Layouts',
+    'Two anatomies — icon-only and icon + label. The icon-only variant matches scout-control\'s 32px / 24px hit-target; icon + label adds horizontal padding for the text.',
+    valueRow('Account', '••••2349', 'icon-only'),
+    valueRow('Reference', 'TXN-9F3A82', 'icon-label'),
+  );
+
+  block(
+    'Sizes',
+    'Default for general-purpose surfaces. Condensed for data-dense rows like a data table or sidebar.',
+    valueRow('Default', '$1,248.50', 'icon-only', 'default'),
+    valueRow('Condensed', '$1,248.50', 'icon-only', 'condensed'),
+  );
+
+  block(
+    'Interactive states',
+    'Hover surfaces a "Copy" tooltip. Click flips the tooltip to "Copied!" for ~1.6s. Disabled removes the button from tab order and dims the icon.',
+    el('div', { class: 'preview-row preview-row--block', style: 'gap: var(--scout-space-32);' },
+      el('div', { style: 'display: flex; flex-direction: column; align-items: center; gap: var(--scout-space-8);' },
+        previewCopy({ value: 'Default state' }),
+        el('span', { style: 'font-size: 12px; color: var(--scout-text-display-secondary);' }, 'Default'),
+      ),
+      el('div', { style: 'display: flex; flex-direction: column; align-items: center; gap: var(--scout-space-8);' },
+        previewCopy({ value: 'Hover state', layout: 'icon-label', label: 'Copy' }),
+        el('span', { style: 'font-size: 12px; color: var(--scout-text-display-secondary);' }, 'Icon + label · hover to preview'),
+      ),
+      el('div', { style: 'display: flex; flex-direction: column; align-items: center; gap: var(--scout-space-8);' },
+        previewCopy({ value: 'Disabled', disabled: true }),
+        el('span', { style: 'font-size: 12px; color: var(--scout-text-display-secondary);' }, 'Disabled'),
+      ),
+    ),
+  );
+
+  return wrap;
+}
+
+function copyControls(): HTMLElement {
+  const wrap = el('div', { class: 'tab-content controls-layout' });
+  const stage = el('div', { class: 'preview-stage' });
+  const codePre = el('pre', { class: 'code-block' });
+
+  const layoutSel = ddSelect('cp-layout', ['icon-only', 'icon-label']);
+  const sizeSel   = ddSelect('cp-size', ['default', 'condensed']);
+  const valueInput = ctrlText('cp-value', 'Hannah Mezzadri');
+  const labelInput = ctrlText('cp-label', 'Copy');
+  const disabledChk = ctrlCheck('cp-disabled', 'Disabled');
+
+  const labelField = ctrlField('Label', 'cp-label', labelInput);
+
+  function render() {
+    const layout = layoutSel.value as CopyLayout;
+    setFieldDisabled(labelField, labelInput, layout !== 'icon-label');
+
+    stage.replaceChildren(previewCopy({
+      value: valueInput.value,
+      layout,
+      label: labelInput.value,
+      size: sizeSel.value as CopySize,
+      disabled: disabledChk.checked,
+    }));
+
+    const attrs: string[] = [];
+    if (layout !== 'icon-only') attrs.push(`layout="${layout}"`);
+    if (sizeSel.value !== 'default') attrs.push(`size="${sizeSel.value}"`);
+    if (valueInput.value) attrs.push(`value="${valueInput.value}"`);
+    if (layout === 'icon-label' && labelInput.value && labelInput.value !== 'Copy') attrs.push(`label="${labelInput.value}"`);
+    if (disabledChk.checked) attrs.push('disabled');
+    codePre.textContent = `<scout-copy${attrs.length ? ' ' + attrs.join(' ') : ''}></scout-copy>`;
+  }
+  for (const c of [layoutSel, sizeSel, valueInput, labelInput, disabledChk]) {
+    c.addEventListener('input', render);
+    c.addEventListener('change', render);
+  }
+  const panel = el('div', { class: 'ctrl-panel' },
+    el('h3', { class: 'preview-block__title' }, 'Properties'),
+    ctrlField('Layout', 'cp-layout', layoutSel),
+    ctrlField('Size', 'cp-size', sizeSel),
+    ctrlField('Value (text to copy)', 'cp-value', valueInput),
+    labelField,
+    el('div', { class: 'ctrl-checks' }, disabledChk),
+  );
+  wrap.append(panel, el('div', { class: 'ctrl-stage-wrap' }, stage,
+    el('div', { class: 'code-wrap' }, el('h3', { class: 'preview-block__title' }, 'Code'), codePre)));
+  queueMicrotask(render);
+  return wrap;
+}
+
+function copyGuidelines(): HTMLElement {
+  const doCard = (preview: HTMLElement, copy: string) =>
+    el('div', { class: 'do-card' },
+      el('div', { class: 'do-dont-header' }, heroIconSvg('check-circle', 16), ' Do'),
+      el('div', { class: 'do-dont-preview' }, preview),
+      el('p', {}, copy),
+    );
+  const dontCard = (preview: HTMLElement, copy: string) =>
+    el('div', { class: 'dont-card' },
+      el('div', { class: 'do-dont-header' }, heroIconSvg('x-circle', 16), " Don't"),
+      el('div', { class: 'do-dont-preview' }, preview),
+      el('p', {}, copy),
+    );
+  return el('div', { class: 'tab-content guidelines-layout' },
+    el('section', { class: 'guideline-section' },
+      el('h3', { class: 'guideline-heading do-heading' }, heroIconSvg('check-circle', 20), ' Do'),
+      el('p', { class: 'preview-block__lede' }, 'Use Copy to put structured values one click away — IDs, account numbers, references, codes.'),
+      el('div', { class: 'do-dont-grid' },
+        doCard(previewCopy({ value: 'TXN-9F3A82' }),
+          'Pair the icon-only variant with the value it copies. The label sits to the left, the icon sits at the end of the line.'),
+        doCard(previewCopy({ value: 'support@scout.example', layout: 'icon-label' }),
+          'Use icon + label for primary actions where the affordance needs to advertise itself (empty states, getting-started flows).'),
+      )),
+    el('section', { class: 'guideline-section' },
+      el('h3', { class: 'guideline-heading dont-heading' }, heroIconSvg('x-circle', 20), " Don't"),
+      el('p', { class: 'preview-block__lede' }, 'Avoid using Copy as a stand-in for primary actions or for prose-length text.'),
+      el('div', { class: 'do-dont-grid' },
+        dontCard(previewCopy({ value: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', layout: 'icon-label', label: 'Copy paragraph' }),
+          'Don\'t use Copy for free-form prose or paragraphs. Reach for a "Copy to clipboard" button on the document/email composer instead.'),
+        dontCard(previewCopy({ value: 'Submit', layout: 'icon-label', label: 'Submit form' }),
+          'Don\'t repurpose Copy as a primary action button. The icon and tooltip both communicate "copy" — using it for anything else breaks user expectation.'),
+      )));
+}
+
+function copyContent(): HTMLElement {
+  return el('div', { class: 'tab-content guidelines-layout' },
+    el('section', { class: 'guideline-section' },
+      el('h3', { class: 'guideline-heading' }, 'Anatomy'),
+      el('ul', { class: 'guideline-list' },
+        el('li', {}, 'Document-duplicate icon (Heroicons outline) anchored to the right of the value it acts on.'),
+        el('li', {}, 'Optional label rendered before the icon when layout = icon-label.'),
+        el('li', {}, 'Tooltip surfaces "Copy" on hover/focus, "Copied!" for 1.6 s after click.'),
+      )),
+    el('section', { class: 'guideline-section' },
+      el('h3', { class: 'guideline-heading' }, 'Voice & tone'),
+      el('ul', { class: 'guideline-list' },
+        el('li', {}, 'Default tooltip is always "Copy" — short, unambiguous.'),
+        el('li', {}, 'Success tooltip is always "Copied!" with an exclamation — adds a beat of warmth.'),
+        el('li', {}, 'When using icon + label, the label is a verb phrase ("Copy", "Copy ID", "Copy reference"). Avoid noun-only labels like "Clipboard".'),
+      )));
+}
+
+function copyAccessibility(): HTMLElement {
+  return el('div', { class: 'tab-content guidelines-layout' },
+    el('section', { class: 'guideline-section' },
+      el('h3', { class: 'guideline-heading' }, 'Semantics'),
+      el('ul', { class: 'guideline-list' },
+        el('li', {}, 'Renders a native <button> internally so it\'s reachable via Tab and activatable with Enter / Space.'),
+        el('li', {}, 'Icon-only variants get aria-label="Copy to clipboard" by default; override with aria-label-override.'),
+        el('li', {}, 'Tooltip is wrapped in role="status" aria-live="polite" so screen readers announce the "Copied!" confirmation.'),
+      )),
+    el('section', { class: 'guideline-section' },
+      el('h3', { class: 'guideline-heading' }, 'Keyboard'),
+      el('ul', { class: 'guideline-list' },
+        el('li', {}, 'Tab focuses the button. Focus also surfaces the tooltip so keyboard users see the same hint as mouse users.'),
+        el('li', {}, 'Enter / Space triggers the copy. Disabled removes the button from tab order entirely.'),
+      )),
+    el('section', { class: 'guideline-section' },
+      el('h3', { class: 'guideline-heading' }, 'Contrast'),
+      el('ul', { class: 'guideline-list' },
+        el('li', {}, 'Icon resolves to icon.interactive.primary (cool-gray.800 light / cool-gray.100 dark) — meets WCAG AA against every Scout surface.'),
+      )));
+}
+
+function copyCode(): HTMLElement {
+  return el('div', { class: 'tab-content code-layout' },
+    el('section', { class: 'preview-block' },
+      el('h3', { class: 'preview-block__title' }, 'Install'),
+      el('pre', { class: 'code-block' }, `pnpm add @scout/copy @scout/tokens lit\n\nimport '@scout/copy';`),
+    ),
+    el('section', { class: 'preview-block' },
+      el('h3', { class: 'preview-block__title' }, 'Markup'),
+      el('pre', { class: 'code-block' }, `<!-- Icon only — sits next to a label/value the user might want to copy -->
+<scout-copy value="TXN-9F3A82"></scout-copy>
+
+<!-- Icon + label — primary affordance -->
+<scout-copy layout="icon-label" label="Copy reference" value="TXN-9F3A82"></scout-copy>
+
+<!-- Condensed — for data-dense surfaces -->
+<scout-copy size="condensed" value="$1,248.50"></scout-copy>
+
+<!-- Listen for copy events -->
+<scout-copy id="copy-1" value="hello@scout.example"></scout-copy>
+<script type="module">
+  document.getElementById('copy-1').addEventListener('scout-copy', (e) => {
+    console.log('copied?', e.detail.ok, 'value:', e.detail.value);
+  });
+</script>`),
+    ),
+    el('section', { class: 'preview-block' },
+      el('h3', { class: 'preview-block__title' }, 'Props'),
+      el('div', { class: 'props-table-wrap' },
+        el('table', { class: 'props-table' },
+          el('thead', {}, el('tr', {}, el('th', {}, 'Prop'), el('th', {}, 'Type'), el('th', {}, 'Default'), el('th', {}, 'Description'))),
+          el('tbody', {},
+            el('tr', {}, el('td', {}, 'value'),               el('td', {}, 'string'),                       el('td', {}, '""'),          el('td', {}, 'Text to copy. Falls back to slotted text content if empty.')),
+            el('tr', {}, el('td', {}, 'layout'),              el('td', {}, '"icon-only" | "icon-label"'),   el('td', {}, '"icon-only"'), el('td', {}, 'Visual variant.')),
+            el('tr', {}, el('td', {}, 'label'),               el('td', {}, 'string'),                       el('td', {}, '"Copy"'),      el('td', {}, 'Label for icon-label layout.')),
+            el('tr', {}, el('td', {}, 'size'),                el('td', {}, '"default" | "condensed"'),       el('td', {}, '"default"'),   el('td', {}, 'Density preset.')),
+            el('tr', {}, el('td', {}, 'disabled'),            el('td', {}, 'boolean'),                       el('td', {}, 'false'),       el('td', {}, 'Disables the button.')),
+            el('tr', {}, el('td', {}, 'aria-label-override'), el('td', {}, 'string'),                       el('td', {}, '—'),           el('td', {}, 'Overrides the default ARIA label.')),
+          )))),
+  );
+}
+
+app.append(componentPage(
+  'components-copy',
+  'Copy',
+  'One-click copy-to-clipboard control. Hovering surfaces a "Copy" tooltip; clicking copies the bound value and flips the tooltip to "Copied!" for 1.6 s.',
+  [
+    { id: 'preview', label: 'Preview', content: copyPreview() },
+    { id: 'controls', label: 'Controls', content: copyControls() },
+    { id: 'guidelines', label: 'Usage guidelines', content: copyGuidelines() },
+    { id: 'content', label: 'Content', content: copyContent() },
+    { id: 'accessibility', label: 'Accessibility', content: copyAccessibility() },
+    { id: 'code', label: 'Code', content: copyCode() },
+  ],
+));
+
+// =================================================================
 // Share with customer (real Lit component from @scout/share-with-customer)
 // =================================================================
 import '@scout/share-with-customer';
@@ -14858,6 +15122,7 @@ const navSections: NavSection[] = [
       { id: 'components-card',              label: 'Card' },
       { id: 'components-checkbox',          label: 'Checkbox' },
       { id: 'components-control',           label: 'Control' },
+      { id: 'components-copy',              label: 'Copy' },
       { id: 'components-data-pair',         label: 'Data pair' },
       { id: 'components-data-unavailable',  label: 'Data unavailable' },
       { id: 'components-dialog',            label: 'Dialog' },
@@ -14982,8 +15247,96 @@ for (const s of navSections) {
 window.addEventListener('hashchange', () => showPage(idFromHash()));
 window.addEventListener('popstate', () => showPage(idFromHash()));
 
+// =================================================================
+// Copy-code buttons — wraps every <pre class="code-block"> with a
+// condensed tertiary "Copy code" button anchored top-right. Runs once
+// at startup and again on every page swap so dynamically created
+// code blocks (controls panels, etc.) pick up the affordance too.
+// =================================================================
+function ensureCopyButtons(): void {
+  const blocks = document.querySelectorAll<HTMLPreElement>('pre.code-block:not([data-copy-init])');
+  blocks.forEach((pre) => {
+    pre.setAttribute('data-copy-init', 'true');
+    // Ensure the pre sits inside a positioned wrapper so the button can
+    // overlay the top-right corner without disturbing existing layouts.
+    let wrap: HTMLElement;
+    if (pre.parentElement?.classList.contains('code-block-wrap')) {
+      wrap = pre.parentElement as HTMLElement;
+    } else {
+      wrap = document.createElement('div');
+      wrap.className = 'code-block-wrap';
+      pre.parentElement?.insertBefore(wrap, pre);
+      wrap.appendChild(pre);
+    }
+    const btn = document.createElement('scout-button');
+    btn.setAttribute('variant', 'secondary');
+    btn.setAttribute('size', 'condensed');
+    btn.classList.add('code-copy-btn');
+    // Heroicons "document-duplicate" (24-outline) leading icon.
+    const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    icon.setAttribute('slot', 'icon-leading');
+    icon.setAttribute('viewBox', '0 0 24 24');
+    icon.setAttribute('fill', 'none');
+    icon.setAttribute('stroke', 'currentColor');
+    icon.setAttribute('stroke-width', '1.75');
+    icon.setAttribute('stroke-linecap', 'round');
+    icon.setAttribute('stroke-linejoin', 'round');
+    icon.setAttribute('aria-hidden', 'true');
+    icon.innerHTML = '<path d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"/>';
+    btn.appendChild(icon);
+
+    const label = document.createTextNode('Copy code');
+    btn.appendChild(label);
+
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const text = pre.textContent || '';
+
+      // Fallback path that always works inside a click — copies via a
+      // temporary textarea + execCommand. We synchronously perform this
+      // first so the clipboard is populated even if the async
+      // navigator.clipboard.writeText path is blocked (Safari, focus
+      // issues, certain iframes). Then we kick off the modern API as a
+      // best-effort upgrade for browsers that prefer it.
+      let ok = false;
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.top = '-9999px';
+      ta.style.left = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { ok = document.execCommand('copy'); } catch {}
+      ta.remove();
+
+      if (!ok && navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => { /* upgraded */ }).catch(() => { /* swallowed */ });
+        ok = true;
+      }
+
+      const original = 'Copy code';
+      label.nodeValue = ok ? 'Copied!' : 'Copy failed';
+      window.setTimeout(() => { label.nodeValue = original; }, 1600);
+    });
+    wrap.appendChild(btn);
+  });
+}
+
+const _origShowPage = showPage;
+function showPageWithCopyButtons(id: string) {
+  _origShowPage(id);
+  // After the page swap settles, sweep any newly-rendered code blocks.
+  requestAnimationFrame(ensureCopyButtons);
+}
+window.removeEventListener('hashchange', () => showPage(idFromHash()));
+window.removeEventListener('popstate', () => showPage(idFromHash()));
+window.addEventListener('hashchange', () => showPageWithCopyButtons(idFromHash()));
+window.addEventListener('popstate', () => showPageWithCopyButtons(idFromHash()));
+
 // Initial render
 showPage(idFromHash());
+requestAnimationFrame(ensureCopyButtons);
 
 // =================================================================
 // Mobile nav (hamburger) toggle

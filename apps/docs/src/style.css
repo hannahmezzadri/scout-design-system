@@ -1760,6 +1760,23 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   background: var(--scout-color-cool-gray-800);
 }
 
+/* Copy-code button overlay — wraps the code-block in a positioned
+   container so the condensed tertiary scout-button can sit anchored to
+   the top-right without affecting the code text or its scroll. */
+.code-block-wrap {
+  position: relative;
+}
+.code-block-wrap .code-block {
+  /* Reserve room so a long first line doesn't tuck under the button. */
+  padding-right: calc(var(--scout-space-16) + 96px);
+}
+.code-copy-btn {
+  position: absolute;
+  top: var(--scout-space-8);
+  right: var(--scout-space-8);
+  z-index: 1;
+}
+
 /* Guidelines layout */
 .guidelines-layout { gap: var(--scout-space-48); }
 .guideline-section {
@@ -2009,7 +2026,11 @@ body.nav-open .sidebar-scrim { opacity: 1; }
   justify-content: center;
   min-height: 80px;
   padding: var(--scout-space-16);
-  background: var(--scout-surface-page);
+  /* Lift to surface.primary so the do/dont card and its inner
+     component preview share the same hierarchy as a real product
+     surface — components rendered with white chrome (accordion,
+     dialog, dropdown menu) stop disappearing into the page. */
+  background: var(--scout-surface-primary);
   border-radius: var(--scout-radius-4);
 }
 .do-dont-preview--row {

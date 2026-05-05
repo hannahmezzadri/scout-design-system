@@ -20,6 +20,7 @@
     "@scout/card": "workspace:*",
     "@scout/checkbox": "workspace:*",
     "@scout/control": "workspace:*",
+    "@scout/copy": "workspace:*",
     "@scout/data-pair": "workspace:*",
     "@scout/data-unavailable": "workspace:*",
     "@scout/dialog": "workspace:*",
