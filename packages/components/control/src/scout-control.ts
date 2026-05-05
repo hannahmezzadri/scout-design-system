@@ -64,7 +64,10 @@ export class ScoutControl extends LitElement {
          hover token (theme-aware). */
       --_control-bg-hover: var(--scout-interactive-background-hover);
     }
-    :host([size='condensed']),
+    :host([size='condensed']) {
+      --_control-size: 24px;
+      --_control-icon-size: 16px;
+    }
     :host-context([data-density='condensed']) {
       --_control-size: 24px;
       --_control-icon-size: 16px;

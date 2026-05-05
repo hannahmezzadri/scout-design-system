@@ -49,7 +49,11 @@ export class ScoutPagination extends LitElement {
     :host([layout='both']) .nav {
       margin-left: auto;
     }
-    :host([size='condensed']),
+    :host([size='condensed']) {
+      --_pg-control-size: 24px;
+      --_pg-fs: var(--scout-font-size-12);
+      --_pg-gap: var(--scout-space-2, 2px);
+    }
     :host-context([data-density='condensed']) {
       --_pg-control-size: 24px;
       --_pg-fs: var(--scout-font-size-12);

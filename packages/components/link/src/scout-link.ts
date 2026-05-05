@@ -33,7 +33,11 @@ export class ScoutLink extends LitElement {
       --_link-lh: var(--scout-typography-body-line-height);
       --_link-icon-size: 14px;
     }
-    :host([size='condensed']),
+    :host([size='condensed']) {
+      --_link-fs: var(--scout-typography-body-small-font-size);
+      --_link-lh: var(--scout-typography-body-small-line-height);
+      --_link-icon-size: 12px;
+    }
     :host-context([data-density='condensed']) {
       --_link-fs: var(--scout-typography-body-small-font-size);
       --_link-lh: var(--scout-typography-body-small-line-height);

@@ -37,7 +37,13 @@ export class ScoutBadge extends LitElement {
       --_badge-icon-size: 12px;
       --_badge-gap: var(--scout-space-4);
     }
-    :host([size='condensed']),
+    :host([size='condensed']) {
+      --_badge-padding-block: 1px;
+      --_badge-padding-inline: var(--scout-space-4);
+      --_badge-font-size: var(--scout-font-size-10);
+      --_badge-line-height: 14px;
+      --_badge-icon-size: 10px;
+    }
     :host-context([data-density='condensed']) {
       --_badge-padding-block: 1px;
       --_badge-padding-inline: var(--scout-space-4);

@@ -38,7 +38,10 @@ export class ScoutInlineAlert extends LitElement {
          changes between the two density presets. */
       --_cnx-alert-icon-size: 20px;
     }
-    :host([size='condensed']),
+    :host([size='condensed']) {
+      --_cnx-alert-padding-block: var(--scout-space-8);
+      --_cnx-alert-padding-inline: var(--scout-space-12);
+    }
     :host-context([data-density='condensed']) {
       --_cnx-alert-padding-block: var(--scout-space-8);
       --_cnx-alert-padding-inline: var(--scout-space-12);

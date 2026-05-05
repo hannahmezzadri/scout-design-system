@@ -58,7 +58,11 @@ export class ScoutTextField extends LitElement {
       --_tf-fs: var(--scout-font-size-14);
       --_tf-px: var(--scout-space-12);
     }
-    :host([size='condensed']),
+    :host([size='condensed']) {
+      --_tf-h: 28px;
+      --_tf-fs: var(--scout-font-size-12);
+      --_tf-px: var(--scout-space-8);
+    }
     :host-context([data-density='condensed']) {
       --_tf-h: 28px;
       --_tf-fs: var(--scout-font-size-12);

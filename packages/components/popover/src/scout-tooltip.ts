@@ -78,6 +78,9 @@ export class ScoutTooltip extends LitElement {
       justify-content: center;
       position: relative;
       color: var(--scout-icon-interactive-primary);
+      border-radius: var(--scout-radius-4);
+      transition: background var(--scout-motion-duration-hover, 120ms)
+        var(--scout-motion-easing-gentle, ease);
     }
     .trigger-info span {
       position: absolute;
@@ -88,6 +91,13 @@ export class ScoutTooltip extends LitElement {
       transition: opacity var(--scout-motion-duration-hover, 120ms) ease;
     }
     .trigger-info .info-solid { opacity: 0; }
+    .trigger-info:hover:not(:disabled),
+    .trigger-info:focus-visible {
+      background: var(--scout-interactive-background-hover);
+    }
+    .trigger-info:active:not(:disabled) {
+      background: var(--scout-interactive-background-pressed);
+    }
     .trigger-info:hover .info-outline,
     .trigger-info:focus-visible .info-outline { opacity: 0; }
     .trigger-info:hover .info-solid,

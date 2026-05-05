@@ -38,7 +38,11 @@ export class ScoutTextArea extends LitElement {
       --_ta-px: var(--scout-space-12);
       --_ta-py: var(--scout-space-8);
     }
-    :host([size='condensed']),
+    :host([size='condensed']) {
+      --_ta-fs: var(--scout-font-size-12);
+      --_ta-px: var(--scout-space-8);
+      --_ta-py: var(--scout-space-4);
+    }
     :host-context([data-density='condensed']) {
       --_ta-fs: var(--scout-font-size-12);
       --_ta-px: var(--scout-space-8);

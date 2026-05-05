@@ -42,7 +42,10 @@ export class ScoutAddress extends LitElement {
       --_cnx-address-body-font-size: var(--scout-typography-body-font-size);
       --_cnx-address-body-line-height: var(--scout-typography-body-line-height);
     }
-    :host([size='condensed']),
+    :host([size='condensed']) {
+      --_cnx-address-body-font-size: var(--scout-typography-body-small-font-size);
+      --_cnx-address-body-line-height: var(--scout-typography-body-small-line-height);
+    }
     :host-context([data-density='condensed']) {
       --_cnx-address-body-font-size: var(--scout-typography-body-small-font-size);
       --_cnx-address-body-line-height: var(--scout-typography-body-small-line-height);

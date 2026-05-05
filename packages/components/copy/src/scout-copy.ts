@@ -37,7 +37,13 @@ export class ScoutCopy extends LitElement {
       --_copy-lh: var(--scout-font-line-height-21);
       --_copy-px: var(--scout-space-12);
     }
-    :host([size='condensed']),
+    :host([size='condensed']) {
+      --_copy-size: 24px;
+      --_copy-icon-size: 16px;
+      --_copy-fs: var(--scout-font-size-12);
+      --_copy-lh: var(--scout-font-line-height-18);
+      --_copy-px: var(--scout-space-8);
+    }
     :host-context([data-density='condensed']) {
       --_copy-size: 24px;
       --_copy-icon-size: 16px;
