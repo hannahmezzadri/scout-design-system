@@ -467,6 +467,239 @@ const app = document.getElementById('app')!;
   );
 }
 
+// =================================================================
+// foundation-installation
+// Step-by-step instructions for product teams to install Scout into
+// their app: prerequisites, registry auth, package install, token CSS
+// imports, theming attributes, framework wiring, and updates.
+// =================================================================
+{
+  const section = (heading: string, lede: string, ...body: (Node | string)[]) =>
+    el(
+      'section',
+      { class: 'theme-section' },
+      el('h3', { class: 'theme-section__heading' }, heading),
+      el('p', { class: 'theme-section__lede' }, lede),
+      ...body,
+    );
+
+  const code = (text: string) => el('pre', { class: 'code-block' }, text);
+
+  // 1. Prerequisites
+  const prereq = section(
+    '1. Prerequisites',
+    'Scout is published as ESM-only web components. Your toolchain must support ES2022 and modern browser targets (last 2 Chrome / Edge / Firefox / Safari).',
+    el('ul', { class: 'guideline-list' },
+      el('li', {}, 'Node.js 20.x or newer'),
+      el('li', {}, 'A package manager — pnpm 10+ recommended (npm 10+ and yarn 4+ also supported)'),
+      el('li', {}, 'A bundler that handles ESM and CSS imports — Vite, Next.js (app router), Webpack 5, or Rollup'),
+      el('li', {}, 'TypeScript 5.4+ if you use types (optional but recommended)'),
+    ),
+  );
+
+  // 2. Registry authentication
+  const auth = section(
+    '2. Authenticate with the internal registry',
+    'Scout packages live on Capital Two’s internal npm registry under the @scout scope. Add a one-line .npmrc at your repo root so installs route to the right registry.',
+    code(`# .npmrc (repo root)
+@scout:registry=https://npm.internal.capitaltwo.com
+//npm.internal.capitaltwo.com/:_authToken=\${SCOUT_NPM_TOKEN}`),
+    el('p', { class: 'theme-section__lede' },
+      'Generate a personal SCOUT_NPM_TOKEN from the internal developer portal and export it in your shell profile or CI secret store. Never commit the token itself.'),
+  );
+
+  // 3. Install
+  const install = section(
+    '3. Install the packages',
+    'Install @scout/tokens (CSS variables + JS exports) plus the components you need. Lit is a peer dependency — install it once at the app level. Each component is its own package; tree-shaking is automatic when you import only what you use.',
+    code(`# pnpm
+pnpm add lit @scout/tokens @scout/button @scout/text-input @scout/dialog
+
+# npm
+npm install lit @scout/tokens @scout/button @scout/text-input @scout/dialog
+
+# yarn
+yarn add lit @scout/tokens @scout/button @scout/text-input @scout/dialog`),
+    el('p', { class: 'theme-section__lede' },
+      'See the Components section of these docs for the full package list. New components ship as additive minor releases under the same major version.'),
+  );
+
+  // 4. Import token CSS
+  const tokens = section(
+    '4. Import token CSS once at the app entry',
+    'Tokens drive every component’s color, spacing, radius, and typography. Import the bundle entry once at your top-level entry file (main.ts, _app.tsx, layout.tsx) so every component on the page resolves its CSS variables.',
+    code(`// Recommended — single bundle that includes light, dark,
+// default density, and every product theme:
+import '@scout/tokens/css';
+
+// Or, opt in per-axis if you want to ship a smaller bundle
+// (e.g. you know your app only ever runs Ember + light + default):
+import '@scout/tokens/css/light';
+import '@scout/tokens/css/density-default';
+import '@scout/tokens/css/brand/ember';`),
+    el('ul', { class: 'guideline-list' },
+      el('li', {}, 'Always import tokens BEFORE any component import so cascade order is predictable.'),
+      el('li', {}, 'Do not duplicate the bundle — importing both the full bundle and the per-axis files inflates CSS size.'),
+      el('li', {}, 'In monorepos, import tokens only in the app shell, not inside library packages, to avoid double-bundling.'),
+    ),
+  );
+
+  // 5. Set theming attributes
+  const theming = section(
+    '5. Set theming attributes on <html>',
+    'Scout themes are scoped via data attributes. Set them once on the <html> element; the cascade resolves every nested component automatically. All four attributes are independent — any combination is valid.',
+    code(`<!-- index.html -->
+<html
+  lang="en"
+  data-product="ember"
+  data-theme="light"
+  data-density="default"
+>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>`),
+    el('ul', { class: 'guideline-list' },
+      el('li', {}, 'data-product is required — it sets the brand identity. Valid values: scout, ember, snag, onward, acorn, grub, huddle, venture, embark, etch, owt.'),
+      el('li', {}, 'data-theme defaults to light. Set to dark for low-light surfaces.'),
+      el('li', {}, 'data-density defaults to default. Set to condensed for data-dense surfaces (agent desktops, tables, dashboards).'),
+      el('li', {}, 'lang defaults to en. Locale bundles for component strings are lazy-loaded — see Theming → Language.'),
+      el('li', {}, 'Any of these attributes can be set on a sub-tree (e.g. a single <section data-density="condensed">) to scope the theme to part of the page.'),
+    ),
+  );
+
+  // 6. Import and use a component
+  const usage = section(
+    '6. Import and render a component',
+    'Each Scout component registers itself as a custom element on import. There is no global init step — just import the package once anywhere in the module graph and use the tag wherever you need it.',
+    code(`// src/main.ts
+import '@scout/tokens/css';
+import '@scout/button';
+import '@scout/dialog';
+
+// Then use the elements anywhere in your HTML or framework templates:
+// <scout-button variant="primary">Save changes</scout-button>
+// <scout-dialog open title-text="Confirm">…</scout-dialog>`),
+    el('p', { class: 'theme-section__lede' },
+      'Web components work natively in every framework. React 19+ supports custom elements out of the box; for React 18 and below, wrap with @lit/react.'),
+  );
+
+  // 7. Framework adapters
+  const frameworks = section(
+    '7. Framework-specific notes',
+    'Scout components are framework-agnostic, but two integrations need a small adapter.',
+    el('div', { class: 'theme-subgroup-grid' },
+      el('div', { class: 'theme-subgroup' },
+        el('h4', { class: 'theme-subgroup__heading' }, 'React 18 and below'),
+        el('p', { class: 'theme-subgroup__lede' },
+          'Use @lit/react to wrap components so React handles props, refs, and events idiomatically.'),
+        code(`pnpm add @lit/react
+
+import { createComponent } from '@lit/react';
+import * as React from 'react';
+import { ScoutButton } from '@scout/button';
+
+export const Button = createComponent({
+  tagName: 'scout-button',
+  elementClass: ScoutButton,
+  react: React,
+  events: { onClick: 'click' },
+});`),
+      ),
+      el('div', { class: 'theme-subgroup' },
+        el('h4', { class: 'theme-subgroup__heading' }, 'Next.js (app router)'),
+        el('p', { class: 'theme-subgroup__lede' },
+          'Custom elements only run client-side. Mark any module that imports a Scout component with the "use client" directive, and import token CSS inside app/layout.tsx.'),
+        code(`// app/layout.tsx
+import '@scout/tokens/css';
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en" data-product="ember" data-theme="light">
+      <body>{children}</body>
+    </html>
+  );
+}
+
+// app/components/save-button.tsx
+'use client';
+import '@scout/button';
+export default function SaveButton() {
+  return <scout-button variant="primary">Save</scout-button>;
+}`),
+      ),
+    ),
+  );
+
+  // 8. TypeScript
+  const ts = section(
+    '8. TypeScript types',
+    'Each component package ships its own .d.ts. Importing the package once registers the tag in the global HTMLElementTagNameMap, so document.querySelector("scout-button") and JSX usage resolve without manual augmentation.',
+    code(`import '@scout/button';
+import type { ScoutButton } from '@scout/button';
+
+const btn = document.querySelector<ScoutButton>('scout-button');
+btn?.setAttribute('variant', 'primary');`),
+  );
+
+  // 9. Update / version policy
+  const updates = section(
+    '9. Updating Scout',
+    'Scout follows semver. Patch and minor updates are safe drop-ins; major updates ship with a written migration guide on the Releases page of the internal developer portal.',
+    code(`# Update everything to the latest within your current major
+pnpm up "@scout/*" --latest
+
+# Pin a specific version (recommended in production)
+pnpm add @scout/button@^0.4.0`),
+    el('ul', { class: 'guideline-list' },
+      el('li', {}, 'Always pin @scout/tokens and component packages to the same major. Mixing majors is unsupported and may cause visual regressions.'),
+      el('li', {}, 'Run your full visual regression suite after any minor bump — token values may shift within a minor.'),
+      el('li', {}, 'Subscribe to the #scout-releases internal channel for changelog drops and deprecation notices.'),
+    ),
+  );
+
+  // 10. Verification + getting help
+  const verify = section(
+    '10. Verify your install',
+    'A 30-second smoke test that confirms tokens, theming, and components are all wired correctly.',
+    code(`<!-- Drop this anywhere in your app -->
+<scout-button variant="primary">Hello Scout</scout-button>
+
+<!-- Toggle the theme to confirm tokens are resolving -->
+<button onclick="document.documentElement.dataset.theme =
+  document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'">
+  Toggle theme
+</button>`),
+    el('ul', { class: 'guideline-list' },
+      el('li', {}, 'The button should render with the active product’s primary brand color.'),
+      el('li', {}, 'Toggling data-theme should flip the surface and text colors instantly with no flash of unstyled content.'),
+      el('li', {}, 'If the button renders unstyled, your token CSS import is missing or running after the component.'),
+      el('li', {}, 'If colors look generic blue, data-product is missing on <html> — Scout falls back to the scout brand.'),
+      el('li', {}, 'Still stuck? Post in the #scout-help internal channel with your package.json and a screenshot.'),
+    ),
+  );
+
+  app.append(
+    page(
+      'foundation-installation',
+      header(
+        'Installation',
+        'Install Scout, wire up tokens and theming, and ship your first component. Designed to take a new product team from zero to a themed component on screen in under ten minutes.',
+      ),
+      prereq,
+      auth,
+      install,
+      tokens,
+      theming,
+      usage,
+      frameworks,
+      ts,
+      updates,
+      verify,
+    ),
+  );
+}
+
 // foundation-theming
 {
   // Helper: a small pill-style card showing a theme option
@@ -15088,9 +15321,10 @@ const navSections: NavSection[] = [
   {
     el: document.getElementById('nav-foundation') as NavSection['el'],
     items: [
-      { id: 'foundation-overview', label: 'Overview' },
-      { id: 'foundation-theming',  label: 'Theming' },
-      { id: 'foundation-brand',    label: 'Brand' },
+      { id: 'foundation-overview',     label: 'Overview' },
+      { id: 'foundation-installation', label: 'Installation' },
+      { id: 'foundation-theming',      label: 'Theming' },
+      { id: 'foundation-brand',        label: 'Brand' },
     ],
   },
   {

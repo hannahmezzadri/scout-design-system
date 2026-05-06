@@ -10,8 +10,8 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&family=Literata:ital,wght@0,400..700;1,400..700&display=swap"
       rel="stylesheet"
     />
-    <script type="module" crossorigin src="./assets/index-CicUZKhf.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-BGCxzRGU.css">
+    <script type="module" crossorigin src="./assets/index-M3oB0afb.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-Cm69EIWr.css">
   </head>
   <body>
     <header class="topbar">
@@ -25,28 +25,27 @@
       >
         <span></span><span></span><span></span>
       </button>
-      <div class="brand">
+      <a class="brand" href="#foundation-overview" aria-label="Scout home">
         <span class="title">Scout</span>
         <scout-badge type="informational" emphasis="low" size="condensed">BETA</scout-badge>
-      </div>
+      </a>
       <div class="controls">
-        <scout-dropdown-select id="brand" label="Brand" size="condensed" value="scout">
-          <scout-dropdown-option value="scout">Scout</scout-dropdown-option>
-          <scout-dropdown-option value="ember">Ember</scout-dropdown-option>
-          <scout-dropdown-option value="snag">Snag</scout-dropdown-option>
-          <scout-dropdown-option value="onward">Onward</scout-dropdown-option>
-          <scout-dropdown-option value="acorn">Acorn</scout-dropdown-option>
-          <scout-dropdown-option value="grub">Grub</scout-dropdown-option>
-          <scout-dropdown-option value="huddle">Huddle</scout-dropdown-option>
-          <scout-dropdown-option value="venture">Venture</scout-dropdown-option>
-          <scout-dropdown-option value="embark">Embark</scout-dropdown-option>
-          <scout-dropdown-option value="etch">Etch</scout-dropdown-option>
-          <scout-dropdown-option value="owt">Owt</scout-dropdown-option>
-        </scout-dropdown-select>
         <scout-dropdown-select id="theme" label="Theme" size="condensed" value="light">
           <scout-dropdown-option value="light">Light</scout-dropdown-option>
           <scout-dropdown-option value="dark">Dark</scout-dropdown-option>
         </scout-dropdown-select>
+        <scout-segmented-control id="theme-segments" value="light" aria-label="Theme">
+          <scout-segment value="light" aria-label="Light theme">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="16" height="16">
+              <path d="M12 2.25a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM7.5 12a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM18.894 6.166a.75.75 0 0 0-1.06-1.06l-1.591 1.59a.75.75 0 1 0 1.06 1.061l1.591-1.59ZM21.75 12a.75.75 0 0 1-.75.75h-2.25a.75.75 0 0 1 0-1.5H21a.75.75 0 0 1 .75.75ZM17.834 18.894a.75.75 0 0 0 1.06-1.06l-1.59-1.591a.75.75 0 1 0-1.061 1.06l1.59 1.591ZM12 18a.75.75 0 0 1 .75.75V21a.75.75 0 0 1-1.5 0v-2.25A.75.75 0 0 1 12 18ZM7.758 17.303a.75.75 0 0 0-1.061-1.06l-1.591 1.59a.75.75 0 0 0 1.06 1.061l1.591-1.59ZM6 12a.75.75 0 0 1-.75.75H3a.75.75 0 0 1 0-1.5h2.25A.75.75 0 0 1 6 12ZM6.697 7.757a.75.75 0 0 0 1.06-1.06l-1.59-1.591a.75.75 0 0 0-1.061 1.06l1.59 1.591Z"/>
+            </svg>
+          </scout-segment>
+          <scout-segment value="dark" aria-label="Dark theme">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="16" height="16">
+              <path fill-rule="evenodd" d="M9.528 1.718a.75.75 0 0 1 .162.819A8.97 8.97 0 0 0 9 6a9 9 0 0 0 9 9 8.97 8.97 0 0 0 3.463-.69.75.75 0 0 1 .981.98 10.503 10.503 0 0 1-9.694 6.46c-5.799 0-10.5-4.7-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 0 1 .818.162Z" clip-rule="evenodd"/>
+            </svg>
+          </scout-segment>
+        </scout-segmented-control>
         <scout-dropdown-select id="density" label="Density" size="condensed" value="default">
           <scout-dropdown-option value="default">Default</scout-dropdown-option>
           <scout-dropdown-option value="condensed">Condensed</scout-dropdown-option>
