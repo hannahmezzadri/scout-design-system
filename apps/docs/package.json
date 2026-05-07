@@ -48,7 +48,6 @@
     "@scout/tabs": "workspace:*",
     "@scout/text-input": "workspace:*",
     "@scout/tile": "workspace:*",
-    "@scout/toggle-switch": "workspace:*",
     "@scout/tokens": "workspace:*",
     "heroicons": "^2.2.0",
     "lit": "^3.2.0"
