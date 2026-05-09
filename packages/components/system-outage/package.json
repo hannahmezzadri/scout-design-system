@@ -1,6 +1,6 @@
 {
   "name": "@scout-ds/system-outage",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Scout System Outage — full-width banner for downtime, maintenance, and restored service",
   "type": "module",
   "main": "./dist/index.js",

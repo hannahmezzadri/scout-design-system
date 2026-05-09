@@ -1,6 +1,6 @@
 {
   "name": "@scout-ds/tile",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Scout Tile — three tile variants: tile-button, tile, tile-workflow",
   "type": "module",
   "main": "./dist/index.js",

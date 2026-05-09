@@ -1,6 +1,6 @@
 {
   "name": "@scout-ds/text-input",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Scout Text Inputs — text-field (with eleven variants) and text-area",
   "type": "module",
   "main": "./dist/index.js",

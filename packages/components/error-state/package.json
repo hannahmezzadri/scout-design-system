@@ -1,6 +1,6 @@
 {
   "name": "@scout-ds/error-state",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Scout Error state — full-application error display",
   "type": "module",
   "main": "./dist/index.js",

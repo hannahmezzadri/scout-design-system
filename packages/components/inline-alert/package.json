@@ -1,6 +1,6 @@
 {
   "name": "@scout-ds/inline-alert",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Scout Inline Alert — contextual message embedded in the page flow",
   "type": "module",
   "main": "./dist/index.js",

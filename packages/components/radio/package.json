@@ -1,6 +1,6 @@
 {
   "name": "@scout-ds/radio",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Scout Radio — single-select form input rendered as a group of mutually-exclusive radio buttons",
   "type": "module",
   "main": "./dist/index.js",

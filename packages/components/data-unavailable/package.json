@@ -1,6 +1,6 @@
 {
   "name": "@scout-ds/data-unavailable",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Scout Data Unavailable — inline placeholder shown when a service call fails to return data",
   "type": "module",
   "main": "./dist/index.js",

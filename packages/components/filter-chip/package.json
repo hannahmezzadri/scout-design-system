@@ -1,6 +1,6 @@
 {
   "name": "@scout-ds/filter-chip",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Scout Filter chip — selectable tag for filtering content",
   "type": "module",
   "main": "./dist/index.js",

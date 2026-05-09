@@ -1,6 +1,6 @@
 {
   "name": "@scout-ds/data-pair",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Scout Data Pair — label + description display with optional meta and link",
   "type": "module",
   "main": "./dist/index.js",

@@ -1,6 +1,6 @@
 {
   "name": "@scout-ds/badge",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Scout Badge — small label conveying status, category, or count",
   "type": "module",
   "main": "./dist/index.js",
