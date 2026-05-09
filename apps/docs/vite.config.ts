@@ -6,7 +6,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // On GitHub Pages, the site lives under /<repo-name>/ unless a custom domain is set.
 // Pass BASE_PATH at build time, e.g.:
-//   BASE_PATH=/scout-design-system/ pnpm --filter @scout/docs build
+//   BASE_PATH=/scout-design-system/ pnpm --filter @scout-ds/docs build
 // Defaults to './' so relative paths work for both root domains and local preview.
 const base = process.env.BASE_PATH ?? './';
 

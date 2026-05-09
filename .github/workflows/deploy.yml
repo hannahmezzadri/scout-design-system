@@ -41,15 +41,15 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       # Build the docs site through turbo so every workspace dependency
-      # (`@scout/tokens`, `@scout/dropdown`, `@scout/button`, …) is
+      # (`@scout-ds/tokens`, `@scout-ds/dropdown`, `@scout-ds/button`, …) is
       # compiled to its `dist/` first. Without this, vite tries to resolve
-      # `import '@scout/dropdown'` against a package whose dist has never
+      # `import '@scout-ds/dropdown'` against a package whose dist has never
       # been generated on a fresh CI checkout, and the build fails with
       # "Failed to resolve entry for package".
       - name: Build docs site (with workspace deps)
         env:
           BASE_PATH: /${{ github.event.repository.name }}/
-        run: pnpm turbo run build --filter @scout/docs...
+        run: pnpm turbo run build --filter @scout-ds/docs...
 
       - name: Configure Pages
         uses: actions/configure-pages@v5

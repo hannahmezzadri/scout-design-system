@@ -1,10 +1,10 @@
 /* Scout token CSS — load order matters: base first, then overlays */
-@import "@scout/tokens/css";
-@import "@scout/tokens/css/dark";
-@import "@scout/tokens/css/density-condensed";
-@import "@scout/tokens/css/brand/scout";
-@import "@scout/tokens/css/brand/ember";
-@import "@scout/tokens/css/brand/snag";
+@import "@scout-ds/tokens/css";
+@import "@scout-ds/tokens/css/dark";
+@import "@scout-ds/tokens/css/density-condensed";
+@import "@scout-ds/tokens/css/brand/scout";
+@import "@scout-ds/tokens/css/brand/ember";
+@import "@scout-ds/tokens/css/brand/snag";
 
 /* Reset-ish */
 *, *::before, *::after { box-sizing: border-box; }

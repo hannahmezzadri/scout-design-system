@@ -1,6 +1,6 @@
 import { LitElement, html, css, svg, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import '@scout/dropdown';
+import '@scout-ds/dropdown';
 import type { PaginationLayout, PaginationSize } from './types.js';
 
 const CHEVRON_LEFT = svg`<path fill-rule="evenodd" d="M15.78 4.72a.75.75 0 0 1 0 1.06L9.56 12l6.22 6.22a.75.75 0 1 1-1.06 1.06l-6.75-6.75a.75.75 0 0 1 0-1.06l6.75-6.75a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd"/>`;

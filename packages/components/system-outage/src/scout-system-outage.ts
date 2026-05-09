@@ -1,6 +1,6 @@
 import { LitElement, html, css, svg, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import '@scout/control';
+import '@scout-ds/control';
 import type { SystemOutageStatus } from './types.js';
 
 const STATUS_ICONS: Record<SystemOutageStatus, ReturnType<typeof svg>> = {

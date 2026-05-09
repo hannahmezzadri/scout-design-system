@@ -1,8 +1,8 @@
 import { LitElement, html, css, svg, nothing, type PropertyValues } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import '@scout/skeleton';
-import '@scout/button';
-import '@scout/divider';
+import '@scout-ds/skeleton';
+import '@scout-ds/button';
+import '@scout-ds/divider';
 import type { TileFunctionalState, WorkflowHeaderState } from './types.js';
 
 const CHECK   = svg`<path d="M5 10.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`;

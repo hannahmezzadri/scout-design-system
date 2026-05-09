@@ -1,37 +1,67 @@
 {
-  "name": "@scout/dialog",
+  "name": "@scout-ds/dialog",
   "version": "0.1.0",
   "description": "Scout Dialog and Disclosure dialog — modal surfaces for blocking interactions",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" } },
-  "files": ["dist"],
-  "scripts": { "build": "tsup", "dev": "tsup --watch", "clean": "rm -rf dist .turbo" },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "clean": "rm -rf dist .turbo"
+  },
   "peerDependencies": {
     "lit": "^3.2.0",
-    "@scout/tokens": "workspace:*",
-    "@scout/overlay": "workspace:*",
-    "@scout/control": "workspace:*",
-    "@scout/segmented-control": "workspace:*",
-    "@scout/progress": "workspace:*",
-    "@scout/button": "workspace:*",
-    "@scout/checkbox": "workspace:*",
-    "@scout/inline-alert": "workspace:*"
+    "@scout-ds/tokens": "workspace:*",
+    "@scout-ds/overlay": "workspace:*",
+    "@scout-ds/control": "workspace:*",
+    "@scout-ds/segmented-control": "workspace:*",
+    "@scout-ds/progress": "workspace:*",
+    "@scout-ds/button": "workspace:*",
+    "@scout-ds/checkbox": "workspace:*",
+    "@scout-ds/inline-alert": "workspace:*"
   },
   "dependencies": {
     "lit": "^3.2.0",
-    "@scout/tokens": "workspace:*",
-    "@scout/overlay": "workspace:*",
-    "@scout/control": "workspace:*",
-    "@scout/segmented-control": "workspace:*",
-    "@scout/progress": "workspace:*",
-    "@scout/button": "workspace:*",
-    "@scout/checkbox": "workspace:*",
-    "@scout/inline-alert": "workspace:*"
+    "@scout-ds/tokens": "workspace:*",
+    "@scout-ds/overlay": "workspace:*",
+    "@scout-ds/control": "workspace:*",
+    "@scout-ds/segmented-control": "workspace:*",
+    "@scout-ds/progress": "workspace:*",
+    "@scout-ds/button": "workspace:*",
+    "@scout-ds/checkbox": "workspace:*",
+    "@scout-ds/inline-alert": "workspace:*"
   },
-  "devDependencies": { "tsup": "^8.3.0", "typescript": "^5.6.3" },
-  "publishConfig": { "access": "restricted" },
-  "sideEffects": ["./dist/**/*.js"]
+  "devDependencies": {
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.3"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "sideEffects": [
+    "./dist/**/*.js"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hannahmezzadri/scout-design-system.git",
+    "directory": "packages/components/dialog"
+  },
+  "homepage": "https://github.com/hannahmezzadri/scout-design-system/tree/main/packages/components/dialog#readme",
+  "bugs": {
+    "url": "https://github.com/hannahmezzadri/scout-design-system/issues"
+  },
+  "author": "Hannah Mezzadri"
 }

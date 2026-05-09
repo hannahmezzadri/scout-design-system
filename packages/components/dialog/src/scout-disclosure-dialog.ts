@@ -1,12 +1,12 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import '@scout/overlay';
-import '@scout/control';
-import '@scout/segmented-control';
-import '@scout/progress';
-import '@scout/button';
-import '@scout/checkbox';
-import '@scout/inline-alert';
+import '@scout-ds/overlay';
+import '@scout-ds/control';
+import '@scout-ds/segmented-control';
+import '@scout-ds/progress';
+import '@scout-ds/button';
+import '@scout-ds/checkbox';
+import '@scout-ds/inline-alert';
 import type { DisclosureDialogType } from './types.js';
 
 interface LangDef {

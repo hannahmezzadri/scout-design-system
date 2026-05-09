@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import '@scout/badge';
+import '@scout-ds/badge';
 import type { AnchorLinkItem, AnchorLinksMode } from './types.js';
 
 /**

@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import '@scout/link';
+import '@scout-ds/link';
 
 /**
  * `<scout-breadcrumb-item>` — a single crumb in a breadcrumb chain.

@@ -4,24 +4,24 @@
 // Register dropdown, accordion, anchor-links, and badge early so the topbar,
 // sidebar, and every page-eyebrow badge (which dogfood these components)
 // upgrade on first paint.
-import '@scout/dropdown';
-import '@scout/accordion';
-import '@scout/anchor-links';
-import '@scout/badge';
+import '@scout-ds/dropdown';
+import '@scout-ds/accordion';
+import '@scout-ds/anchor-links';
+import '@scout-ds/badge';
 // Tile registers the scout-tile-button used by every overview page's grid.
-import '@scout/tile';
+import '@scout-ds/tile';
 // Text-input + checkbox are used by every Controls panel via the ctrlText /
 // ctrlCheck helpers below; eager-import so the elements are upgraded before
 // any controls render.
-import '@scout/text-input';
-import '@scout/checkbox';
+import '@scout-ds/text-input';
+import '@scout-ds/checkbox';
 // Tabs power both the per-page tab list (componentPage helper) and the Colors
 // page's tabbed view; eager-import so they're upgraded on first paint.
-import '@scout/tabs';
+import '@scout-ds/tabs';
 // Segmented control is used by Tokens > Iconography (icon-style switcher);
 // hoisted here so the elements are upgraded before that page renders.
-import '@scout/segmented-control';
-import type { AnchorLinkItem } from '@scout/anchor-links';
+import '@scout-ds/segmented-control';
+import type { AnchorLinkItem } from '@scout-ds/anchor-links';
 
 const PREFIX = '--scout';
 const html = document.documentElement;
@@ -497,29 +497,28 @@ const app = document.getElementById('app')!;
     ),
   );
 
-  // 2. Registry authentication
+  // 2. Registry — public npm
   const auth = section(
-    '2. Authenticate with the internal registry',
-    'Scout packages live on Capital Two’s internal npm registry under the @scout scope. Add a one-line .npmrc at your repo root so installs route to the right registry.',
-    code(`# .npmrc (repo root)
-@scout:registry=https://npm.internal.capitaltwo.com
-//npm.internal.capitaltwo.com/:_authToken=\${SCOUT_NPM_TOKEN}`),
+    '2. Registry',
+    'Scout ships as public npm packages under the @scout-ds scope on the default npm registry (registry.npmjs.org). No registry config or auth is required to install — anyone can pnpm add @scout-ds/* directly.',
+    code(`# Verify you can resolve a package (no auth needed)
+npm view @scout-ds/tokens version`),
     el('p', { class: 'theme-section__lede' },
-      'Generate a personal SCOUT_NPM_TOKEN from the internal developer portal and export it in your shell profile or CI secret store. Never commit the token itself.'),
+      'If your organization mirrors npm through a private proxy (Artifactory, Verdaccio, etc.), make sure the @scout-ds scope is unblocked or configured to fall through to the public registry.'),
   );
 
   // 3. Install
   const install = section(
     '3. Install the packages',
-    'Install @scout/tokens (CSS variables + JS exports) plus the components you need. Lit is a peer dependency — install it once at the app level. Each component is its own package; tree-shaking is automatic when you import only what you use.',
+    'Install @scout-ds/tokens (CSS variables + JS exports) plus the components you need. Lit is a peer dependency — install it once at the app level. Each component is its own package; tree-shaking is automatic when you import only what you use.',
     code(`# pnpm
-pnpm add lit @scout/tokens @scout/button @scout/text-input @scout/dialog
+pnpm add lit @scout-ds/tokens @scout-ds/button @scout-ds/text-input @scout-ds/dialog
 
 # npm
-npm install lit @scout/tokens @scout/button @scout/text-input @scout/dialog
+npm install lit @scout-ds/tokens @scout-ds/button @scout-ds/text-input @scout-ds/dialog
 
 # yarn
-yarn add lit @scout/tokens @scout/button @scout/text-input @scout/dialog`),
+yarn add lit @scout-ds/tokens @scout-ds/button @scout-ds/text-input @scout-ds/dialog`),
     el('p', { class: 'theme-section__lede' },
       'See the Components section of these docs for the full package list. New components ship as additive minor releases under the same major version.'),
   );
@@ -530,13 +529,13 @@ yarn add lit @scout/tokens @scout/button @scout/text-input @scout/dialog`),
     'Tokens drive every component’s color, spacing, radius, and typography. Import the bundle entry once at your top-level entry file (main.ts, _app.tsx, layout.tsx) so every component on the page resolves its CSS variables.',
     code(`// Recommended — single bundle that includes light, dark,
 // default density, and every product theme:
-import '@scout/tokens/css';
+import '@scout-ds/tokens/css';
 
 // Or, opt in per-axis if you want to ship a smaller bundle
 // (e.g. you know your app only ever runs Ember + light + default):
-import '@scout/tokens/css/light';
-import '@scout/tokens/css/density-default';
-import '@scout/tokens/css/brand/ember';`),
+import '@scout-ds/tokens/css/light';
+import '@scout-ds/tokens/css/density-default';
+import '@scout-ds/tokens/css/brand/ember';`),
     el('ul', { class: 'guideline-list' },
       el('li', {}, 'Always import tokens BEFORE any component import so cascade order is predictable.'),
       el('li', {}, 'Do not duplicate the bundle — importing both the full bundle and the per-axis files inflates CSS size.'),
@@ -574,9 +573,9 @@ import '@scout/tokens/css/brand/ember';`),
     '6. Import and render a component',
     'Each Scout component registers itself as a custom element on import. There is no global init step — just import the package once anywhere in the module graph and use the tag wherever you need it.',
     code(`// src/main.ts
-import '@scout/tokens/css';
-import '@scout/button';
-import '@scout/dialog';
+import '@scout-ds/tokens/css';
+import '@scout-ds/button';
+import '@scout-ds/dialog';
 
 // Then use the elements anywhere in your HTML or framework templates:
 // <scout-button variant="primary">Save changes</scout-button>
@@ -598,7 +597,7 @@ import '@scout/dialog';
 
 import { createComponent } from '@lit/react';
 import * as React from 'react';
-import { ScoutButton } from '@scout/button';
+import { ScoutButton } from '@scout-ds/button';
 
 export const Button = createComponent({
   tagName: 'scout-button',
@@ -612,7 +611,7 @@ export const Button = createComponent({
         el('p', { class: 'theme-subgroup__lede' },
           'Custom elements only run client-side. Mark any module that imports a Scout component with the "use client" directive, and import token CSS inside app/layout.tsx.'),
         code(`// app/layout.tsx
-import '@scout/tokens/css';
+import '@scout-ds/tokens/css';
 export default function RootLayout({ children }) {
   return (
     <html lang="en" data-product="ember" data-theme="light">
@@ -623,7 +622,7 @@ export default function RootLayout({ children }) {
 
 // app/components/save-button.tsx
 'use client';
-import '@scout/button';
+import '@scout-ds/button';
 export default function SaveButton() {
   return <scout-button variant="primary">Save</scout-button>;
 }`),
@@ -635,8 +634,8 @@ export default function SaveButton() {
   const ts = section(
     '8. TypeScript types',
     'Each component package ships its own .d.ts. Importing the package once registers the tag in the global HTMLElementTagNameMap, so document.querySelector("scout-button") and JSX usage resolve without manual augmentation.',
-    code(`import '@scout/button';
-import type { ScoutButton } from '@scout/button';
+    code(`import '@scout-ds/button';
+import type { ScoutButton } from '@scout-ds/button';
 
 const btn = document.querySelector<ScoutButton>('scout-button');
 btn?.setAttribute('variant', 'primary');`),
@@ -647,12 +646,12 @@ btn?.setAttribute('variant', 'primary');`),
     '9. Updating Scout',
     'Scout follows semver. Patch and minor updates are safe drop-ins; major updates ship with a written migration guide on the Releases page of the internal developer portal.',
     code(`# Update everything to the latest within your current major
-pnpm up "@scout/*" --latest
+pnpm up "@scout-ds/*" --latest
 
 # Pin a specific version (recommended in production)
-pnpm add @scout/button@^0.4.0`),
+pnpm add @scout-ds/button@^0.4.0`),
     el('ul', { class: 'guideline-list' },
-      el('li', {}, 'Always pin @scout/tokens and component packages to the same major. Mixing majors is unsupported and may cause visual regressions.'),
+      el('li', {}, 'Always pin @scout-ds/tokens and component packages to the same major. Mixing majors is unsupported and may cause visual regressions.'),
       el('li', {}, 'Run your full visual regression suite after any minor bump — token values may shift within a minor.'),
       el('li', {}, 'Subscribe to the #scout-releases internal channel for changelog drops and deprecation notices.'),
     ),
@@ -1595,7 +1594,7 @@ pnpm add @scout/button@^0.4.0`),
         el('li', {}, 'Use Outline as the default style. Reserve Solid for emphasis (active state, brand moments).'),
         el('li', {}, 'Match icon size to surrounding text size: 16 with body-small, 20 with body, 24 with body-large or as standalone affordance.'),
         el('li', {}, "Don't recolor an icon to imply a different status — use the matching icon-display-* semantic token."),
-        el('li', {}, 'Source icons from heroicons.com only. Custom icons need design-system review and live in @scout/icons.'),
+        el('li', {}, 'Source icons from heroicons.com only. Custom icons need design-system review and live in @scout-ds/icons.'),
       ),
     ),
   );
@@ -1832,8 +1831,8 @@ function componentPage(
   );
 }
 
-// --- Button (real Lit component from @scout/button)
-import '@scout/button';
+// --- Button (real Lit component from @scout-ds/button)
+import '@scout-ds/button';
 
 type BtnVariant = 'primary' | 'secondary' | 'tertiary' | 'action' | 'critical' | 'critical-tertiary';
 type BtnSize = 'default' | 'condensed';
@@ -2245,10 +2244,10 @@ function buttonCode(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
       el('pre', { class: 'code-block' },
-        `pnpm add @scout/button @scout/tokens lit
+        `pnpm add @scout-ds/button @scout-ds/tokens lit
 
 // In your app entry:
-import '@scout/button';`,
+import '@scout-ds/button';`,
       ),
     ),
     el('section', { class: 'guideline-section' },
@@ -2375,8 +2374,8 @@ import '@scout/button';`,
   );
 }
 
-// --- Accordion (real Lit component from @scout/accordion)
-import '@scout/accordion';
+// --- Accordion (real Lit component from @scout-ds/accordion)
+import '@scout-ds/accordion';
 
 type AccSize = 'sm' | 'md' | 'lg';
 type AccIconPos = 'left' | 'right';
@@ -2680,10 +2679,10 @@ function accordionCode(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
       el('pre', { class: 'code-block' },
-        `pnpm add @scout/accordion @scout/tokens lit
+        `pnpm add @scout-ds/accordion @scout-ds/tokens lit
 
 // In your app entry, side-effect import to register the elements:
-import '@scout/accordion';`,
+import '@scout-ds/accordion';`,
       ),
     ),
     el('section', { class: 'guideline-section' },
@@ -2747,9 +2746,9 @@ app.append(
 );
 
 // =================================================================
-// Address (real Lit component from @scout/address)
+// Address (real Lit component from @scout-ds/address)
 // =================================================================
-import '@scout/address';
+import '@scout-ds/address';
 
 type AddrSize = 'full' | 'condensed' | 'single-line';
 type AddrSelectTool = 'none' | 'checkbox' | 'radio';
@@ -3135,9 +3134,9 @@ function addressCode(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
       el('pre', { class: 'code-block' },
-        `pnpm add @scout/address @scout/tokens lit
+        `pnpm add @scout-ds/address @scout-ds/tokens lit
 
-import '@scout/address';`,
+import '@scout-ds/address';`,
       ),
     ),
     el('section', { class: 'guideline-section' },
@@ -3205,9 +3204,9 @@ app.append(
 );
 
 // =================================================================
-// Avatar (real Lit component from @scout/avatar)
+// Avatar (real Lit component from @scout-ds/avatar)
 // =================================================================
-import '@scout/avatar';
+import '@scout-ds/avatar';
 
 type AvSize = 'small' | 'medium' | 'large';
 type AvColor = 'blue' | 'gray' | 'knockout';
@@ -3423,7 +3422,7 @@ function avatarCode(): HTMLElement {
 <scout-avatar initials="AC" size="small" color="knockout"></scout-avatar>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @scout/avatar @scout/tokens lit\n\nimport '@scout/avatar';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout-ds/avatar @scout-ds/tokens lit\n\nimport '@scout-ds/avatar';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -3453,9 +3452,9 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Badge (real Lit component from @scout/badge)
+// Badge (real Lit component from @scout-ds/badge)
 // =================================================================
-import '@scout/badge';
+import '@scout-ds/badge';
 
 type BgType = 'informational' | 'neutral' | 'neutral-knockout' | 'success' | 'warning' | 'critical' | 'ai-summary';
 type BgEmphasis = 'high' | 'low';
@@ -3804,7 +3803,7 @@ function badgeCode(): HTMLElement {
 </scout-badge>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @scout/badge @scout/tokens lit\n\nimport '@scout/badge';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout-ds/badge @scout-ds/tokens lit\n\nimport '@scout-ds/badge';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -3833,9 +3832,9 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Breadcrumb (real Lit component from @scout/breadcrumb)
+// Breadcrumb (real Lit component from @scout-ds/breadcrumb)
 // =================================================================
-import '@scout/breadcrumb';
+import '@scout-ds/breadcrumb';
 
 interface CrumbDef { label: string; href?: string; current?: boolean; disabled?: boolean }
 
@@ -4052,7 +4051,7 @@ function breadcrumbCode(): HTMLElement {
 </scout-breadcrumb>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @scout/breadcrumb @scout/tokens lit\n\nimport '@scout/breadcrumb';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout-ds/breadcrumb @scout-ds/tokens lit\n\nimport '@scout-ds/breadcrumb';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props — <scout-breadcrumb>'),
       el('div', { class: 'props-table-wrap' },
@@ -4105,9 +4104,9 @@ app.append(
 );
 
 // =================================================================
-// Card (real Lit component from @scout/card)
+// Card (real Lit component from @scout-ds/card)
 // =================================================================
-import '@scout/card';
+import '@scout-ds/card';
 
 type CardBg = 'white' | 'cool-gray-100' | 'cool-gray-200';
 
@@ -4348,7 +4347,7 @@ function cardCode(): HTMLElement {
 </scout-card>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @scout/card @scout/tokens lit\n\nimport '@scout/card';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout-ds/card @scout-ds/tokens lit\n\nimport '@scout-ds/card';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -4378,9 +4377,9 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Checkbox (real Lit component from @scout/checkbox)
+// Checkbox (real Lit component from @scout-ds/checkbox)
 // =================================================================
-import '@scout/checkbox';
+import '@scout-ds/checkbox';
 
 interface CheckboxOpts {
   label?: string;
@@ -4746,7 +4745,7 @@ function checkboxCode(): HTMLElement {
 </scout-checkbox-group>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @scout/checkbox @scout/tokens lit\n\nimport '@scout/checkbox';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout-ds/checkbox @scout-ds/tokens lit\n\nimport '@scout-ds/checkbox';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props — <scout-checkbox>'),
       el('div', { class: 'props-table-wrap' },
@@ -4790,9 +4789,9 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Control (real Lit component from @scout/control)
+// Control (real Lit component from @scout-ds/control)
 // =================================================================
-import '@scout/control';
+import '@scout-ds/control';
 
 const CONTROL_TYPES = ['x-close', 'x-clear', 'arrow-left', 'arrow-right', 'arrow-left-double', 'arrow-right-double', 'chevron-up', 'chevron-down', 'chevron-left', 'chevron-right', 'tooltip', 'trash', 'kebab'] as const;
 type CtrlType = typeof CONTROL_TYPES[number];
@@ -5004,7 +5003,7 @@ function controlCode(): HTMLElement {
 <scout-control type="arrow-right" size="condensed"></scout-control>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @scout/control @scout/tokens lit\n\nimport '@scout/control';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout-ds/control @scout-ds/tokens lit\n\nimport '@scout-ds/control';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -5034,9 +5033,9 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Data pair (real Lit component from @scout/data-pair)
+// Data pair (real Lit component from @scout-ds/data-pair)
 // =================================================================
-import '@scout/data-pair';
+import '@scout-ds/data-pair';
 
 interface DataPairOpts {
   label?: string;
@@ -5242,7 +5241,7 @@ function dataPairCode(): HTMLElement {
 </scout-data-pair>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @scout/data-pair @scout/tokens lit\n\nimport '@scout/data-pair';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout-ds/data-pair @scout-ds/tokens lit\n\nimport '@scout-ds/data-pair';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -5270,10 +5269,10 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Data unavailable (real Lit component from @scout/data-unavailable)
+// Data unavailable (real Lit component from @scout-ds/data-unavailable)
 // =================================================================
-import '@scout/data-unavailable';
-import type { DataUnavailableSize } from '@scout/data-unavailable';
+import '@scout-ds/data-unavailable';
+import type { DataUnavailableSize } from '@scout-ds/data-unavailable';
 
 function previewDataUnavailable(opts: { label?: string; size?: DataUnavailableSize } = {}): HTMLElement {
   const du = document.createElement('scout-data-unavailable');
@@ -5445,7 +5444,7 @@ function dataUnavailableCode(): HTMLElement {
 <scout-data-unavailable size="large" label="Couldn't load statements"></scout-data-unavailable>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @scout/data-unavailable @scout/tokens lit\n\nimport '@scout/data-unavailable';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout-ds/data-unavailable @scout-ds/tokens lit\n\nimport '@scout-ds/data-unavailable';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -5473,9 +5472,9 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Divider (real Lit component from @scout/divider)
+// Divider (real Lit component from @scout-ds/divider)
 // =================================================================
-import '@scout/divider';
+import '@scout-ds/divider';
 
 function previewDivider(opts: {
   weight?: '1' | '2';
@@ -5683,7 +5682,7 @@ function dividerCode(): HTMLElement {
 <scout-divider orientation="vertical" color="knockout"></scout-divider>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @scout/divider @scout/tokens lit\n\nimport '@scout/divider';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout-ds/divider @scout-ds/tokens lit\n\nimport '@scout-ds/divider';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -5712,9 +5711,9 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Dropdown (real Lit components from @scout/dropdown)
+// Dropdown (real Lit components from @scout-ds/dropdown)
 // =================================================================
-import '@scout/dropdown';
+import '@scout-ds/dropdown';
 
 const COUNTRY_OPTIONS = [
   { value: 'us', label: 'United States' },
@@ -5956,7 +5955,7 @@ function dropdownCode(): HTMLElement {
 </scout-dropdown-searchable>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @scout/dropdown @scout/tokens lit\n\nimport '@scout/dropdown';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout-ds/dropdown @scout-ds/tokens lit\n\nimport '@scout-ds/dropdown';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Common props (both variants)'),
       el('div', { class: 'props-table-wrap' },
@@ -5989,9 +5988,9 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Error state (real Lit component from @scout/error-state)
+// Error state (real Lit component from @scout-ds/error-state)
 // =================================================================
-import '@scout/error-state';
+import '@scout-ds/error-state';
 
 interface ErrOpts {
   header?: string;
@@ -6190,7 +6189,7 @@ function errorStateCode(): HTMLElement {
 </scout-error-state>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @scout/error-state @scout/tokens lit\n\nimport '@scout/error-state';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout-ds/error-state @scout-ds/tokens lit\n\nimport '@scout-ds/error-state';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Slots'),
       el('div', { class: 'props-table-wrap' },
@@ -6219,9 +6218,9 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Filter chip (real Lit component from @scout/filter-chip)
+// Filter chip (real Lit component from @scout-ds/filter-chip)
 // =================================================================
-import '@scout/filter-chip';
+import '@scout-ds/filter-chip';
 
 interface ChipOpts {
   label?: string;
@@ -6427,7 +6426,7 @@ function filterChipCode(): HTMLElement {
 </script>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @scout/filter-chip @scout/tokens lit\n\nimport '@scout/filter-chip';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout-ds/filter-chip @scout-ds/tokens lit\n\nimport '@scout-ds/filter-chip';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -6456,9 +6455,9 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Inline alert (real Lit component from @scout/inline-alert)
+// Inline alert (real Lit component from @scout-ds/inline-alert)
 // =================================================================
-import '@scout/inline-alert';
+import '@scout-ds/inline-alert';
 
 type IAStatus = 'informational' | 'favorable' | 'warning' | 'critical';
 type IASize = 'default' | 'condensed';
@@ -6685,9 +6684,9 @@ function inlineAlertCode(): HTMLElement {
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
       el('pre', { class: 'code-block' },
-        `pnpm add @scout/inline-alert @scout/tokens lit
+        `pnpm add @scout-ds/inline-alert @scout-ds/tokens lit
 
-import '@scout/inline-alert';`)),
+import '@scout-ds/inline-alert';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -6715,9 +6714,9 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Link (real Lit component from @scout/link)
+// Link (real Lit component from @scout-ds/link)
 // =================================================================
-import '@scout/link';
+import '@scout-ds/link';
 
 const ARROW_RIGHT_PATH = 'M12.22 5.22a.75.75 0 0 1 1.06 0l6 6a.75.75 0 0 1 0 1.06l-6 6a.75.75 0 1 1-1.06-1.06l4.72-4.72H4.25a.75.75 0 0 1 0-1.5h12.69l-4.72-4.72a.75.75 0 0 1 0-1.06Z';
 
@@ -6980,7 +6979,7 @@ function linkCode(): HTMLElement {
 </scout-link>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @scout/link @scout/tokens lit\n\nimport '@scout/link';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout-ds/link @scout-ds/tokens lit\n\nimport '@scout-ds/link';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -7010,9 +7009,9 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Multiselect (real Lit component from @scout/multiselect)
+// Multiselect (real Lit component from @scout-ds/multiselect)
 // =================================================================
-import '@scout/multiselect';
+import '@scout-ds/multiselect';
 
 const MS_TAG_OPTIONS = [
   { value: 'fraud', label: 'Fraud risk' },
@@ -7284,7 +7283,7 @@ function multiselectCode(): HTMLElement {
 </script>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @scout/multiselect @scout/tokens lit\n\nimport '@scout/multiselect';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout-ds/multiselect @scout-ds/tokens lit\n\nimport '@scout-ds/multiselect';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -7320,9 +7319,9 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Notification badge (real Lit component from @scout/notification-badge)
+// Notification badge (real Lit component from @scout-ds/notification-badge)
 // =================================================================
-import '@scout/notification-badge';
+import '@scout-ds/notification-badge';
 
 type NBSize = 'xx-small' | 'x-small' | 'small' | 'medium';
 
@@ -7517,7 +7516,7 @@ function notificationBadgeCode(): HTMLElement {
 </div>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @scout/notification-badge @scout/tokens lit\n\nimport '@scout/notification-badge';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout-ds/notification-badge @scout-ds/tokens lit\n\nimport '@scout-ds/notification-badge';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Custom properties'),
       el('p', { class: 'preview-block__lede' }, 'Override per-instance:'),
@@ -7550,10 +7549,10 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Overlay + Dialog + Disclosure dialog (real Lit from @scout/overlay + @scout/dialog)
+// Overlay + Dialog + Disclosure dialog (real Lit from @scout-ds/overlay + @scout-ds/dialog)
 // =================================================================
-import '@scout/overlay';
-import '@scout/dialog';
+import '@scout-ds/overlay';
+import '@scout-ds/dialog';
 
 // --- Overlay docs page ---
 
@@ -7601,7 +7600,7 @@ function overlayCode(): HTMLElement {
 </script>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @scout/overlay @scout/tokens lit\n\nimport '@scout/overlay';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout-ds/overlay @scout-ds/tokens lit\n\nimport '@scout-ds/overlay';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Notes'),
       el('ul', { class: 'guideline-list' },
@@ -7773,7 +7772,7 @@ function dialogCode(): HTMLElement {
 </scout-dialog>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @scout/dialog @scout/tokens lit\n\nimport '@scout/dialog';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout-ds/dialog @scout-ds/tokens lit\n\nimport '@scout-ds/dialog';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -8041,7 +8040,7 @@ function disclosureCode(): HTMLElement {
 </scout-disclosure-dialog>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @scout/dialog @scout/tokens lit\n\nimport '@scout/dialog';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout-ds/dialog @scout-ds/tokens lit\n\nimport '@scout-ds/dialog';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -8138,9 +8137,9 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Snackbar (real Lit component from @scout/snackbar)
+// Snackbar (real Lit component from @scout-ds/snackbar)
 // =================================================================
-import '@scout/snackbar';
+import '@scout-ds/snackbar';
 
 type SBStatus = 'success' | 'warning' | 'critical';
 
@@ -8305,7 +8304,7 @@ sb.textContent = 'Save failed — try again.';
 document.body.appendChild(sb);`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @scout/snackbar @scout/tokens lit\n\nimport '@scout/snackbar';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout-ds/snackbar @scout-ds/tokens lit\n\nimport '@scout-ds/snackbar';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -8332,10 +8331,10 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Status dot (real Lit component from @scout/status-dot)
+// Status dot (real Lit component from @scout-ds/status-dot)
 // =================================================================
-import '@scout/status-dot';
-import type { StatusDotType, StatusDotSize } from '@scout/status-dot';
+import '@scout-ds/status-dot';
+import type { StatusDotType, StatusDotSize } from '@scout-ds/status-dot';
 
 interface SDotOpts {
   type?: StatusDotType;
@@ -8534,7 +8533,7 @@ function statusDotCode(): HTMLElement {
 <scout-status-dot type="success" size="condensed">Active</scout-status-dot>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @scout/status-dot @scout/tokens lit\n\nimport '@scout/status-dot';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout-ds/status-dot @scout-ds/tokens lit\n\nimport '@scout-ds/status-dot';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -8562,9 +8561,9 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// System outage (real Lit component from @scout/system-outage)
+// System outage (real Lit component from @scout-ds/system-outage)
 // =================================================================
-import '@scout/system-outage';
+import '@scout-ds/system-outage';
 
 type SOStatus = 'platform-wide-outage' | 'feature-outage' | 'outage-restored';
 
@@ -8754,7 +8753,7 @@ function systemOutageCode(): HTMLElement {
 </scout-system-outage>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @scout/system-outage @scout/tokens lit\n\nimport '@scout/system-outage';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout-ds/system-outage @scout-ds/tokens lit\n\nimport '@scout-ds/system-outage';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -8781,9 +8780,9 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Tabs (real Lit components from @scout/tabs)
+// Tabs (real Lit components from @scout-ds/tabs)
 // =================================================================
-import '@scout/tabs';
+import '@scout-ds/tabs';
 
 interface TabSpec {
   value: string;
@@ -9066,7 +9065,7 @@ function tabsCode(): HTMLElement {
 });`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @scout/tabs @scout/tokens lit\n\nimport '@scout/tabs';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout-ds/tabs @scout-ds/tokens lit\n\nimport '@scout-ds/tabs';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props — scout-tabs'),
       el('div', { class: 'props-table-wrap' },
@@ -9103,10 +9102,10 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Text inputs (real Lit components from @scout/text-input)
+// Text inputs (real Lit components from @scout-ds/text-input)
 // =================================================================
-import '@scout/text-input';
-import type { TextFieldVariant, TextInputSize } from '@scout/text-input';
+import '@scout-ds/text-input';
+import type { TextFieldVariant, TextInputSize } from '@scout-ds/text-input';
 
 interface TextFieldOpts {
   variant?: TextFieldVariant;
@@ -9489,7 +9488,7 @@ function textInputCode(): HTMLElement {
         `<scout-text-field id="due" variant="date-picker" label="Payment date" placeholder="MM / DD / YYYY"></scout-text-field>
 
 <script type="module">
-  import '@scout/popover';
+  import '@scout-ds/popover';
   document.querySelector('#due').addEventListener('scout-text-field-trigger', (e) => {
     // Open the matching popover-date positioned to the field.
   });
@@ -9505,7 +9504,7 @@ function textInputCode(): HTMLElement {
 ></scout-text-area>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @scout/text-input @scout/tokens lit\n\nimport '@scout/text-input';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout-ds/text-input @scout-ds/tokens lit\n\nimport '@scout-ds/text-input';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Variants'),
       el('div', { class: 'props-table-wrap' },
@@ -9542,10 +9541,10 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Tile (real Lit components from @scout/tile)
+// Tile (real Lit components from @scout-ds/tile)
 // =================================================================
-import '@scout/tile';
-import type { TileFunctionalState, TileFooter, WorkflowHeaderState } from '@scout/tile';
+import '@scout-ds/tile';
+import type { TileFunctionalState, TileFooter, WorkflowHeaderState } from '@scout-ds/tile';
 
 function makeTileButton(opts: {
   header?: string; subhead?: string; body?: string;
@@ -10003,7 +10002,7 @@ function tileCode(): HTMLElement {
 </scout-tile-workflow>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @scout/tile @scout/tokens lit\n\nimport '@scout/tile';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout-ds/tile @scout-ds/tokens lit\n\nimport '@scout-ds/tile';`)),
   );
 }
 
@@ -10022,10 +10021,10 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Toggle switch (real Lit component from @scout/toggle-switch)
+// Toggle switch (real Lit component from @scout-ds/toggle-switch)
 // =================================================================
-import '@scout/toggle-switch';
-import type { ToggleSwitchSize, ToggleLabelPlacement } from '@scout/toggle-switch';
+import '@scout-ds/toggle-switch';
+import type { ToggleSwitchSize, ToggleLabelPlacement } from '@scout-ds/toggle-switch';
 
 interface ToggleOpts {
   checked?: boolean;
@@ -10257,7 +10256,7 @@ function toggleSwitchCode(): HTMLElement {
 });`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @scout/toggle-switch @scout/tokens lit\n\nimport '@scout/toggle-switch';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout-ds/toggle-switch @scout-ds/tokens lit\n\nimport '@scout-ds/toggle-switch';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -10290,9 +10289,9 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Pagination (real Lit component from @scout/pagination)
+// Pagination (real Lit component from @scout-ds/pagination)
 // =================================================================
-import '@scout/pagination';
+import '@scout-ds/pagination';
 
 type PgLayout = 'item-dropdown' | 'page-numbers' | 'both';
 type PgSize = 'default' | 'condensed';
@@ -10543,7 +10542,7 @@ function paginationCode(): HTMLElement {
 <scout-pagination layout="item-dropdown" page="1" page-size="25" total="200"></scout-pagination>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @scout/pagination @scout/dropdown @scout/tokens lit\n\nimport '@scout/pagination';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout-ds/pagination @scout-ds/dropdown @scout-ds/tokens lit\n\nimport '@scout-ds/pagination';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Events'),
       el('pre', { class: 'code-block' },
@@ -10582,9 +10581,9 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Popover (real Lit family from @scout/popover)
+// Popover (real Lit family from @scout-ds/popover)
 // =================================================================
-import '@scout/popover';
+import '@scout-ds/popover';
 
 type PopPlacement = 'top' | 'bottom' | 'left' | 'right';
 type TtVariant = 'simple' | 'advanced';
@@ -11062,7 +11061,7 @@ function popoverCode(): HTMLElement {
 </scout-popover-time>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @scout/popover @scout/tokens lit\n\nimport '@scout/popover';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout-ds/popover @scout-ds/tokens lit\n\nimport '@scout-ds/popover';`)),
   );
 }
 
@@ -11081,10 +11080,10 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Progress (real Lit family from @scout/progress)
+// Progress (real Lit family from @scout-ds/progress)
 // =================================================================
-import '@scout/progress';
-import type { StepperStep, ProgressGaugeSize, ProgressBarDisplay } from '@scout/progress';
+import '@scout-ds/progress';
+import type { StepperStep, ProgressGaugeSize, ProgressBarDisplay } from '@scout-ds/progress';
 
 function makeProgressBar(opts: {
   title?: string; value?: number; max?: number;
@@ -11459,7 +11458,7 @@ function progressCode(): HTMLElement {
         `<scout-progress-stepper id="flow" orientation="horizontal"></scout-progress-stepper>
 
 <script type="module">
-  import '@scout/progress';
+  import '@scout-ds/progress';
   document.querySelector('#flow').steps = [
     { label: 'Apply',  state: 'completed' },
     { label: 'Verify', state: 'in-progress', tooltip: 'In review with underwriting.' },
@@ -11480,7 +11479,7 @@ function progressCode(): HTMLElement {
 </scout-progress-timeline>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @scout/progress @scout/tokens lit\n\nimport '@scout/progress';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout-ds/progress @scout-ds/tokens lit\n\nimport '@scout-ds/progress';`)),
   );
 }
 
@@ -11499,10 +11498,10 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Radio (real Lit components from @scout/radio)
+// Radio (real Lit components from @scout-ds/radio)
 // =================================================================
-import '@scout/radio';
-import '@scout/badge';
+import '@scout-ds/radio';
+import '@scout-ds/badge';
 
 interface RadioOpts {
   label?: string;
@@ -11872,7 +11871,7 @@ function radioCode(): HTMLElement {
 });`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @scout/radio @scout/tokens lit\n\nimport '@scout/radio';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout-ds/radio @scout-ds/tokens lit\n\nimport '@scout-ds/radio';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props — scout-radio'),
       el('div', { class: 'props-table-wrap' },
@@ -11918,9 +11917,9 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Segmented control (real Lit components from @scout/segmented-control)
+// Segmented control (real Lit components from @scout-ds/segmented-control)
 // =================================================================
-import '@scout/segmented-control';
+import '@scout-ds/segmented-control';
 
 interface SegSpec { value: string; label: string; disabled?: boolean }
 
@@ -12207,7 +12206,7 @@ function segmentedCode(): HTMLElement {
 <scout-language-tabs id="lang" label="Language"></scout-language-tabs>
 
 <script type="module">
-  import '@scout/segmented-control';
+  import '@scout-ds/segmented-control';
   const el = document.querySelector('#lang');
   el.languages = [
     { value: 'en', label: 'English' },
@@ -12222,7 +12221,7 @@ function segmentedCode(): HTMLElement {
 </script>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @scout/segmented-control @scout/tokens lit\n\nimport '@scout/segmented-control';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout-ds/segmented-control @scout-ds/tokens lit\n\nimport '@scout-ds/segmented-control';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props — scout-segmented-control'),
       el('div', { class: 'props-table-wrap' },
@@ -12273,10 +12272,10 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Sensitive data (real Lit component from @scout/sensitive-data)
+// Sensitive data (real Lit component from @scout-ds/sensitive-data)
 // =================================================================
-import '@scout/sensitive-data';
-import type { SensitiveDataLayout } from '@scout/sensitive-data';
+import '@scout-ds/sensitive-data';
+import type { SensitiveDataLayout } from '@scout-ds/sensitive-data';
 
 interface SDOpts {
   value?: string;
@@ -12508,7 +12507,7 @@ function sensitiveCode(): HTMLElement {
 });`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @scout/sensitive-data @scout/tokens lit\n\nimport '@scout/sensitive-data';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout-ds/sensitive-data @scout-ds/tokens lit\n\nimport '@scout-ds/sensitive-data';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -12539,10 +12538,10 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Copy (real Lit component from @scout/copy)
+// Copy (real Lit component from @scout-ds/copy)
 // =================================================================
-import '@scout/copy';
-import type { CopyLayout, CopySize } from '@scout/copy';
+import '@scout-ds/copy';
+import type { CopyLayout, CopySize } from '@scout-ds/copy';
 
 interface CopyOpts {
   value?: string;
@@ -12750,7 +12749,7 @@ function copyCode(): HTMLElement {
   return el('div', { class: 'tab-content code-layout' },
     el('section', { class: 'preview-block' },
       el('h3', { class: 'preview-block__title' }, 'Install'),
-      el('pre', { class: 'code-block' }, `pnpm add @scout/copy @scout/tokens lit\n\nimport '@scout/copy';`),
+      el('pre', { class: 'code-block' }, `pnpm add @scout-ds/copy @scout-ds/tokens lit\n\nimport '@scout-ds/copy';`),
     ),
     el('section', { class: 'preview-block' },
       el('h3', { class: 'preview-block__title' }, 'Markup'),
@@ -12802,10 +12801,10 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Share with customer (real Lit component from @scout/share-with-customer)
+// Share with customer (real Lit component from @scout-ds/share-with-customer)
 // =================================================================
-import '@scout/share-with-customer';
-import type { ShareLanguageSpec } from '@scout/share-with-customer';
+import '@scout-ds/share-with-customer';
+import type { ShareLanguageSpec } from '@scout-ds/share-with-customer';
 
 function previewShareWithCustomer(opts: {
   label?: string;
@@ -12893,7 +12892,7 @@ function shareWithCustomerControls(): HTMLElement {
           { value: 'es', label: 'Spanish', body: 'Hola, ¿puede confirmar los últimos cuatro dígitos de su tarjeta y su código postal?' },
         ],
       }));
-      codePre.textContent = `<scout-share-with-customer id="msg" label="${labelInput.value}"></scout-share-with-customer>\n\n<script type="module">\n  import '@scout/share-with-customer';\n  document.querySelector('#msg').languages = [\n    { value: 'en', label: 'English', body: '${bodyInput.value}' },\n    { value: 'es', label: 'Spanish', body: 'Hola, …' },\n  ];\n</script>`;
+      codePre.textContent = `<scout-share-with-customer id="msg" label="${labelInput.value}"></scout-share-with-customer>\n\n<script type="module">\n  import '@scout-ds/share-with-customer';\n  document.querySelector('#msg').languages = [\n    { value: 'en', label: 'English', body: '${bodyInput.value}' },\n    { value: 'es', label: 'Spanish', body: 'Hola, …' },\n  ];\n</script>`;
     } else {
       stage.replaceChildren(previewShareWithCustomer({ label: labelInput.value, body: bodyInput.value }));
       codePre.textContent = `<scout-share-with-customer label="${labelInput.value}">\n  ${bodyInput.value}\n</scout-share-with-customer>`;
@@ -13015,7 +13014,7 @@ function shareWithCustomerCode(): HTMLElement {
 <scout-share-with-customer id="opener"></scout-share-with-customer>
 
 <script type="module">
-  import '@scout/share-with-customer';
+  import '@scout-ds/share-with-customer';
   document.querySelector('#opener').languages = [
     { value: 'en', label: 'English', body: 'Hi, how can I help today?' },
     { value: 'es', label: 'Spanish', body: 'Hola, ¿en qué puedo ayudarle hoy?' },
@@ -13031,7 +13030,7 @@ function shareWithCustomerCode(): HTMLElement {
 });`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @scout/share-with-customer @scout/segmented-control @scout/tokens lit\n\nimport '@scout/share-with-customer';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout-ds/share-with-customer @scout-ds/segmented-control @scout-ds/tokens lit\n\nimport '@scout-ds/share-with-customer';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -13060,10 +13059,10 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Show more (real Lit component from @scout/show-more)
+// Show more (real Lit component from @scout-ds/show-more)
 // =================================================================
-import '@scout/show-more';
-import type { ShowMoreSize } from '@scout/show-more';
+import '@scout-ds/show-more';
+import type { ShowMoreSize } from '@scout-ds/show-more';
 
 interface ShowMoreOpts {
   expanded?: boolean;
@@ -13328,7 +13327,7 @@ function showMoreCode(): HTMLElement {
 </scout-card>`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @scout/show-more @scout/tokens lit\n\nimport '@scout/show-more';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout-ds/show-more @scout-ds/tokens lit\n\nimport '@scout-ds/show-more';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -13359,10 +13358,10 @@ app.append(componentPage(
 ));
 
 // =================================================================
-// Skeleton loader (real Lit component from @scout/skeleton)
+// Skeleton loader (real Lit component from @scout-ds/skeleton)
 // =================================================================
-import '@scout/skeleton';
-import type { SkeletonShape } from '@scout/skeleton';
+import '@scout-ds/skeleton';
+import type { SkeletonShape } from '@scout-ds/skeleton';
 
 interface SkOpts {
   shape?: SkeletonShape;
@@ -13611,7 +13610,7 @@ function skeletonCode(): HTMLElement {
 }`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Install / register'),
-      el('pre', { class: 'code-block' }, `pnpm add @scout/skeleton @scout/tokens lit\n\nimport '@scout/skeleton';`)),
+      el('pre', { class: 'code-block' }, `pnpm add @scout-ds/skeleton @scout-ds/tokens lit\n\nimport '@scout-ds/skeleton';`)),
     el('section', { class: 'guideline-section' },
       el('h3', { class: 'guideline-heading' }, 'Props'),
       el('div', { class: 'props-table-wrap' },
@@ -13643,7 +13642,7 @@ app.append(componentPage(
 // =================================================================
 // PATTERNS
 // =================================================================
-import '@scout/anchor-links';
+import '@scout-ds/anchor-links';
 
 {
   type PatternEntry = { title: string; summary: string; href?: string; comingSoon?: boolean };
@@ -13881,7 +13880,7 @@ import '@scout/anchor-links';
         .join('\n');
       codePre.textContent =
         `<scout-anchor-links id="links" mode="${modeSel.value}"${modeSel.value === 'manual' ? ' prevent-scroll' : ''}></scout-anchor-links>\n\n` +
-        `<script type="module">\n  import '@scout/anchor-links';\n  const el = document.querySelector('#links');\n  el.items = [\n${itemsLines}\n  ];\n  el.active = '${items[activeIdx - 1]?.id ?? ''}';\n</script>`;
+        `<script type="module">\n  import '@scout-ds/anchor-links';\n  const el = document.querySelector('#links');\n  el.items = [\n${itemsLines}\n  ];\n  el.active = '${items[activeIdx - 1]?.id ?? ''}';\n</script>`;
     }
     for (const c of [modeSel, countInput, activeInput, disableLastChk]) {
       c.addEventListener('input', render);
@@ -14001,7 +14000,7 @@ import '@scout/anchor-links';
           `<scout-anchor-links id="links" mode="auto-scroll"></scout-anchor-links>
 
 <script type="module">
-  import '@scout/anchor-links';
+  import '@scout-ds/anchor-links';
   const el = document.querySelector('#links');
   el.items = [
     { id: 'overview',     label: 'Overview' },
@@ -14022,7 +14021,7 @@ import '@scout/anchor-links';
 <scout-anchor-links id="sidebar-nav" mode="manual" prevent-scroll></scout-anchor-links>`)),
       el('section', { class: 'guideline-section' },
         el('h3', { class: 'guideline-heading' }, 'Install / register'),
-        el('pre', { class: 'code-block' }, `pnpm add @scout/anchor-links @scout/badge @scout/tokens lit\n\nimport '@scout/anchor-links';`)),
+        el('pre', { class: 'code-block' }, `pnpm add @scout-ds/anchor-links @scout-ds/badge @scout-ds/tokens lit\n\nimport '@scout-ds/anchor-links';`)),
       el('section', { class: 'guideline-section' },
         el('h3', { class: 'guideline-heading' }, 'Props'),
         el('div', { class: 'props-table-wrap' },
@@ -14762,7 +14761,7 @@ import '@scout/anchor-links';
       el('section', { class: 'guideline-section' },
         el('h3', { class: 'guideline-heading' }, 'Install / register'),
         el('pre', { class: 'code-block' },
-          `pnpm add @scout/checkbox @scout/badge @scout/pagination @scout/show-more @scout/accordion @scout/tokens lit\n\nimport '@scout/checkbox';\nimport '@scout/badge';\nimport '@scout/pagination';\nimport '@scout/show-more';\nimport '@scout/accordion';`)),
+          `pnpm add @scout-ds/checkbox @scout-ds/badge @scout-ds/pagination @scout-ds/show-more @scout-ds/accordion @scout-ds/tokens lit\n\nimport '@scout-ds/checkbox';\nimport '@scout-ds/badge';\nimport '@scout-ds/pagination';\nimport '@scout-ds/show-more';\nimport '@scout-ds/accordion';`)),
       el('section', { class: 'guideline-section' },
         el('h3', { class: 'guideline-heading' }, 'Markup'),
         el('pre', { class: 'code-block' },
@@ -15203,7 +15202,7 @@ import '@scout/anchor-links';
         el('h3', { class: 'preview-block__title' }, 'Install'),
         el('p', { class: 'preview-block__lede' },
           'Data display is composed from existing Scout parts — tile, divider, link, button — so there is no separate package to install. Pull in the parts you need:'),
-        el('pre', { class: 'code-block' }, `pnpm add @scout/tile @scout/divider @scout/link @scout/button`),
+        el('pre', { class: 'code-block' }, `pnpm add @scout-ds/tile @scout-ds/divider @scout-ds/link @scout-ds/button`),
       ),
       el('section', { class: 'preview-block' },
         el('h3', { class: 'preview-block__title' }, 'Markup'),

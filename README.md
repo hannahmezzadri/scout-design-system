@@ -20,7 +20,7 @@ Enterprise design system powering 8+ internal tools.
 
 ## Packages
 
-- `@scout/tokens` — design tokens (CSS, TS, JSON, Tailwind preset)
+- `@scout-ds/tokens` — design tokens (CSS, TS, JSON, Tailwind preset)
 
 ## Development
 

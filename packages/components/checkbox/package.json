@@ -1,17 +1,53 @@
 {
-  "name": "@scout/checkbox",
+  "name": "@scout-ds/checkbox",
   "version": "0.1.0",
   "description": "Scout Checkbox — single and multi-select form input with full anatomy",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" } },
-  "files": ["dist"],
-  "scripts": { "build": "tsup", "dev": "tsup --watch", "clean": "rm -rf dist .turbo" },
-  "peerDependencies": { "lit": "^3.2.0", "@scout/tokens": "workspace:*" },
-  "dependencies": { "lit": "^3.2.0", "@scout/tokens": "workspace:*" },
-  "devDependencies": { "tsup": "^8.3.0", "typescript": "^5.6.3" },
-  "publishConfig": { "access": "restricted" },
-  "sideEffects": ["./dist/**/*.js"]
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "clean": "rm -rf dist .turbo"
+  },
+  "peerDependencies": {
+    "lit": "^3.2.0",
+    "@scout-ds/tokens": "workspace:*"
+  },
+  "dependencies": {
+    "lit": "^3.2.0",
+    "@scout-ds/tokens": "workspace:*"
+  },
+  "devDependencies": {
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.3"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "sideEffects": [
+    "./dist/**/*.js"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hannahmezzadri/scout-design-system.git",
+    "directory": "packages/components/checkbox"
+  },
+  "homepage": "https://github.com/hannahmezzadri/scout-design-system/tree/main/packages/components/checkbox#readme",
+  "bugs": {
+    "url": "https://github.com/hannahmezzadri/scout-design-system/issues"
+  },
+  "author": "Hannah Mezzadri"
 }

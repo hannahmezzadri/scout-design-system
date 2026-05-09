@@ -1,5 +1,5 @@
 {
-  "name": "@scout/button",
+  "name": "@scout-ds/button",
   "version": "0.1.0",
   "description": "Scout Button — clickable element that triggers an action or event",
   "type": "module",
@@ -12,7 +12,9 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "customElements": "custom-elements.json",
   "scripts": {
     "build": "tsup",
@@ -21,18 +23,32 @@
   },
   "peerDependencies": {
     "lit": "^3.2.0",
-    "@scout/tokens": "workspace:*"
+    "@scout-ds/tokens": "workspace:*"
   },
   "dependencies": {
     "lit": "^3.2.0",
-    "@scout/tokens": "workspace:*"
+    "@scout-ds/tokens": "workspace:*"
   },
   "devDependencies": {
     "tsup": "^8.3.0",
     "typescript": "^5.6.3"
   },
   "publishConfig": {
-    "access": "restricted"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
-  "sideEffects": ["./dist/**/*.js"]
+  "sideEffects": [
+    "./dist/**/*.js"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hannahmezzadri/scout-design-system.git",
+    "directory": "packages/components/button"
+  },
+  "homepage": "https://github.com/hannahmezzadri/scout-design-system/tree/main/packages/components/button#readme",
+  "bugs": {
+    "url": "https://github.com/hannahmezzadri/scout-design-system/issues"
+  },
+  "author": "Hannah Mezzadri"
 }

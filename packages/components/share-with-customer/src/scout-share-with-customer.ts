@@ -1,6 +1,6 @@
 import { LitElement, html, css, svg, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import '@scout/segmented-control';
+import '@scout-ds/segmented-control';
 
 /**
  * Speech-bubble icon — visual cue that the body is meant to be spoken aloud

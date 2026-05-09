@@ -1,8 +1,8 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import '@scout/skeleton';
-import '@scout/show-more';
-import '@scout/divider';
+import '@scout-ds/skeleton';
+import '@scout-ds/show-more';
+import '@scout-ds/divider';
 import type { TileFooter, TileFunctionalState } from './types.js';
 
 /**

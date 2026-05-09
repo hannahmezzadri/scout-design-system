@@ -1,6 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import '@scout/notification-badge';
+import '@scout-ds/notification-badge';
 import type { AvatarColor, AvatarSize, AvatarTitleSize } from './types.js';
 
 /**
@@ -93,7 +93,7 @@ export class ScoutAvatar extends LitElement {
       text-transform: uppercase;
     }
 
-    /* Notification badge — composed from @scout/notification-badge */
+    /* Notification badge — composed from @scout-ds/notification-badge */
     .notification {
       position: absolute;
       top: -2px;

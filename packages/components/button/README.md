@@ -1,11 +1,11 @@
-# @scout/button
+# @scout-ds/button
 
 `<scout-button>` — Scout's clickable button Web Component.
 
 ## Install
 
 ```bash
-pnpm add @scout/button @scout/tokens lit
+pnpm add @scout-ds/button @scout-ds/tokens lit
 ```
 
 ## Use
@@ -27,7 +27,7 @@ pnpm add @scout/button @scout/tokens lit
 ```
 
 ```ts
-import '@scout/button';
+import '@scout-ds/button';
 ```
 
 ## API

@@ -1,6 +1,6 @@
 import { LitElement, html, css, svg, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import '@scout/control';
+import '@scout-ds/control';
 import type { InlineAlertSize, InlineAlertStatus } from './types.js';
 
 /* Hero Icons (24-solid) used to indicate status. Embedded inline so the

@@ -1,6 +1,6 @@
 import { LitElement, html, css, svg, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import '@scout/control';
+import '@scout-ds/control';
 import type { SnackbarStatus } from './types.js';
 
 const STATUS_ICONS: Record<SnackbarStatus, ReturnType<typeof svg>> = {
@@ -46,11 +46,10 @@ export class ScoutSnackbar extends LitElement {
 
     .snackbar {
       display: flex;
-      /* Top-align so the icon and X control stay anchored to the first
-         line of the description when the message wraps to multiple lines.
-         Per-element margin-top below offsets each control's height
-         against the body line-height (24px) to land its visual center on
-         the first line's center (12px from line-top). */
+      /* Top-align so the icon stays anchored to the first line of the
+         description when the message wraps to multiple lines. The X
+         dismiss control sits in the top-right corner — see .dismiss for
+         its corner inset. */
       align-items: flex-start;
       gap: var(--scout-space-12);
       padding: var(--scout-space-12) var(--scout-space-16);
@@ -67,6 +66,12 @@ export class ScoutSnackbar extends LitElement {
       font-family: var(--scout-font-family-inter);
       font-size: var(--scout-typography-body-font-size);
       line-height: var(--scout-typography-body-line-height);
+    }
+    /* When a dismiss control is shown, tighten the right padding to
+       space-8 so the X sits 8px from the right edge. Critical snackbars
+       (no dismiss) keep the wider 16px padding for text breathing room. */
+    :host(:not([status='critical'])) .snackbar {
+      padding-right: var(--scout-space-8);
     }
 
     /* Per-status fills + accent borders + status-icon color. */
@@ -107,9 +112,18 @@ export class ScoutSnackbar extends LitElement {
        on dark theme alongside the surface). */
     .dismiss {
       flex-shrink: 0;
-      /* Center the 32px default control against the 24px first-line
-         (line-center = 12px → control-top = 12 − 16 = −4px). */
+      /* Pull the dismiss up so the X sits 8px from the top of the snackbar
+         (snackbar padding-top is 12, so a -4px offset lands the control
+         at 8px). Combined with padding-right: 8 above, the X is
+         equidistant — 8px from top and 8px from right. */
       margin-top: -4px;
+      /* Mirror the negative top margin on the bottom so the 32px dismiss
+         contributes only 24px to the flex line height (32 − 4 − 4 = 24),
+         matching the body line-height. This keeps a one-line success /
+         warning snackbar the same height as critical (50px). The control's
+         box overflows 4px into the padding-bottom but is invisible
+         because the control background is transparent. */
+      margin-bottom: -4px;
     }
     .dismiss::part(button):hover {
       background: var(--scout-interactive-background-hover-on-tint);

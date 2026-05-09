@@ -1,5 +1,5 @@
 {
-  "name": "@scout/address",
+  "name": "@scout-ds/address",
   "version": "0.1.0",
   "description": "Scout Address — pre-formatted display of a postal address",
   "type": "module",
@@ -12,7 +12,9 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "customElements": "custom-elements.json",
   "scripts": {
     "build": "tsup",
@@ -21,21 +23,35 @@
   },
   "peerDependencies": {
     "lit": "^3.2.0",
-    "@scout/tokens": "workspace:*"
+    "@scout-ds/tokens": "workspace:*"
   },
   "dependencies": {
     "lit": "^3.2.0",
-    "@scout/tokens": "workspace:*",
-    "@scout/badge": "workspace:*",
-    "@scout/checkbox": "workspace:*",
-    "@scout/radio": "workspace:*"
+    "@scout-ds/tokens": "workspace:*",
+    "@scout-ds/badge": "workspace:*",
+    "@scout-ds/checkbox": "workspace:*",
+    "@scout-ds/radio": "workspace:*"
   },
   "devDependencies": {
     "tsup": "^8.3.0",
     "typescript": "^5.6.3"
   },
   "publishConfig": {
-    "access": "restricted"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
-  "sideEffects": ["./dist/**/*.js"]
+  "sideEffects": [
+    "./dist/**/*.js"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hannahmezzadri/scout-design-system.git",
+    "directory": "packages/components/address"
+  },
+  "homepage": "https://github.com/hannahmezzadri/scout-design-system/tree/main/packages/components/address#readme",
+  "bugs": {
+    "url": "https://github.com/hannahmezzadri/scout-design-system/issues"
+  },
+  "author": "Hannah Mezzadri"
 }

@@ -1,7 +1,7 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import '@scout/overlay';
-import '@scout/control';
+import '@scout-ds/overlay';
+import '@scout-ds/control';
 import type { DialogSize } from './types.js';
 
 /**

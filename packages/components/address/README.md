@@ -1,11 +1,11 @@
-# @scout/address
+# @scout-ds/address
 
 `<scout-address>` — Scout's pre-formatted address display.
 
 ## Install
 
 ```bash
-pnpm add @scout/address @scout/tokens lit
+pnpm add @scout-ds/address @scout-ds/tokens lit
 ```
 
 ## Use

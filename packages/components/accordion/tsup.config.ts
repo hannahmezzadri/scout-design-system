@@ -7,6 +7,6 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   // Lit and tokens are peer deps — never bundle them.
-  external: ['lit', 'lit/decorators.js', '@scout/tokens'],
+  external: ['lit', 'lit/decorators.js', '@scout-ds/tokens'],
   target: 'es2022',
 });

@@ -1,8 +1,8 @@
 import { LitElement, html, css, svg, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import '@scout/badge';
-import '@scout/checkbox';
-import '@scout/radio';
+import '@scout-ds/badge';
+import '@scout-ds/checkbox';
+import '@scout-ds/radio';
 import type { AddressOrientation, AddressSelectTool, AddressSize } from './types.js';
 
 /* Heroicons outline `no-symbol` — matches the icon used in the badge

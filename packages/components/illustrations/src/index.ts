@@ -1,7 +1,7 @@
 /**
  * Convenience entry: registers every illustration in one import. For
  * tree-shaking, prefer the per-illustration subpath imports
- * (`@scout/illustrations/accordion`, etc.).
+ * (`@scout-ds/illustrations/accordion`, etc.).
  */
 export { ScoutIllustrationBase } from './base.js';
 export { ScoutIllustrationAccordion } from './accordion.js';

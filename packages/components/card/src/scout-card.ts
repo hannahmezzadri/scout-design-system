@@ -1,7 +1,7 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import '@scout/badge';
-import '@scout/show-more';
+import '@scout-ds/badge';
+import '@scout-ds/show-more';
 import type { CardBackground } from './types.js';
 
 /**

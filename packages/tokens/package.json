@@ -1,5 +1,5 @@
 {
-  "name": "@scout/tokens",
+  "name": "@scout-ds/tokens",
   "version": "0.1.0",
   "description": "Design tokens for the Scout design system",
   "type": "module",
@@ -35,6 +35,18 @@
     "style-dictionary": "^4.3.0"
   },
   "publishConfig": {
-    "access": "restricted"
-  }
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hannahmezzadri/scout-design-system.git",
+    "directory": "packages/tokens/package.json"
+  },
+  "homepage": "https://github.com/hannahmezzadri/scout-design-system/tree/main/packages/tokens/package.json#readme",
+  "bugs": {
+    "url": "https://github.com/hannahmezzadri/scout-design-system/issues"
+  },
+  "author": "Hannah Mezzadri"
 }

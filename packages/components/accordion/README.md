@@ -1,18 +1,18 @@
-# @scout/accordion
+# @scout-ds/accordion
 
 `<scout-accordion>` and `<scout-accordion-item>` — Scout's accordion Web Components.
 
 ## Install
 
 ```bash
-pnpm add @scout/accordion @scout/tokens lit
+pnpm add @scout-ds/accordion @scout-ds/tokens lit
 ```
 
 ## Use
 
 ```html
 <!-- Load Scout tokens once at the app root -->
-<link rel="stylesheet" href="node_modules/@scout/tokens/dist/css/tokens.css" />
+<link rel="stylesheet" href="node_modules/@scout-ds/tokens/dist/css/tokens.css" />
 
 <scout-accordion mode="single" size="md" icon-position="right" divider>
   <scout-accordion-item label="What is Scout?" expanded>
@@ -29,7 +29,7 @@ pnpm add @scout/accordion @scout/tokens lit
 
 ```ts
 // Auto-registers <scout-accordion> and <scout-accordion-item>
-import '@scout/accordion';
+import '@scout-ds/accordion';
 ```
 
 ## API
@@ -64,7 +64,7 @@ import '@scout/accordion';
 
 ## Styling hooks
 
-All visual values come from `@scout/tokens` so theme/density/brand toggles
+All visual values come from `@scout-ds/tokens` so theme/density/brand toggles
 on `<html>` are honored automatically. Override per-instance with the
 following CSS custom properties (rare):
 

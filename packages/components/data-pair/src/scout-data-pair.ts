@@ -1,6 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import '@scout/link';
+import '@scout-ds/link';
 import type { DataPairOrientation, DataPairVariant } from './types.js';
 
 /**
