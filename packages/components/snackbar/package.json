@@ -1,6 +1,6 @@
 {
   "name": "@scout-ds/snackbar",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Scout Snackbar — temporary low-impact toast notification",
   "type": "module",
   "main": "./dist/index.js",

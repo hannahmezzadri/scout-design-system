@@ -1,6 +1,6 @@
 {
   "name": "@scout-ds/notification-badge",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Scout Notification badge — small indicator for new activity",
   "type": "module",
   "main": "./dist/index.js",

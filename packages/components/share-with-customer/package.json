@@ -1,6 +1,6 @@
 {
   "name": "@scout-ds/share-with-customer",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Scout Share with customer — agent-facing message intended to be read aloud to the customer",
   "type": "module",
   "main": "./dist/index.js",

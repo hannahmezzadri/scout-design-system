@@ -1,6 +1,6 @@
 {
   "name": "@scout-ds/pagination",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Scout Pagination — page navigation with item-count dropdown and chevron controls",
   "type": "module",
   "main": "./dist/index.js",

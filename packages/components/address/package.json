@@ -1,6 +1,6 @@
 {
   "name": "@scout-ds/address",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Scout Address — pre-formatted display of a postal address",
   "type": "module",
   "main": "./dist/index.js",

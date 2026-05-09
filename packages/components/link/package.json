@@ -1,6 +1,6 @@
 {
   "name": "@scout-ds/link",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Scout Link — anchor for navigation between files and external pages",
   "type": "module",
   "main": "./dist/index.js",

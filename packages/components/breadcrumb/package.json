@@ -1,6 +1,6 @@
 {
   "name": "@scout-ds/breadcrumb",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Scout Breadcrumb — hierarchy navigation showing the user's location",
   "type": "module",
   "main": "./dist/index.js",

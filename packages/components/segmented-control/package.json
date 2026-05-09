@@ -1,6 +1,6 @@
 {
   "name": "@scout-ds/segmented-control",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Scout Segmented Control — pill-style group of mutually-exclusive segments",
   "type": "module",
   "main": "./dist/index.js",

@@ -1,6 +1,6 @@
 {
   "name": "@scout-ds/illustrations",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Scout Illustrations — token-driven SVG illustrations. Each illustration is its own custom element so consumers tree-shake to only the artwork they import.",
   "type": "module",
   "main": "./dist/index.js",

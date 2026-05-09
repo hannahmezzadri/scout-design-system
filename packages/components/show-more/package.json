@@ -1,6 +1,6 @@
 {
   "name": "@scout-ds/show-more",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Scout Show More — collapse / expand toggle used inside cards, tiles, and data tables",
   "type": "module",
   "main": "./dist/index.js",
